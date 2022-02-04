@@ -1,3 +1,3 @@
 # eitco.github.io
 
-* [Arveo](arveo/index.html)
+* [arveo](arveo/index.html)
