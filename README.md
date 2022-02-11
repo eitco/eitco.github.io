@@ -1,3 +1,3 @@
 # eitco.github.io
 
-* [arveo](arveo/index.html)
+* [arveo](https://eitco.github.io/arveo/)
