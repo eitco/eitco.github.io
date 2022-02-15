@@ -111,13 +111,30 @@ a, a:hover, a:focus {
 <li><a href="#_installation_2">Installation</a></li>
 </ul>
 </li>
-<li><a href="#_getting_started"><strong>Getting Started</strong></a>
+<li><a href="#_getting_started"><strong>Getting Started</strong></a></li>
+<li><a href="#_getting_started_2">Getting started</a>
 <ul class="sectlevel2">
-<li><a href="#_the_slim_archetype">The slim archetype</a></li>
-<li><a href="#_overview_of_the_generated_project">Overview of the generated project</a></li>
-<li><a href="#_the_full_featured_archetype">The full-featured archetype</a></li>
-<li><a href="#_overview_of_the_generated_project_2">Overview of the generated project</a></li>
-<li><a href="#_working_on_the_generated_project">Working on the generated project</a></li>
+<li><a href="#_prerequisites">Prerequisites</a></li>
+<li><a href="#_maven_configuration">Maven configuration</a></li>
+</ul>
+</li>
+<li><a href="#_step_1_type_definitions">Step 1 - type definitions</a>
+<ul class="sectlevel2">
+<li><a href="#_running_the_tests">Running the tests</a></li>
+<li><a href="#_adapt_the_model">Adapt the model</a></li>
+</ul>
+</li>
+<li><a href="#_step_2_command_line_tool">Step 2 - Command line tool</a>
+<ul class="sectlevel2">
+<li><a href="#_generating_the_project">Generating the project</a></li>
+<li><a href="#_adding_arveo_dependencies">Adding arveo dependencies</a></li>
+<li><a href="#_implementing_the_tool">Implementing the tool</a></li>
+<li><a href="#_building_and_running_the_tool">Building and running the tool</a></li>
+</ul>
+</li>
+<li><a href="#_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</a>
+<ul class="sectlevel2">
+<li><a href="#_creating_a_standardized_project_structure">Creating a standardized project structure</a></li>
 </ul>
 </li>
 <li><a href="#_administration"><strong>Administration</strong></a>
@@ -2522,369 +2539,1444 @@ The script is controlled by cron and is always started automatically at 10 p.m.<
 <div class="sect1">
 <h2 id="_getting_started"><strong>Getting Started</strong></h2>
 <div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_getting_started_2">Getting started</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>To get started developing an arveo based application there are <a href="https://maven.apache.org/guides/introduction/introduction-to-archetypes.html">maven archetypes</a> to create projects. An example of a well documented application based on such an archetype - but extended since - can be found <a href="https://nexus.eitco.de/repository/html-default/de.eitco.demo/arveo-getting-started/1.2.1-SNAPSHOT/documentation/index.html">here</a>.</p>
+<p>In this guide you will create a simple application that implements a basic project file scenario. It will consist of
+a document type, that represents documents used in a project.</p>
 </div>
 <div class="sect2">
-<h3 id="_the_slim_archetype">The slim archetype</h3>
+<h3 id="_prerequisites">Prerequisites</h3>
 <div class="paragraph">
-<p>This archetype creates a rather small project. It consists of an arveo scenario and tests for that.</p>
+<p>To complete the steps in this guide, you need the following tools installed on your machine:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>JDK 11 or newer (<a href="https://adoptium.net/" class="bare">https://adoptium.net/</a>)</p>
+</li>
+<li>
+<p>Apache Maven (<a href="https://maven.apache.org/" class="bare">https://maven.apache.org/</a>)</p>
+</li>
+<li>
+<p>An IDE of your choice (we recommend IntelliJ)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_maven_configuration">Maven configuration</h3>
 <div class="paragraph">
-<p>The maven coordinate of this archetype are:</p>
+<p>To be able to access the maven artifacts of arveo, you need access to the EITCO Nexus repository.</p>
+</div>
+<div class="sect3">
+<h4 id="_internal">Internal</h4>
+<div class="paragraph">
+<p>When you are inside the company network or the VPN, you can use the internal Nexus that does not require authentication.
+The following maven settings.xml file shows how to configure the required repositories. The settings.xml file can be
+found in the .m2 directory in your user home directory.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml">    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>ecr-types-archetype<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>{project-technical-version}<span class="tag">&lt;/version&gt;</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;settings</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/SETTINGS/1.0.0</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;pluginGroups&gt;</span>
+  <span class="tag">&lt;/pluginGroups&gt;</span>
+  <span class="tag">&lt;proxies&gt;</span>
+  <span class="tag">&lt;/proxies&gt;</span>
+  <span class="tag">&lt;servers&gt;</span>
+  <span class="tag">&lt;/servers&gt;</span>
+  <span class="tag">&lt;mirrors&gt;</span>
+  <span class="tag">&lt;/mirrors&gt;</span>
+  <span class="tag">&lt;profiles&gt;</span>
+    <span class="tag">&lt;profile&gt;</span>
+      <span class="tag">&lt;id&gt;</span>repos-default<span class="tag">&lt;/id&gt;</span>
+      <span class="tag">&lt;activation&gt;</span>
+        <span class="tag">&lt;activeByDefault&gt;</span>true<span class="tag">&lt;/activeByDefault&gt;</span>
+      <span class="tag">&lt;/activation&gt;</span>
+      <span class="tag">&lt;properties&gt;</span>
+      <span class="tag">&lt;/properties&gt;</span>
+      <span class="tag">&lt;repositories&gt;</span>
+        <span class="tag">&lt;repository&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+          <span class="tag">&lt;id&gt;</span>nexus<span class="tag">&lt;/id&gt;</span>
+          <span class="tag">&lt;url&gt;</span>http://nexus-intern.eitco.de:8081/repository/maven-private/<span class="tag">&lt;/url&gt;</span>
+          <span class="tag">&lt;releases&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/releases&gt;</span>
+          <span class="tag">&lt;snapshots&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/snapshots&gt;</span>
+        <span class="tag">&lt;/repository&gt;</span>
+      <span class="tag">&lt;/repositories&gt;</span>
+      <span class="tag">&lt;pluginRepositories&gt;</span>
+        <span class="tag">&lt;pluginRepository&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+          <span class="tag">&lt;id&gt;</span>nexus<span class="tag">&lt;/id&gt;</span>
+          <span class="tag">&lt;url&gt;</span>http://nexus-intern.eitco.de:8081/repository/maven-private/<span class="tag">&lt;/url&gt;</span>
+          <span class="tag">&lt;releases&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/releases&gt;</span>
+          <span class="tag">&lt;snapshots&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/snapshots&gt;</span>
+        <span class="tag">&lt;/pluginRepository&gt;</span>
+      <span class="tag">&lt;/pluginRepositories&gt;</span>
+    <span class="tag">&lt;/profile&gt;</span>
+  <span class="tag">&lt;/profiles&gt;</span>
+<span class="tag">&lt;/settings&gt;</span></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>To create an arveo scenario project use the maven archetype plugin:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion={project-technical-version}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Here, the variable {project-technical-version} must be replaced with the actual version, f.e. 5.0.1.</p>
-</div>
-<div class="paragraph">
-<p>Also, you have to remember, that this will generate a project structure into a project folder. So before you type
-this command in your command line, make sure you have prepared a folder where your project structure is going to be and you
-have switched into this folder on your command line.</p>
-</div>
-<div class="paragraph">
-<p>This will start a process that will ask for some parameters and then generate a maven project according to the parameters. The following parameters will be asked for:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<tbody>
+<div class="colist arabic">
+<table>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven groupId of the new project</p></td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The maven repository that contains maven artifacts of arveo</td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>artifactId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven artifactId of the new project</p></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The plugin repository that contains maven plugins used when building the demo project</td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>version</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven version of the new project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>class-name-prefix</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A prefix for the names of the generated classes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scm-locator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The location in the eitco bitbucket server where the sources are (or will be). For a project located in <a href="https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git" class="bare">https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git</a>, this would be <code>&lt;project&gt;/&lt;repository&gt;.git</code>. This configures the maven release plugin. If this is omitted (or set to a wrong value) the project will work for now - however the release process will not work - unless it is fixed.</p></td>
-</tr>
-</tbody>
 </table>
-<div class="paragraph">
-<p>Some or all of these parameters can also be given on the commandline via <code>-D</code>. The process will not ask for parameters given by command line. So the command</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion={project-technical-version} -DgroupId=my.group.id -DartifactId=my-artifact-id -Dversion=0.0.1-SNAPSHOT -Dclass-name-prefix=My -Dscm-locator=prj/repo.git</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>would not ask for any parameters and just create the project.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_overview_of_the_generated_project">Overview of the generated project</h3>
-<div class="paragraph">
-<p>The project generated by the archetype will consist of two modules:</p>
-</div>
-<div class="sect3">
-<h4 id="_implementationtypes">implementation\types</h4>
-<div class="paragraph">
-<p>This module contains your arveo scenario. An example type will be created with the name &lt;class-name-prefix&gt;Model. You can define more types here, but you will need to register them in register in &lt;class-name-prefix&gt;TypeRegistration. The chapter <a href="#Object types and definitions">Object types and definitions</a> describes how to define types.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_testsystem_test">test\system-test</h4>
-<div class="paragraph">
-<p>This module contains tests for your scenario. These tests will be executed in the build. For that a complete arveo environment will be created, so you can add tests, that simply connect to arveo by the http client and can assume that your scenario is deployed.</p>
-</div>
-<div class="paragraph">
-<p>This module can also be used to set up an arveo environment with your scenario on which you can then run tests manually. In the module run</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn -Denv</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>to set up the environment. It will be torn down when you press &lt;enter&gt; in the console.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_the_full_featured_archetype">The full-featured archetype</h3>
-<div class="paragraph">
-<p>This archetype creates a more complex project. It is based on the eitco commons archetype It will contain a simple web service, with an automatically generated client layer, based on eitco commons.
-The maven coordinate of this archetype are:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml">    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>ecr-service-archetype<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>{project-technical-version}<span class="tag">&lt;/version&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To create an arveo based service project use the maven archetype plugin:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-service-archetype -DarchetypeVersion={project-technical-version}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will start a process that will ask for some parameters and then generate a maven project according to the parameters. The following parameters will be asked for:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<tbody>
+<div class="admonitionblock warning">
+<table>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven groupId of the new project</p></td>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Beginning with version 3.8.1, Maven blocks access to non-https repositories by default. This can be disabled by removing
+the mirror called <code>maven-default-http-blocker</code> from the default settings.xml file in the conf directory of your maven
+installation. Make sure not to use non-https repositories that require authentication!
+</td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>artifactId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven artifactId of the new project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>version</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven version of the new project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>class-name-prefix</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A prefix for the names of the generated classes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scm-locator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The location in the eitco bitbucket server where the sources are (or will be). For a project located in <a href="https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git" class="bare">https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git</a>, this would be <code>&lt;project&gt;/&lt;repository&gt;.git</code>. This configures the maven release plugin. If this is omitted (or set to a wrong value) the project will work for now - however the release process will not work - unless it is fixed.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>disable-optional-features</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">when set to false, it will create a little more complex project, including the audit service, the user-management enterprise service and jmeter samplers. If set to true (the default value) these features will be disabled but can be activated by uncommenting certain source locations.</p></td>
-</tr>
-</tbody>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_external">External</h4>
 <div class="paragraph">
-<p>Some or all of these parameters can also be given on the commandline via <code>-D</code>. The process will not ask for parameters given by command line. So the command</p>
+<p>When you are outside the company network and the VPN, you need to use the public Nexus repository that requires
+authentication. To do so, maven requires credentials. For security reasons, the credentials should be encrypted.
+Follow the instructions in the <a href="https://maven.apache.org/guides/mini/guide-encryption.html">Maven documentation</a> to
+configure a master password and to create an encrypted password.</p>
+</div>
+<div class="paragraph">
+<p>You should now have created a settings-security.xml file in the .m2 directory like the one shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-service-archetype -DarchetypeVersion={project-technical-version} -DgroupId=my.group.id -DartifactId=my-artifact-id -Dversion=0.0.1-SNAPSHOT -Dclass-name-prefix=My -Dscm-locator=prj/repo.git -Ddisable-optional-features=false</pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;settingsSecurity&gt;</span>
+  <span class="tag">&lt;master&gt;</span>{encryped-master-password}<span class="tag">&lt;/master&gt;</span>
+<span class="tag">&lt;/settingsSecurity&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>would not ask for any parameters and just create the project.</p>
+<p>Then you have to adapt your maven settings.xml as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;settings</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/SETTINGS/1.0.0</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;pluginGroups&gt;</span>
+  <span class="tag">&lt;/pluginGroups&gt;</span>
+  <span class="tag">&lt;proxies&gt;</span>
+  <span class="tag">&lt;/proxies&gt;</span>
+  <span class="tag">&lt;servers&gt;</span>
+    <span class="tag">&lt;server&gt;</span>
+      <span class="tag">&lt;id&gt;</span>nexus<span class="tag">&lt;/id&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="tag">&lt;username&gt;</span>username<span class="tag">&lt;/username&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="tag">&lt;password&gt;</span>{your-encrypted-password}<span class="tag">&lt;/password&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="tag">&lt;/server&gt;</span>
+  <span class="tag">&lt;/servers&gt;</span>
+  <span class="tag">&lt;mirrors&gt;</span>
+  <span class="tag">&lt;/mirrors&gt;</span>
+  <span class="tag">&lt;profiles&gt;</span>
+    <span class="tag">&lt;profile&gt;</span>
+      <span class="tag">&lt;id&gt;</span>repos-default<span class="tag">&lt;/id&gt;</span>
+      <span class="tag">&lt;activation&gt;</span>
+        <span class="tag">&lt;activeByDefault&gt;</span>true<span class="tag">&lt;/activeByDefault&gt;</span>
+      <span class="tag">&lt;/activation&gt;</span>
+      <span class="tag">&lt;properties&gt;</span>
+        <span class="tag">&lt;solr.repositoryUrl&gt;</span>https://nexus.eitco.de/repository/raw-public<span class="tag">&lt;/solr.repositoryUrl&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
+      <span class="tag">&lt;/properties&gt;</span>
+      <span class="tag">&lt;repositories&gt;</span>
+        <span class="tag">&lt;repository&gt;</span>
+          <span class="tag">&lt;id&gt;</span>nexus<span class="tag">&lt;/id&gt;</span> <i class="conum" data-value="5"></i><b>(5)</b>
+          <span class="tag">&lt;url&gt;</span>https://nexus.eitco.de/repository/maven-private/<span class="tag">&lt;/url&gt;</span>
+          <span class="tag">&lt;releases&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/releases&gt;</span>
+          <span class="tag">&lt;snapshots&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/snapshots&gt;</span>
+        <span class="tag">&lt;/repository&gt;</span>
+      <span class="tag">&lt;/repositories&gt;</span>
+      <span class="tag">&lt;pluginRepositories&gt;</span>
+        <span class="tag">&lt;pluginRepository&gt;</span>
+          <span class="tag">&lt;id&gt;</span>nexus<span class="tag">&lt;/id&gt;</span>
+          <span class="tag">&lt;url&gt;</span>https://nexus.eitco.de/repository/maven-private/<span class="tag">&lt;/url&gt;</span>
+          <span class="tag">&lt;releases&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/releases&gt;</span>
+          <span class="tag">&lt;snapshots&gt;</span>
+            <span class="tag">&lt;updatePolicy&gt;</span>never<span class="tag">&lt;/updatePolicy&gt;</span>
+          <span class="tag">&lt;/snapshots&gt;</span>
+        <span class="tag">&lt;/pluginRepository&gt;</span>
+      <span class="tag">&lt;/pluginRepositories&gt;</span>
+    <span class="tag">&lt;/profile&gt;</span>
+  <span class="tag">&lt;/profiles&gt;</span>
+<span class="tag">&lt;/settings&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The server id is used to tie credentials to repositories</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The username you use to logon to nexus</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The password encrypted by maven using the master password</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Sets the repository to use for the SOLR plugin used in the system tests</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Tells maven to use the credentials for the server with id 'nexus'</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Make sure to use only https repositories when using credentials. Current maven versions already block the usage of
+unencrypted repository connections.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_1_type_definitions">Step 1 - type definitions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the first step you will define the data model of your application. In arveo, this is done by creating Java
+(or Kotlin) interfaces which contain getters and setters for the fields that will be available on each individual entity
+type. There is a <a href="https://maven.apache.org/guides/introduction/introduction-to-archetypes.html">maven archetype</a> to create
+a project that will contain those type definition interfaces and integration tests to try out the created types.
+More information about the archetype can be found <a href="slim-archetype.html">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>First, create a directory that will contain the project files for the demo application. Open a command line in this
+directory and perform the following operation. Replace <code>&lt;version&gt;</code> with the version of arveo you will be using.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=&lt;version&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
+interactive mode. It will query for several settings required for the generated project. Some of the settings have
+default values that can be used.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>class-name-prefix</strong>: A prefix that will be used for the generated classes. Use <em>Demo</em> for this guide.</p>
+</li>
+<li>
+<p><strong>groupId</strong>: The group-id of the artifact that will contain the types. Use <em>de.eitco.demo</em>.</p>
+</li>
+<li>
+<p><strong>artifactId</strong>: The artifact-id of the artifact that will contain the type. use <em>demo-types</em></p>
+</li>
+<li>
+<p><strong>version</strong>: The version of the artifact. You can use the default value.</p>
+</li>
+<li>
+<p><strong>package</strong>: The package that will contain the types. You can use the default value.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the last step, the archetype plugin shows the selected property values and asks for confirmation. After the settings
+are confirmed, the project will be generated in a folder called <em>demo-types</em>.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="slim-archetype.html">archetype documentation</a> contains a description of the generated project. For this guide,
+the files in <em>implementation/types</em> are the most important ones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>DemoModel.java:</strong> This file contains the type definition interface. The generated example is a simple document type
+with a name, a number and some system properties. The annotations used to define the type are documented
+<a href="#">here</a></p>
+</li>
+<li>
+<p><strong>DemoTypeRegistration.java:</strong> A spring component that automatically registers your type(s) in the arveo service.
+Only types that have been registered can be used in your application.</p>
+</li>
+<li>
+<p><strong>spring.factories:</strong> This file tells spring to autoconfigure the DemoRegistration component.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The archetype has generated integration tests for the generated type definition, too. You can find them in the directory
+<em>test/system-test</em>. The file <em>DemoClientIT.java</em> contains some tests that show how to perform basic CRUD operations on
+the generated document type.</p>
+</div>
+<div class="paragraph">
+<p>You will notice an additional class called <em>DemoModelId</em>. This class demonstrates how to create a typed ID for a
+specific model class. It is not required for the system to be able to use the <em>DemoModel</em> type. If you do not
+require typed IDs, you can remove the class.</p>
+</div>
+<div class="sect2">
+<h3 id="_running_the_tests">Running the tests</h3>
+<div class="paragraph">
+<p>The tests are run automatically in a full maven build.The system-test module is configured to automatically start a
+complete arveo system including all required services and a database.If you want to run the tests manually
+from the IDE, you can still use maven to start the arveo system.Open a command line in the system-test
+directory and run <code>mvn -Denv</code>.Maven will start the following processes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A PostreSQL database server</p>
+</li>
+<li>
+<p>An ActiveMQ message broker</p>
+</li>
+<li>
+<p>A SOLR server</p>
+</li>
+<li>
+<p>The service registry</p>
+</li>
+<li>
+<p>The configuration service</p>
+</li>
+<li>
+<p>The user management service</p>
+</li>
+<li>
+<p>The audit service</p>
+</li>
+<li>
+<p>The access control service</p>
+</li>
+<li>
+<p>The arveo service</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The services will be kept alive until you press enter in the command line.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The system set up by maven in the system test module is already configured to contain the type definitions that were
+defined in this project. To use those definitions in another system, you have to add the jar containing the definitions
+to the classpath of the arveo service instances. This can be done by copying the ja to a lib directory and
+adding the following command line option when starting the arveo service instances:
+<code>-Dloader.path=path/to/libs</code>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_overview_of_the_generated_project_2">Overview of the generated project</h3>
+<h3 id="_adapt_the_model">Adapt the model</h3>
 <div class="paragraph">
-<p>The project generated by the archetype will consist of four modules:</p>
+<p>Now you can adapt the generated type definition so that it fits the requirements for our project scenario. In this
+scenario, documents are organized in a two-level folder structure. For example, the project could contain a folder
+called "invoices" which again contains two folders named "inbound" and "outbound". Each document is contained in
+exactly one folder and belongs to exactly one project. The document type will contain the following meta data fields:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>documentation</code></p>
+<p><strong>projectName</strong>: The name of the project the documents belongs to</p>
 </li>
 <li>
-<p><code>implementation</code></p>
+<p><strong>type</strong>: The type of document, e.g. whether it is an invoice, a contract or something else</p>
 </li>
 <li>
-<p><code>packaging</code></p>
+<p><strong>structureLevel1</strong>: This field is used to represent the first level of the folder structure</p>
 </li>
 <li>
-<p><code>test</code></p>
+<p><strong>structureLevel2</strong>: This field is used to represent the second level of the folder structure</p>
+</li>
+<li>
+<p><strong>status</strong>: Represents the current status of the document</p>
+</li>
+<li>
+<p><strong>customerName</strong>: The name of the customer associated to the project</p>
+</li>
+<li>
+<p><strong>contactPerson</strong>: The contact person for the document</p>
+</li>
+<li>
+<p><strong>assignedTo</strong>: The employee currently assigned to work on the document</p>
+</li>
+<li>
+<p><strong>fileSystemCreationDate</strong>: The timestamp at which the file was created in the file system (not the time it was
+imported to arveo - see system fields)</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>In addition to these custom fields, the document will contain some system fields like content metadata (filename, size,
+mimetype&#8230;&#8203;) and versioning information like creation- and update-timestamps.
+The two metadata fields name and number that are already contained in DemoModel.java can be removed.</p>
 </div>
 <div class="sect3">
-<h4 id="_the_documentation_module">The documentation module</h4>
+<h4 id="_adding_getters_for_system_fields">Adding getters for system fields</h4>
 <div class="paragraph">
-<p>This module holds a frame for an asciidoc based documentation of your project.</p>
+<p>Let&#8217;s first add some getters for system fields. Those will provide access to system information that is generated
+automatically when an entity is created or updated. The generated DemoModel class already contains getters for the
+ID- and ACL- system properties. Add the following lines to DemoModel.java:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@SystemProperty</span>(SystemPropertyName.CONTENT)
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentInformation&gt; getContentInformation();
+
+<span class="annotation">@SystemProperty</span>(SystemPropertyName.VERSION_INFO)
+VersionInformation getVersionInformation();
+
+<span class="annotation">@SystemProperty</span>(SystemPropertyName.MODIFICATION_INFO)
+ModificationInformation getModificationInformation();</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_the_implementation_module">The implementation module</h4>
 <div class="paragraph">
-<p>This module contains the actual source code. It is separated into five submodules.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>common</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains classes that are available on the server side as well as the client side.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>generated</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains modules that are automatically generated.</p>
-</li>
-<li>
-<p>Normally developers will not add code in these modules.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>They are however relevant for building the project.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>The following submodules exist</p>
-<div class="ulist">
-<ul>
-<li>
-<p>serialization</p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains automatically generated serialization meta information.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>client</p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains a few submodules itself, holding client side applications for:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>a java spring based http client api,</p>
-</li>
-<li>
-<p>a java spring based embedded client api,</p>
-</li>
-<li>
-<p>a typescript http client api.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>jmeter-sampler</p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule generated jmeter samplers of the services api, usable in load tests.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>server</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains the server side implementation.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>types</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>this submodule contains the arveo based model. The generated interface named &lt;class-name-prefix&gt;Model describes an <a href="#Object types and definitions">arveo type definition</a> as will every interface you register in &lt;class-name-prefix&gt;TypeRegistration. The jar compiled by this module will be available on the server side and client side. Additionally, it needs to be in the class path of your arveo instance. For the system tests (se below) this is already taken care of.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
+<p>The JavaDoc for the SystemPropertyName enum constants contains information about each field. The data type for the
+contentInformation field is a map because each document can contain multiple content elements. For example, a document
+could contain a TIFF image and a PDF rendition of the TIFF.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_packaging_module">The packaging module</h4>
+<h4 id="_adding_getters_and_setters_for_custom_fields">Adding getters and setters for custom fields</h4>
 <div class="paragraph">
-<p>This module contains delivery artifacts to deliver the service to or with different runtimes. This includes:</p>
+<p>Now we can add the getters and setters for the custom metadata fields:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>a stand-alone jar</p>
-</li>
-<li>
-<p>a java web archive (war)</p>
-</li>
-<li>
-<p>a helm chart for deployment in a kubernetes cluster</p>
-</li>
-</ul>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Mandatory</span>
+<span class="predefined-type">String</span> getProjectName();
+<span class="type">void</span> setProjectName(<span class="predefined-type">String</span> projectName);
+
+<span class="annotation">@Mandatory</span>
+<span class="predefined-type">String</span> getStructureLevel1();
+<span class="type">void</span> setStructureLevel1(<span class="predefined-type">String</span> structureLevel1);
+
+<span class="annotation">@Optional</span>
+<span class="predefined-type">String</span> getStructureLevel2();
+<span class="type">void</span> setStructureLevel2(<span class="predefined-type">String</span> structureLevel2);
+
+<span class="annotation">@Optional</span>
+<span class="predefined-type">String</span> getCustomerName();
+<span class="type">void</span> setCustomerName(<span class="predefined-type">String</span> customerName);
+
+<span class="annotation">@Optional</span>
+<span class="predefined-type">String</span> getContactPerson();
+<span class="type">void</span> setContactPerson(<span class="predefined-type">String</span> contactPerson);
+
+<span class="annotation">@Mandatory</span>
+ZonedDateTime getFileSystemCreationDate();
+<span class="type">void</span> setFileSystemCreationDate(ZonedDateTime fileSystemCreationDate);
+
+<span class="annotation">@Optional</span>
+<span class="predefined-type">Long</span> getAssignedTo();
+<span class="type">void</span> setAssignedTo(<span class="predefined-type">Long</span> assignedTo);</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_the_test_module">The test module</h4>
 <div class="paragraph">
-<p>This module contains a system test module. When building this module maven will start a complete arveo system (containing all required services) with the newly generated service in the <code>pre-integration-test</code>-phase so that tests written here (like the generated example &lt;class-name-prefix&gt;ClientIT) may simply call the new service via the generated http-client (see above).</p>
+<p>The annotations <code>@Mandatory</code> and <code>@Optional</code> can be used to control which fields have to be set by the client and which
+can be left empty.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The annotations for the arveo type definitions always have to be added to the getters. You can find an
+overview of the supported data types <a href="#">here</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For the <em>type</em> field we want to limit the possible values that can be set. This can be done by defining an enumeration.
+Create the following enumeration type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">de.eitco.demo.types</span>;
+
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.Enumeration</span>;
+
+<span class="annotation">@Enumeration</span>
+<span class="directive">public</span> <span class="type">enum</span> DemoModelType {
+    INVOICE,
+    CONTRACT,
+    OTHER
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This enum class will be mapped to an enumeration type on the database. It needs to be registered in the type registration
+just like the DemoModel type. Adapt the class DemoTypeRegistration as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span>
+<span class="annotation">@Register</span>(DemoModel.class)
+<span class="annotation">@Register</span>(DemoModelType.class)
+<span class="annotation">@Register</span>(DemoModelStatus.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DemoTypeRegistration</span> <span class="directive">implements</span> TypeDefinitionRegistration {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We will do the same for the status field. Add and register the following enum class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Enumeration</span>
+<span class="directive">public</span> <span class="type">enum</span> DemoModelStatus {
+    IN_PROGRESS,
+    DONE
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Don&#8217;t forget to register it in the DemoTypeRegistration class.</p>
+</div>
+<div class="paragraph">
+<p>Now you can add the getters and setters for the two fields in the DemoModel class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Mandatory</span>
+DemoModelType getType();
+<span class="type">void</span> setType(DemoModelType type);
+
+<span class="annotation">@Optional</span>
+DemoModelStatus getStatus();
+<span class="type">void</span> setStatus(DemoModelStatus status);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your DemoModel class should now look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">de.eitco.demo.types</span>;
+
+<span class="keyword">import</span> <span class="include">de.eitco.commons.asdl.annotation.AsdlIgnore</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.commons.asdl.annotation.Model</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.commons.user.management.common.model.ModificationInformation</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.common.ContentInformation</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.common.VersionInformation</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.common.document.DocumentId</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.ObjectType</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.Type</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.constraint.Mandatory</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.constraint.Optional</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.system.SystemProperty</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.system.SystemPropertyName</span>;
+
+<span class="keyword">import</span> <span class="include">java.time.ZonedDateTime</span>;
+<span class="keyword">import</span> <span class="include">java.util.Map</span>;
+
+<span class="annotation">@Model</span>
+<span class="annotation">@Type</span>(ObjectType.DOCUMENT)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">DemoModel</span> {
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.ID)
+    DocumentId getDocumentId();
+
+    <span class="annotation">@AsdlIgnore</span>
+    <span class="keyword">default</span> DemoModelId id() {
+
+        <span class="keyword">return</span> DemoModelId.of(getDocumentId());
+    }
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.ACL_ID)
+    <span class="predefined-type">Long</span> getAclId();
+    <span class="type">void</span> setAclId(<span class="predefined-type">Long</span> aclId);
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.CONTENT)
+    <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentInformation&gt; getContentInformation();
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.VERSION_INFO)
+    VersionInformation getVersionInformation();
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.MODIFICATION_INFO)
+    ModificationInformation getModificationInformation();
+
+    <span class="annotation">@Mandatory</span>
+    <span class="predefined-type">String</span> getProjectName();
+    <span class="type">void</span> setProjectName(<span class="predefined-type">String</span> projectName);
+
+    <span class="annotation">@Mandatory</span>
+    <span class="predefined-type">String</span> getStructureLevel1();
+    <span class="type">void</span> setStructureLevel1(<span class="predefined-type">String</span> structureLevel1);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">String</span> getStructureLevel2();
+    <span class="type">void</span> setStructureLevel2(<span class="predefined-type">String</span> structureLevel2);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">String</span> getCustomerName();
+    <span class="type">void</span> setCustomerName(<span class="predefined-type">String</span> customerName);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">String</span> getContactPerson();
+    <span class="type">void</span> setContactPerson(<span class="predefined-type">String</span> contactPerson);
+
+    <span class="annotation">@Mandatory</span>
+    ZonedDateTime getFileSystemCreationDate();
+    <span class="type">void</span> setFileSystemCreationDate(ZonedDateTime fileSystemCreationDate);
+
+    <span class="annotation">@Mandatory</span>
+    DemoModelType getType();
+    <span class="type">void</span> setType(DemoModelType type);
+
+    <span class="annotation">@Optional</span>
+    DemoModelStatus getStatus();
+    <span class="type">void</span> setStatus(DemoModelStatus status);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">Long</span> getAssignedTo();
+    <span class="type">void</span> setAssignedTo(<span class="predefined-type">Long</span> assignedTo);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Before you can build and use the adapted type, you have to adapt the generated integration tests.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_2_command_line_tool">Step 2 - Command line tool</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the second step you will implement a simple command line application that uses the model defined in step 1. We will
+use the Spring Initializer to generate a maven project with the required dependencies for a Spring command line
+application.</p>
+</div>
+<div class="sect2">
+<h3 id="_generating_the_project">Generating the project</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to <a href="https://start.spring.io/" class="bare">https://start.spring.io/</a></p>
+</li>
+<li>
+<p>Under "Project", select "Maven Project"</p>
+</li>
+<li>
+<p>Under "Language", select "Java"</p>
+</li>
+<li>
+<p>Select Spring Boot version 2.5.8</p>
+</li>
+<li>
+<p>Define project metadata. For example, use Group = de.eitco.demo, Artifact = demo-tool, Name = demo-tool, Package name = de.eitco.demo.tool</p>
+</li>
+<li>
+<p>Select "Jar" Packaging</p>
+</li>
+<li>
+<p>Select Java version 11 or newer</p>
+</li>
+<li>
+<p>Add a dependency to "Picocli"</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/spring-initializer.png" alt="spring initializer">
+</div>
+</div>
+<div class="paragraph">
+<p>Click Generate and download the zip file containing the generated project. Unzip the file to a directory of your choice
+and open the project in your IDE. Delete the 'test' directory.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_adding_arveo_dependencies">Adding arveo dependencies</h3>
+<div class="paragraph">
+<p>Open the generated pom.xml file and add the following dependencies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>version of arveo<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;exclusions&gt;</span>
+        <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/exclusion&gt;</span>
+    <span class="tag">&lt;/exclusions&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span>
+<span class="tag">&lt;dependency&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client-non-web<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>2.0.6<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span>
+<span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.demo<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="tag">&lt;artifactId&gt;</span>demo-types-types<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This dependency contains a spring boot starter for the arveo SDK</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We have to exclude the OAuth2 client for web applications because the tool will be a console application</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This dependency contains the OAuth2 client for non-web applications</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The data model that was defined in step 1</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You have to set the version of arveo that was used in the project containing the data model.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, you have to define a dependency management for the EITCO Commons Spring Security library:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependencyManagement&gt;</span>
+    <span class="tag">&lt;dependencies&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
+            <span class="tag">&lt;version&gt;</span>4.0.0<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+    <span class="tag">&lt;/dependencies&gt;</span>
+<span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_working_on_the_generated_project">Working on the generated project</h3>
+<h3 id="_implementing_the_tool">Implementing the tool</h3>
 <div class="paragraph">
-<p>Most implementation will be done in the implementation\server module since this contains the server side code. You api and model will be defined in the implementation\common and implementation\types modules. The later will only be used for classes that are part of your arveo model and need to be in the classpath of arveo.</p>
+<p>The tool will use the picocli library to make it easy to write a command line application with features like usage help
+and simple parameter binding. You can read more about picocli <a href="https://picocli.info">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>When testing your code, the test\system-test module comes in handy. As mentioned above, it will start a complete arveo system so that your tests can simply use the generated http client api to test your functionality. However, you can use this to manually test and debug your service, too. In case you simply need to start up the environment, in the test\system-test directory call:</p>
+<p>Go to the de.eitco.demo.tool package and create a new class called "ArveoCommand". This will contain the business logic
+behind the commands available in the command line application. In picocli, those commands need to implement <em>Runnable</em>,
+so we have to implement this interface:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>mvn -Denv</pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Component</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="annotation">@CommandLine</span>.Command( <i class="conum" data-value="2"></i><b>(2)</b>
+    mixinStandardHelpOptions = <span class="predefined-constant">true</span>,
+    version = <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0-SNAPSHOT</span><span class="delimiter">&quot;</span></span>,
+    description = <span class="string"><span class="delimiter">&quot;</span><span class="content">arveo demo tool</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ArveoCommand</span> <span class="directive">implements</span> <span class="predefined-type">Runnable</span> {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> LOGGER = <span class="predefined-type">Logger</span>.getLogger(ArveoCommand.class); <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> run() {
+
+    }
+}</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines ArveoCommand as an injectable spring component</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Activate picocli features like usage help</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We will use the de.eitco.commons.lang.Logger to log exception messages</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>If you want to debug your service call</p>
+<p>To be able to access arveo, the command line tool will have to authenticate to
+the arveo service. We will use a simple username/password authentication, so the user must be able to enter
+credentials. With picocli, we can implement this with some annotated fields in ArveoCommand:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>mvn -Denv -Dservice.skip</pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-u</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--username</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>, interactive = <span class="predefined-constant">true</span>,
+    description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The username used to log on to arveo</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">private</span> <span class="predefined-type">String</span> username;
+
+<span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-p</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--password</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>, interactive = <span class="predefined-constant">true</span>,
+    description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The password used to log on to arveo</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">private</span> <span class="predefined-type">String</span> password;
+
+<span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-t</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--tenant</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>,
+    description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The tenant used to log on to arveo</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">private</span> <span class="predefined-type">String</span> tenant;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will start the environment except for your service. You can then start your service in debug mode from your IDE.</p>
+<p>Using the interactive=true option, the user will be prompted to enter username and password when the program is running.</p>
 </div>
 <div class="paragraph">
-<p>In both cases you can now start tests manually or call the service api directly to test your code.</p>
+<p>The ArveoCommand class will need to know the directory to import from and (optionally) a customer name. To be able to
+access the arveo API, we have to get an instance of the <em>TypeDefinitionServiceClient</em>. This can be done
+using dependency injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-d</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--directory</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>,
+    description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The base directory to import from</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">private</span> <span class="predefined-type">File</span> baseDirectory;
+
+<span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-c</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--customer</span><span class="delimiter">&quot;</span></span>}, description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The name of the customer</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">private</span> <span class="predefined-type">String</span> customer;
+
+<span class="annotation">@Autowired</span>
+<span class="directive">private</span> TypeDefinitionServiceClient typeDefinitionServiceClient;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now it is time to implement the import. Add the following methods to the ArveoCommand class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">void</span> importProject(<span class="predefined-type">File</span> root) {
+
+    <span class="predefined-type">String</span> projectName = root.getName();
+
+    <span class="predefined-type">Arrays</span>.stream(root.listFiles()).forEach(file -&gt; {
+
+        <span class="keyword">if</span> (file.isFile()) {
+            LOGGER.warn(() -&gt; <span class="string"><span class="delimiter">&quot;</span><span class="content">Ignored file </span><span class="delimiter">&quot;</span></span> + file);
+        } <span class="keyword">else</span> {
+            importLevel1(projectName, file);
+        }
+    });
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The importProject method will be used to import a project located in the provided root directory. The scenario does not
+support files located directly in the root of the project, so we will log a warning when we encounter such a file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">void</span> importLevel1(<span class="predefined-type">String</span> projectName, <span class="predefined-type">File</span> level1) {
+
+    <span class="predefined-type">String</span> level1Value = level1.getName();
+
+
+    <span class="predefined-type">Arrays</span>.stream(level1.listFiles()).forEach(file -&gt; {
+
+        <span class="keyword">if</span> (file.isDirectory()) {
+            importLevel2(projectName, level1Value, file);
+        } <span class="keyword">else</span> {
+            importFile(projectName, level1Value, <span class="predefined-constant">null</span>, file);
+        }
+    });
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The importLevel1 method will collect all files and directories located in the first level of the project structure.
+Files will be imported directly, directories will be passed to the next importer method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">void</span> importLevel2(<span class="predefined-type">String</span> projectName, <span class="predefined-type">String</span> level1Value, <span class="predefined-type">File</span> level2) {
+
+    <span class="predefined-type">String</span> level2Value = level2.getName();
+
+    <span class="predefined-type">Arrays</span>.stream(level2.listFiles()).forEach(file -&gt; {
+
+        <span class="keyword">if</span> (file.isDirectory()) {
+            LOGGER.warn(() -&gt; <span class="string"><span class="delimiter">&quot;</span><span class="content">Ignoring directory </span><span class="delimiter">&quot;</span></span> + file);
+        } <span class="keyword">else</span> {
+            importFile(projectName, level1Value, level2Value, file);
+        }
+    });
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method collects all files located in the second level of the project structure. We do not support deeper structures,
+so we log a warning when we encounter a directory below level 2.</p>
+</div>
+<div class="paragraph">
+<p>The method used to actually import data into arveo is shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">void</span> importFile(<span class="predefined-type">String</span> projectName, <span class="predefined-type">String</span> level1, <span class="predefined-type">String</span> level2, <span class="predefined-type">File</span> file) {
+
+    AuthenticationHelper.runAsUser(username, password, tenant, () -&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+
+        TypedDocumentServiceClient&lt;DemoModel&gt; serviceClient = <i class="conum" data-value="2"></i><b>(2)</b>
+            typeDefinitionServiceClient.getDocumentServiceClient().byClass(DemoModel.class);
+
+        DemoModel model = serviceClient.createTypeInstance(); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        model.setProjectName(projectName);
+        model.setStructureLevel1(level1);
+        model.setStructureLevel2(level2);
+        model.setCustomerName(customer);
+
+        model.setFileSystemCreationDate(ZonedDateTime.ofInstant(
+            Instant.ofEpochMilli(file.lastModified()),
+            ZoneId.systemDefault())
+        );
+
+        DemoModelType type = DemoModelType.OTHER; <i class="conum" data-value="4"></i><b>(4)</b>
+
+        <span class="predefined-type">String</span> fileName = file.getName();
+
+        <span class="keyword">if</span> (fileName.startsWith(DemoModelType.CONTRACT.name())) {
+            type = DemoModelType.CONTRACT;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (fileName.startsWith(DemoModelType.INVOICE.name())) {
+            type = DemoModelType.INVOICE;
+        }
+
+        model.setType(type);
+
+        <span class="keyword">try</span> (<span class="predefined-type">InputStream</span> stream = Files.newInputStream(file.toPath())) {
+
+            ContentUpload contentUpload = <span class="keyword">new</span> ContentUpload(fileName, stream);
+            <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentUpload&gt; contentElements = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, contentUpload); <i class="conum" data-value="5"></i><b>(5)</b>
+
+
+            serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(contentElements, model)); <i class="conum" data-value="6"></i><b>(6)</b>
+            <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Imported file </span><span class="delimiter">&quot;</span></span> + fileName + <span class="string"><span class="delimiter">&quot;</span><span class="content"> belonging to project </span><span class="delimiter">&quot;</span></span> + projectName);
+
+        } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
+            LOGGER.exception(e);
+        }
+    });
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>AuthenticationHelper</code> takes care of populating spring&#8217;s security context with the required credentials. The OAuth2
+client will use the provided username and password to retrieve an access token from the authentication service to
+authenticate the requests to the arveo service.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We use the injected TypeDefinitionServiceClient to get a service client for the type definition of our model class.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The service client can provide an instance of the interface defining the model. This instance is then populated
+with the metadata.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>We will use a simple file name prefix to determine the type of the document.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Here we define the content elements of the new document</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Finally we send the create request to the arveo service</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We can now implement the run() method of the ArveoCommand class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> <span class="type">void</span> run() {
+
+    <span class="keyword">if</span> (!baseDirectory.isDirectory()) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Base directory option must point to a directory.</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="predefined-type">Arrays</span>.stream(baseDirectory.listFiles(<span class="predefined-type">File</span>::isDirectory)).forEach(<span class="local-variable">this</span>::importProject); <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We use a filter to ignore files in the base directory as they obviously do not belong to any project</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now we have to adapt the application class that was generated by the spring initializer. Spring provides a
+<em>CommandLineRunner</em> interface for command line applications. Adapt the DemoToolApplication class as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@SpringBootApplication</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DemoToolApplication</span> <span class="directive">implements</span> CommandLineRunner {
+
+        <span class="annotation">@Autowired</span>
+        <span class="directive">private</span> ArveoCommand arveoCommand;
+
+        <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+                <span class="keyword">new</span> SpringApplicationBuilder(DemoToolApplication.class)
+                        .web(WebApplicationType.NONE) <i class="conum" data-value="1"></i><b>(1)</b>
+                        .run(args);
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> run(<span class="predefined-type">String</span>... args) <span class="directive">throws</span> <span class="exception">Exception</span> {
+
+                <span class="keyword">new</span> CommandLine(arveoCommand).execute(args); <i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="predefined-type">System</span>.exit(<span class="integer">1</span>);
+        }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Turns off spring boot web features that are not required in a command line application</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Initialize the picocli command line and execute our command with the options from the command line</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the last step, we have to set some configuration properties for our command line tool. Rename the generated
+application.properties file in src/main/resource to application.yaml and add the following settings:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">client</span>:
+        <span class="key">registration</span>:
+          <span class="key">cmn-user-service-client</span>: <i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key">provider</span>: <span class="string"><span class="content">user-service</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">test-client</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">my-secret</span><span class="delimiter">&quot;</span></span>
+            <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>
+            <span class="key">scope</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">arveo</span><span class="delimiter">&quot;</span></span>
+        <span class="key">provider</span>:
+          <span class="key">user-service</span>: <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="key">authorization-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/auth</span><span class="delimiter">&quot;</span></span>
+            <span class="key">token-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/token</span><span class="delimiter">&quot;</span></span>
+
+<span class="key">eureka</span>:
+  <span class="key">client</span>:
+    <span class="key">registerWithEureka</span>: <span class="string"><span class="content">false </span></span><i class="conum" data-value="3"></i><b>(3)</b>
+
+<span class="key">logging</span>: <i class="conum" data-value="4"></i><b>(4)</b>
+  <span class="key">file</span>:
+    <span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">demo-tool.log</span><span class="delimiter">&quot;</span></span>
+  <span class="key">level</span>:
+    <span class="key">root</span>: <span class="string"><span class="content">ERROR</span></span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures an OAuth2 client that uses the resource owner password grant type. Client-id and secret are configured
+in the test system provided by the system test module of the project created in step 1.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Tells the OAuth2 client where to get a token from</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The command line tool should not register itself in the service registry</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Log only errors to a file</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_building_and_running_the_tool">Building and running the tool</h3>
+<div class="paragraph">
+<p>Now we can build and run the command line tool. You can either use the IDE or run <code>mvn clean install</code> in a command line
+for the project containing the demo tool. After the build has finished, you have to start the test system. Open a
+command line in the system-test module of the type definition project and execute the command <code>mvn -Denv</code>
+(see <a href="#_running_the_tests">Running the tests</a>). Now we can use another command line in the target directory of the command line tool
+project to run the tool. Running <code>java -jar .\demo-tool-0.0.1-SNAPSHOT.jar</code> prints out usage help for the tool:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&gt; java -jar .\demo-tool-0.0.1-SNAPSHOT.jar
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.8)
+
+Missing required options: '--username', '--password', '--directory=&lt;baseDirectory&gt;'
+Usage: &lt;main class&gt; [-hV] -p -u [-c=&lt;customer&gt;] -d=&lt;baseDirectory&gt; [-t=&lt;tenant&gt;]
+arveo demo tool
+  -c, --customer=&lt;customer&gt;
+                          The name of the customer
+  -d, --directory=&lt;baseDirectory&gt;
+                          The base directory to import from
+  -h, --help              Show this help message and exit.
+  -p, --password          The password used to log on to arveo
+  -t, --tenant=&lt;tenant&gt;   The tenant used to log on to arveo
+  -u, --username          The username used to log on to arveo
+  -V, --version           Print version information and exit.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The test system already contains a user that can be used for testing. The user&#8217;s credentials are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>username:</strong> ecr-user</p>
+</li>
+<li>
+<p><strong>password:</strong> password</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following example shows how to use the tool to import projects from a folder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&gt; java -jar .\demo-tool-0.0.1-SNAPSHOT.jar -p -u -t=integrationtest -c=Customer1 "-d=C:\test-data\"
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.8)
+
+Enter value for --password (The password used to log on to arveo):
+Enter value for --username (The username used to log on to arveo):
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by de.eitco.commons.reflection.MethodLookup to constructor java.lang.invoke.MethodHandles$Lookup(java.lang.Class,int)
+WARNING: Please consider reporting this to the maintainers of de.eitco.commons.reflection.MethodLookup
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+Imported file INVOICE_invoice1.txt belonging to project TestProject1
+Imported file INVOICE_invoice2.txt belonging to project TestProject1
+Imported file customer meeting 1.txt belonging to project TestProject1
+Imported file standup 1.txt belonging to project TestProject1
+Imported file standup 2.txt belonging to project TestProject1
+Imported file standup 3.txt belonging to project TestProject1
+Imported file uncategorized meeting 1.txt belonging to project TestProject1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The warning message can be ignored. The reflective access operation will be replaced in a future version.</p>
+</div>
+<div class="paragraph">
+<p>Finally, here is a complete listing of the ArveoCommand class for copy&amp;paste:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">de.eitco.demo.tool</span>;
+
+<span class="keyword">import</span> <span class="include">de.eitco.commons.lang.Logger</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.commons.spring.security.AuthenticationHelper</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.demo.types.DemoModel</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.demo.types.DemoModelType</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.common.ContentUpload</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.sdk.TypeDefinitionServiceClient</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.sdk.document.TypedDocumentInput</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.sdk.document.TypedDocumentServiceClient</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.beans.factory.annotation.Autowired</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.stereotype.Component</span>;
+<span class="keyword">import</span> <span class="include">picocli.CommandLine</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.File</span>;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+<span class="keyword">import</span> <span class="include">java.io.InputStream</span>;
+<span class="keyword">import</span> <span class="include">java.nio.file.Files</span>;
+<span class="keyword">import</span> <span class="include">java.time.Instant</span>;
+<span class="keyword">import</span> <span class="include">java.time.ZoneId</span>;
+<span class="keyword">import</span> <span class="include">java.time.ZonedDateTime</span>;
+<span class="keyword">import</span> <span class="include">java.util.Arrays</span>;
+<span class="keyword">import</span> <span class="include">java.util.Map</span>;
+
+<span class="annotation">@Component</span>
+<span class="annotation">@CommandLine</span>.Command(
+    mixinStandardHelpOptions = <span class="predefined-constant">true</span>,
+    version = <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0-SNAPSHOT</span><span class="delimiter">&quot;</span></span>,
+    description = <span class="string"><span class="delimiter">&quot;</span><span class="content">arveo demo tool</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ArveoCommand</span> <span class="directive">implements</span> <span class="predefined-type">Runnable</span> {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> LOGGER = <span class="predefined-type">Logger</span>.getLogger(ArveoCommand.class);
+
+    <span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-u</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--username</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>, interactive = <span class="predefined-constant">true</span>,
+        description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The username used to log on to arveo</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="predefined-type">String</span> username;
+
+    <span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-p</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--password</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>, interactive = <span class="predefined-constant">true</span>,
+        description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The password used to log on to arveo</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="predefined-type">String</span> password;
+
+    <span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-t</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--tenant</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>,
+        description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The tenant used to log on to arveo</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="predefined-type">String</span> tenant;
+
+    <span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-d</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--directory</span><span class="delimiter">&quot;</span></span>}, required = <span class="predefined-constant">true</span>,
+        description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The base directory to import from</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="predefined-type">File</span> baseDirectory;
+
+    <span class="annotation">@CommandLine</span>.Option(names = {<span class="string"><span class="delimiter">&quot;</span><span class="content">-c</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">--customer</span><span class="delimiter">&quot;</span></span>}, description = <span class="string"><span class="delimiter">&quot;</span><span class="content">The name of the customer</span><span class="delimiter">&quot;</span></span>)
+    <span class="directive">private</span> <span class="predefined-type">String</span> customer;
+
+    <span class="annotation">@Autowired</span>
+    <span class="directive">private</span> TypeDefinitionServiceClient typeDefinitionServiceClient;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> run() {
+
+        <span class="keyword">if</span> (!baseDirectory.isDirectory()) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Base directory option must point to a directory.</span><span class="delimiter">&quot;</span></span>);
+        }
+
+        <span class="predefined-type">Arrays</span>.stream(baseDirectory.listFiles(<span class="predefined-type">File</span>::isDirectory)).forEach(<span class="local-variable">this</span>::importProject);
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> importProject(<span class="predefined-type">File</span> root) {
+
+        <span class="predefined-type">String</span> projectName = root.getName();
+
+        <span class="predefined-type">Arrays</span>.stream(root.listFiles()).forEach(file -&gt; {
+
+            <span class="keyword">if</span> (file.isFile()) {
+                LOGGER.warn(() -&gt; <span class="string"><span class="delimiter">&quot;</span><span class="content">Ignored file </span><span class="delimiter">&quot;</span></span> + file);
+            } <span class="keyword">else</span> {
+                importLevel1(projectName, file);
+            }
+        });
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> importLevel1(<span class="predefined-type">String</span> projectName, <span class="predefined-type">File</span> level1) {
+
+        <span class="predefined-type">String</span> level1Value = level1.getName();
+
+
+        <span class="predefined-type">Arrays</span>.stream(level1.listFiles()).forEach(file -&gt; {
+
+            <span class="keyword">if</span> (file.isDirectory()) {
+                importLevel2(projectName, level1Value, file);
+            } <span class="keyword">else</span> {
+                importFile(projectName, level1Value, <span class="predefined-constant">null</span>, file);
+            }
+        });
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> importLevel2(<span class="predefined-type">String</span> projectName, <span class="predefined-type">String</span> level1Value, <span class="predefined-type">File</span> level2) {
+
+        <span class="predefined-type">String</span> level2Value = level2.getName();
+
+        <span class="predefined-type">Arrays</span>.stream(level2.listFiles()).forEach(file -&gt; {
+
+            <span class="keyword">if</span> (file.isDirectory()) {
+                LOGGER.warn(() -&gt; <span class="string"><span class="delimiter">&quot;</span><span class="content">Ignoring directory </span><span class="delimiter">&quot;</span></span> + file);
+            } <span class="keyword">else</span> {
+                importFile(projectName, level1Value, level2Value, file);
+            }
+        });
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> importFile(<span class="predefined-type">String</span> projectName, <span class="predefined-type">String</span> level1, <span class="predefined-type">String</span> level2, <span class="predefined-type">File</span> file) {
+
+        AuthenticationHelper.runAsUser(username, password, tenant, () -&gt; {
+
+            TypedDocumentServiceClient&lt;DemoModel&gt; serviceClient =
+                typeDefinitionServiceClient.getDocumentServiceClient().byClass(DemoModel.class);
+
+            DemoModel model = serviceClient.createTypeInstance();
+
+            model.setProjectName(projectName);
+            model.setStructureLevel1(level1);
+            model.setStructureLevel2(level2);
+            model.setCustomerName(customer);
+
+            model.setFileSystemCreationDate(ZonedDateTime.ofInstant(
+                Instant.ofEpochMilli(file.lastModified()),
+                ZoneId.systemDefault())
+            );
+
+            DemoModelType type = DemoModelType.OTHER;
+
+            <span class="predefined-type">String</span> fileName = file.getName();
+
+            <span class="keyword">if</span> (fileName.startsWith(DemoModelType.CONTRACT.name())) {
+                type = DemoModelType.CONTRACT;
+            } <span class="keyword">else</span> <span class="keyword">if</span> (fileName.startsWith(DemoModelType.INVOICE.name())) {
+                type = DemoModelType.INVOICE;
+            }
+
+            model.setType(type);
+
+            <span class="keyword">try</span> (<span class="predefined-type">InputStream</span> stream = Files.newInputStream(file.toPath())) {
+
+                ContentUpload contentUpload = <span class="keyword">new</span> ContentUpload(fileName, stream);
+                <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentUpload&gt; contentElements = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, contentUpload);
+
+
+                serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(contentElements, model));
+                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Imported file </span><span class="delimiter">&quot;</span></span> + fileName + <span class="string"><span class="delimiter">&quot;</span><span class="content"> belonging to project </span><span class="delimiter">&quot;</span></span> + projectName);
+
+            } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
+                LOGGER.exception(e);
+            }
+        });
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the third step you will perform a specific task using arveo.</p>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_standardized_project_structure">Creating a standardized project structure</h3>
+<div class="paragraph">
+<p>Your project structure must have a certain structure to be successfully imported and/or archived in arveo.</p>
+</div>
+<div class="listingblock">
+<div class="title">Required project structure</div>
+<div class="content">
+<pre>skinparam Legend {
+	BackgroundColor transparent
+	BorderColor transparent
+}
+
+legend
+Projects
+|_ Project 1
+  |_ Element 1.1
+  |_ Element 1.2
+|_ Project 2
+  |_ Element 2.1
+end legend</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example of implementing this structure:</p>
+</div>
+<div class="listingblock">
+<div class="title">Examplary project structure</div>
+<div class="content">
+<pre>skinparam Legend {
+	BackgroundColor transparent
+	BorderColor transparent
+}
+
+legend
+Projects
+|_ Webclient
+  |_ Orders
+  |_ Invoices
+|_ Server_maintenance
+  |_ Invoices
+  |_ Email_correspondence
+end legend</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the last step of the tutorial you executed the Maven command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&gt; java -jar .\demo-tool-0.0.1-SNAPSHOT.jar -p -u -t=integrationtest -c=Customer1 "-d=C:\test-data\"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can replace the last element with your actual project folder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&gt; java -jar .\demo-tool-0.0.1-SNAPSHOT.jar -p -u -t=integrationtest -c=MedicalInsuranceAG "-d=C:\Projects"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After this command has been executed, you will see the report about imported files and folders:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Enter value for --password (The password used to log on to arveo):
+Enter value for --username (The username used to log on to arveo):
+...
+Imported file Orders - Received_invoices.png belonging to project Webclient
+Imported file Incoming_invoice.png belonging to project Webclient
+...</pre>
+</div>
 </div>
 </div>
 </div>
@@ -8793,6 +9885,11 @@ Can only be used on relation types that support relations to or from versions.</
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unlimited unicode text. Limit the length with <em>@Length</em> annotation</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Integer or int</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32 bit integer value, Integer = null is allowed</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">Long or long</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">64 bit long value, Long = null is allowed</p></td>
@@ -12904,7 +14001,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-02-15 16:29:26 UTC
+Last updated 2022-02-15 17:24:48 UTC
 </div>
 </div>
 <style>
