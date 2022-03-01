@@ -111,30 +111,13 @@ a, a:hover, a:focus {
 <li><a href="#_installation_2">Installation</a></li>
 </ul>
 </li>
-<li><a href="#_getting_started"><strong>Getting Started</strong></a></li>
-<li><a href="#_getting_started_2">Getting started</a>
+<li><a href="#_getting_started"><strong>Getting Started</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_prerequisites">Prerequisites</a></li>
 <li><a href="#_maven_configuration">Maven configuration</a></li>
-</ul>
-</li>
-<li><a href="#_step_1_type_definitions">Step 1 - type definitions</a>
-<ul class="sectlevel2">
-<li><a href="#_running_the_tests">Running the tests</a></li>
-<li><a href="#_adapt_the_model">Adapt the model</a></li>
-</ul>
-</li>
-<li><a href="#_step_2_command_line_tool">Step 2 - Command line tool</a>
-<ul class="sectlevel2">
-<li><a href="#_generating_the_project">Generating the project</a></li>
-<li><a href="#_adding_arveo_dependencies">Adding arveo dependencies</a></li>
-<li><a href="#_implementing_the_tool">Implementing the tool</a></li>
-<li><a href="#_building_and_running_the_tool">Building and running the tool</a></li>
-</ul>
-</li>
-<li><a href="#_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</a>
-<ul class="sectlevel2">
-<li><a href="#_creating_a_standardized_project_structure">Creating a standardized project structure</a></li>
+<li><a href="#_step_1_type_definitions">Step 1 - type definitions</a></li>
+<li><a href="#_step_2_command_line_tool">Step 2 - Command line tool</a></li>
+<li><a href="#_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</a></li>
 </ul>
 </li>
 <li><a href="#_administration"><strong>Administration</strong></a>
@@ -165,7 +148,7 @@ a, a:hover, a:focus {
 <li><a href="#_attribute_based_access_control_abac">Attribute Based Access Control (ABAC)</a>
 <ul class="sectlevel2">
 <li><a href="#_parameters">Parameters</a></li>
-<li><a href="#_examples">Examples</a></li>
+<li><a href="#_examples_2">Examples</a></li>
 <li><a href="#_interface_inheritance">Interface Inheritance</a></li>
 <li><a href="#_complex_scenario_hospital">Complex Scenario: Hospital</a></li>
 <li><a href="#_revision_history_and_attribute_based_access_control">Revision History and Attribute Based Access Control</a></li>
@@ -2539,12 +2522,6 @@ The script is controlled by cron and is always started automatically at 10 p.m.<
 <div class="sect1">
 <h2 id="_getting_started"><strong>Getting Started</strong></h2>
 <div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_getting_started_2">Getting started</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>In this guide you will create a simple application that implements a basic project file scenario. It will consist of
 a document type, that represents documents used in a project.</p>
@@ -2764,11 +2741,8 @@ unencrypted repository connections.</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_step_1_type_definitions">Step 1 - type definitions</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_step_1_type_definitions">Step 1 - type definitions</h3>
 <div class="paragraph">
 <p>In the first step you will define the data model of your application. In arveo, this is done by creating Java
 (or Kotlin) interfaces which contain getters and setters for the fields that will be available on each individual entity
@@ -2843,8 +2817,8 @@ the generated document type.</p>
 specific model class. It is not required for the system to be able to use the <em>DemoModel</em> type. If you do not
 require typed IDs, you can remove the class.</p>
 </div>
-<div class="sect2">
-<h3 id="_running_the_tests">Running the tests</h3>
+<div class="sect3">
+<h4 id="_running_the_tests">Running the tests</h4>
 <div class="paragraph">
 <p>The tests are run automatically in a full maven build.The system-test module is configured to automatically start a
 complete arveo system including all required services and a database.If you want to run the tests manually
@@ -2902,8 +2876,8 @@ adding the following command line option when starting the arveo service instanc
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_adapt_the_model">Adapt the model</h3>
+<div class="sect3">
+<h4 id="_adapt_the_model">Adapt the model</h4>
 <div class="paragraph">
 <p>Now you can adapt the generated type definition so that it fits the requirements for our project scenario. In this
 scenario, documents are organized in a two-level folder structure. For example, the project could contain a folder
@@ -2947,8 +2921,8 @@ imported to arveo - see system fields)</p>
 mimetype&#8230;&#8203;) and versioning information like creation- and update-timestamps.
 The two metadata fields name and number that are already contained in DemoModel.java can be removed.</p>
 </div>
-<div class="sect3">
-<h4 id="_adding_getters_for_system_fields">Adding getters for system fields</h4>
+<div class="sect4">
+<h5 id="_adding_getters_for_system_fields">Adding getters for system fields</h5>
 <div class="paragraph">
 <p>Let&#8217;s first add some getters for system fields. Those will provide access to system information that is generated
 automatically when an entity is created or updated. The generated DemoModel class already contains getters for the
@@ -2972,8 +2946,8 @@ contentInformation field is a map because each document can contain multiple con
 could contain a TIFF image and a PDF rendition of the TIFF.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_adding_getters_and_setters_for_custom_fields">Adding getters and setters for custom fields</h4>
+<div class="sect4">
+<h5 id="_adding_getters_and_setters_for_custom_fields">Adding getters and setters for custom fields</h5>
 <div class="paragraph">
 <p>Now we can add the getters and setters for the custom metadata fields:</p>
 </div>
@@ -3179,17 +3153,15 @@ DemoModelStatus getStatus();
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_step_2_command_line_tool">Step 2 - Command line tool</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_step_2_command_line_tool">Step 2 - Command line tool</h3>
 <div class="paragraph">
 <p>In the second step you will implement a simple command line application that uses the model defined in step 1. We will
 use the Spring Initializer to generate a maven project with the required dependencies for a Spring command line
 application.</p>
 </div>
-<div class="sect2">
-<h3 id="_generating_the_project">Generating the project</h3>
+<div class="sect3">
+<h4 id="_generating_the_project">Generating the project</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3228,8 +3200,8 @@ application.</p>
 and open the project in your IDE. Delete the 'test' directory.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_adding_arveo_dependencies">Adding arveo dependencies</h3>
+<div class="sect3">
+<h4 id="_adding_arveo_dependencies">Adding arveo dependencies</h4>
 <div class="paragraph">
 <p>Open the generated pom.xml file and add the following dependencies:</p>
 </div>
@@ -3298,8 +3270,8 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_implementing_the_tool">Implementing the tool</h3>
+<div class="sect3">
+<h4 id="_implementing_the_tool">Implementing the tool</h4>
 <div class="paragraph">
 <p>The tool will use the picocli library to make it easy to write a command line application with features like usage help
 and simple parameter binding. You can read more about picocli <a href="https://picocli.info">here</a>.</p>
@@ -3652,8 +3624,8 @@ in the test system provided by the system test module of the project created in 
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_building_and_running_the_tool">Building and running the tool</h3>
+<div class="sect3">
+<h4 id="_building_and_running_the_tool">Building and running the tool</h4>
 <div class="paragraph">
 <p>Now we can build and run the command line tool. You can either use the IDE or run <code>mvn clean install</code> in a command line
 for the project containing the demo tool. After the build has finished, you have to start the test system. Open a
@@ -3897,15 +3869,13 @@ Imported file uncategorized meeting 1.txt belonging to project TestProject1</pre
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</h3>
 <div class="paragraph">
 <p>In the third step you will perform a specific task using arveo.</p>
 </div>
-<div class="sect2">
-<h3 id="_creating_a_standardized_project_structure">Creating a standardized project structure</h3>
+<div class="sect3">
+<h4 id="_creating_a_standardized_project_structure">Creating a standardized project structure</h4>
 <div class="paragraph">
 <p>Your project structure must have a certain structure to be successfully imported and/or archived in arveo.</p>
 </div>
@@ -3976,6 +3946,7 @@ Enter value for --username (The username used to log on to arveo):
 Imported file Orders - Received_invoices.png belonging to project Webclient
 Imported file Incoming_invoice.png belonging to project Webclient
 ...</pre>
+</div>
 </div>
 </div>
 </div>
@@ -4107,79 +4078,47 @@ entities of different tenants</p></td>
 <div class="sect3">
 <h4 id="_content_and_type_definitions">Content and type definitions</h4>
 <div class="paragraph">
-<p>Only Documents can contain content elements.A Document in the repository can contain several content elements.For example, a document could contain a content element with the original content (like a TIFF image or a Word document) and a PDF rendition.Each content element has a <em>contentName</em> and some more properties like the media type.The <em>contentName</em> is a label that uniquely identifies a single content element contained in a Document.For example, a Document might contain two content elements that are identified by the <em>contentName</em>'s 'content' and 'rendition'.</p>
+<p>Only Documents can contain content elements. A Document in the repository can contain several content elements.
+For example, a document could contain a content element with the original content (like a TIFF image or a Word document)
+and a PDF rendition. Each content element has a <em>contentName</em> and some more properties like the media type.
+The <em>contentName</em> is a label that uniquely identifies a single content element contained in a Document.
+For example, a Document might contain two content elements that are identified by the contentNames 'content' and
+'rendition'.</p>
 </div>
 <div class="paragraph">
-<p>The <em>contentName</em>'s are not only relevant for uniquely identifying a content element contained in a document, but serve as reference for further customization of the repository.The repository does accept configuration options that are directly related to <em>contentName</em>'s and the Document type definitions can define restrictions regarding the allowed <em>contentName</em>'s.</p>
+<p>The contentNames are not only relevant for uniquely identifying a content element contained in a document, but serve
+as reference for further customization of the repository. The repository does accept configuration options that are
+directly related to contentNames and the Document type definitions can define restrictions regarding the
+allowed contentNames.</p>
 </div>
 <div class="paragraph">
-<p>Type definitions can define which <em>contentName</em>'s can be contained in the entities stored in the
-definition.For example, there might be a type definition that only accepts the 'rendition' content element but not
-the other ones.</p>
-</div>
-<div class="paragraph">
-<p>The configured content definitions must refer to <em>contentName</em>'s explicitly if specific settings need to be applied.
-In addition to content definitions referring to specific <em>contentName</em>'s, a default content definition can be configured.
-If the default content definition is configured, documents can contain content elements with arbitrary names, and it is not required to list the complete set of <em>contentName</em>'s in the repository configuration.</p>
+<p>Type definitions can define which contentNames can be contained in the entities stored in the
+definition. For example, there might be a type definition that only accepts the 'rendition' content element but no
+other ones.</p>
 </div>
 <div class="paragraph">
 <p>Each content element is stored in a storage profile, which defines the place where the actual content will
-be stored.The media type configuration parameter can be used to define what kind of content
-a content element can contain.When the media type is set to <code>application/octet-stream</code>, any kind of content can be used.
-The supported content elements are configured as shown below.If no specifications have been made for a <em>contentName</em>,
-the settings named under <em>default-definition</em> apply.</p>
-</div>
-<div class="listingblock">
-<div class="title">ecr-service.yaml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">content</span>:
-  <span class="key">default-definition</span>:
-    <span class="key">mediaType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/octet-stream</span><span class="delimiter">&quot;</span></span>
-    <span class="key">storageProfile</span>: <span class="string"><span class="content">testProfile</span></span>
-  <span class="key">definitions</span>:
-    <span class="key">content</span>:
-      <span class="key">mediaType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/octet-stream</span><span class="delimiter">&quot;</span></span>
-      <span class="key">storageProfile</span>: <span class="string"><span class="content">testProfile</span></span>
-    <span class="key">rendition</span>:
-      <span class="key">mediaType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/octet-stream</span><span class="delimiter">&quot;</span></span>
-      <span class="key">storageProfile</span>: <span class="string"><span class="content">testProfile</span></span>
-    <span class="key">LARGE_CONTENT</span>:
-      <span class="key">mediaType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/octet-stream</span><span class="delimiter">&quot;</span></span>
-      <span class="key">storageProfile</span>: <span class="string"><span class="content">testProfile</span></span>
-    <span class="key">s3stuff</span>:
-      <span class="key">mediaType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/octet-stream</span><span class="delimiter">&quot;</span></span>
-      <span class="key">storageProfile</span>: <span class="string"><span class="content">s3Profile</span></span>
-    <span class="key">rollback-test</span>:
-      <span class="key">mediaType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/octet-stream</span><span class="delimiter">&quot;</span></span>
-      <span class="key">storageProfile</span>: <span class="string"><span class="content">rollbackProfile</span></span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this example, content elements named 'content' and 'rendition' and the default definition are configured.
-If instead of "application/octet-stream" the mime type is defined as "application/pdf", then only the content elements of
-type pdf could be saved there.</p>
+be stored. The <em>contentType</em>  parameter can be used to define what kind of content
+a content element can contain. When the media type is set to <code>application/octet-stream</code>, any kind of content can be used.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_types_of_content_elements">Types of content elements</h4>
 <div class="paragraph">
-<p>It is specified in the type definition, which content elements this type definition may have.Objects of type <em>Document</em>
-may have several content elements.</p>
+<p>It is specified in the type definition, which content elements this type definition may have.</p>
 </div>
 <div class="paragraph">
-<p>A content element that uses the default content-definition must be named <code>'default'</code>. Usually,
-the content elements of the entities are stored in a JSON field which contains the storage-ID and additional metadata
-like size, media type and a hash. If required, a content element can also be stored in a separate field. The separate
-field will contain only the storage-ID but no additional metadata. A type definition that uses a separate field for
-a content element using the default definition cannot store content elements with arbitrary names but only content
-elements named <code>'default'</code>.Additional metadata for content elements using separate fields have to be handled by the
-client application, for example by storing them in a custom metadata attribute.</p>
+<p>Usually, the content elements of the entities are stored in a JSON field in the database which contains the storage-ID
+and additional metadata like size, media type and a hash. The actual content data is not stored in the JSON field.
+If required, a content element can also be stored in a separate field of type text. The separate field will contain only the
+storage-ID but no additional metadata. Additional metadata for content elements using separate fields have to be
+handled by the client application, for example by storing them in a custom metadata attribute.</p>
 </div>
 <div class="paragraph">
-<p>The following example is an object of type <em>Document</em>, for which two content elements are defined: "content" and "LARGE_CONTENT".
-The names of the content elements are defined in the configuration file of <em>arveo</em>.In this example,
-"separateField = true" means a separate column in the database, otherwise it is written in the corresponding json field
-of the database.The name of a separate column in the database is derived from the name of the content element.</p>
+<p>The following example is an object of type <em>Document</em>, for which two content elements are defined: "content" and
+"LARGE_CONTENT". In this example, "separateField = true" means a separate column in the database, otherwise it is
+written in the corresponding json field of the database. The name of a separate column in the database is derived
+from the name of the content element.</p>
 </div>
 <div class="listingblock">
 <div class="title">Example of a Document with two content elements</div>
@@ -4201,13 +4140,71 @@ of the database.The name of a separate column in the database is derived from th
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Using the <code>contentType</code> attribute of the <code>@ContentElement</code> annotation one can define the required content type for a
+content element. The content type <em>application/octet-stream</em> is used as a wildcard type for any type of content.
+For example, if the value of the contentType attribute is set to <em>application/pdf</em>, only PDF files can be stored in the
+content element.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_wildcard_content_element">The wildcard content element</h4>
+<div class="paragraph">
+<p>If a type definition of type DOCUMENT does not contain any <code>@ContentElement</code> annotations, the server will automatically
+assign a content element with the name <code>&#42;</code> to it. This is called the wildcard content element, and it allows storing any
+number of content elements with arbitrary names. The same behavior can be achieved by adding a <code>@ContentElement</code> annotation
+that uses the default value (<code>&#42;</code>) for it&#8217;s name attribute. It is possible to add the wildcard content element to
+a type definition that contains other <code>@ContentElement</code> annotations with a specific name.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_contentelement_annotation">The ContentElement annotation</h4>
+<div class="paragraph">
+<p>The following Table contains an Overview of the available attributes of the <code>@ContentElement</code> annotation.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Attributes of the ContentElement annotation</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#42;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">profile</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage profile used to store the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contentType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">application/octet-stream</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of content supported by the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">separateField</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to store only the content ID and no additional metadata in a separate database field</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_storage_profiles">Storage profiles</h4>
 <div class="paragraph">
-<p>Storage profiles are bound to <em>contentName</em>. The StorageProfile defines on which storage the content elements are saved.
-The <em>arveo</em> uses different storage profiles that define how and where to store binary data. Access to the storage
-backends (like filesystem or S3) is handled by storage plugins.</p>
+<p>A StorageProfile defines on which storage the content elements are saved. Access to the storage backends (like
+filesystem or S3) is handled by storage plugins.</p>
 </div>
 <div class="paragraph">
 <p>A StoragePlugin is defined in the StorageProfile, which is used to access the connected storage.
@@ -4217,57 +4214,224 @@ data, URls, &#8230;&#8203;) for the plugin.</p>
 <div class="listingblock">
 <div class="title">StorageProfile Definition</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">storage</span>:
-  <span class="key">profiles</span>:
-    <span class="key">version-attributes-profile</span>: <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.FileSystemPlugin </span></span><i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="key">pluginSettings</span>:
-        <span class="key">storagePath</span>: <span class="string"><span class="content">${project.build.directory}/attribute-storage</span></span>
-    <span class="key">testProfile</span>: <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.FileSystemPlugin </span></span><i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="key">pluginSettings</span>:
-        <span class="key">storagePath</span>: <span class="string"><span class="content">${project.build.directory}/storage</span></span>
-    <span class="key">s3Profile</span>: <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.S3Plugin </span></span><i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="key">pluginSettings</span>:
-        <span class="key">pathStyleAccessEnabled</span>: <span class="string"><span class="content">true</span></span>
-        <span class="key">serviceEndpoint</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:49999</span><span class="delimiter">&quot;</span></span>
-        <span class="key">region</span>: <span class="string"><span class="content">us-west-2</span></span>
-        <span class="key">accessKey</span>: <span class="string"><span class="content">myaccesskey</span></span>
-        <span class="key">secretAccessKey</span>: <span class="string"><span class="content">mysecretaccesskey</span></span>
-        <span class="key">bucket</span>: <span class="string"><span class="content">testbucket </span></span><i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="key">rollbackProfile</span>: <i class="conum" data-value="1"></i><b>(1)</b>
-      <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.FileSystemPlugin </span></span><i class="conum" data-value="2"></i><b>(2)</b>
-      <span class="key">pluginSettings</span>:
-        <span class="key">storagePath</span>: <span class="string"><span class="content">${project.build.directory}/storage/rollback-test</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">storage</span>:
+      <span class="key">profiles</span>:
+        <span class="key">fileSystemProfile</span>: <i class="conum" data-value="1"></i><b>(1)</b>
+          <span class="key">defaultProfile</span>: <span class="string"><span class="content">true </span></span><i class="conum" data-value="4"></i><b>(4)</b>
+          <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.FileSystemPlugin </span></span><i class="conum" data-value="2"></i><b>(2)</b>
+          <span class="key">pluginSettings</span>: <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="key">storagePath</span>: <span class="string"><span class="content">/storage</span></span>
+        <span class="key">s3Profile</span>: <i class="conum" data-value="1"></i><b>(1)</b>
+          <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.S3Plugin </span></span><i class="conum" data-value="2"></i><b>(2)</b>
+          <span class="key">pluginSettings</span>: <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="key">pathStyleAccessEnabled</span>: <span class="string"><span class="content">true</span></span>
+            <span class="key">serviceEndpoint</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:49999</span><span class="delimiter">&quot;</span></span>
+            <span class="key">region</span>: <span class="string"><span class="content">us-west-2</span></span>
+            <span class="key">accessKey</span>: <span class="string"><span class="content">myaccesskey</span></span>
+            <span class="key">secretAccessKey</span>: <span class="string"><span class="content">mysecretaccesskey</span></span>
+            <span class="key">bucket</span>: <span class="string"><span class="content">testbucket</span></span></code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>profile name;</p>
-</li>
-<li>
-<p>type of plugin, so its class name;</p>
-</li>
-<li>
-<p>bucket.</p>
-</li>
-</ol>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>profile name</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>class name of the plugin</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>plugin specific configuration data like the path for the filesystem plugin or the bucket for the S3 plugin</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>defines this profile as the default profile (see <a href="#_mapping_content_elements_to_storage_profiles">Mapping content elements to storage profiles</a>)</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Each profile is identified by name and defines the storage plugin to use. Plugin-specific settings can be configured
 in the <code>pluginSettings</code> map. So the plugin class name determines the storage technology and the plugin settings.</p>
 </div>
 <div class="paragraph">
-<p>If a document has been saved using the named StoragePlugin, the plugin defined in the profile will return a
+<p>If a content element has been saved using the named StoragePlugin, the plugin defined in the profile will return a
 contentID, with which the stored data can be retrieved later. This id, which is usually of type String, is saved with
-the document. It is a task of the storage plugin to implement, which contents this id has. Usually it is an UUID, but
+the document. It is a task of the storage plugin to implement, which contents this id has. Usually it is a UUID, but
 it may also be a text string.</p>
 </div>
 <div class="paragraph">
 <p>A plugin is assigned to each profile based on the fully qualified class name. Any name-value pairs can be
 specified for the configuration of the plug-in. The profiles are identified by their name.</p>
+</div>
+<div class="sect4">
+<h5 id="_using_aliases_for_storage_profiles">Using aliases for storage profiles</h5>
+<div class="paragraph">
+<p>It is possible to assign aliases to storage profile names. This might be required when storage profiles are mapped
+to content elements by configuration as described below. Assigning aliases can be done in the configuration by defining
+<code>alias: profileName</code> entries as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">Storage profile aliases</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">storage</span>:
+      <span class="key">profile-aliases</span>:
+        <span class="key">alias1</span>: <span class="string"><span class="content">encryptedProfile</span></span>
+        <span class="key">another_alias</span>: <span class="string"><span class="content">encryptedProfile</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is possible to define more than one alias for a storage profile.
+Aliases are resolved before a content element is saved. The resulting <code>ContentId</code> will contain the resolved profile, not
+the alias name.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The bucket selector plugin does not support aliases when selection rules are evaluated.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_mapping_content_elements_to_storage_profiles">Mapping content elements to storage profiles</h4>
+<div class="paragraph">
+<p>There are two ways to map a specific content element to a storage profile.</p>
+</div>
+<div class="sect4">
+<h5 id="_mapping_by_code">Mapping by code</h5>
+<div class="paragraph">
+<p>To define the mapping of the content elements to storage profiles in the application code, the storage profile name
+can be set in the <code>@ContentElement</code> annotation using the <code>profile</code> attribute.</p>
+</div>
+<div class="listingblock">
+<div class="title">Defining the storage profile of a content element in the code</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.DOCUMENT)
+<span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, profile = <span class="string"><span class="delimiter">&quot;</span><span class="content">fileSystemProfile</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MyDocument</span> {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example above shows a document type with a single named content element that will be stored in a storage profile
+called <em>fileSystemProfile</em>. It is possible to define the profile for the wildcard content element, too.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_mapping_by_configuration">Mapping by configuration</h5>
+<div class="paragraph">
+<p>If the mapping should be controlled by the configuration and not be defined in the code, storage profiles with auto-
+matchable names must be used. The matching is based on the name of the type definition (in snake-case) and the name
+of the content element separated by <code>-</code>.</p>
+</div>
+<div class="paragraph">
+<p>The following type definition is used as an example in the following explanations. It uses the wildcard content element
+and one named content element:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.DOCUMENT)
+<span class="annotation">@ContentElement</span>
+<span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">rendition</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MyDocument</span> {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A matching profile for the content element named <em>rendition</em> of the interface MyDocument would be selected using the
+following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check if there is a profile called <code>my_document-rendition</code>. If so, use it.</p>
+</li>
+<li>
+<p>If not, check if there is a profile called <code>my_document</code>. If so, use it.</p>
+</li>
+<li>
+<p>If not, check if there is a <em>default storage profile</em>. If so, use it.</p>
+</li>
+<li>
+<p>If none of the steps above succeeded, an exception is thrown.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For the wildcard content element, the profile will be selected using the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check if there is a profile called <code>my_document</code>. If so, use it.</p>
+</li>
+<li>
+<p>If not, check if there is a <em>default storage profile</em>. If so, use it.</p>
+</li>
+<li>
+<p>If none of the steps above succeeded, an exception is thrown.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_examples">Examples</h4>
+<div class="paragraph">
+<p>The following example shows the simplest possible configuration. The type definition does not contain any content element.
+It implicitly uses the wildcard content element and supports content elements with arbitrary names. The content elements
+will be stored in a storage profile called <em>my_document</em>, or, if no such profile exists, in the default storage profile.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ContentType.DOCUMENT)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MyDocument</span> {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The next example shows the same type definition, but with an annotation that defines which storage profile to use.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ContentType.DOCUMENT)
+<span class="annotation">@ContentElement</span>(profile=<span class="string"><span class="delimiter">&quot;</span><span class="content">fileSystemProfile</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MyDocument</span> {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The next example shows a type definition that limits the number of possible content element to two. The "rendition"
+content element will support only PDF documents. The PDFs contained in the rendition content element will be stored
+in an S3 storage. The content in the other element will either be stored in a profile called <em>my_document-content</em>, in
+a profile called <em>my_document</em> or, if neither of those profiles exists, in the default profile.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ContentType.DOCUMENT)
+<span class="annotation">@ContentElement</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@ContentElement</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">rendition</span><span class="delimiter">&quot;</span></span>, contentType=<span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>, storageProfile=<span class="string"><span class="delimiter">&quot;</span><span class="content">s3Profile</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">MyDocument</span> {
+
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -4285,7 +4449,7 @@ are currently available:</p>
 <p>The FileSystemPlugin offers storage of the data as files in the file system.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Configuration parameters of the file system</caption>
+<caption class="title">Table 10. Configuration parameters of the file system</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -4313,7 +4477,7 @@ are currently available:</p>
 <p>The S3 plug-in stores data in an Amazon S3 compatible storage.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Configuration parameter of the S3 plugin</caption>
+<caption class="title">Table 11. Configuration parameter of the S3 plugin</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -4376,7 +4540,7 @@ have to be created for every tenant separately.
 </div>
 <div class="paragraph">
 <p>The BucketOrganizer is not specific for a specific storage technology or storage interface but delegates storage requests
-to other storage plugins. The selection of the target plugin depends on the retention information of document that contains
+to other storage plugins. The selection of the target plugin depends on the retention information of the document that contains
 the content element to be stored. The selection criteria that are used to select the target plugin can be configured in
 terms of a list of bucket selection rules.</p>
 </div>
@@ -4388,47 +4552,38 @@ and continues to the next rule if the rule does not match the value pair. The ma
 matches the value pair. The storage profile named in this rule will be used to store the content. Each bucket
 selection rule consists of three parts that are separated by the pipe (|) symbol:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>retention date match expression</p>
-<div class="literalblock">
-<div class="content">
-<pre> The retention date match expression is usually a time interval that begins at some calendar day and extends to some
+<div class="sect4">
+<h5 id="_1_retention_date_match_expression">1.  retention date match expression</h5>
+<div class="paragraph">
+<p>The retention date match expression is usually a time interval that begins at some calendar day and extends to some
 later calendar day. The notation for the interval is inspired by ISO 8601 and may read like this
-"2021-01-01+01:00--2022-01-01+01:00". The general format is "begin_date--end_date", that is both dates are separated
-by "--". A retention date matches the expression if "begin date" &lt;= "retention date" &lt; "end date".
-The begin and end dates are specified as "YYYY-MM-DD" followed by a time zone offset as "+hh:mm" or "-hh:mm"
-    It is possible to define open intervals by specifying one of the boundary dates as "UNBOUNDED".
-    Retention dates may be NULL if the retention date has not (yet) been set on the document. A NULL retention date will
+<code>2021-01-01+01:00&#8212;&#8203;2022-01-01+01:00</code>. The general format is <code>begin_date&#8212;&#8203;end_date</code>, that is both dates are separated
+by "--". A retention date matches the expression if <code>begin date &#8656; retention date &lt; end date</code>.
+The begin and end dates are specified as <code>YYYY-MM-DD</code> followed by a time zone offset as <code>+hh:mm</code> or <code>-hh:mm</code>
+It is possible to define open intervals by specifying one of the boundary dates as <code>UNBOUNDED</code>.
+Retention dates may be NULL if the retention date has not (yet) been set on the document. A NULL retention date will
 not match any interval specified in a match rule. For this reason the retention date match expression may be specified
-to be "NULL" to match NULL retention dates.
-A retention date match expression can also be specified to be "*" if the rule should always match.</pre>
+to be <code>NULL</code> to match NULL retention dates.
+A retention date match expression can also be specified to be <code>&#42;</code> if the rule should always match.</p>
 </div>
 </div>
-</li>
-<li>
-<p>litigation hold match expression</p>
-<div class="literalblock">
-<div class="content">
-<pre>The litigation hold match expression can be one of these literals:
-    "true", "false", "*"
-While the literal "*" will always match. The other literals will match the denoted value only.</pre>
+<div class="sect4">
+<h5 id="_2_litigation_hold_match_expression">2.  litigation hold match expression</h5>
+<div class="paragraph">
+<p>The litigation hold match expression can be one of these literals: <code>true</code>, <code>false</code>, <code>&#42;</code>.
+While the literal <code>&#42;</code> will always match, the other literals will match the denoted value only.</p>
 </div>
 </div>
-</li>
-<li>
-<p>target storage profile name</p>
-<div class="literalblock">
-<div class="content">
-<pre>The name of the target storage profile to be used if both expressions match the corresponding systemfield values</pre>
+<div class="sect4">
+<h5 id="_3_target_storage_profile_name">3.  target storage profile name</h5>
+<div class="paragraph">
+<p>The name of the target storage profile to be used if both expressions match the corresponding system field values</p>
 </div>
 </div>
-</li>
-</ol>
-</div>
+<div class="sect4">
+<h5 id="_configuration_parameters">Configuration parameters</h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Configuration parameters of BucketOrganizer plugin</caption>
+<caption class="title">Table 12. Configuration parameters of BucketOrganizer plugin</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -4447,6 +4602,7 @@ While the literal "*" will always match. The other literals will match the denot
 </tbody>
 </table>
 <div class="listingblock">
+<div class="title">Example</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">storage</span>:
   <span class="key">profiles</span>:
@@ -4490,25 +4646,85 @@ While the literal "*" will always match. The other literals will match the denot
         <span class="key">storagePath</span>: <span class="string"><span class="content">${project.build.directory}/storage/anotherEra</span></span></code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>profile name;</p>
-</li>
-<li>
-<p>type of plugin, so its class name;</p>
-</li>
-<li>
-<p>rules list.</p>
-</li>
-<li>
-<p>a bucket selection rule, consisting of retention date match expression, litigation hold match expression and
-target storage profile name.</p>
-</li>
-<li>
-<p>the referenced profile name.</p>
-</li>
-</ol>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>profile name;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>type of plugin, so its class name;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>rules list.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>a bucket selection rule, consisting of retention date match expression, litigation hold match expression and
+target storage profile name.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>the referenced profile name.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_storage_profile_templates">Storage profile templates</h5>
+<div class="paragraph">
+<p>To reduce the number of required entries in the list of bucket selection rules, storage profile templates can be used.
+A storage profile template consists of a name template with placeholders, a specific time range and the regular
+configuration parameters like the class name of the storage profile. The <code>&lt;year&gt;</code> placeholder can be used as a variable
+for the current year.</p>
+</div>
+<div class="paragraph">
+<p>Storage profile templates are configured in a separate section as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">Storage profile template configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">storage</span>:
+      <span class="key">profiles</span>:
+        <span class="key">bucketProfile</span>:
+          <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.BucketOrganizerPlugin</span></span>
+          <span class="key">pluginSettings</span>:
+            <span class="key">bucketSelectionRules</span>:
+              - <span class="string"><span class="delimiter">&quot;</span><span class="content">*|true|fsProfileLitigationHold</span><span class="delimiter">&quot;</span></span>
+              - <span class="string"><span class="delimiter">&quot;</span><span class="content">NULL|false|fsProfileForever</span><span class="delimiter">&quot;</span></span>
+              - <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;year&gt;-01-01+01:00|false|fsProfile&lt;year&gt;|2021--2030</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key">profile-templates</span>:
+        - <span class="string"><span class="content">nameTemplate: &quot;fsProfile&lt;year&gt;&quot; </span></span><i class="conum" data-value="2"></i><b>(2)</b>
+          <span class="key">genericTimeRange</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">2021--2029</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
+          <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.server.storage.plugins.FileSystemPlugin</span></span>
+          <span class="key">pluginSettings</span>:
+            <span class="key">storagePath</span>: <span class="string"><span class="content">${storage.base.directory}/storage/&lt;year&gt; </span></span><i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A bucket selection rule using a profile template with the year placeholder for the years between 2021 and 2030.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A name template that will create profiles for the years 2021 to 2029.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Defines the time range used to create profiles based on the template</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The year placeholder can be used in the configuration properties of the plugin.</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -4958,7 +5174,7 @@ The encryption feature is configured as shown in the following example:</p>
 <p>The following tables give an overview of encryption settings and specific settings for the module <em>commons-aes</em>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Encryption settings</caption>
+<caption class="title">Table 13. Encryption settings</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4985,7 +5201,7 @@ The encryption feature is configured as shown in the following example:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 14. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6455,45 +6671,6 @@ standby mode:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_content">ecr.server.content</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-definition.media-type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The supported media type of the content element. Use 'application/octet-stream' as a wildcard that supports all content types.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-definition.storage-profile</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage profile.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">definitions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map&lt;java.lang.String,de.eitco.ecr.server.config.ContentDefinitionSettings&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A map containing all content definitions.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
 <h4 id="_ecr_server_http">ecr.server.http</h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -6773,9 +6950,15 @@ standby mode:</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">profile-aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map&lt;java.lang.String,java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A mapping of alias names to storage profile names.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">profile-templates</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;de.eitco.ecr.server.config.StorageProfileTemplate&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of profile templates used by the bucket selector plugin.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -7793,7 +7976,7 @@ The simplest way to assure this, is to use the DSLContext only to read data.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_examples">Examples</h3>
+<h3 id="_examples_2">Examples</h3>
 <div class="sect3">
 <h4 id="_subselect">Subselect</h4>
 <div class="paragraph">
@@ -9048,7 +9231,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <div class="sect2">
 <h3 id="_type_annotations">Type Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 14. Type Annotations</caption>
+<caption class="title">Table 15. Type Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -9186,7 +9369,7 @@ the full-text support is disabled (<a href="#_nosql_example"><strong>Example</st
 <div class="sect2">
 <h3 id="_property_annotations">Property Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 15. Property Annotations</caption>
+<caption class="title">Table 16. Property Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -9877,7 +10060,7 @@ Can only be used on relation types that support relations to or from versions.</
 <div class="sect2">
 <h3 id="_data_types">Data Types</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Property Data Types</caption>
+<caption class="title">Table 17. Property Data Types</caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10051,7 +10234,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. <em>General system properties:</em></caption>
+<caption class="title">Table 18. <em>General system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10078,7 +10261,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. <em>Versioned system properties:</em></caption>
+<caption class="title">Table 19. <em>Versioned system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10140,7 +10323,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. <em>Document system properties:</em></caption>
+<caption class="title">Table 20. <em>Document system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10174,7 +10357,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. <em>Folder system properties:</em></caption>
+<caption class="title">Table 21. <em>Folder system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10201,7 +10384,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. <em>Relation system properties:</em></caption>
+<caption class="title">Table 22. <em>Relation system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10470,7 +10653,7 @@ the <code>@Source</code> and <code>@Target</code> annotations used for relation 
 values (defined in <code>de.eitco.ecr.type.definition.annotations.reference.SupportedNodeVersion</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Possible values of the supportedNodeVersion attribute</caption>
+<caption class="title">Table 23. Possible values of the supportedNodeVersion attribute</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10650,7 +10833,7 @@ You can use the <em>@PrimaryKey</em> annotation to define one or more properties
 The object to be inherited and its initial state is shown in the following table.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 40%;">
-<caption class="title">Table 23. The object to be inherited</caption>
+<caption class="title">Table 24. The object to be inherited</caption>
 <colgroup>
 <col style="width: 40%;">
 <col>
@@ -10697,7 +10880,7 @@ Here, <strong>Invoice</strong> is an object that inherited from <strong>Company<
 The following table describes its initial state, and the update status after 3 different updates.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Inheritance Scheme</caption>
+<caption class="title">Table 25. Inheritance Scheme</caption>
 <colgroup>
 <col style="width: 11%;">
 <col>
@@ -10862,7 +11045,7 @@ The initial object is still the same, its initial state is described in the tabl
 <p>In the following table, the second object <strong>Creditor</strong>, which inherits from the first object, is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 25. The object to be inherited and inheriting</caption>
+<caption class="title">Table 26. The object to be inherited and inheriting</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -10929,7 +11112,7 @@ In the table above, the object <strong>Creditor</strong> inherited the following
 <p>The results of multilevel inheritance through an intermediate object are shown in the table below:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Inheritance Scheme in Multilevel inheritance</caption>
+<caption class="title">Table 27. Inheritance Scheme in Multilevel inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -11028,7 +11211,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>In the following table, the object <strong>Creditor</strong> is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 27. An object to be inherited</caption>
+<caption class="title">Table 28. An object to be inherited</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -11068,7 +11251,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>The table below describes the mechanism of indirect inheritance.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Inheritance Scheme in Indirect inheritance</caption>
+<caption class="title">Table 29. Inheritance Scheme in Indirect inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -11740,7 +11923,10 @@ It is still possible to set the <em>Retention_date</em> and <em>warrantyEnd</em>
 <span class="keyword">package</span> <span class="namespace">de.eitco.ecr.system.test.types.defaultvalues</span>;
 
 <span class="keyword">import</span> <span class="include">de.eitco.ecr.common.RetentionInformation</span>;
-<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations</span>.*;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.ContentElement</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.ObjectType</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.OverwriteAllowed</span>;
+<span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.Type</span>;
 <span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.constraint.Mandatory</span>;
 <span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.constraint.SecondaryKey</span>;
 <span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.defaults.DefaultSystemPropertyValue</span>;
@@ -11750,14 +11936,13 @@ It is still possible to set the <em>Retention_date</em> and <em>warrantyEnd</em>
 <span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.system.SystemProperty</span>;
 <span class="keyword">import</span> <span class="include">de.eitco.ecr.type.definition.annotations.system.SystemPropertyName</span>;
 <span class="keyword">import</span> <span class="include">org.springframework.http.MediaType</span>;
-<span class="keyword">import</span> <span class="include">org.springframework.util.MimeType</span>;
 
 <span class="keyword">import</span> <span class="include">java.time.ZoneId</span>;
 <span class="keyword">import</span> <span class="include">java.time.ZonedDateTime</span>;
 
 <span class="annotation">@Type</span>(ObjectType.DOCUMENT)
 <span class="annotation">@RetentionProtected</span>
-<span class="annotation">@ContentElement</span>(defaultDefinition = <span class="predefined-constant">true</span>, separateField = <span class="predefined-constant">true</span>)
+<span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, separateField = <span class="predefined-constant">true</span>)
 <span class="annotation">@OverwriteAllowed</span>
 <span class="directive">public</span> <span class="type">interface</span> <span class="class">DocumentWithDefaultRetention</span> {
 
@@ -12072,7 +12257,7 @@ SingleContentDocument document = serviceClient.createTypeInstance();
 document.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">some name</span><span class="delimiter">&quot;</span></span>);
 
 TypedDocumentClient&lt;SingleContentDocument&gt; client = serviceClient.create(
-    <span class="keyword">new</span> TypedDocumentInput&lt;&gt;(<span class="predefined-type">Map</span>.of(ContentElementNames.DEFAULT_NAME, <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="keyword">new</span> TypedDocumentInput&lt;&gt;(<span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
         <span class="keyword">new</span> ContentUpload(inputStream)), document)); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
@@ -12100,7 +12285,7 @@ TypedDocumentClient&lt;SingleContentDocument&gt; client = serviceClient.create(
 
 TypedTargetDocument document = serviceClient.createTypeInstance();
 
-DocumentContentReference reference = <span class="keyword">new</span> DocumentContentReference(documentId, ContentElementNames.DEFAULT_NAME); <i class="conum" data-value="2"></i><b>(2)</b>
+DocumentContentReference reference = <span class="keyword">new</span> DocumentContentReference(documentId, <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
 
 TypedDocumentClient&lt;TypedTargetDocument&gt; client =
     serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(document, <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, reference)));</code></pre>
@@ -12485,7 +12670,7 @@ In this case, a certain property is defined to let the system know, a certain ve
 <p>The version system table consists of the following columns (this is not a complete excerpt):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Structure of the system table</caption>
+<caption class="title">Table 30. Structure of the system table</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -12991,7 +13176,7 @@ in charge of this task and you must set the option <em>delete rows only</em>.
 </table>
 </div>
 <div class="sect3">
-<h4 id="_examples_2">Examples</h4>
+<h4 id="_examples_3">Examples</h4>
 <div class="sect4">
 <h5 id="_create_document_with_retention_and_set_litigation_hold">Create document with retention and set litigation hold</h5>
 <div class="literalblock">
@@ -13029,7 +13214,7 @@ newDocument.setRetentionDate(now);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Map&lt;String, ContentUpload&gt; content = Map.of(ContentElementNames.DEFAULT_NAME, new ContentUpload(data));</pre>
+<pre>Map&lt;String, ContentUpload&gt; content = Map.of("content", new ContentUpload(data));</pre>
 </div>
 </div>
 <div class="literalblock">
@@ -13113,7 +13298,7 @@ newDocument.setMimeType(TEST_DATA_MIMETYPE);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Map&lt;String, ContentUpload&gt; content = Map.of(ContentElementNames.DEFAULT_NAME, new ContentUpload(data));</pre>
+<pre>Map&lt;String, ContentUpload&gt; content = Map.of("content", new ContentUpload(data));</pre>
 </div>
 </div>
 <div class="literalblock">
@@ -13198,7 +13383,7 @@ newDocument.setRetentionDate(now);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Map&lt;String, ContentUpload&gt; content = Map.of(ContentElementNames.DEFAULT_NAME, new ContentUpload(data));</pre>
+<pre>Map&lt;String, ContentUpload&gt; content = Map.of("content", new ContentUpload(data));</pre>
 </div>
 </div>
 <div class="literalblock">
@@ -13481,7 +13666,7 @@ overview page for each model class. Example:</p>
 <p>The following table lists types and their corresponding identifiers.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Types in Java and their Identifiers in <em>arveo</em></caption>
+<caption class="title">Table 31. Types in Java and their Identifiers in <em>arveo</em></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13564,7 +13749,7 @@ overview page for each model class. Example:</p>
 types.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. Identifiers for the Types List and Set</caption>
+<caption class="title">Table 32. Identifiers for the Types List and Set</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13820,7 +14005,7 @@ containerBatchCreateInput.setCollisionCheckAttribute(<span class="string"><span 
 <div class="title">Figure 8. Architecture Overview</div>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 32. 3rd Party Services in <em>arveo</em></caption>
+<caption class="title">Table 33. 3rd Party Services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -14013,7 +14198,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-03-01 00:27:50 UTC
+Last updated 2022-03-01 16:02:32 UTC
 </div>
 </div>
 <style>
