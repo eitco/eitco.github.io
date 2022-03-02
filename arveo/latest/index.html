@@ -197,6 +197,14 @@ a, a:hover, a:focus {
 <li><a href="#_batch_operations">Batch Operations</a></li>
 </ul>
 </li>
+<li><a href="#_system_tables"><strong>System tables</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_tables_for_type_definitions">Tables for type definitions</a></li>
+<li><a href="#_folder_structure_tables">Folder structure tables</a></li>
+<li><a href="#_recovery_table">Recovery table</a></li>
+<li><a href="#_keystore_tables">Keystore tables</a></li>
+</ul>
+</li>
 <li><a href="#_release_policy"><strong>Release Policy</strong></a></li>
 <li><a href="#_roadmap"><strong>Roadmap</strong></a></li>
 <li><a href="#_compatibility_list">Compatibility List*</a>
@@ -1890,13 +1898,13 @@ For compliance reasons the audit entries in the database are not deleted by the 
 <div class="sect3">
 <h4 id="_automated_recycle_bin_emptying">Automated Recycle Bin Emptying</h4>
 <div class="paragraph">
-<p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>. You can activate the predefined empty recycle bin job, and you can change the age from the 6 month default value to the age you want. the job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
+<p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>.You can activate the predefined empty recycle bin job, and you can change the age from the 6 month default value to the age you want. the job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_recovery_log">Recovery Log</h4>
 <div class="paragraph">
-<p>In addition to the recycle bin feature, the <em>arveo</em> offers an additional safety layer to recover permanently deleted entities. By annotating a type definition with <em>@Recovery</em>, it is possible to define a time period, in which permanently deleted entities will be kept in a system-wide recovery table before they are removed completely. An entity in such a type definition that is deleted (or purged) will be removed from the type definition&#8217;s table (and its version table). A copy of each version of the entity will be stored in the recovery table making it possible to restore it manually. If the entity is a document, its contents will not be deleted from the storage until the entity is removed from the recovery table.</p>
+<p>In addition to the recycle bin feature, the <em>arveo</em> offers an additional safety layer to recover permanently deleted entities.By annotating a type definition with <em>@Recovery</em>, it is possible to define a time period, in which permanently deleted entities will be kept in a system-wide recovery table before they are removed completely.An entity in such a type definition that is deleted (or purged) will be removed from the type definition&#8217;s table (and its version table).A copy of each version of the entity will be stored in the recovery table making it possible to restore it manually.If the entity is a document, its contents will not be deleted from the storage until the entity is removed from the recovery table.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1906,7 +1914,7 @@ For compliance reasons the audit entries in the database are not deleted by the 
 </td>
 <td class="content">
 There is no API to restore data from the recovery table.
-This feature is only intended as a last backup in order to make accidentally deleted data available to the business by an administrator. The admin can copy the content file from the storage together with the JSON metadata and send it to the business department.
+This feature is only intended as a last backup in order to make accidentally deleted data available to the business by an administrator.The admin can copy the content file from the storage together with the JSON metadata and send it to the business department.
 </td>
 </tr>
 </table>
@@ -1915,7 +1923,7 @@ This feature is only intended as a last backup in order to make accidentally del
 <div class="sect3">
 <h4 id="_recovery_log_emptying">Recovery Log Emptying</h4>
 <div class="paragraph">
-<p>The system management API provides a method to remove expired entities from the recovery table. An entity is considered expired when its keep-until timestamp is in the past compared from the moment the method is invoked. A user who calls this
+<p>The system management API provides a method to remove expired entities from the recovery table.An entity is considered expired when its keep-until timestamp is in the past compared from the moment the method is invoked.A user who calls this
 method needs the <strong>ECR_PURGE_RECOVERY_TABLE</strong> authority (see <a href="#">Access Rights</a>).</p>
 </div>
 <div class="paragraph">
@@ -13975,6 +13983,376 @@ containerBatchCreateInput.setCollisionCheckAttribute(<span class="string"><span 
 </div>
 </div>
 <div class="sect1">
+<h2 id="_system_tables"><strong>System tables</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section contains information about the system tables used by <em>arveo</em>.</p>
+</div>
+<div class="sect2">
+<h3 id="_tables_for_type_definitions">Tables for type definitions</h3>
+<div class="paragraph">
+<p>The system stores some information like the ID of type definitions in the database. For this, the following tables are
+used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr-types</code>: Contains en entry for each type definition</p>
+</li>
+<li>
+<p><code>ecr-types-content-elements</code>: Contains 1:n mappings of content elements to type definitions.</p>
+</li>
+</ul>
+</div>
+<div class="literalblock">
+<div class="title">ERD of type system tables</div>
+<div class="content">
+<pre>         +---------------+                     +----------------------------+
+         |   ecr_types   |                     | ecr_types_content_elements |
+         +---------------+                     +----------------------------+
+         | id            |&lt;----+               | ce_name                    |
+         |---------------|     +---------------+ ce_type_id                 |
+         | creation_date |                     |----------------------------|
+         | ecr_version   |                     | ce_content_type            |
+         | object_type   |                     | ce_profile                 |
+         | type_name     |                     | ce_store_json              |
+         +---------------+                     +----------------------------+</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 33. Columns of ecr_types</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the type definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">creation_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creation date and time</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object_type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the objects in the type definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the type definition</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 34. Columns of ecr_types_content_elements</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ce_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ce_type_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the type definition containing the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ce_content_type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The allowed content type of the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ce_profile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage profile used by the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ce_store_json</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the content element uses the JSON field or not</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_folder_structure_tables">Folder structure tables</h3>
+<div class="paragraph">
+<p>The object type FOLDER is used to create tree-like structures with parent- and child-relationships. The structure is
+stored in the <em>ecr_folder_structure</em> table. The table <em>ecr_folder_structure_closure</em> contains a transitive hull of the
+parent- and child-relationships to allow fast database queries in the tree.</p>
+</div>
+<div class="literalblock">
+<div class="title">ERD of folder structure tables</div>
+<div class="content">
+<pre>         +----------------------+         +------------------------------+
+         | ecr_folder_structure |         | ecr_folder_structure_closure |
+         +----------------------+         +------------------------------+
+         | child_id             |         | id                           |
+         |----------------------|         |------------------------------|
+         | child_name           |         | child_id                     |
+         | child_type_id        |         | child_type_id                |
+         | parent_id            |         | depth                        |
+         | parent_type_id       |         | parent_id                    |
+         +----------------------+         | parent_type_id               |
+                                          +------------------------------+</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 35. Columns of ecr_folder_structure</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">child_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the child-folder</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">child_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">varchar(128)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the child-folder</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the parent-folder</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_type_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the parent type definition</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 36. Columns of ecr_folder_structure_closure</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">uuid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the entry in the closure table</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">child_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the child-folder</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">child_type_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the child type definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">depth</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The distance between the child and the parent on the direct path in the tree</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the parent folder</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_type_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the parent type definition</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_recovery_table">Recovery table</h3>
+<div class="paragraph">
+<p>The recovery table <em>ecr_recovery</em> is used for the <a href="#_recovery_log">recovery</a> feature.</p>
+</div>
+<div class="literalblock">
+<div class="title">ERD of ecr_recovery</div>
+<div class="content">
+<pre>         +----------------+
+         |  ecr_recovery  |
+         +----------------+
+         | deleted_date   |
+         | entity         |
+         | entity_id      |
+         | keep_until     |
+         | type_id        |
+         | version_id     |
+         +----------------+</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 37. Columns of <em>ecr_recovery</em></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deleted_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Date and time at which the entity was deleted</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">entity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jsonb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A JSON representation of the deleted entity</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">entity_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the entity</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">keep_until</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date and time until which to keep the entity in the recovery table</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the type definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The version ID of the deleted entity</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_keystore_tables">Keystore tables</h3>
+<div class="paragraph">
+<p>When the <a href="#">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
+profile-specific database tables. For each encrypted profile, a table called <code>ecr_keys-&lt;profile&gt;</code> and a table called
+<code>ecr_keys_assoc_&lt;profile&gt;</code> is created. The ecr_keys_&lt;profile&gt; table contains the generated keys, and the
+ecr_keys_assoc_&lt;profile&gt; table contains the associations between content elements and keys.</p>
+</div>
+<div class="literalblock">
+<div class="title">ERD of keystore tables</div>
+<div class="content">
+<pre>         +--------------------+           +------------------------+
+         |  ecr_keys_profile  |           | ecr_keys_assoc_profile |
+         +--------------------+           +------------------------+
+         | id                 |&lt;--+       | content_id             |
+         |--------------------|   +-------+ id                     |
+         | key                |           +------------------------+
+         +--------------------+</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 38. Columns of ecr_keys_&lt;profile&gt;</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bytea</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The encryption key</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 39. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the content element</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the key</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_release_policy"><strong>Release Policy</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -14005,7 +14383,7 @@ containerBatchCreateInput.setCollisionCheckAttribute(<span class="string"><span 
 <div class="title">Figure 8. Architecture Overview</div>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 33. 3rd Party Services in <em>arveo</em></caption>
+<caption class="title">Table 40. 3rd Party Services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -14198,7 +14576,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-03-02 00:27:50 UTC
+Last updated 2022-03-02 09:21:00 UTC
 </div>
 </div>
 <style>
