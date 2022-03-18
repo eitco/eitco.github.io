@@ -133,7 +133,6 @@ a, a:hover, a:focus {
 <li><a href="#_configure_authentication_between_content_services">Configure Authentication between Content Services</a></li>
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
-<li><a href="#_system_jobs">System jobs</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
 </ul>
 </li>
@@ -4205,6 +4204,11 @@ a type definition that contains other <code>@ContentElement</code> annotations w
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether to store only the content ID and no additional metadata in a separate database field</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fulltextExtraction</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the fulltext content of the content element will be extracted and stored in the NOSQL database.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -6369,11 +6373,11 @@ possible when the schema update itself is skipped.</p>
 <div class="sect2">
 <h3 id="_solr">SOLR</h3>
 <div class="paragraph">
-<p>In order to use Solr in connection with <em>arveo</em>, an installation of a Solr service is required. Under the
-following link you can download the current versions of Solr: <a href="https://solr.apache.org/downloads.html" class="bare">https://solr.apache.org/downloads.html</a>.</p>
+<p>In order to use SOLR in connection with <em>arveo</em>, an installation of a SOLR service is required. Under the
+following link you can download the current versions of SOLR: <a href="https://solr.apache.org/downloads.html" class="bare">https://solr.apache.org/downloads.html</a>.</p>
 </div>
 <div class="paragraph">
-<p>The Solr service must be configured in <em>arveo</em> within the <em>application.yaml</em>. See
+<p>The SOLR service must be configured in <em>arveo</em> within the <em>application.yaml</em>. See
 <a href="#_ecr_server_solr">Configuration properties</a> for details.</p>
 </div>
 <div class="paragraph">
@@ -6395,31 +6399,15 @@ by enabling transport encryption, authentication and authorization.</p>
 url in the configuration property <code>ecr.server.solr.host</code> must use the <em>https</em> scheme.</p>
 </div>
 <div class="paragraph">
-<p>Security configuration data is stored in Zookeeper, so it is required to enable security measures in Zookeeper, too.
-<em>arveo</em> supports digest authentication for the Zookeeper client used to upload configuration data required
-by <em>arveo</em>. To enable digest authentication for the Zookeeper client, you need to set the following parameters
-in the <em>arveo</em> configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
-  <span class="key">server</span>:
-    <span class="key">solr</span>:
-      <span class="key">zkDigestUsername</span>: <span class="string"><span class="content">zookeeperDigestUsername</span></span>
-      <span class="key">zkDigestPassword</span>: <span class="string"><span class="content">zookeeperDigestPassword</span></span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The username and password must match the configured values for the admin role in the SOLR configuration. The
-<a href="https://solr.apache.org/guide/8_11/zookeeper-access-control.html">SOLR documentation</a> contains instructions for how to
-enable digest authentication in Zookeeper.</p>
-</div>
-<div class="paragraph">
-<p><em>arveo</em> can use OAuth2 JWTs to authenticate requests sent to SOLR. SOLR provides a JWT authentication plugin
-that must be enabled as described in the <a href="https://solr.apache.org/guide/8_11/jwt-authentication-plugin.html">documentation</a>.
-Enabling authentication and authorization in SOLR required uploading a <em>security.json</em> file to Zookeeper. The following
-example shows a security.json file that enables the JWT plugin and a
+<p><em>arveo</em> can use basic authentication to authenticate requests sent to SOLR. SOLR provides a basic authentication
+plugin that must be enabled as described in the <a href="https://solr.apache.org/guide/8_11/basic-authentication-plugin.html">documentation</a>.
+Enabling authentication and authorization in SOLR requires uploading a <em>security.json</em> file to Zookeeper. The following
+example shows a security.json file that enables the basic auth plugin and a
 <a href="https://solr.apache.org/guide/8_11/rule-based-authorization-plugin.html">rule based authorization plugin</a>.</p>
+</div>
+<div class="paragraph">
+<p>There is a <a href="https://github.com/ansgarwiechers/solrpasswordhash">github project</a> containing a tool to generate the value
+for the salt and password used in the credentials-property of the basic auth plugin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6463,7 +6451,7 @@ example shows a security.json file that enables the JWT plugin and a
 </div>
 </div>
 <div class="paragraph">
-<p>To enable OAuth support for the SOLR client used by <em>arveo</em>, you have to set the following parameters in the
+<p>To enable basic auth support for the SOLR client used by <em>arveo</em>, you have to set the following parameters in the
 configuration for <em>arveo</em>:</p>
 </div>
 <div class="listingblock">
@@ -6471,18 +6459,117 @@ configuration for <em>arveo</em>:</p>
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
   <span class="key">server</span>:
     <span class="key">solr</span>:
-      <span class="key">oauth2Enabled</span>: <span class="string"><span class="content">true</span></span>
-      <span class="key">oauth2ClientRegistrationId</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">cmn-user-service-client-credentials</span><span class="delimiter">&quot;</span></span></code></pre>
+      <span class="key">username</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ecr-solr-user</span><span class="delimiter">&quot;</span></span>
+      <span class="key">password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_storing_entities_in_solr">Storing entities in SOLR</h4>
+<div class="paragraph">
+<p>To be able to use SOLR for advanced queries, the entities must be stored in SOLR, too. To enable this, simply add the
+<code>@NOSql</code> annotation to the attributes to be stored in SOLR to the getters of your type definitions. The annotation can
+be added to the class to store all attributes in SOLR. <em>arveo</em> will automatically create the required fields
+in the SOLR schema. All entities of one tenant will be stored in a single collection in SOLR. To avoid name collisions,
+the names of the fields in SOLR will consist of the name of the type definition and the name of the attribute, separated
+by a dot. For example, an attribute called "name" in a type definition called "invoice" would be named "invoice.name".</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fulltext_extraction">Fulltext extraction</h4>
+<div class="paragraph">
+<p>It is also possible to store fulltext data of the content of documents in SOLR. For this, set the <code>fulltextExtraction</code>
+attribute of the <code>@ContentElement</code> annotation to true (see <a href="#">content elements</a>). The
+fulltext data of all content elements will be stored in a field called "text" in SOLR. This field can be used in queries
+just like any other field.</p>
+</div>
+<div class="paragraph">
+<p>The fulltext extraction is performed by the document conversion service. Which types of content are supported for
+fulltext extraction depends on the active plugins of the document conversion service. The open source plugins contained
+in the document conversion service project support fulltext extraction for PDFs with text content and Microsoft Office
+documents. The mime type of a content element is required for the fulltext extraction. By default, the mime type is
+contained in the metadata of a content element. When the content element is stored in a separate field on the
+database, the mime type is not available in the metadata but it can be defined in the <code>@ContentElement</code> annotation. If
+the mime type is set to the default value (application/octet-stream), the service will try to auto-detect the mime type.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_searching_in_solr">Searching in SOLR</h4>
+<div class="paragraph">
+<p>The <em>arveo</em> API provides methods to perform queries in SOLR. The methods use the EQL just like the regular
+search methods that perform queries on the relational database. There are some EQL features that are not supported
+when searching in SOLR:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>joins and unions</p>
+</li>
+<li>
+<p>subselects</p>
+</li>
+<li>
+<p>exists expressions</p>
+</li>
+<li>
+<p>toLower</p>
+</li>
+<li>
+<p>less than</p>
+</li>
+<li>
+<p>greater than</p>
+</li>
+<li>
+<p>is null</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The behavior of the supported query expressions is dependent from the configuration of the field in SOLR. For example,
+a text field with a tokenizer that splits text by whitespaces will deliver different results for equality expressions
+than a text field without such a tokenizer.</p>
+</div>
+<div class="paragraph">
+<p>To perform a query in SOLR for one specific type definition, use the <code>getNoSqlSearchService</code> method of the service client
+for the type definition. In the following example, this method is used to find an entity by it&#8217;s ID in SOLR:</p>
+</div>
+<div class="listingblock">
+<div class="title">searching for an entity by ID in SOLR</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Optional&lt;FieldTypeContainer&gt; optional = serviceClient.getNoSqlSearchService()
+    .where().id().equalTo().value(identifier).holds().uniqueResult();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The value for the <code>oauth2ClientRegistrationId</code> must match a configured client registration that uses the
-<em>client_credentials</em> grant.</p>
+<p>The next example shows how to search in the fulltext data stored in SOLR.</p>
+</div>
+<div class="listingblock">
+<div class="title">searching for fulltext data in SOLR</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where().contextReference(SolrConstants.FULLTEXT_FIELD)
+    .contains().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">At voluptua at aliquyam duo dolor diam</span><span class="delimiter">&quot;</span></span>).holds().unpaged();</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>To search for values in a specific field, the correct field name must be used in the context reference. The auto-
+generated name constant classes for the type definition interfaces contain a helper method to compute the name.
+The following example shows how to use this method to search in a specific field of an entity.</p>
 </div>
-<div class="sect2">
-<h3 id="_system_jobs">System jobs</h3>
+<div class="listingblock">
+<div class="title">searching for data in SOLR using a specific field</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where()
+    .contextReference(FieldTypeContainerNames.noSqlName(FieldTypeContainerNames.INTEGER_FIELD))
+    .equalTo().value(<span class="integer">7</span>).holds().unpaged();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using the <code>getNoSqlSearchService</code> method, the query performed in SOLR will automatically be limited to entities
+belonging to one single type definition. To search for entities in multiple type definitions, the method
+<code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.
+=== System jobs</p>
+</div>
 <div class="paragraph">
 <p>The <em>arveo</em> system uses several background jobs to perform essential functions. These jobs are managed by
 a clustered Quartz scheduler running inside the repository service and/or in a dedicated job service. The scheduler
@@ -6514,6 +6601,7 @@ authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code> and the a
 </td>
 </tr>
 </table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_clean_recovery_table_job">Clean recovery table job</h4>
@@ -14576,7 +14664,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-03-18 13:12:36 UTC
+Last updated 2022-03-18 15:25:54 UTC
 </div>
 </div>
 <style>
