@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo</div>
+<div id="toctitle">arveo 7.0.3-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -204,8 +204,6 @@ a, a:hover, a:focus {
 <li><a href="#_keystore_tables">Keystore tables</a></li>
 </ul>
 </li>
-<li><a href="#_release_policy"><strong>Release Policy</strong></a></li>
-<li><a href="#_roadmap"><strong>Roadmap</strong></a></li>
 <li><a href="#_compatibility_list">Compatibility List*</a>
 <ul class="sectlevel2">
 <li><a href="#_compatibility_list_2">Compatibility List</a></li>
@@ -2745,11 +2743,11 @@ More information about the archetype can be found <a href="slim-archetype.html">
 </div>
 <div class="paragraph">
 <p>First, create a directory that will contain the project files for the demo application. Open a command line in this
-directory and perform the following operation. Replace <code>&lt;version&gt;</code> with the version of arveo you will be using.</p>
+directory and perform the following operation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=&lt;version&gt;</pre>
+<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=7.0.3-SNAPSHOT</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3167,7 +3165,7 @@ application.</p>
 <p>Under "Language", select "Java"</p>
 </li>
 <li>
-<p>Select Spring Boot version 2.5.8</p>
+<p>Select Spring Boot version 2.6.6</p>
 </li>
 <li>
 <p>Define project metadata. For example, use Group = de.eitco.demo, Artifact = demo-tool, Name = demo-tool, Package name = de.eitco.demo.tool</p>
@@ -3203,7 +3201,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>version of arveo<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>7.0.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3214,7 +3212,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <span class="tag">&lt;dependency&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client-non-web<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>2.0.6<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>2.0.10<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span>
 <span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.demo<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -3256,7 +3254,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>4.0.0<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>4.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -14629,22 +14627,6 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <div class="sect1">
-<h2 id="_release_policy"><strong>Release Policy</strong></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in product.adoc - include::../development-process/release-model.adoc[Release Model]</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_roadmap"><strong>Roadmap</strong></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in product.adoc - include::../development-process/release-timeline.adoc[Compatibility List]</p>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_compatibility_list">Compatibility List*</h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -14852,7 +14834,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-04-20 23:27:59 UTC
+Last updated 2022-04-21 14:20:11 UTC
 </div>
 </div>
 <style>
