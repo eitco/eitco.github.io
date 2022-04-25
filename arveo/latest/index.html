@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 7.0.3-SNAPSHOT</div>
+<div id="toctitle">arveo 7.1.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -2747,7 +2747,7 @@ directory and perform the following operation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=7.0.3-SNAPSHOT</pre>
+<pre>mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=7.1.0-SNAPSHOT</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3201,7 +3201,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>7.0.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>7.1.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -4744,6 +4744,9 @@ rendition, the <code>@Rendition</code> annotation can be used as shown in the fo
     <span class="annotation">@ContentType</span>(contentElement = <span class="string"><span class="delimiter">&quot;</span><span class="content">original</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="predefined-type">String</span> getContentType();
     <span class="type">void</span> setContentType(<span class="predefined-type">String</span> contentType);
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.RENDITION_STATUS) <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, RenditionStatusInformation&gt; getRenditionStatus();
 }</code></pre>
 </div>
 </div>
@@ -4761,6 +4764,10 @@ rendition, the <code>@Rendition</code> annotation can be used as shown in the fo
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The content type of the original content</td>
 </tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A getter for the current status of the renditions of the document</td>
+</tr>
 </table>
 </div>
 <div class="paragraph">
@@ -4773,10 +4780,47 @@ the original content element and return a valid mime type string like "image/jpe
 the system will try to detect the content type automatically.</p>
 </div>
 <div class="paragraph">
+<p>The current status of the renditions can be retrieved as shown in the example above. The returned map contains a
+<code>RenditionStatusInformation</code> instance for each rendition content element of the document. The status information contains
+a status value and the number of times the system tried to create the rendition, if available. The status of a rendition can
+be one of the following values:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Rendition status values</caption>
+<colgroup>
+<col style="width: 25%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">parameter</th>
+<th class="tableblock halign-left valign-top">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AVAILABLE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The rendition was created successfully (or was uploaded by a client) and is available.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PENDING</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The rendition is not yet available but is expected to be available in the future.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FAILED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creating the rendition has failed permanently.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EMPTY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The rendition is not available because the source content element does not exist.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <p>The <code>@Rendition</code> annotation accepts the following parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Parameters of <code>@Rendition</code></caption>
+<caption class="title">Table 14. Parameters of <code>@Rendition</code></caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -4840,7 +4884,7 @@ When all retries have failed, the rendition message will be added to a dead lett
 letter queue will be written to the database table <code>ecr_rendition_dlq</code>. The table contains the following fields:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Columns of ecr_rendition_dlq</caption>
+<caption class="title">Table 15. Columns of ecr_rendition_dlq</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -5336,7 +5380,7 @@ The encryption feature is configured as shown in the following example:</p>
 <p>The following tables give an overview of encryption settings and specific settings for the module <em>commons-aes</em>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Encryption settings</caption>
+<caption class="title">Table 16. Encryption settings</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5363,7 +5407,7 @@ The encryption feature is configured as shown in the following example:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 17. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -9513,7 +9557,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <div class="sect2">
 <h3 id="_type_annotations">Type Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 17. Type Annotations</caption>
+<caption class="title">Table 18. Type Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -9651,7 +9695,7 @@ the full-text support is disabled (<a href="#_nosql_example"><strong>Example</st
 <div class="sect2">
 <h3 id="_property_annotations">Property Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 18. Property Annotations</caption>
+<caption class="title">Table 19. Property Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -10342,7 +10386,7 @@ Can only be used on relation types that support relations to or from versions.</
 <div class="sect2">
 <h3 id="_data_types">Data Types</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Property Data Types</caption>
+<caption class="title">Table 20. Property Data Types</caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10516,7 +10560,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. <em>General system properties:</em></caption>
+<caption class="title">Table 21. <em>General system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10543,7 +10587,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. <em>Versioned system properties:</em></caption>
+<caption class="title">Table 22. <em>Versioned system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10605,7 +10649,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. <em>Document system properties:</em></caption>
+<caption class="title">Table 23. <em>Document system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10639,7 +10683,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. <em>Folder system properties:</em></caption>
+<caption class="title">Table 24. <em>Folder system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10666,7 +10710,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. <em>Relation system properties:</em></caption>
+<caption class="title">Table 25. <em>Relation system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10935,7 +10979,7 @@ the <code>@Source</code> and <code>@Target</code> annotations used for relation 
 values (defined in <code>de.eitco.ecr.type.definition.annotations.reference.SupportedNodeVersion</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Possible values of the supportedNodeVersion attribute</caption>
+<caption class="title">Table 26. Possible values of the supportedNodeVersion attribute</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11115,7 +11159,7 @@ You can use the <em>@PrimaryKey</em> annotation to define one or more properties
 The object to be inherited and its initial state is shown in the following table.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 40%;">
-<caption class="title">Table 26. The object to be inherited</caption>
+<caption class="title">Table 27. The object to be inherited</caption>
 <colgroup>
 <col style="width: 40%;">
 <col>
@@ -11162,7 +11206,7 @@ Here, <strong>Invoice</strong> is an object that inherited from <strong>Company<
 The following table describes its initial state, and the update status after 3 different updates.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. Inheritance Scheme</caption>
+<caption class="title">Table 28. Inheritance Scheme</caption>
 <colgroup>
 <col style="width: 11%;">
 <col>
@@ -11327,7 +11371,7 @@ The initial object is still the same, its initial state is described in the tabl
 <p>In the following table, the second object <strong>Creditor</strong>, which inherits from the first object, is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 28. The object to be inherited and inheriting</caption>
+<caption class="title">Table 29. The object to be inherited and inheriting</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -11394,7 +11438,7 @@ In the table above, the object <strong>Creditor</strong> inherited the following
 <p>The results of multilevel inheritance through an intermediate object are shown in the table below:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Inheritance Scheme in Multilevel inheritance</caption>
+<caption class="title">Table 30. Inheritance Scheme in Multilevel inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -11493,7 +11537,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>In the following table, the object <strong>Creditor</strong> is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 30. An object to be inherited</caption>
+<caption class="title">Table 31. An object to be inherited</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -11533,7 +11577,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>The table below describes the mechanism of indirect inheritance.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. Inheritance Scheme in Indirect inheritance</caption>
+<caption class="title">Table 32. Inheritance Scheme in Indirect inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -12952,7 +12996,7 @@ In this case, a certain property is defined to let the system know, a certain ve
 <p>The version system table consists of the following columns (this is not a complete excerpt):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Structure of the system table</caption>
+<caption class="title">Table 33. Structure of the system table</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -13948,7 +13992,7 @@ overview page for each model class. Example:</p>
 <p>The following table lists types and their corresponding identifiers.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Types in Java and their Identifiers in <em>arveo</em></caption>
+<caption class="title">Table 34. Types in Java and their Identifiers in <em>arveo</em></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14031,7 +14075,7 @@ overview page for each model class. Example:</p>
 types.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Identifiers for the Types List and Set</caption>
+<caption class="title">Table 35. Identifiers for the Types List and Set</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14294,7 +14338,7 @@ used:</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Columns of ecr_types</caption>
+<caption class="title">Table 36. Columns of ecr_types</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14331,7 +14375,7 @@ used:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Columns of ecr_types_content_elements</caption>
+<caption class="title">Table 37. Columns of ecr_types_content_elements</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14397,7 +14441,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Columns of ecr_folder_structure</caption>
+<caption class="title">Table 38. Columns of ecr_folder_structure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14434,7 +14478,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Columns of ecr_folder_structure_closure</caption>
+<caption class="title">Table 39. Columns of ecr_folder_structure_closure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14502,7 +14546,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Columns of <em>ecr_recovery</em></caption>
+<caption class="title">Table 40. Columns of <em>ecr_recovery</em></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14570,7 +14614,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Columns of ecr_keys_&lt;profile&gt;</caption>
+<caption class="title">Table 41. Columns of ecr_keys_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14597,7 +14641,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
+<caption class="title">Table 42. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14641,7 +14685,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="title">Figure 8. Architecture Overview</div>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 42. 3rd Party Services in <em>arveo</em></caption>
+<caption class="title">Table 43. 3rd Party Services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -14834,7 +14878,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-04-24 23:27:58 UTC
+Last updated 2022-04-25 10:22:31 UTC
 </div>
 </div>
 <style>
