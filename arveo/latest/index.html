@@ -124,6 +124,7 @@ a, a:hover, a:focus {
 <ul class="sectlevel2">
 <li><a href="#_configure_database_access_and_tenants">Configure Database access and Tenants</a></li>
 <li><a href="#_configure_storage_locations">Configure Storage Locations</a></li>
+<li><a href="#_renditions">Renditions</a></li>
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
 <li><a href="#_configure_encryption">Configure Encryption</a></li>
 <li><a href="#_overview">Overview</a></li>
@@ -4723,8 +4724,9 @@ for the current year.</p>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_renditions">Renditions</h4>
+</div>
+<div class="sect2">
+<h3 id="_renditions">Renditions</h3>
 <div class="paragraph">
 <p>Renditions of content elements, for example a PDF rendition of an image, can be created automatically. To create a
 rendition, the <code>@Rendition</code> annotation can be used as shown in the following example.</p>
@@ -4814,6 +4816,10 @@ be one of the following values:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EMPTY</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The rendition is not available because the source content element does not exist.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RESET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creating the rendition has failed and the status was manually reset (see error handling).</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -4875,51 +4881,13 @@ The system will not try to create a rendition when the rendition content element
 <p>The actual rendering will be done by the Document Conversion Service. Which conversions are supported depends on the
 plugins available in the service&#8217;s classpath.</p>
 </div>
-<div class="sect4">
-<h5 id="_error_handling">Error handling</h5>
+<div class="sect3">
+<h4 id="_error_handling">Error handling</h4>
 <div class="paragraph">
 <p>When the creation of a rendition fails, the system will re-try to create the rendition. The number of re-tries can
 be configured, the default is three (see <a href="#_ecr_server_messaging">configuration properties</a>).
-When all retries have failed, the rendition message will be added to a dead letter queue. The content of this dead
-letter queue will be written to the database table <code>ecr_rendition_dlq</code>. The table contains the following fields:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Columns of ecr_rendition_dlq</caption>
-<colgroup>
-<col style="width: 25%;">
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">column</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A sequential ID of the entry in the table</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type_definition_name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the type definition of the affected document</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the version of the affected document</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">source_content_element</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element containing the original content</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">rendition_content_element</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element containing the rendition</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>To store the information about failed renditions in the database, the message queue in ActiveMQ must be configured to
+When all retries have failed, the rendition message will be added to a dead letter queue and the status field of the
+rendition will be set to -1 (FAILED). For this to work, the message queue in ActiveMQ must be configured to
 use an individual dead letter queue as described in <a href="https://activemq.apache.org/message-redelivery-and-dlq-handling.html">the ActiveMQ documentation</a>.</p>
 </div>
 <div class="listingblock">
@@ -4930,6 +4898,15 @@ use an individual dead letter queue as described in <a href="https://activemq.ap
     <span class="tag">&lt;/deadLetterStrategy&gt;</span>
 <span class="tag">&lt;/policyEntry&gt;</span></code></pre>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_reset_status_of_failed_renditions">Reset status of failed renditions</h5>
+<div class="paragraph">
+<p>The status of failed renditions can be set to RESET (-2) either by using the API method
+<code>de.eitco.ecr.sdk.document.TypedDocumentServiceClient.resetFailedRenditionStatus</code> or simply by setting the value in the
+database directly. A system job polls the database and will enqueue new rendition messages in ActiveMQ to re-try to
+create the renditions. The interval in which the job polls the database can be configured using the parameter
+<code>retry-renditions.cron-expression</code> (see <a href="#_ecr_server_messaging">configuration properties</a>).</p>
 </div>
 </div>
 </div>
@@ -5380,7 +5357,7 @@ The encryption feature is configured as shown in the following example:</p>
 <p>The following tables give an overview of encryption settings and specific settings for the module <em>commons-aes</em>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Encryption settings</caption>
+<caption class="title">Table 15. Encryption settings</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5407,7 +5384,7 @@ The encryption feature is configured as shown in the following example:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 16. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -7054,6 +7031,18 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retry-renditions.batch-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the number of document versions to select in one run of the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retry-renditions.cron-expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the CRON expression used to schedule the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 0 3 * * ?</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the user used to run the jobs.</p></td>
@@ -7136,57 +7125,6 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines how many bytes of data to keep in memory when working with streams before switching to a temporary file.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1024000</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_messaging">ecr.server.messaging</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">json-messages</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If enabled, the payload of JMS messages will be a JSON string.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.back-off-multiplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number to multiply the redelivery delay with for every redelivery attempt.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.initial-redelivery-delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in milliseconds to wait until a failed message will be redelivered.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.maximum-redeliveries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of redelivery attempts for failed messages.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.use-exponential-back-off</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the time between redeliveries of a failed message will be multiplied with the backOffMultiplier for each redelivery.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 </tbody>
 </table>
@@ -7493,6 +7431,57 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the connect-timeout for the Zookeeper client.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_ecr_server_messaging">ecr.server.messaging</h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json-messages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If enabled, the payload of JMS messages will be a JSON string.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.back-off-multiplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number to multiply the redelivery delay with for every redelivery attempt.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.initial-redelivery-delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time in milliseconds to wait until a failed message will be redelivered.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.maximum-redeliveries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of redelivery attempts for failed messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.use-exponential-back-off</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the time between redeliveries of a failed message will be multiplied with the backOffMultiplier for each redelivery.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 </tbody>
 </table>
@@ -9557,7 +9546,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <div class="sect2">
 <h3 id="_type_annotations">Type Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 18. Type Annotations</caption>
+<caption class="title">Table 17. Type Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -9695,7 +9684,7 @@ the full-text support is disabled (<a href="#_nosql_example"><strong>Example</st
 <div class="sect2">
 <h3 id="_property_annotations">Property Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 19. Property Annotations</caption>
+<caption class="title">Table 18. Property Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -10386,7 +10375,7 @@ Can only be used on relation types that support relations to or from versions.</
 <div class="sect2">
 <h3 id="_data_types">Data Types</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Property Data Types</caption>
+<caption class="title">Table 19. Property Data Types</caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10560,7 +10549,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. <em>General system properties:</em></caption>
+<caption class="title">Table 20. <em>General system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10587,7 +10576,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. <em>Versioned system properties:</em></caption>
+<caption class="title">Table 21. <em>Versioned system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10649,7 +10638,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. <em>Document system properties:</em></caption>
+<caption class="title">Table 22. <em>Document system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10683,7 +10672,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. <em>Folder system properties:</em></caption>
+<caption class="title">Table 23. <em>Folder system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10710,7 +10699,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. <em>Relation system properties:</em></caption>
+<caption class="title">Table 24. <em>Relation system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -10979,7 +10968,7 @@ the <code>@Source</code> and <code>@Target</code> annotations used for relation 
 values (defined in <code>de.eitco.ecr.type.definition.annotations.reference.SupportedNodeVersion</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Possible values of the supportedNodeVersion attribute</caption>
+<caption class="title">Table 25. Possible values of the supportedNodeVersion attribute</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11159,7 +11148,7 @@ You can use the <em>@PrimaryKey</em> annotation to define one or more properties
 The object to be inherited and its initial state is shown in the following table.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 40%;">
-<caption class="title">Table 27. The object to be inherited</caption>
+<caption class="title">Table 26. The object to be inherited</caption>
 <colgroup>
 <col style="width: 40%;">
 <col>
@@ -11206,7 +11195,7 @@ Here, <strong>Invoice</strong> is an object that inherited from <strong>Company<
 The following table describes its initial state, and the update status after 3 different updates.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Inheritance Scheme</caption>
+<caption class="title">Table 27. Inheritance Scheme</caption>
 <colgroup>
 <col style="width: 11%;">
 <col>
@@ -11371,7 +11360,7 @@ The initial object is still the same, its initial state is described in the tabl
 <p>In the following table, the second object <strong>Creditor</strong>, which inherits from the first object, is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 29. The object to be inherited and inheriting</caption>
+<caption class="title">Table 28. The object to be inherited and inheriting</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -11438,7 +11427,7 @@ In the table above, the object <strong>Creditor</strong> inherited the following
 <p>The results of multilevel inheritance through an intermediate object are shown in the table below:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Inheritance Scheme in Multilevel inheritance</caption>
+<caption class="title">Table 29. Inheritance Scheme in Multilevel inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -11537,7 +11526,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>In the following table, the object <strong>Creditor</strong> is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 31. An object to be inherited</caption>
+<caption class="title">Table 30. An object to be inherited</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -11577,7 +11566,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>The table below describes the mechanism of indirect inheritance.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Inheritance Scheme in Indirect inheritance</caption>
+<caption class="title">Table 31. Inheritance Scheme in Indirect inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -12996,7 +12985,7 @@ In this case, a certain property is defined to let the system know, a certain ve
 <p>The version system table consists of the following columns (this is not a complete excerpt):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Structure of the system table</caption>
+<caption class="title">Table 32. Structure of the system table</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -13992,7 +13981,7 @@ overview page for each model class. Example:</p>
 <p>The following table lists types and their corresponding identifiers.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Types in Java and their Identifiers in <em>arveo</em></caption>
+<caption class="title">Table 33. Types in Java and their Identifiers in <em>arveo</em></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14075,7 +14064,7 @@ overview page for each model class. Example:</p>
 types.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Identifiers for the Types List and Set</caption>
+<caption class="title">Table 34. Identifiers for the Types List and Set</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14338,7 +14327,7 @@ used:</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Columns of ecr_types</caption>
+<caption class="title">Table 35. Columns of ecr_types</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14375,7 +14364,7 @@ used:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Columns of ecr_types_content_elements</caption>
+<caption class="title">Table 36. Columns of ecr_types_content_elements</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14441,7 +14430,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Columns of ecr_folder_structure</caption>
+<caption class="title">Table 37. Columns of ecr_folder_structure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14478,7 +14467,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Columns of ecr_folder_structure_closure</caption>
+<caption class="title">Table 38. Columns of ecr_folder_structure_closure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14546,7 +14535,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Columns of <em>ecr_recovery</em></caption>
+<caption class="title">Table 39. Columns of <em>ecr_recovery</em></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14614,7 +14603,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Columns of ecr_keys_&lt;profile&gt;</caption>
+<caption class="title">Table 40. Columns of ecr_keys_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14641,7 +14630,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
+<caption class="title">Table 41. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -14685,7 +14674,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="title">Figure 8. Architecture Overview</div>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 43. 3rd Party Services in <em>arveo</em></caption>
+<caption class="title">Table 42. 3rd Party Services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -14878,7 +14867,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-04-25 10:22:31 UTC
+Last updated 2022-04-25 16:16:35 UTC
 </div>
 </div>
 <style>
