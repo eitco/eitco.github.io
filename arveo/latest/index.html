@@ -4909,6 +4909,233 @@ create the renditions. The interval in which the job polls the database can be c
 <code>retry-renditions.cron-expression</code> (see <a href="#_ecr_server_messaging">configuration properties</a>).</p>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_dynamically_skipping_renditions">dynamically skipping renditions</h5>
+<div class="paragraph">
+<p>There are cases where the decision, whether to create a rendition for a content element, can only be made at run-time. For cases like this a type can provide a method implementing that decision. This method is marked by the annotation <code>@RenditionCreationCondition</code>. Only one method of a type may have this annotation. The method</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>must have the return type <code>boolean</code>, <code>java.lang.Boolean</code> or <code>kotlin.Boolean</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>In case it is <code>java.lang.Boolean</code> it may not return null</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>must not be abstract</p>
+<div class="ulist">
+<ul>
+<li>
+<p>should the defining class be an interface this means that it is either a static or a default-method</p>
+<div class="ulist">
+<ul>
+<li>
+<p>note that - should the type be defined in kotlin and the method not be static - this means it has to be compiled with <code>-Xjvm-default=all</code> or <code>-Xjvm-default=all-compatibility</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>can have up to two parameters of type <code>RenditionInfo</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The first representing the source to render</p>
+</li>
+<li>
+<p>And the second representing the target to render to</p>
+</li>
+<li>
+<p>if only one parameter is given it is assumed to be the source</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If such a method exists, arveo evaluates it before posting rendition messages. If the method returns <code>false</code> the message is not posted. Such a method may be present on types that are not Documents, but will not have any effect. This might be helpful in scenarios where there are complex inheritance structures.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_1">Example 1</h6>
+<div class="paragraph">
+<p>Let&#8217;s assume a scenario where we have a document with a content element "content" that can have an arbitrary type. It is supposed to be a multi-page document, so in most cases it is a pdf-file. However, there are cases  where a document is created with the content element being an MS-word document and in some cases it is just a single page image. Even multi-page tiffs are possible and in some seldom cases the content is unclear and simply "application/octet-stream".</p>
+</div>
+<div class="paragraph">
+<p>In this scenario there is a web viewer that is supposed to show the documents content. For the viewer, pdf files are no problem whatsoever. It is fully capable to view the images also, except multiple-page tiff files that pose a problem. It is unable to view ms-office files. And for "application/octet-stream" it can only provide a download link.</p>
+</div>
+<div class="paragraph">
+<p>Thus is decided that the backend needs to create a pdf rendition for ms-office formats and tiff files. This could be implemented with the following class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.DOCUMENT)
+<span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="annotation">@Rendition</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">rendition</span><span class="delimiter">&quot;</span></span>, sourceElement = <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, contentType = MediaType.APPLICATION_PDF_VALUE) <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">DocumentWithDynamicRenditionDecision</span> {
+
+    <span class="predefined-type">String</span> getName();
+    <span class="type">void</span> setName(<span class="predefined-type">String</span> name);
+
+    <span class="annotation">@RenditionCreationCondition</span>
+    <span class="keyword">default</span> <span class="type">boolean</span> decideRendition( <i class="conum" data-value="3"></i><b>(3)</b>
+        RenditionInfo source,
+        RenditionInfo target <i class="conum" data-value="4"></i><b>(4)</b>
+    ) {
+
+        <span class="keyword">if</span> (source.getMediaType().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/msword</span><span class="delimiter">&quot;</span></span>)) { <i class="conum" data-value="5"></i><b>(5)</b>
+
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="keyword">if</span> (source.getMediaType().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.openxmlformats-officedocument.wordprocessingml.document</span><span class="delimiter">&quot;</span></span>)) {
+
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="keyword">if</span> (source.getMediaType().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">image/tiff</span><span class="delimiter">&quot;</span></span>)) {
+
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A content element with the name "content" is defined.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A pdf rendition of that element is defined with the name "rendition".</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A default method "decideRendition" is created and marked with <code>@RenditionCreationCondition</code>.
+<div class="ulist">
+<ul>
+<li>
+<p>Note that:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Its return type is <code>boolean</code>.</p>
+</li>
+<li>
+<p>as a <code>default</code> method it is not abstract</p>
+</li>
+<li>
+<p>it hast two parameters of the type <code>RenditionInfo</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Thus, it is applicable.</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Note that the second parameter is unused. It could be omitted.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The implementation of the method is pretty simple. It checks whether the mime-type of the source element is one that we want to create a rendition for - ms-word files (old and new) or tif. If so, it returns <code>true</code> indicating that the arveo should create a rendition for the element. Otherwise, it returns <code>false</code> so that no rendition is created.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_example_2">Example 2</h6>
+<div class="paragraph">
+<p>Assume the application described in example 1. Assume further that at one point it becomes necessary to migrate some older documents to this application. An importer is written, however most of the imports fail. This is due to the fact that many of the documents are in an older msword format that the current render engine is incapable of transforming into pdf. So it is decided to not create a rendition for those elements and simply provide a download link in the applications' client.</p>
+</div>
+<div class="paragraph">
+<p>This poses a problem in the <code>decideRendition()</code> method: Ms word documents that are created from the old source still should have created a rendition for. Thus, it is not possible to decide whether to render from the source type alone. A simple solution for this could be to add a new property <code>create_rendition</code> to the type. This nullable boolean could be set when created to imply whether to create a rendition for the content element or not. A value of <code>null</code> would activate the behaviour already implemented:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.DOCUMENT)
+<span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@Rendition</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">rendition</span><span class="delimiter">&quot;</span></span>, sourceElement = <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, contentType = MediaType.APPLICATION_PDF_VALUE)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">DynamicRenditionExample2</span> {
+
+    <span class="predefined-type">String</span> getName();
+    <span class="type">void</span> setName(<span class="predefined-type">String</span> name);
+
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="predefined-type">Boolean</span> getCreateRendition();
+    <span class="type">void</span> setCreateRendition(<span class="predefined-type">Boolean</span> value);
+
+    <span class="annotation">@RenditionCreationCondition</span>
+    <span class="keyword">default</span> <span class="type">boolean</span> decideRendition(
+        RenditionInfo source <i class="conum" data-value="2"></i><b>(2)</b>
+    ) {
+
+        <span class="keyword">if</span> (getCreateRendition() != <span class="predefined-constant">null</span>) { <i class="conum" data-value="3"></i><b>(3)</b>
+
+            <span class="keyword">return</span> getCreateRendition();
+        }
+
+        <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="keyword">if</span> (source.getMediaType().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/msword</span><span class="delimiter">&quot;</span></span>)) {
+
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="keyword">if</span> (source.getMediaType().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/vnd.openxmlformats-officedocument.wordprocessingml.document</span><span class="delimiter">&quot;</span></span>)) {
+
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="keyword">if</span> (source.getMediaType().equals(<span class="string"><span class="delimiter">&quot;</span><span class="content">image/tiff</span><span class="delimiter">&quot;</span></span>)) {
+
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+
+        <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The property <code>create_rendition</code> is defined. Note that with the type <code>java.lang.Boolean</code> it is nullable.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Note that in this case the unused parameter is omitted. This is the only change in the method signature.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>At the start of the method, it is checked, whether the new property is set, simply by calling the getter. If so the value is returned.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Otherwise, the code from example 1 is executed.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -14867,7 +15094,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-04-28 11:39:35 UTC
+Last updated 2022-04-28 14:51:24 UTC
 </div>
 </div>
 <style>
