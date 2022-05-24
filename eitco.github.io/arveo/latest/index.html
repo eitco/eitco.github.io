@@ -6,107 +6,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Introduction</title>
-
-
-
-
-
-
-
-
 <style>
 @import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
-
 @import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
 
-
-
 body {
-
     font-family: Segoe UI, Verdana, Geneva, sans-serif;
-
     color: #3a3a3a;
-
 }
-
-
 
 h1,h2 {
-
     color: #137080;
-
 }
-
-
 
 h3,h4,h5,h6 {
-
     color: #084e58;
-
 }
-
-
 
 .title, #toctitle {
-
     color: #137080 !important;
-
 }
-
-
 
 a, a:hover, a:focus {
-
     color: #084e58;
-
 }
-
-
 
 #toc.toc2 {
-
     background-color: #f9f9f9;
-
 }
-
-
 
 .icon-note::before {
-
     color: #99cc33 !important;
-
 }
-
-
 
 .icon-warning::before {
-
     color: #ee701e !important;
-
 }
-
-
 
 .icon-caution::before {
-
     color: #812313 !important;
-
 }
-
-
 
 .icon-tip::before {
-
     color: #3a3a3a !important;
-
 }
 
-
-
 #footer {
-
     color: #3a3a3a;
-
 }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -114,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo ECR-462-SNAPSHOT</div>
+<div id="toctitle">arveo test-documentation-deployment-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -197,7 +143,6 @@ a, a:hover, a:focus {
 <li><a href="#_configure_authentication_between_content_services">Configure Authentication between Content Services</a></li>
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
-<li><a href="#_configuration_properties">Configuration Properties</a></li>
 </ul>
 </li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
@@ -2815,7 +2760,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is ECR-462-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is test-documentation-deployment-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3274,7 +3219,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>ECR-462-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>test-documentation-deployment-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3327,7 +3272,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>4.2.1<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>5.0.0<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -5215,9 +5160,9 @@ rendition, the <code>@Rendition</code> annotation can be used as shown in the fo
 <div class="paragraph">
 <p>The above example shows a document type with one content element and one rendition. Both the original and the rendition
 element are stored in separate fields. This is possible but not required for renditions. When the original content
-is stored in a separate field, meta information like the content type are not stored in the database. As the content
-type of the original content is required to create a rendition, it is recommended to define an attribute of type string
-that contains the original content&#8217;s type. The attribute must be annotated with <code>@ContentType</code> to bind it&#8217;s value to
+is stored in a separate field, meta information like the content type is not stored in the database. As the content
+type of the original content is required to create a rendition, it is recommended to define an attribute of type 'String'
+that contains the original content&#8217;s type. The attribute must be annotated with <code>@ContentType</code> to bind its value to
 the original content element and return a valid mime type string like "image/jpeg". If no such attribute is present,
 the system will try to detect the content type automatically.</p>
 </div>
@@ -5318,8 +5263,8 @@ The system will not try to create a rendition when the rendition content element
 </table>
 </div>
 <div class="paragraph">
-<p>The actual rendering will be done by the Document Conversion Service. Which conversions are supported depends on the
-plugins available in the service&#8217;s classpath.</p>
+<p>The actual rendering will be done by the Document Conversion Service. Which conversions are supported, depends on the
+plugins available on the classpath of the service.</p>
 </div>
 <div class="sect3">
 <h4 id="_error_handling">Error handling</h4>
@@ -5350,7 +5295,7 @@ create the renditions. The interval in which the job polls the database can be c
 </div>
 </div>
 <div class="sect4">
-<h5 id="_dynamically_skipping_renditions">dynamically skipping renditions</h5>
+<h5 id="_dynamically_skipping_renditions">Dynamically skipping renditions</h5>
 <div class="paragraph">
 <p>There are cases where the decision, whether to create a rendition for a content element, can only be made at run-time. For cases like this a type can provide a method implementing that decision. This method is marked by the annotation <code>@RenditionCreationCondition</code>. Only one method of a type may have this annotation. The method</p>
 </div>
@@ -5575,6 +5520,41 @@ create the renditions. The interval in which the job polls the database can be c
 </table>
 </div>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_text_renditions">Text renditions</h4>
+<div class="paragraph">
+<p>The rendition feature can be used to store extracted fulltext data as content elements of a document. To achieve this,
+simply add a rendition content element with the content type <code>text/plain</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The content types of the source content element that can be used for text-extraction depend on the available extraction
+plugins of the Document Conversion Service.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To be able to use the extracted fulltext data for searches, use the fulltext extraction feature for the SOLR integration.
+See <a href="#_fulltext_extraction">SOLR</a> for details. The service will automatically use available text renditions
+when the document is transferred to SOLR. If no text rendition is available, the text extraction will be performed on the
+fly.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -7216,7 +7196,7 @@ following link you can download the current versions of SOLR: <a href="https://s
 </div>
 <div class="paragraph">
 <p>The SOLR service must be configured in <em>arveo</em> within the <em>application.yaml</em>. See
-<a href="#_ecr_server_solr">Configuration properties</a> for details.</p>
+<a href="configuration-properties.html#_ecr_server_solr">Configuration properties</a> for details.</p>
 </div>
 <div class="paragraph">
 <p>When a type definition is annotated with <code>@NOSql</code>, the entities stored in this type definition will be stored in
@@ -7488,10 +7468,10 @@ It is also possible to start the scheduler embedded in the repository service in
 repository service will create the jobs (if required), but it will not execute them.</p>
 </div>
 <div class="paragraph">
-<p>The available configuration parameters for the scheduler are listed here: <a href="#_job_service">Job service</a></p>
+<p>The available configuration parameters for the scheduler are listed here: <a href="configuration-properties.html#_job_service">Job service</a></p>
 </div>
 <div class="paragraph">
-<p>The available configuration parameters for the jobs are listed here: <a href="#_ecr_server_jobs">Job configuration</a></p>
+<p>The available configuration parameters for the jobs are listed here: <a href="configuration-properties.html#_ecr_server_jobs">Job configuration</a></p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -7598,666 +7578,9 @@ standby mode:</p>
   <span class="key">standbyOnlyScheduler</span>: <span class="string"><span class="content">true</span></span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Unresolved directive in product.adoc - include::configuration-properties.adoc[<strong>Configuration properties</strong>]</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_configuration_properties">Configuration Properties</h3>
-<div class="sect3">
-<h4 id="_ecr_server_caching">ecr.server.caching</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-acls.expire-seconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-acls.size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enums.expire-seconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enums.size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-access.expire-seconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-access.size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.expire-seconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_http">ecr.server.http</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">file.directory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.io.File</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The directory used to store the temporary files.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">file.prefix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The prefix to use for the names of the temporary files.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">temp</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">file.suffix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The suffix to use for the names of the temporary files.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.dat</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">file.threshold</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The size of the file in bytes from which on a temporary file will be used for buffering.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">131072</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_jobs">ecr.server.jobs</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">clean-recovery-table.cron-expression</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the CRON expression used to schedule the job.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0 0 3 * * ?</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no-sql-queue.batch-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the number of entries to load from the queue table in one batch.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no-sql-queue.cron-expression</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the CRON expression used to schedule the job.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">*/1 * * * * ?</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no-sql-queue.retries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of attempts to write an entry in the queue to solr.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the password of the user used to run the jobs.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">retry-renditions.batch-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the number of document versions to select in one run of the job.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">retry-renditions.cron-expression</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the CRON expression used to schedule the job.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0 0 3 * * ?</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the user used to run the jobs.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_liquibase">ecr.server.liquibase</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">auto-change-log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the location used to store the auto generated changelog.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">changeLog/auto.xml</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">changelog-directory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The directory used when generated changelogs are kept. This setting is only relevant when keepChangelogs is set to true.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">changelog</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">custom-change-log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the location of a custom liquibase changelog to execute on startup after the database schema was initialized. Changelogs can be loaded from the classpath by adding the 'classpath:' prefix. Files must be identified by an absolute path using the prefix 'file:/'.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">keep-changelogs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, generated changelogs will be kept in separate files in the configured directory.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pre-initialization-change-log</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the location of a custom liquibase changelog to execute on startup before the database schema was initialized. Changelogs can be loaded from the classpath by adding the 'classpath:' prefix. Files must be identified by an absolute path using the prefix 'file:/'.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_memory">ecr.server.memory</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">buffer-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines how many bytes of data to keep in memory when working with streams before switching to a temporary file.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1024000</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_query">ecr.server.query</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">in-condition-optimization-limit</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the number of entries in an in clause from which in the optimized query is used. -1 disables that feature.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_security">ecr.server.security</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-access-checks-enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines whether type definition specific access checks are enabled or not.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_storage">ecr.server.storage</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">profile-aliases</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map&lt;java.lang.String,java.lang.String&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A mapping of alias names to storage profile names.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">profile-templates</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;de.eitco.ecr.server.config.StorageProfileTemplate&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of profile templates used by the bucket selector plugin.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">profiles</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map&lt;java.lang.String,de.eitco.ecr.server.config.StorageProfileSettings&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A map containing all configured storage profiles.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_system">ecr.server.system</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">create-solr-changes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to false when initializing the type schema solr changes will not be executed.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">event-listeners-enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables the JMS event listeners used to process system events like recycle bin cleanup and the creation of renditions.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">initialize-empty-database</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the system will create the schema even if not in maintenance mode should the table ecr_types be empty.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">log-schema-changes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true together with maintenanceMode, the system will only log required changes to the database schema and shut down after the log was written.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maintenance-mode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the server will update the database schema at startup and shut down after the update was finished. This is actually a combination of updateSchema = true and terminateAfterCreation = true.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">schema-change-log-directory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The location of the logfile used when checkForSchemaChanges is set to true.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">logs</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">terminate-after-creation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the server will terminate after the database schema was created.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">update-schema</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to update the database schema at startup or not.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_upload">ecr.server.upload</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maximum-file-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum size of a single file in one multipart upload in bytes. -1 means no limit.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maximum-in-memory-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum size of data to keep in memory before using a temporary file (in bytes).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1048576</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maximum-total-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum total size of all files in one multipart upload in bytes. -1 means no limit.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_solr">ecr.server.solr</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">collection-replicas</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default number of replicas for a new collection created by the respository service.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">collection-shards</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default number of shards for a new collection created by the respository service.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commit-within-millis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum time in milliseconds after which the solr client will perform a commit.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-config-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the default SolrConfig.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">solr-plugin-config</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">host</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the host for the connection of the Solr Client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://localhost:38983/solr" class="bare">http://localhost:38983/solr</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">http-client-connection-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the connection timeout for the Solr HTTP client in milliseconds.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">http-client-socket-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the socket timeout for the Solr HTTP client in milliseconds.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password used for basic authorization to SOLR.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The username used for basic authorization to SOLR.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zk-digest-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password used for digest authentication for SOLR Zookeeper.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zk-digest-username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The username used for digest authentication for SOLR Zookeeper.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-client-host</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the host for the connection of the Solr Zookeeper Client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">localhost:39983</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-client-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the Timeout for the Connection of the Solr Zookeeper Client in milliseconds.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-connect-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the connect-timeout for the Zookeeper client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_messaging">ecr.server.messaging</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">json-messages</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If enabled, the payload of JMS messages will be a JSON string.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.back-off-multiplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number to multiply the redelivery delay with for every redelivery attempt.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.initial-redelivery-delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in milliseconds to wait until a failed message will be redelivered.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.maximum-redeliveries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of redelivery attempts for failed messages.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.use-exponential-back-off</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the time between redeliveries of a failed message will be multiplied with the backOffMultiplier for each redelivery.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_job_service">job-service</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">configuration-tenant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the tenant to use to store job-information in the database.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">standby-only-scheduler</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the scheduler used by the job service will be in standby mode. It will not process any jobs.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">wait-for-event</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the scheduler will not start to process events until the {@link de.eitco.commons.job.service.common.StartSchedulerEvent} is sent.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>
@@ -15823,7 +15146,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-02-08 09:57:59 +0100
+Last updated 2022-05-24 13:07:44 UTC
 </div>
 </div>
 <style>
