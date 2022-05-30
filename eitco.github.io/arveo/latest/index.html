@@ -3273,7 +3273,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.0<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>5.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -4923,16 +4923,16 @@ have to be created for every tenant separately.
 </div>
 <div class="paragraph">
 <p>The BucketOrganizer is not specific for a specific storage technology or storage interface but delegates storage requests
-to other storage plugins. The selection of the target plugin depends on the retention information of the document that contains
-the content element to be stored. The selection criteria that are used to select the target plugin can be configured in
+to other storage plugins.The selection of the target plugin depends on the retention information of the document that contains
+the content element to be stored.The selection criteria that are used to select the target plugin can be configured in
 terms of a list of bucket selection rules.</p>
 </div>
 <div class="paragraph">
 <p>The relevant retention information of the document is defined by the values of the system fields <em>RETENTION_DATE</em> and
 <em>LITIGATION_HOLD</em>.
-This value pair is matched against the bucket selection rules. The matching process starts with the first rule
-and continues to the next rule if the rule does not match the value pair. The matching process ends at the first rule that
-matches the value pair. The storage profile named in this rule will be used to store the content. Each bucket
+This value pair is matched against the bucket selection rules.The matching process starts with the first rule
+and continues to the next rule if the rule does not match the value pair.The matching process ends at the first rule that
+matches the value pair.The storage profile named in this rule will be used to store the content.Each bucket
 selection rule consists of three parts that are separated by the pipe (|) symbol:</p>
 </div>
 <div class="sect4">
@@ -6049,12 +6049,12 @@ The encryption feature is configured as shown in the following example:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the master password used to encrypt the cipher keys</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rngAlgorithm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the algorithm used to generate secure random data</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Platform specific. See docs. If not specified, the
+<td class="tableblock halign-left valign-top"><p class="tableblock">Platform specific. See docs for SecureRandom.getInstanceStrong(). If not specified, the
 most secure algorithm available will be used</p></td>
 </tr>
 </tbody>
@@ -6072,11 +6072,25 @@ by the type definition to types that use an encrypting storage profile.
 </tr>
 </table>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the <a href="#_bucketorganizer">BucketOrganizerPlugin</a> is used, the encryption settings must be configured for each plugin referenced
+by the bucket selection rules. Configuring the encryption for the BucketOrganizerPlugin itself is not supported.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_implementation_details">Implementation details</h3>
 <div class="paragraph">
-<p>Encryption in the <em>arveo</em> is based on the implementation in the module <em>commons</em>.</p>
+<p>Encryption in the <em>arveo</em> is based on the implementation in the module <em>commons</em>. The following chapter
+contains information about the implementation details of this library.</p>
 </div>
 <div class="sect3">
 <h4 id="_header">Header</h4>
@@ -6177,10 +6191,14 @@ Marker|length|method|header version|key length|checksum length|iteration|storage
 <div class="sect3">
 <h4 id="_key">Key</h4>
 <div class="paragraph">
-<p>The keys used for encryption are derived from any password using the Argon2 hash function. Since this process can be very
-computationally intensive depending on the configuration, a key ID can be stored in the header. This makes it possible
-to store a key once it has been derived and to reuse it for decryption, which avoids having to derive the key from the
-password again. The library is not responsible for the secure storage of the key.</p>
+<p>The keys used for encryption are either generated using random data or derived from any password using the Argon2 hash
+function. Since deriving keys can be very computationally intensive depending on the configuration, a key ID can be
+stored in the header. This makes it possible to store a key once it has been derived and to reuse it for decryption,
+which avoids having to derive the key from the password again. The library is not responsible for the secure storage of
+the key. Generating keys using random data is a much faster operation compared to key derivation. The disadvantage is,
+that it is not possible to derive the key from a master password in case it was lost. When generated keys are used,
+it is crucial to store those keys in a secure location. In this case, the header will not contain a salt but only the
+ID of the stored key.</p>
 </div>
 </div>
 <div class="sect3">
@@ -15804,7 +15822,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-05-30 12:07:22 UTC
+Last updated 2022-05-30 14:11:42 UTC
 </div>
 </div>
 <style>
