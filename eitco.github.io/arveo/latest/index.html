@@ -4859,6 +4859,19 @@ are currently available:</p>
 <div class="paragraph">
 <p>The S3 plug-in stores data in an Amazon S3 compatible storage.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If <em>arveo</em> has no permissions to create buckets, then the administrator has to create the buckets manually. Buckets
+have to be created for every tenant separately.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 11. Configuration parameter of the S3 plugin</caption>
 <colgroup>
@@ -4874,7 +4887,7 @@ are currently available:</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pathStyleAccessEnabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">From S3 documentation: Configures the client to use path-style access for all requests.
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use path-style access for all requests.
 Amazon S3 supports virtual-hosted-style and path-style access in all regions.
 The path-style syntax, however, requires that you use the region-specific endpoint when attempting to access a bucket</p></td>
 </tr>
@@ -4899,20 +4912,82 @@ The path-style syntax, however, requires that you use the region-specific endpoi
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the S3 bucket to be created by the plugin. The name can only contain lowercase letters.
 The name of the current tenant will be appended to the bucket name, separated by a "-" sign.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">signer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of the signature algorithm to use for signing requests made by this client. If not set,
+the default configuration of the Amazon S3 SDK will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">proxyhost</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional proxy host used by the client when connecting to the S3 storage.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">proxyprotocol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The protocol (HTTP or HTTPS) used to connect to the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">proxyport</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port used by the client to connect to the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">streambuffersize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the send- and receive-buffers in bytes. The default is 32KB.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">uploadpresignedurl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the client will use pre-signed URL requests to communicate with the S3 storage.
+The default is false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acceleratemode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use S3 accelerate endpoint for all requests. The default is false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxconnection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of allowed open HTTP connections. Not configured by default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxErrorRetries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of retries for failed requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">baseDelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base delay in milliseconds for the retry policy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxBackoffTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum backoff time in milliseconds for the retry policy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">backoffStrategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The backoff strategy used by the retry policy.</p></td>
+</tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If <em>arveo</em> has no permissions to create buckets, then the administrator has to create the buckets manually. Buckets
-have to be created for every tenant separately.
-</td>
-</tr>
-</table>
+<div class="sect5">
+<h6 id="_configuring_the_retry_policy_of_the_s3_plugin">Configuring the retry policy of the S3 plugin</h6>
+<div class="paragraph">
+<p>The Amazon S3 SDK used to connect to a S3 compatible storage supports different ways to retry failed requests. By default,
+a retry policy using jitter and 3 retries is used. To configure a custom retry policy, all three parameters <code>baseDelay</code>,
+<code>maxBackoffTime</code> and <code>backoffStrategy</code> have to be configured. The <code>backoffStrategy</code> parameter must be set to one of the following values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>FULL_JITTER</code></p>
+</li>
+<li>
+<p><code>EQUAL_JITTER</code></p>
+</li>
+<li>
+<p><code>EXPONENTIAL</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <a href="https://docs.aws.amazon.com/de_de/general/latest/gr/api-retries.html">Amazon documentation</a> contains an explanation
+of the different strategies.</p>
+</div>
 </div>
 </div>
 </div>
@@ -15822,7 +15897,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-05-30 16:51:06 UTC
+Last updated 2022-05-31 09:58:12 UTC
 </div>
 </div>
 <style>
