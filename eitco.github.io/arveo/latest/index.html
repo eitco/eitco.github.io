@@ -76,7 +76,7 @@ a, a:hover, a:focus {
 </li>
 <li><a href="#_architecture_overview"><strong>Architecture Overview</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_content_services">Content Services</a></li>
+<li><a href="#_content__services">Content Services</a></li>
 <li><a href="#_3rd_party_services">3rd Party Services</a></li>
 <li><a href="#_industry_standards">Industry standards</a></li>
 <li><a href="#_opensource_technology_stack">Opensource Technology Stack</a></li>
@@ -97,7 +97,7 @@ a, a:hover, a:focus {
 <li><a href="#_persistence_architecture">Persistence Architecture</a></li>
 <li><a href="#_data_kinds">Data Kinds</a></li>
 <li><a href="#_high_availability">High Availability</a></li>
-<li><a href="#_data_integrity_2">Data Integrity</a></li>
+<li><a href="#_data_integrity">Data Integrity</a></li>
 <li><a href="#_content_storage_2">Content Storage</a></li>
 <li><a href="#_clustering">Clustering</a></li>
 <li><a href="#_data_deletion">Data Deletion</a></li>
@@ -121,7 +121,7 @@ a, a:hover, a:focus {
 <li><a href="#_the_types_archetype">The Types Archetype</a></li>
 </ul>
 </li>
-<li><a href="#archetype_overview">The Types Archetype</a>
+<li><a href="#_archetype_overview">The Types Archetype</a>
 <ul class="sectlevel2">
 <li><a href="#_overview_of_the_generated_project">Overview of the generated project</a></li>
 <li><a href="#_the_full_featured_archetype">The Full-Featured Archetype</a></li>
@@ -135,12 +135,13 @@ a, a:hover, a:focus {
 <li><a href="#_configure_storage_locations">Configure Storage Locations</a></li>
 <li><a href="#_renditions">Renditions</a></li>
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
-<li><a href="#_configure_encryption">Configure Encryption</a></li>
+<li><a href="#_encryption">Configure Encryption</a></li>
 <li><a href="#_overview">Overview</a></li>
 <li><a href="#_implementation_details">Implementation details</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
 <li><a href="#_configure_authenticationsso_with_keycloak">Configure Authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure Authentication between Content Services</a></li>
+<li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
@@ -185,7 +186,7 @@ a, a:hover, a:focus {
 <ul class="sectlevel2">
 <li><a href="#_upload_data">Upload Data</a></li>
 <li><a href="#_download_data">Download Data</a></li>
-<li><a href="#_delete_an_object">Delete An Object</a></li>
+<li><a href="#_document_service_recycle_bin">Delete An Object</a></li>
 <li><a href="#_locking">Locking</a></li>
 <li><a href="#_checkin_checkout">Checkin / Checkout</a></li>
 <li><a href="#_search_language">Search Language</a></li>
@@ -479,7 +480,7 @@ automated service provision up to blue-green deployment for seamless updates to 
 <h2 id="_architecture_overview"><strong>Architecture Overview</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_content_services">Content Services</h3>
+<h3 id="_content__services">Content Services</h3>
 <div class="paragraph">
 <p><em>arveo</em> is a content service platform and provides a set of lightweight, <strong>operating system-independent</strong> content microservices.</p>
 </div>
@@ -866,10 +867,12 @@ expiry date. That ensures that only client authenticated against the central ser
 <p><em>arveo</em>  can encrypt the content with AES 256 and thus protect it against unauthorized access.
 The key is stored in such a way that maximum security is guaranteed.
 In order not to re-encrypt all data if the key is compromised, own keys are generated.
-Only the keys used are encrypted with the customer key and stored separately (<a href="#">Encryption</a>).<br>
-See also <a href="#_data_integrity">Data Integrity</a>.
-_ arveo _ allows you to organize documents into folders and records.
-_ arveo _ can control the access rights such as reading, writing or deleting to each document via
+Only the keys used are encrypted with the customer key and stored separately (<a href="#_encryption">Encryption</a>).<br>
+See also <a href="#_data_integrity">Data Integrity</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>arveo</em> allows you to organize documents into folders and records.
+<em>arveo</em> can control the access rights such as reading, writing or deleting to each document via
 attributes or access lists and thus grant or deny the corresponding access to the groups or users.</p>
 </div>
 <div class="paragraph">
@@ -1098,11 +1101,11 @@ Save the dumps as an <em>arveo</em> document with a 10-year retention period. If
 <div class="sect3">
 <h4 id="_download_and_migration">Download And Migration</h4>
 <div class="paragraph">
-<p>All documents in <em>arveo</em> that are subject to retention are available by the REST API and can be downloaded. The integrity and availability of the content is the responsibility of the provider and operator of the platform. The provider must ensure that failures of the storage systems for database and content are identified at an early stage and take appropriate countermeasures. See chapter <a href="#_fail_safety"><strong>Fail Safety</strong></a> for technical and organizational measures for high availability of the <em>arveo</em> platform.</p>
+<p>All documents in <em>arveo</em> that are subject to retention are available by the REST API and can be downloaded. The integrity and availability of the content is the responsibility of the provider and operator of the platform. The provider must ensure that failures of the storage systems for database and content are identified at an early stage and take appropriate countermeasures. See chapter <a href="#_fail_safety">Fail Safety</a> for technical and organizational measures for high availability of the <em>arveo</em> platform.</p>
 </div>
 <div class="paragraph">
 <p>In the event that data has to be migrated, <em>arveo</em> offers an extensive export API that enables content and metadata to be exported.
-<em>arveo</em> saves the hash value (<a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" class="bare">https://en.wikipedia.org/wiki/Cryptographic_hash_function</a>) in the database that was determined when the content was first uploaded (<a href="#<em>upload_data"><strong>Upload Data</strong></a>). This hash value can be used as a checksum to detect accidental or intentionally corruption of data. If the hash value of the content after the migration is identical to the original hash the migration report proves the correctness of the migration process. To report the completeness of the migration process  the _arveo</em> API allows you to export a list of all records, cases and documents in a document type.</p>
+<em>arveo</em> saves the hash value (<a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" class="bare">https://en.wikipedia.org/wiki/Cryptographic_hash_function</a>) in the database that was determined when the content was first uploaded (<a href="#_upload_data">Upload Data</a>). This hash value can be used as a checksum to detect accidental or intentionally corruption of data. If the hash value of the content after the migration is identical to the original hash the migration report proves the correctness of the migration process. To report the completeness of the migration process  the <em>arveo</em> API allows you to export a list of all records, cases and documents in a document type.</p>
 </div>
 <div class="paragraph">
 <p><strong>Legally Compliant Migration</strong></p>
@@ -1175,7 +1178,7 @@ content storage and compares the hash once again with the expected value (<a hre
 _arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
 </div>
 <div class="paragraph">
-<p>In case of very sensible data you can enable transparent encryption (<a href="./encryption.html">Encryption</a>) to follow the data protection rules and prevent your administrators from access of document content.</p>
+<p>In case of very sensible data you can enable transparent encryption (<a href="#_encryption">Encryption</a>) to follow the data protection rules and prevent your administrators from access of document content.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1247,10 +1250,10 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <div class="ulist">
 <ul>
 <li>
-<p>ensure that HTTPS communication is enabled for all clients, applications,3erd party components and services (<a href="#"><strong>Services</strong></a>).</p>
+<p>ensure that HTTPS communication is enabled for all clients, applications,3erd party components and services (<a href="#_content__services"><strong>Services</strong></a>).</p>
 </li>
 <li>
-<p>enable OAuth2.0 or X.509 certificate authentication <a href="authentication-x509.html">X.509 certificate authentication</a> and authorization for all <em>arveo</em> service (<a href="authentication-oauth2.html"><strong>OAuth2.0</strong></a>). All <em>arveo</em> services require authentication, ensuring that only  <em>arveo</em> services or authenticated and authorized users can use the API. We recommend using a state-of-the-art authentication services like keycloak and to enable <a href="#_configure_keycloak_for_sso_with_kerberos"><strong>SSO</strong></a> with at least 2-factor authentication.</p>
+<p>enable OAuth2.0 or X.509 certificate authentication <a href="#_authentication-x509">X.509 certificate authentication</a> and authorization for all <em>arveo</em> service (<a href="#_authentication-oauth2"><strong>OAuth2.0</strong></a>). All <em>arveo</em> services require authentication, ensuring that only  <em>arveo</em> services or authenticated and authorized users can use the API. We recommend using a state-of-the-art authentication services like keycloak and to enable <a href="#_configure_keycloak_for_sso_with_kerberos"><strong>SSO</strong></a> with at least 2-factor authentication.</p>
 </li>
 <li>
 <p>take suitable technical or organizational actions against unauthorized changes to the data such as firewall, VPN, transparent encryption with <em>arveo</em> or at hardware level,</p>
@@ -1275,10 +1278,10 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>make sure that only authorized persons receive an account that grants access to <em>arveo</em> documents.</p>
 </li>
 <li>
-<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="#"><strong>ACLs</strong></a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read)</p>
+<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="#_access_control_lists"><strong>ACLs</strong></a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read)</p>
 </li>
 <li>
-<p>the activities of managers who can change ACLs are logged via <em>arveo</em> audit (<a href="user-management.html"><strong>User Management</strong></a>) and checked at regular intervals.</p>
+<p>the activities of managers who can change ACLs are logged via <em>arveo</em> audit and checked at regular intervals.</p>
 </li>
 <li>
 <p>organizationally ensure that the password the <em>arveo</em> administration users are changed regularly.</p>
@@ -1440,7 +1443,7 @@ The <em>arveo</em> micro services should be deployed as containers in your cloud
 </div>
 </div>
 <div class="sect2">
-<h3 id="_data_integrity_2">Data Integrity</h3>
+<h3 id="_data_integrity">Data Integrity</h3>
 <div class="paragraph">
 <p><em>arveo</em> ensures the immutability and integrity of all your digital content and evidence records by an automated hash check each time content is up- or downloaded.</p>
 </div>
@@ -1885,7 +1888,7 @@ If you delete objects only in the database the content objects are orphaned, and
 <p>Any document, container or folder type can use the optional <em>recycle bin</em> feature. If it is enabled, entities in the type definition can be moved to and restored from the recycle bin.</p>
 </div>
 <div class="paragraph">
-<p>The recycle bin is implemented as a boolean database system property <em>DELETED</em>. Entities in the recycle bin will be filtered from normal queries by default, but a client can compose search expressions that override this behavior (see <a href="#_recycle_bin"><strong>Recycle Bin</strong></a>).</p>
+<p>The recycle bin is implemented as a boolean database system property <em>DELETED</em>. Entities in the recycle bin will be filtered from normal queries by default, but a client can compose search expressions that override this behavior (see <a href="#_document_service_recycle_bin"><strong>Recycle Bin</strong></a>).</p>
 </div>
 <div class="paragraph">
 <p>If you delete or purge an object in the recycle bin it is deleted like a document without recycle bin feature and cannot be restored.</p>
@@ -1905,7 +1908,7 @@ For compliance reasons the audit entries in the database are not deleted by the 
 <div class="sect3">
 <h4 id="_automated_recycle_bin_emptying">Automated Recycle Bin Emptying</h4>
 <div class="paragraph">
-<p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>.You can activate the predefined empty recycle bin job, and you can change the age from the 6 month default value to the age you want. the job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
+<p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>.You can activate the predefined empty recycle bin job, and you can change the age from the 6 months default value to the age you choose. The job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1931,7 +1934,7 @@ This feature is only intended as a last backup in order to make accidentally del
 <h4 id="_recovery_log_emptying">Recovery Log Emptying</h4>
 <div class="paragraph">
 <p>The system management API provides a method to remove expired entities from the recovery table.An entity is considered expired when its keep-until timestamp is in the past compared from the moment the method is invoked.A user who calls this
-method needs the <strong>ECR_PURGE_RECOVERY_TABLE</strong> authority (see <a href="#">Access Rights</a>).</p>
+method needs the <strong>ECR_PURGE_RECOVERY_TABLE</strong> authority (see <a href="#_access_rights">Access Rights</a>).</p>
 </div>
 <div class="paragraph">
 <p>The recovery of deleted entities is a manual process. The recovery table contains a JSONB column containing a JSON representation of the entire entity including attributes, content information and modification information. Each version of an entity is contained in the recovery table as a separate row.</p>
@@ -2036,7 +2039,7 @@ MAIL_TO is the address to which the mails are sent and MAIL_FROM is the sender a
 </div>
 </div>
 <div class="sect3">
-<h4 id="_containerized_applications">Containerized Applications</h4>
+<h4 id="_system_requirements">Containerized Applications</h4>
 <div class="paragraph">
 <p>For the installation of the product, certain requirements for the hardware, software and infrastructure to be provided
 must be met.
@@ -2263,7 +2266,7 @@ The storage is meant for storing the <em>arveo</em> content objects of type <em>
 <div class="ulist">
 <ul>
 <li>
-<p>System machine 3 - Here all other services of <em>arveo</em> are installed: see <a href="#_content_services"><strong>Content Services</strong></a>, <a href="#_3rd_party_services"><strong>3rd party services</strong></a></p>
+<p>System machine 3 - Here all other services of <em>arveo</em> are installed: see <a href="#_content__services"><strong>Content Services</strong></a>, <a href="#_3rd_party_services"><strong>3rd party services</strong></a></p>
 </li>
 </ul>
 </div>
@@ -2356,7 +2359,7 @@ In order to guarantee the atomicity of the transactions and to avoid inconsisten
 <h4 id="_puppet">Puppet</h4>
 <div class="paragraph">
 <p>Puppet is open source software developed by Puppet Labs and is used for the automated configuration and deployment of software deliveries. It ensures the configuration management of servers with both Unix-like operating systems and the Windows operating system via network. The Ad-min-Tool allows the automated configuration of computers and servers as well as the services installed on them.
-The <em>_arveo</em> Services are installed and configured with Puppet. After the server has been provided, see <a href="#"><strong>System Requirements</strong></a>, the Puppet Agent is installed on it, which then takes care of setting up the environment and the actual application. The duration of the installation process can vary and requires an adequate internet connection. The individual installation components are installed in the form of .deb packages.
+The <em>arveo</em> services are installed and configured with Puppet. After the server has been provided, see <a href="#_system_requirements">System Requirements</a>, the Puppet Agent is installed on it, which then takes care of setting up the environment and the actual application. The duration of the installation process can vary and requires an adequate internet connection. The individual installation components are installed in the form of .deb packages.
 The installation is completely automated and carried out remotely.</p>
 </div>
 </div>
@@ -2388,7 +2391,7 @@ The installation is completely automated and carried out remotely.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="#<em>content_services"><strong></em>arveo_ Content Services</strong></a></p>
+<p><a href="#_content__services"><strong><em>arveo</em> Content Services</strong></a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -2749,7 +2752,7 @@ unencrypted repository connections.</p>
 (or Kotlin) interfaces which contain getters and setters for the fields that will be available on each individual entity
 type. There is a <a href="https://maven.apache.org/guides/introduction/introduction-to-archetypes.html">maven archetype</a> to create
 a project that will contain those type definition interfaces and integration tests to try out the created types.
-More information about the archetype can be found <a href="#archetype_overview">here</a>.</p>
+More information about the archetype can be found <a href="#_archetype_overview">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>First, create a directory that will contain the project files for the demo application. Open a command line in this
@@ -2792,7 +2795,7 @@ default values that can be used.</p>
 are confirmed, the project will be generated in a folder called <em>demo-types</em>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="#">archetype documentation</a> contains a description of the generated project. For this guide,
+<p>The <a href="#_archetype_overview">archetype documentation</a> contains a description of the generated project. For this guide,
 the files in <em>implementation/types</em> are the most important ones:</p>
 </div>
 <div class="ulist">
@@ -3967,7 +3970,7 @@ Imported file Incoming_invoice.png belonging to project Webclient
 </div>
 </div>
 <div class="sect1">
-<h2 id="archetype_overview">The Types Archetype</h2>
+<h2 id="_archetype_overview">The Types Archetype</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This archetype creates a rather small project. It consists of an arveo scenario and tests for that.</p>
@@ -5683,7 +5686,7 @@ You can configure a new storage profile with an unlimited number of data buckets
 </tbody>
 </table>
 <div class="paragraph">
-<p>Find more details about selection rules in  <a href="./content-elements-storage.html#_bucketorganizer">Retention Bucket Selection Rules</a></p>
+<p>Find more details about selection rules in  <a href="#_bucketorganizer">Retention Bucket Selection Rules</a></p>
 </div>
 <div class="paragraph">
 <p>If the configuration is not correct you will find more information in the startup log and will most likely find a MissingConfigurationException</p>
@@ -5762,7 +5765,7 @@ The upload API will only accept content of this type for the document type.</td>
 </tr>
 </table>
 </div>
-<div class="listingblock">
+<div id="_retention_container" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yaml"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -5972,7 +5975,7 @@ See content types without retention above arveo:server:content:DocumentTypeA/B</
 </table>
 </div>
 <div class="paragraph">
-<p>For more details on storage profiles and content types see <a href="./content-elements-storage.html#_types_of_content_elements">Content Types</a></p>
+<p>For more details on storage profiles and content types see <a href="#_types_of_content_elements">Content Types</a></p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -5981,7 +5984,7 @@ See content types without retention above arveo:server:content:DocumentTypeA/B</
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-If you want to use directories instead of buckets you can configure file system storage profiles and assign a sub directory (<a href="./content-elements-storage.html#_file_system">File system storage profile configuration</a>)
+If you want to use directories instead of buckets you can configure file system storage profiles and assign a sub directory (<a href="#_file_system">File system storage profile configuration</a>)
 </td>
 </tr>
 </table>
@@ -6020,7 +6023,7 @@ If you want to use directories instead of buckets you can configure file system 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_encryption">Configure Encryption</h3>
+<h3 id="_encryption">Configure Encryption</h3>
 <div class="paragraph">
 <p>The <em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
 for each storage profile.</p>
@@ -6523,7 +6526,7 @@ Client Protocol=openid-connect<br></p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Implicit flow is no longer recommended. The standard flow should be used. Furthermore, the extension PKCE (Proof Key for Code Exchange Code) should be used (<a href="authentication-oauth2.html#_authentication_code_flow_pkce">*Authentication Standard Flow with PKCE</a>.
+Implicit flow is no longer recommended. The standard flow should be used. Furthermore, the extension PKCE (Proof Key for Code Exchange Code) should be used (<a href="#_authentication_code_flow_pkce">*Authentication Standard Flow with PKCE</a>.
 </td>
 </tr>
 </table>
@@ -7028,6 +7031,153 @@ Some common error messages and ways to fix them:</p>
 </ul>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_authentication-oauth2">OAuth2.0 Authentication</h3>
+<div class="paragraph">
+<p>All <em>arveo</em> services require authentication, ensuring that only another <em>arveo</em> service or an authenticated user can use the REST API. Authentication of a user is done by the either a authentication service like Keycloak or the <em>arveo</em> User Management Service.
+The user context is passed to invoked services. Single Sign on is supported with OAuth2.0 and Open ID Connect.</p>
+</div>
+<div class="paragraph">
+<p>The <em>arveo</em> User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue JSON web tokens that can be used to log in to services that are also secured with OAuth2.</p>
+</div>
+<div class="paragraph">
+<p>This chapter describes</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>how <em>arveo</em>'s content services act as an OAuth2.0 resource server for applications using the <em>arveo</em> REST API</p>
+</li>
+<li>
+<p>how the <em>arveo</em> services use OAuth2.0 to authenticate to other services as a technical user.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All content services use Spring Security for user authentication and authorization. The services support OAuth2.0 with OpenID Connect.</p>
+</div>
+<div class="paragraph">
+<p>Spring Security enables both the OAuth2.0 support for the service&#8217;s web resources and the OAuth2.0 client support. The content services retrieve a new OAuth2.0 token from the configured OAuth2.0 authorization service when a authentication is required.
+This OAuth2.0 authorization service can either be the <em>arveo</em> user management service or Keycloak, Active Directory.</p>
+</div>
+<div class="sect3">
+<h4 id="_oauth2_0_flows_grant_types">OAuth2.0 Flows (Grant types)</h4>
+<div class="paragraph">
+<p>OAuth2.0 defines four flows to get an access token. These flows are called grant types. <em>arveo</em> supports two flows for user authentication and service authentication.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Client Credentials Flow: used for machine-to-machine content services communication.</p>
+</li>
+<li>
+<p>Authorization Code Flow with Proof Key for Code Exchange (PKCE) technique: used by <em>arveo</em> Web Applications sand also used by mobile apps.</p>
+</li>
+<li>
+<p>Resource Owner Password Flow: can be used by highly-trusted web apps.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the following paragraphs we describe the flows. The authentication service can either be the <em>arveo</em> User Management Service or Keycloak. If you use Keycloak you must turn off <em>arveo</em> internal authentication service.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_client_credential_flow">Client Credential Flow</h4>
+<div class="paragraph">
+<p>Our machine-to-machine content services authenticate and authorize the app not an user. For this scenario, typical authentication schemes like username + password or social logins don&#8217;t make sense. Instead, the services use the Client Credentials Flow, in which they pass along their Client ID and Client Secret to authenticate themselves and get a token.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/auth-sequence-client-credentials.png" alt="*Credential Flow*">
+</div>
+<div class="title">Figure 7. Credential Flow</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>arveo</em> authenticates with Authorization Service using its Client ID and Client Secret (/oauth/token endpoint).</p>
+</li>
+<li>
+<p>The Authorization Service validates the Client ID and Client Secret.</p>
+</li>
+<li>
+<p>The Authorization Service responds with an Access Token.</p>
+</li>
+<li>
+<p><em>arveo</em> can use the Access Token to call an API on behalf of itself.</p>
+</li>
+<li>
+<p>The Service API responds with requested data.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_authentication_code_flow_pkce">Authentication Code Flow (PKCE)</h4>
+<div class="paragraph">
+<p>The <em>arveo</em> single-page web applications requests Access Tokens, some additional security concerns are posed that are not mitigated by the Authorization Code Flow alone. This is because:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Native apps cannot securely store a Client Secret. Decompiling the app will reveal the Client Secret, which is bound to the app and is the same for all users and devices.</p>
+</li>
+<li>
+<p>Single-page apps cannot securely store a Client Secret because their entire source is available to the browser.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Given these situations, OAuth 2.0 provides a version of the Authorization Code Flow which makes use of a Proof Key for Code Exchange (PKCE).</p>
+</div>
+<div class="paragraph">
+<p>The PKCE-enhanced Authorization Code Flow introduces a secret created by the calling application that can be verified by the authorization server; this secret is called the Code Verifier. Additionally, the calling app creates a transform value of the Code Verifier called the Code Challenge and sends this value over HTTPS to retrieve an Authorization Code. This way, a malicious attacker can only intercept the Authorization Code, and they cannot exchange it for a token without the Code Verifier.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/auth-sequence-auth-code-pkce.png" alt="Authentication Code Flow">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The user clicks Login within the application.</p>
+</li>
+<li>
+<p>The OAUTH2 java script SDK creates a cryptographically-random code_verifier and from this generates a code_challenge.</p>
+</li>
+<li>
+<p>OAUTH2 java script SDK redirects the user to the authorization service (/authorize endpoint) along with the code_challenge.</p>
+</li>
+<li>
+<p>The authorization service redirects the user to the login and authorization prompt.</p>
+</li>
+<li>
+<p>The user authenticates using one of the configured login options and may see a consent page listing the permissions Auth0 will give to the application.</p>
+</li>
+<li>
+<p>The authorization service stores the code_challenge and redirects the user back to the application with an authorization code, which is good for one use.</p>
+</li>
+<li>
+<p>OAUTH2 jav script SDK sends this code and the code_verifier (created in step 2) to the Auth0 Authorization Server (/oauth/token endpoint).</p>
+</li>
+<li>
+<p>The authorization service verifies the code_challenge and code_verifier.</p>
+</li>
+<li>
+<p>The authorization server responds with an ID Token and Access Token (and optionally, a Refresh Token).</p>
+</li>
+<li>
+<p>The <em>arveo</em> web application can use the Access Token to call an API to access information about the user.</p>
+</li>
+<li>
+<p>The API responds with requested data.</p>
+</li>
+</ul>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_maintenance_mode_for_the_database_schema">Maintenance mode for the database schema</h4>
 <div class="paragraph">
@@ -7294,7 +7444,7 @@ following link you can download the current versions of SOLR: <a href="https://s
 </div>
 <div class="paragraph">
 <p>When a type definition is annotated with <code>@NOSql</code>, the entities stored in this type definition will be stored in
-SOLR, too. See <a href="#_nosql_example">NOSQL Example</a> for how to enable this feature. The system
+SOLR, too. See <a href="#_entity_annotations_nosql_example">NOSQL Example</a> for how to enable this feature. The system
 will create a special queue table in the relational database for such a type definition. The queue table will contain
 the entities that have to be stored in SOLR. A <a href="#_nosql_queue_job">system job</a> is used to process the
 entries in the queue table.</p>
@@ -7391,7 +7541,7 @@ by a dot. For example, an attribute called "name" in a type definition called "i
 <h4 id="_fulltext_extraction">Fulltext extraction</h4>
 <div class="paragraph">
 <p>It is also possible to store fulltext data of the content of documents in SOLR. For this, set the <code>fulltextExtraction</code>
-attribute of the <code>@ContentElement</code> annotation to true (see <a href="#">content elements</a>). The
+attribute of the <code>@ContentElement</code> annotation to true (see <a href="#_configure_storage_locations">Content Elements</a>). The
 fulltext data of all content elements will be stored in a field called "text" in SOLR. This field can be used in queries
 just like any other field.</p>
 </div>
@@ -8671,7 +8821,7 @@ to every ACL. The method <em>updateAclsWhere()</em> executes the given ACL batch
 </div>
 <div class="paragraph">
 <p>There is also a more convenient method with the same name updateAclsWhere(), that returns a <em>ConditionBuilder</em>, that can
-be used in searches (see <a href="#Search Service">[Search Service]</a>).</p>
+be used in searches (see <a href="#_search_service">Search Service</a>).</p>
 </div>
 </div>
 <div class="sect4">
@@ -11022,7 +11172,7 @@ External views will only be read from ecr.It will never write to an external vie
 </div>
 </div>
 <div class="sect3">
-<h4 id="_nosql_example">NoSQL Example</h4>
+<h4 id="_entity_annotations_nosql_example">NoSQL Example</h4>
 <div class="paragraph">
 <p>You can write the annotation <em>@NOSql</em> to the type definitions, which should also be created in the solr schema, so
 that the whole class is created with its fields.</p>
@@ -11666,7 +11816,7 @@ referenced via independent system-wide unique IDs.</p>
 </div>
 <div class="paragraph">
 <p>A Container is an object without content. It supports all system managed metadata attributes and custom attributes
-defined by the type definition. It is called 'container' because it&#8217;s primary use case is to serve as an entity that
+defined by the type definition. It is called 'Container' because it&#8217;s primary use case is to serve as an entity that
 contains custom metadata and that is related to other entities like a document via foreign keys or relations.</p>
 </div>
 <div class="admonitionblock tip">
@@ -11677,8 +11827,8 @@ contains custom metadata and that is related to other entities like a document v
 </td>
 <td class="content">
 Use container objects to build records and cases that contain documents.You can map the relationship between file,
-case and documents either as a foreign key (<a href="#<em>property_annotations"><strong></em>@ForeignKey_ annotation</strong></a>)
-or using the relation type objects (xref:relation-type.adoc#<strong>Relation Type</strong>).
+case and documents either as a foreign key (<a href="#_property_annotations"><strong><em>@ForeignKey</em> annotation</strong></a>)
+or using the relation type objects (<a href="#_relation_type"><strong>Relation Type</strong></a>).
 </td>
 </tr>
 </table>
@@ -11691,21 +11841,21 @@ or using the relation type objects (xref:relation-type.adoc#<strong>Relation Typ
 </td>
 <td class="content">
 If you use Foreign keys to create the relationship between objects you can inherit values from the parent to its
-children (<a href="#"><strong>Inheritance</strong></a>)
+children (<a href="#_inheritance"><strong>Inheritance</strong></a>)
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Containers can be versioned.A Container consists of the following components:</p>
+<p>Containers can be versioned. A Container consists of the following components:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Technical meta information, which is filled by <em>arveo</em> and cannot be changed, see <a href="#"><strong>System properties</strong></a></p>
+<p>Technical meta information, which is filled by <em>arveo</em> and cannot be changed, see <a href="#_system_properties"><strong>System properties</strong></a></p>
 </li>
 <li>
-<p>Typed container type metadata according to the type definition of the container type</p>
+<p>Typed container type metadata according to the type definition of the container type.</p>
 </li>
 </ul>
 </div>
@@ -11955,7 +12105,7 @@ attributes.Documents can be <em>filed</em> in a folder.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Technical meta information, which is filled by <em>arveo</em> and cannot be changed, see <a href="#"><strong>System properties</strong></a></p>
+<p>Technical meta information, which is filled by <em>arveo</em> and cannot be changed, see <a href="#_system_properties"><strong>System properties</strong></a></p>
 </li>
 <li>
 <p>Typed folder type metadata according to a schema defined for the document type</p>
@@ -13671,7 +13821,7 @@ overhead of a version. However, in the event of an audit, the changes are not tr
 </div>
 </div>
 <div class="sect2">
-<h3 id="_delete_an_object">Delete An Object</h3>
+<h3 id="_document_service_recycle_bin">Delete An Object</h3>
 <div class="paragraph">
 <p>Documents contain one or more content elements which are not stored in the database but in the storage system. When a document is deleted using one of the delete-calls, the content elements will remain on the storage. To delete both the database entries and all content elements (including those referenced from older versions), a client can use the purge
 methods provided by the document clients.</p>
@@ -13974,7 +14124,7 @@ In this case, a certain property is defined to let the system know, a certain ve
 <div class="sect2">
 <h3 id="_search_language">Search Language</h3>
 <div class="sect3">
-<h4 id="_concept">Concept</h4>
+<h4 id="_search_service">Concept</h4>
 <div class="paragraph">
 <p>Any client application, that needs a search function, can implement the Search Service with a suitable parameter. An
 example of such an implementation is the class <em>DocumentServiceClient</em> in the Client API. The search queries are
@@ -14264,7 +14414,7 @@ Apache Solr is a search server and is used as an independent full-text search se
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_concept_2">Concept</h4>
+<h4 id="_concept">Concept</h4>
 <div class="paragraph">
 <p><em>arveo</em> is able to store content with a fixed retention date to ensure that the legal or tax relevant
 retention period of a document is taken into account and the content is protected from deletion.
@@ -14348,7 +14498,7 @@ hold is typically small and does not affect the overall erasure performance.</p>
 <div class="content">
 <img src="images/arveo_infografik_dokument-lebenszyklus-gruen.png" alt="*Retention in Buckets*">
 </div>
-<div class="title">Figure 7. Retention in buckets</div>
+<div class="title">Figure 8. Retention in buckets</div>
 </div>
 </div>
 <div class="sect3">
@@ -14394,7 +14544,7 @@ This function requires the <em>DATAPRIVACY_ADMIN</em> privilege.
 <h4 id="_erase_a_document">Erase a document</h4>
 <div class="paragraph">
 <p>The <em>arveo</em> delete API will as for all other objects without a retention period delete the respective objects. See also
-<a href="#_recycle_bin">Deletion of objects</a> and <a href="./data-deletion.html#_recovery_log">Recovery table</a>.</p>
+<a href="#_recycle_bin">Deletion of objects</a> and <a href="#_recovery_log">Recovery table</a>.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -14814,7 +14964,7 @@ document.setName(UUID.randomUUID().toString());</pre>
 <h5 id="_automated_erase_job_template">Automated erase job template</h5>
 <div class="paragraph">
 <p>With the StorageContainer API you can erase a storage profile which is used in a retention management storage profile.
-See the example in <a href="./retention-container.html">Retention Rules</a>.</p>
+See the example in <a href="#_retention_container">Retention Rules</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -15701,7 +15851,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="content">
 <img src="images/arveo-architecture.png" alt="diagram">
 </div>
-<div class="title">Figure 8. Architecture Overview</div>
+<div class="title">Figure 9. Architecture Overview</div>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <caption class="title">Table 43. 3rd Party Services in <em>arveo</em></caption>
@@ -15897,7 +16047,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-05-31 21:29:12 UTC
+Last updated 2022-06-01 10:38:01 UTC
 </div>
 </div>
 <style>
