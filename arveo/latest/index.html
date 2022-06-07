@@ -189,9 +189,10 @@ a, a:hover, a:focus {
 <li><a href="#_document_service_recycle_bin">Delete An Object</a></li>
 <li><a href="#_locking">Locking</a></li>
 <li><a href="#_checkin_checkout">Checkin / Checkout</a></li>
+<li><a href="#_versioning_v">Versioning</a></li>
 <li><a href="#_search_language">Search Language</a></li>
 <li><a href="#_search_endpoints">Search Endpoints</a></li>
-<li><a href="#_retention_periods_2">Retention Periods</a></li>
+<li><a href="#_retention_periods_retention">Retention Periods</a></li>
 </ul>
 </li>
 <li><a href="#_sap_archive_link_service"><strong>SAP Archive Link Service</strong></a>
@@ -1029,7 +1030,7 @@ Also read Jeff Williams und Arshan Dabirsiaghi “Unfortunate Reality of Insecur
 <div class="sect4">
 <h5 id="_indexing_and_retrievel">Indexing And Retrievel</h5>
 <div class="paragraph">
-<p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique and immutable unique identifier property ( <a href="#"><strong>Data Modelling</strong></a>).
+<p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique and immutable unique identifier property ( <a href="#type_annotations"><strong>Data Modelling</strong></a>).
 The property must be <em>@Unique</em> to ensure that a user or business application can clearly identify the item.
 The unique identifier should use the taxonomy of business processes and contain all information to clearly recognize the document.
 Make the property <em>@Readonly</em> to ensure that the identifier is always set and immutable.</p>
@@ -1045,7 +1046,7 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <p>If you need a more sophisticated unique identifier you can use the annotation _@FormattedCounter which allows you to create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="#_formatted_counters_example"><strong>Unique Identifier Example</strong></a>)</p>
 </div>
 <div class="paragraph">
-<p>List data types allow you to store more than String or long value for a property. You can search for each value using the array search operation of the <em>arveo</em> query language (<a href="#"><strong>Data Types</strong></a>).</p>
+<p>List data types allow you to store more than String or long value for a property. You can search for each value using the array search operation of the <em>arveo</em> query language (<a href="#_data_types"><strong>Data Types</strong></a>).</p>
 </div>
 <div class="paragraph">
 <p>Enumeration data types allow you to set one or more values from a fixed set of values.</p>
@@ -1054,7 +1055,7 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <div class="sect3">
 <h4 id="_retention_periods">Retention Periods</h4>
 <div class="paragraph">
-<p>Enable that the statutory retention periods are assigned to the records, cases and document types  (<a href="#"><strong>Retention Periods</strong></a>, <a href="#"><strong>Retention Rules</strong></a>) and ensure that the storage container are configured correctly (<a href="#"><strong>Retention Container</strong></a>) .</p>
+<p>Enable that the statutory retention periods are assigned to the records, cases and document types  (<a href="#_retention_periods_retention"><strong>Retention Periods</strong></a>, <a href="#_retention"><strong>Retention Rules</strong></a>) and ensure that the storage container are configured correctly (<a href="#_retention_container"><strong>Retention Container</strong></a>) .</p>
 </div>
 <div class="paragraph">
 <p>Check if the technically assigned retention periods also correspond to the statutory retention periods. Monitor the audit logs to ensure that the retention period is set and is correct. Monitoring could be automated or could be a random control by an employee.</p>
@@ -1174,8 +1175,8 @@ Depending on your retention policy you can create separate reports for a retenti
 </div>
 <div class="paragraph">
 <p>Enable the verify option for all clients and integrations The upload API optionally can verify the uploaded content. The content service downloads the just uploaded stream from the
-content storage and compares the hash once again with the expected value (<a href="#<em>upload_data">Upload Content</a>).
-_arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
+content storage and compares the hash once again with the expected value (<a href="#_upload_data">Upload Content</a>).
+<em>arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
 </div>
 <div class="paragraph">
 <p>In case of very sensible data you can enable transparent encryption (<a href="#_encryption">Encryption</a>) to follow the data protection rules and prevent your administrators from access of document content.</p>
@@ -1303,9 +1304,9 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 </div>
 <div class="paragraph">
 <p>All revisions of content or metadata are stored as a traceable and immutable version
-(<a href="./versioning.html">Versioning</a>) to the storage systems.
+(<a href="#_versioning">Versioning</a>) to the storage systems.
 The content service checks the integrity of uploaded content by computing SHA-256 hashes on client and server side.
-Additionally, an audit entry is written to the audit log table (<a href="./audit.html">Audit Log</a>).
+Additionally, an audit entry is written to the audit log table (<a href="#_configure_audit">Audit Log</a>).
 <em>arveo</em> provides a role based access control on object level and allows you to prevent unauthorized access
 to content and metadata.</p>
 </div>
@@ -1317,7 +1318,7 @@ is deleted or manipulated by unauthorized persons.</p>
 </div>
 <div class="paragraph">
 <p>Together with <em>arveo</em>'s capabilities to manage the retention periods of documents and records
-(<a href="./retention.html">Retention Periods</a>) <em>arveo</em> guarantees a  GDPR and/or DSGVO compliant data protection and data privacy.</p>
+(<a href="#_retention_periods_retention">Retention Periods</a>) <em>arveo</em> guarantees a  GDPR and/or DSGVO compliant data protection and data privacy.</p>
 </div>
 <div class="paragraph">
 <p><strong><em>arveo</em> meets the the requirements of a revision proof long term archive and is a corner stone for the legal compliance of your IT systems.</strong></p>
@@ -1457,8 +1458,8 @@ matches the expected hash.</p>
 </div>
 <div class="paragraph">
 <p><strong>Verify:</strong> The upload API optionally can verify the uploaded content. The content service downloads the just uploaded stream from the
-content storage and compares the hash once again with the expected value (<a href="./document-service.html#<em>upload_data">Upload Content</a>).
-_arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
+content storage and compares the hash once again with the expected value (<a href="#_upload_data">Upload Content</a>).
+<em>arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -1494,7 +1495,7 @@ The database provider should configure the transaction deadlock timeout on your 
 <div class="sect4">
 <h5 id="_download">Download</h5>
 <div class="paragraph">
-<p>When you use the download API (<a href="./document-service.html#_download_data">Download Content</a>) the client SDK computes the SHA-256 hash of the downloaded stream and compares it to the hash value
+<p>When you use the download API (<a href="#_download_data">Download Content</a>) the client SDK computes the SHA-256 hash of the downloaded stream and compares it to the hash value
 in the system property of the document type. If the hash does not match the upload hash value in the database the download fails with a data integrity exception
 telling the caller that the data on the storage was most likely manipulated.</p>
 </div>
@@ -1534,7 +1535,7 @@ Object storage systems like AWS, NetAPP or EMC Elastic Cloud Storage guarantee t
 </div>
 <div class="paragraph">
 <p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="./versioning.html">Versioning</a>) on your storage system
-and an audit entry is written to the audit log table (<a href="./audit.html">Audit Log</a>).
+and an audit entry is written to the audit log table (<a href="#_configure_audit">Audit Log</a>).
 <em>arveo</em> creates a version each time metadata including comments and annotations or content of a document is changed by the API
 <em>arveo</em>} creates a new entry containing the author and the timestamp pf the change in the version management table.
 The Update API allows you to add a comment to each version. The Version Management API provides access to all version information
@@ -1549,7 +1550,7 @@ and metadata and content of previous versions.</p>
 <td class="content">
 To ensure that the content is immutable only <em>arveo</em> should have write access to the storage system.<br>
 Only authorized data protection officers &amp; administrators should have write-access to the storage system.<br>
-In case of very sensible data you can enable encryption (<a href="./encryption.html">Encryption</a>) to follow the data protection rules and prevent your administrators from access of document content.
+In case of very sensible data you can enable encryption (<a href="#_encryption">Encryption</a>) to follow the data protection rules and prevent your administrators from access of document content.
 </td>
 </tr>
 </table>
@@ -1561,10 +1562,20 @@ loss of data. The better your data replication the better is your availability i
 <div class="sect4">
 <h5 id="_data_replication_redundancy">Data Replication (Redundancy)</h5>
 <div class="paragraph">
-<p>For both supported storages (S3, file system) you can select between different data replication strategies:
-* Backup or Mirror enables an asynchronous disaster recovery. Your content data is periodically mirrored and the data
-* Synchronous replication:
-* Asynchronous replication:</p>
+<p>For both supported storages (S3, file system) you can select between different data replication strategies:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Backup or Mirror enables an asynchronous disaster recovery. Your content data is periodically mirrored and the data;</p>
+</li>
+<li>
+<p>Synchronous replication;</p>
+</li>
+<li>
+<p>Asynchronous replication.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -1604,7 +1615,7 @@ The operating team of the platform must ensure that an appropriate replication i
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-You can configure different storage location (Cloud-Storage or on premise) for your content and document types (<a href="./content-elements-storage.html">Storage Configuration</a>).<br>
+You can configure different storage location (Cloud-Storage or on premise) for your content and document types (<a href="#_bucketorganizer">Storage Configuration</a>).<br>
 Reduce costs by storing non compliant and legally relevant data like PDF/A renditions of documents on storage systems
 with lower availability and performance SLAs.
 </td>
@@ -1847,7 +1858,7 @@ the following services as a cluster.</p>
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-To achieve high availability for <em>arveo</em> the provider must guarantee that all required content services (xref:./content-services.adoc) run as a cluster.
+To achieve high availability for <em>arveo</em> the provider must guarantee that all required <a href="#_content__services">content services</a> run as a cluster.
 </td>
 </tr>
 </table>
@@ -1857,7 +1868,7 @@ To achieve high availability for <em>arveo</em> the provider must guarantee that
 <div class="sect2">
 <h3 id="_data_deletion">Data Deletion</h3>
 <div class="paragraph">
-<p>By default all documents of a specific document type stored in <em>arveo</em> store the metadata to the configured database and their content to the object storage. When a version is created the content or metadata is stored as a traceable and immutable version (<a href="./versioning.html">Versioning</a>) to the database and storage system. That means that we have separate content objects and database entries for each version.
+<p>By default all documents of a specific document type stored in <em>arveo</em> store the metadata to the configured database and their content to the object storage. When a version is created the content or metadata is stored as a traceable and immutable version (<a href="#_versioning_v">Versioning</a>) to the database and storage system. That means that we have separate content objects and database entries for each version.
 Each document can have a retention period that ensures that the document cannot be deleted before the period expires.</p>
 </div>
 <div class="paragraph">
@@ -6533,7 +6544,7 @@ Implicit flow is no longer recommended. The standard flow should be used. Furthe
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_a_client">Configure A Client</h5>
+<h5 id="_configure_a_client">Configure a Client</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -6762,7 +6773,7 @@ role of a "resource server" and a "client" at the same time.</p>
 <div class="sect4">
 <h5 id="_resource_and_client_configuration">Resource and Client Configuration</h5>
 <div class="paragraph">
-<p>The following configuration can be used to make a service an OAuth2.0 resource and/or an OAuth2.0 client in the service&#8217;s application.yaml</p>
+<p>The following configuration can be used to make a service an OAuth2.0 resource and/or an OAuth2.0 client in the service&#8217;s <em>application.yaml</em>:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6829,7 +6840,7 @@ role of a "resource server" and a "client" at the same time.</p>
 <div class="sect4">
 <h5 id="_configure_resource">Configure Resource</h5>
 <div class="paragraph">
-<p>Configure the respective application.yaml of the service like this</p>
+<p>Configure the respective <em>application.yaml</em> of the service like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6887,9 +6898,9 @@ role of a "resource server" and a "client" at the same time.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_client">Configure Client</h5>
+<h5 id="_configure_the_client">Configure the Client</h5>
 <div class="paragraph">
-<p>Configure the respective application.yaml of the service like this</p>
+<p>Configure the respective <em>application.yaml</em> of the service like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6946,7 +6957,7 @@ role of a "resource server" and a "client" at the same time.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">oauth2.resourceserver.jwt.public-key-location</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Validation key of the authentication service to validate the token. e.g. PEM or RSA Public Key. For keycloak <a href="#_create_keycloak_realm"><strong>Realm Settings Keys</strong></a>, for User management service <a href="user-management.html#_securing_rest_endpoints"><strong>OAuth2.0 support</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validation key of the authentication service to validate the token. e.g. PEM or RSA Public Key. For keycloak <a href="#_create_keycloak_realm"><strong>Realm Settings Keys</strong></a>, for User management service see documentation on user-management/securing rest endpoints</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">security.general.role-for-secured-access</p></td>
@@ -6954,11 +6965,13 @@ role of a "resource server" and a "client" at the same time.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.registration.cmn-user-service-client-credentials.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client Id configured in your authentication service. In our keyckloak example: arveo-service,  <a href="#_configure_a_client"><strong>Client-ID</strong></a>, for User management service <a href="user-management.html#_client_context"><strong>Client-ID</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client Id configured in your authentication service. In our keyckloak example: arveo-service,  <a href="#_configure_a_client"><strong>Client-ID</strong></a>, for User management service
+see documentation on user management/client context/client ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.registration.cmn-user-service-client-credentials.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Your client secret of the authentication service. For keyckloak <a href="#_configure_a_client"><strong>Client Secret</strong></a>, for User management service <a href="user-management.html#_client_context"><strong>Client Secret</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Your client secret of the authentication service. For keyckloak <a href="#_configure_a_client"><strong>Client Secret</strong></a>, for User management service
+see documentation on user management/client context/client secret</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.provider.user-service.authorization-uri</p></td>
@@ -6980,7 +6993,7 @@ role of a "resource server" and a "client" at the same time.</p>
 <p>The public-key-location defines a path to a resource containing the public key of the service that issued the signed tokens. If the issuing service supports JSON Web Keys, the URL to the JWK endpoint can be set using jwk-set-uri.</p>
 </li>
 <li>
-<p>To enable the user impersonation feature, add the following to the application.yaml configuration:</p>
+<p>To enable the user impersonation feature, add the following to the <em>application.yaml</em> configuration:</p>
 </li>
 </ul>
 </div>
@@ -7002,10 +7015,15 @@ role of a "resource server" and a "client" at the same time.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>It is possible to disable the auto configuration of the server components by setting spring.security.oauth2.resourceserver.enabled to false.
-Troubleshooting
-Some common error messages and ways to fix them:</p>
+<p>It is possible to disable the auto configuration of the server components by setting spring.security.oauth2.resourceserver.enabled to false.</p>
 </li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Troubleshooting some common error messages and ways to fix them:</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p>principal cannot be null from OAuth2AuthorizeRequest: There probably was no Authentication in the application&#8217;s SecurityContext. Check if the application sets an Authentication.</p>
 </li>
@@ -10143,19 +10161,19 @@ This means arveo will not create the corresponding table.</td>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Document</strong>: an entity that can contain metadata and content. Documents are the only objects that can have content, the content may be binary. Documents can be contained in folders (<a href="#"><strong>Document</strong></a>).</p>
+<p><strong>Document</strong>: an entity that can contain metadata and content. Documents are the only objects that can have content, the content may be binary. Documents can be contained in folders (<a href="#_document_type"><strong>Document</strong></a>).</p>
 </li>
 <li>
-<p><strong>Container</strong>: simple folder-like object not organized in a tree structure but with relations to other objects. A Container contains only metadata and cannot be contained in a folder (<a href="#"><strong>Container</strong></a>).</p>
+<p><strong>Container</strong>: simple folder-like object not organized in a tree structure but with relations to other objects. A Container contains only metadata and cannot be contained in a folder (<a href="#_container_type"><strong>Container</strong></a>).</p>
 </li>
 <li>
-<p><strong>Relation</strong>: an entity that represents a relation between two other entities. A relation can contain metadata (<a href="#"><strong>Relation</strong></a>).</p>
+<p><strong>Relation</strong>: an entity that represents a relation between two other entities. A relation can contain metadata (<a href="#_relation_type"><strong>Relation</strong></a>).</p>
 </li>
 <li>
-<p><strong>Folder</strong>: an entity that contains metadata and is organized in a tree structure like in a file system (<a href="#"><strong>Folder</strong></a>)</p>
+<p><strong>Folder</strong>: an entity that contains metadata and is organized in a tree structure like in a file system (<a href="#_folder_type"><strong>Folder</strong></a>)</p>
 </li>
 <li>
-<p><strong>Meta</strong>: an entity that contains only metadata. Unlike containers, metadata entities do not support system attributes like ID and creation date (<a href="#"><strong>Metadata</strong></a>)</p>
+<p><strong>Meta</strong>: an entity that contains only metadata. Unlike containers, metadata entities do not support system attributes like ID and creation date (<a href="#_metadata_type"><strong>Metadata</strong></a>)</p>
 </li>
 </ul>
 </div>
@@ -13193,7 +13211,7 @@ The convenience class 'Retention_Info' contains both values and can be used to r
 <h4 id="_annotations_defaultsystempropertyvalueretention_date">Annotations_@DefaultSystemPropertyValue(RETENTION_DATE)_</h4>
 <div class="paragraph">
 <p>It is possible to define a default value for the <em>RETENTION_DATE</em> system column
-(<a href="./entity-annotations.html#_default_values">Default Values</a>]).</p>
+(<a href="#_default_values">Default Values</a>]).</p>
 </div>
 <div class="paragraph">
 <p>If a retention date is not explicitly set, a default value for the retention period is calculated using the default value
@@ -13234,7 +13252,7 @@ function implemented by the document type.</p>
 </td>
 <td class="content">
 If you have defined foreign keys, you can inherit the retention date from container or folder objects.This is very helpful
-if you have records in your data model (<a href="./inheritance.html">Defaults and Inheritance</a>).
+if you have records in your data model (<a href="#_inheritance">Defaults and Inheritance</a>).
 </td>
 </tr>
 </table>
@@ -13939,9 +13957,11 @@ e.g. two processes A and B load the same object including content and versions a
 <p>You can use the API to query the information for each document as to whether/since when and by whom it has been checked out. This information is also available for lists.</p>
 </div>
 <div class="paragraph">
-<p>As a system administrator, you can set a global timeout after the lock has been automatically activated. An INFO message is written in the central log, that contains the name of the blocking user and the document ID.
-=== Versioning</p>
+<p>As a system administrator, you can set a global timeout after the lock has been automatically activated. An INFO message is written in the central log, that contains the name of the blocking user and the document ID.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_versioning_v">Versioning</h3>
 <div class="paragraph">
 <p>The goal of using the concept of versioning is to create and work with version-safe archives and track the history of each change in the system.</p>
 </div>
@@ -14386,7 +14406,7 @@ Apache Solr is a search server and is used as an independent full-text search se
 </div>
 </div>
 <div class="sect2">
-<h3 id="_retention_periods_2">Retention Periods</h3>
+<h3 id="_retention_periods_retention">Retention Periods</h3>
 <div class="paragraph">
 <p><em>arveo</em> supports a range of retention management features:</p>
 </div>
@@ -14606,7 +14626,7 @@ Mass deletion of documents under retention requires the <em>SUPER_USER</em> priv
 </td>
 <td class="content">
 Enable the audit log feature for all document types and dependent document types if you need a report of the erased objects.
-<a href="./audit.html">Audit Log</a>
+<a href="#_configure_audit">Audit Log</a>
 </td>
 </tr>
 </table>
@@ -16047,7 +16067,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-07 09:58:30 UTC
+Last updated 2022-06-07 11:22:05 UTC
 </div>
 </div>
 <style>
