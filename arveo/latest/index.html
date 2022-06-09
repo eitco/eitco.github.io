@@ -7560,8 +7560,22 @@ by a dot. For example, an attribute called "name" in a type definition called "i
 <div class="paragraph">
 <p>It is also possible to store fulltext data of the content of documents in SOLR. For this, set the <code>fulltextExtraction</code>
 attribute of the <code>@ContentElement</code> annotation to true (see <a href="#_configure_storage_locations">Content Elements</a>). The
-fulltext data of all content elements will be stored in a field called "text" in SOLR. This field can be used in queries
+fulltext data of the content elements will be stored in a field called
+<code>&lt;typeDefinitionName&gt;.&lt;contentElementName&gt;.fulltext</code> in SOLR. This field can be used in queries
 just like any other field.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Fulltext extraction is possible for named content elements only. The wildcard content element does not support fulltext
+extraction.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The fulltext extraction is performed by the document conversion service. Which types of content are supported for
@@ -7627,8 +7641,8 @@ for the type definition. In the following example, this method is used to find a
 <div class="listingblock">
 <div class="title">searching for fulltext data in SOLR</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where().contextReference(SolrConstants.FULLTEXT_FIELD)
-    .contains().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">At voluptua at aliquyam duo dolor diam</span><span class="delimiter">&quot;</span></span>).holds().unpaged();</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where().contextReference(noSqlSearchHelper.getFulltextField(SimpleInvoice.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>))
+    .contains().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">Gubergren accumsan takimata</span><span class="delimiter">&quot;</span></span>).holds().unpaged();</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -16067,7 +16081,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-09 17:24:10 UTC
+Last updated 2022-06-09 17:59:14 UTC
 </div>
 </div>
 <style>
