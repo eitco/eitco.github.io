@@ -1079,10 +1079,10 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <div class="sect4">
 <h5 id="_audit_log">Audit Log</h5>
 <div class="paragraph">
-<p>Enable the audit option for all types containing legally compliant content (<a href="#"><strong>Audit Log</strong></a>). If the platform is operated safely (<a href="#<em>platform"><strong>Platform Security</strong></a>) users and applications can exclusively write content and metadata using the _arveo</em> REST API. <em>arveo</em> logs all user or application update operations of content and metadata to the audit table.</p>
+<p>Enable the audit option for all types containing legally compliant content (<a href="#_configure_audit">Audit Log</a>). If the platform is operated safely (<a href="#<em>platform_link">Platform Security</a>) users and applications can exclusively write content and metadata using the _arveo</em> REST API. <em>arveo</em> logs all user or application update operations of content and metadata to the audit table.</p>
 </div>
 <div class="paragraph">
-<p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="./versioning.html">Versioning</a>) on your storage system and an audit entry is written to the audit log table (<a href="./audit.html">Audit Log</a>) containing the author and the timestamp of the change. If a document is updated the version is incremented and saved in the version number. Although all version are traceable and accessible by the API we recommend making the version number system property visible in the application to identify copies of the original easily.</p>
+<p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="#_versioning_v">Versioning</a>) on your storage system and an audit entry is written to the audit log table (<a href="#_configure_audit">Audit Log</a>) containing the author and the timestamp of the change. If a document is updated the version is incremented and saved in the version number. Although all version are traceable and accessible by the API we recommend making the version number system property visible in the application to identify copies of the original easily.</p>
 </div>
 <div class="paragraph">
 <p>Ensure that the <em>@Overwrite</em> option is not set for legally compliant document types. If overwrite is turned on it is possible to manipulate the originally saved content and compromise the document without creating a versioned copy.</p>
@@ -1185,11 +1185,19 @@ content storage and compares the hash once again with the expected value (<a hre
 <div class="sect4">
 <h5 id="_databases">Databases</h5>
 <div class="paragraph">
-<p>For the supported databases postgreSQL 12 you can select between different data replication strategies:
-* Asynchronous replication (backup or mirror): Enables an asynchronous disaster recovery. Your database is periodically mirrored.
-* Synchronous database cluster: Transactions are synchronously replicated on more than one master node.
+<p>For the supported databases postgreSQL 12 you can select between different data replication strategies:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Asynchronous replication (backup or mirror): Enables an asynchronous disaster recovery. Your database is periodically mirrored.</p>
+</li>
+<li>
+<p>Synchronous database cluster: Transactions are synchronously replicated on more than one master node.
 The provider of the postgreSQL 12 cluster must guarantee that data is stored redundant and reduce potential data loss.
 The provider of the apache solr 8.6 cluster must guarantee that data is replicated between the nodes and that the backup strategy prevents data loss.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The provider of the apache solr 8.6 cluster must guarantee that data is replicated between the nodes and that
@@ -1206,23 +1214,29 @@ These are the responsibility of the operator of the platform, who must implement
 </div>
 <div class="paragraph">
 <p>We strongly recommend using a redundant file system or object storage system. If you do not at least backup your data periodically
-a data loss is likely.<br>
-For high availability with almost zero data loss
-your storage system should replicate the written content and data synchronously.<br>
-The operating team of the platform must ensure that an appropriate replication is set up and monitored.</p>
+a data loss is likely. For high availability with almost zero data loss our storage system should replicate the written content and data synchronously. The operating team of the platform must ensure that an appropriate replication is set up and monitored.</p>
 </div>
 <div class="paragraph">
 <p>Object storages with REST APIs are designed for the cloud. If you decide to use storage from the Cloud (public or private) we recommend to use object storage via S3 API. Object storages provide a high level of redundancy (even geo redundant) and fail safety.
 The REST S3 API is very tolerant against network and infrastructure failures.</p>
 </div>
-<div class="paragraph">
-<p>Ensure technically and organizationally that there is sufficient space for storing the data.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ensure technically and organizationally that there is sufficient space for storing the data.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>For the best high availability the provider of your storage system must protect the stored data against accidental, malicious, or disaster-induced loss of data. The better your data replication the better is your availability in case of a failure.</p>
 </div>
 <div class="paragraph">
-<p>To achieve high availability for <em>arveo</em> the provider must guarantee that all required content services (xref:./content-services.adoc) run as a cluster.</p>
+<p>To achieve high availability for <em>arveo</em> the provider must guarantee that all required (<a href="#_content__services">content services</a>) run as a cluster.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1237,21 +1251,21 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>An administrator only can illegally manipulate content if he can access both database and content storage because the control hash value of the content is stored in the database. Take care that none of your administrators has exclusive and unattended access to the content storage and the database.</p>
 </div>
 <div class="paragraph">
-<p>Distributed management roles of the storage systems and the <em>arveo</em> transparent encryption feature (<a href="#"><strong>Encryption</strong></a>) make your system more forgery-proof!</p>
+<p>Distributed management roles of the storage systems and the <em>arveo</em> transparent <a href="#_encryption"><strong>encryption</strong></a> feature make your system more forgery-proof!</p>
 </div>
 <div class="paragraph">
 <p>The activities of administrators with extensive rights must be logged by the operator. The logs are subject to the retention periods of tax law and must be checked regularly.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_platform">Platform</h5>
+<h5 id="_platform_link">Platform</h5>
 <div class="paragraph">
 <p>To prevent unauthorized access to the <em>arveo</em> platform the provider must:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>ensure that HTTPS communication is enabled for all clients, applications,3erd party components and services (<a href="#_content__services"><strong>Services</strong></a>).</p>
+<p>ensure that HTTPS communication is enabled for all clients, applications, 3rd party components and services (<a href="#_content__services"><strong>Services</strong></a>).</p>
 </li>
 <li>
 <p>enable OAuth2.0 or X.509 certificate authentication <a href="#_authentication-x509">X.509 certificate authentication</a> and authorization for all <em>arveo</em> service (<a href="#_authentication-oauth2"><strong>OAuth2.0</strong></a>). All <em>arveo</em> services require authentication, ensuring that only  <em>arveo</em> services or authenticated and authorized users can use the API. We recommend using a state-of-the-art authentication services like keycloak and to enable <a href="#_configure_keycloak_for_sso_with_kerberos"><strong>SSO</strong></a> with at least 2-factor authentication.</p>
@@ -3245,7 +3259,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <span class="tag">&lt;dependency&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client-non-web<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>2.0.10<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>2.0.11-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span>
 <span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.demo<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -16099,7 +16113,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-14 14:24:12 UTC
+Last updated 2022-06-14 15:01:11 UTC
 </div>
 </div>
 <style>
