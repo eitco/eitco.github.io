@@ -7643,7 +7643,7 @@ than a text field without such a tokenizer.</p>
 for the type definition. In the following example, this method is used to find an entity by it&#8217;s ID in SOLR:</p>
 </div>
 <div class="listingblock">
-<div class="title">searching for an entity by ID in SOLR</div>
+<div class="title">Searching for an entity by ID in SOLR</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">Optional&lt;FieldTypeContainer&gt; optional = serviceClient.getNoSqlSearchService()
     .where().id().equalTo().value(identifier).holds().uniqueResult();</code></pre>
@@ -7653,7 +7653,7 @@ for the type definition. In the following example, this method is used to find a
 <p>The next example shows how to search in the fulltext data stored in SOLR.</p>
 </div>
 <div class="listingblock">
-<div class="title">searching for fulltext data in SOLR</div>
+<div class="title">Searching for fulltext data in SOLR</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where().contextReference(noSqlSearchHelper.getFulltextField(SimpleInvoice.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>))
     .contains().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">Gubergren accumsan takimata</span><span class="delimiter">&quot;</span></span>).holds().unpaged();</code></pre>
@@ -7665,7 +7665,7 @@ generated name constant classes for the type definition interfaces contain a hel
 The following example shows how to use this method to search in a specific field of an entity.</p>
 </div>
 <div class="listingblock">
-<div class="title">searching for data in SOLR using a specific field</div>
+<div class="title">Searching for data in SOLR using a specific field</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where()
     .contextReference(FieldTypeContainerNames.noSqlName(FieldTypeContainerNames.INTEGER_FIELD))
@@ -7720,7 +7720,7 @@ stored in SOLR.
 <p>The following example shows how to search for entities by related child IDs:</p>
 </div>
 <div class="listingblock">
-<div class="title">searching for relation child IDs in SOLR</div>
+<div class="title">Searching for relation child IDs in SOLR</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;SimpleInvoice&gt; list = documentServiceClient.getNoSqlSearchService().where() <i class="conum" data-value="1"></i><b>(1)</b>
     .contextReference(noSqlSearchHelper.getRelationChildIdsField(SimpleInvoice.class, InvoicePersonRelation.class)) <i class="conum" data-value="2"></i><b>(2)</b>
@@ -10264,7 +10264,7 @@ For the type <em>Document</em> the content changes are always versioned.
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-When you start a project you have to create your own types. Simply annotate the class with the TYPE annotation and define your schema with type safe getter/setter methods (<a href="#_entity_types_examples"><strong>Example</strong></a>.
+When you start a project you have to create your own types. Simply annotate the class with the TYPE annotation and define your schema with type safe getter/setter methods (<a href="#_entity_types_examples"><strong>Example</strong></a>).
 </td>
 </tr>
 </table>
@@ -10586,7 +10586,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Type</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ObjectType</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Define the entity type of your class by setting a valid ObjectType: DOCUMENT, FOLDER, RELATION,
-  CONTAINER, META (<a href="#_document_type_example"><strong>Example</strong></a>)</p></td>
+  CONTAINER, META: <a href="#_document_type_example"><strong>Example</strong></a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@AccessCheck</em></p></td>
@@ -10630,12 +10630,12 @@ containing the type annotations. The processor is picked up by the compiler auto
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Recovery</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the recovery log. Content objects or files are deleted after configurable time. <a href="#_recovery_log"><strong>Recovery Log</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the recovery log. Content objects or files are deleted after configurable time: <a href="#_recovery_log"><strong>Recovery Log</strong></a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@ContentElement</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define the allowed content types. <a href="#_types_of_content_elements"><strong>Example</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the allowed content types:  <a href="#_types_of_content_elements"><strong>Example</strong></a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Audit</em></p></td>
@@ -10658,12 +10658,12 @@ containing the type annotations. The processor is picked up by the compiler auto
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@View</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The metadata type is a database view. (<a href="#_define_a_view"><strong>Example</strong></a>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The metadata type is a database view: <a href="#_define_a_view"><strong>Example</strong></a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Tablename</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set the real database table name of a system column which is not camel case but snake case.
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the real database table name of a system column which is not camel case but snake case:
   <a href="#_external_views"><strong>Example</strong></a></p></td>
 </tr>
 <tr>
@@ -10686,7 +10686,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Enumeration</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This annotation can be used to configure a registered enumeration type.You must pass the
-database snake case name of the enumeration type (<a href="#_enumeration_example"><strong>Example</strong></a>)</p></td>
+database snake case name of the enumeration type: <a href="#_enumeration_example"><strong>Example</strong></a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@EcrIgnore</em></p></td>
@@ -10698,7 +10698,7 @@ type.The property is not stored in the database table.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@NOSql</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables full-text support for all columns of the document types. By default,
-the full-text support is disabled (<a href="#_nosql_example"><strong>Example</strong></a>).</p></td>
+the full-text support is disabled: <a href="#_nosql_example"><strong>Example</strong></a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -16113,7 +16113,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-19 23:27:57 UTC
+Last updated 2022-06-20 09:58:37 UTC
 </div>
 </div>
 <style>
