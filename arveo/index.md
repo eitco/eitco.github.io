@@ -8,4 +8,5 @@
  * [7.0.2](7.0.2)
  * [7.2.1](7.2.1)
  * [7.2.2](7.2.2)
+ * [development](development)
  * [latest](latest)
