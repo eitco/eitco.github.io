@@ -147,6 +147,12 @@ a, a:hover, a:focus {
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
 </ul>
 </li>
+<li><a href="#_monitoring"><strong>Monitoring</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_custom_health_indicators">Custom health indicators</a></li>
+<li><a href="#_custom_endpoints">Custom endpoints</a></li>
+</ul>
+</li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_access_rights">Access Rights</a></li>
@@ -8551,6 +8557,73 @@ standby mode:</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_monitoring"><strong>Monitoring</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/html/actuator.html">Spring Boot Actuator</a>
+to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/">Prometheus</a> or
+the Administration Service. The Actuator documentation linked above contains information about the available monitoring
+data, how to enable or disable specific endpoints and how to configure security.</p>
+</div>
+<div class="paragraph">
+<p>The overview of all actuator endpoints is available at <code>/actuator</code>. Health information is available at <code>/actuator/health</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_custom_health_indicators">Custom health indicators</h3>
+<div class="paragraph">
+<p>In addition to the default health indicators, <em>arveo</em> provides the following additional health indicators:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>storagePlugins: Checks if at least one storage profile is configured and if all storage plugins configured in the
+storage profiles are able to store data. The endpoint can be disabled by setting <code>management.health.storagePlugins</code>
+to false.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>FileSystemPlugin</code>: Checks if the configured storage directory exists and whether the database sequence used to
+generate storage IDs is available.</p>
+</li>
+<li>
+<p><code>S3Plugin</code>: Checks if the configured bucket exists. When the last storage operation has failed, the endpoint checks
+if the S3 service is available.</p>
+</li>
+<li>
+<p><code>SwiftV2Plugin</code>, <code>SwiftV3Plugin</code>: Checks if the configured container exists. When the last storage operation has
+failed, the endpoint checks if the Swift service is available.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>typeDefinitions: Checks if there is at least one registered type definition. The endpoint can be disabled by setting
+<code>management.health.typeDefinitions</code> to false.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_endpoints">Custom endpoints</h3>
+<div class="paragraph">
+<p>In addition to the default actuator endpoints, <em>arveo</em> provides the following custom endpoints.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>/storageProfiles</code>: Provides a list of all storage profiles and the storage plugin used by each profile. The endpoint can
+be disabled by setting <code>management.endpoint.storageProfiles</code> to false.</p>
+</li>
+<li>
+<p><code>/typeDefinitions</code>: Provides a list of all type definitions. The endpoint can be disabled by setting
+<code>management.endpoint.typeDefinitions</code> to false.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_access_control"><strong>Access Control</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -16113,7 +16186,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-28 08:54:59 UTC
+Last updated 2022-06-28 13:22:51 UTC
 </div>
 </div>
 <style>
