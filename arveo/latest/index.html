@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 7.2.3-SNAPSHOT</div>
+<div id="toctitle">arveo 8.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -145,6 +145,12 @@ a, a:hover, a:focus {
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
+</ul>
+</li>
+<li><a href="#_monitoring"><strong>Monitoring</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_custom_health_indicators">Custom health indicators</a></li>
+<li><a href="#_custom_endpoints">Custom endpoints</a></li>
 </ul>
 </li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
@@ -2789,7 +2795,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 7.2.3-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 8.0.0.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3248,7 +3254,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>7.2.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>8.0.0<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -4494,18 +4500,30 @@ For example, a Document might contain two content elements that are identified b
 <div class="paragraph">
 <p>The contentNames are not only relevant for uniquely identifying a content element contained in a document, but serve
 as reference for further customization of the repository. The repository does accept configuration options that are
-directly related to contentNames and the Document type definitions can define restrictions regarding the
+directly related to contentNames and the Document type definitions define restrictions regarding the
 allowed contentNames.</p>
 </div>
 <div class="paragraph">
-<p>Type definitions can define which contentNames can be contained in the entities stored in the
-definition. For example, there might be a type definition that only accepts the 'rendition' content element but no
-other ones.</p>
+<p>Type definitions define which contentNames can be contained in the entities stored in the
+definition.</p>
 </div>
 <div class="paragraph">
 <p>Each content element is stored in a storage profile, which defines the place where the actual content will
 be stored. The <em>contentType</em>  parameter can be used to define what kind of content
 a content element can contain. When the media type is set to <code>application/octet-stream</code>, any kind of content can be used.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The name of a content element must start with a letter and can consist only of letters (upper- and lower-case),
+numbers and the <code>&#95;</code> character. More formally, the name must match the regular expression <code>[a-zA-Z][a-zA-Z0-9_]*</code>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -4552,15 +4570,18 @@ content element. The content type <em>application/octet-stream</em> is used as a
 For example, if the value of the contentType attribute is set to <em>application/pdf</em>, only PDF files can be stored in the
 content element.</p>
 </div>
+<div class="paragraph">
+<p>It is possible to define the content type of a new content element when it is uploaded. The server will trust this
+information, so the client is responsible to send the correct content type. If the client does not define the content
+type, the server will automatically detect the content type of the uploaded binary data.</p>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_the_wildcard_content_element">The wildcard content element</h4>
+<h4 id="_the_default_content_element">The default content element</h4>
 <div class="paragraph">
 <p>If a type definition of type DOCUMENT does not contain any <code>@ContentElement</code> annotations, the server will automatically
-assign a content element with the name <code>&#42;</code> to it. This is called the wildcard content element, and it allows storing any
-number of content elements with arbitrary names. The same behavior can be achieved by adding a <code>@ContentElement</code> annotation
-that uses the default value (<code>&#42;</code>) for it&#8217;s name attribute. It is possible to add the wildcard content element to
-a type definition that contains other <code>@ContentElement</code> annotations with a specific name.</p>
+assign a content element with the name <code>content</code> to it. This content element&#8217;s metadata will be stored in the JSON
+field of the type definition and it accepts any kind of content type.</p>
 </div>
 </div>
 <div class="sect3">
@@ -4585,23 +4606,23 @@ a type definition that contains other <code>@ContentElement</code> annotations w
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&#42;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element. This attribute is mandatory.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">profile</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage profile used to store the content element</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage profile used to store the content element. This attribute is optional.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">contentType</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">application/octet-stream</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The type of content supported by the content element</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of content supported by the content element.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">separateField</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to store only the content ID and no additional metadata in a separate database field</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to store only the content ID and no additional metadata in a separate database field.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">fulltextExtraction</p></td>
@@ -4739,7 +4760,7 @@ can be set in the <code>@ContentElement</code> annotation using the <code>profil
 </div>
 <div class="paragraph">
 <p>The example above shows a document type with a single named content element that will be stored in a storage profile
-called <em>fileSystemProfile</em>. It is possible to define the profile for the wildcard content element, too.</p>
+called <em>fileSystemProfile</em>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -4750,13 +4771,11 @@ matchable names must be used. The matching is based on the name of the type defi
 of the content element separated by <code>-</code>.</p>
 </div>
 <div class="paragraph">
-<p>The following type definition is used as an example in the following explanations. It uses the wildcard content element
-and one named content element:</p>
+<p>The following type definition is used as an example in the following explanations. It uses one content element:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.DOCUMENT)
-<span class="annotation">@ContentElement</span>
 <span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">rendition</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">interface</span> <span class="class">MyDocument</span> {
 
@@ -4783,30 +4802,14 @@ following steps:</p>
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>For the wildcard content element, the profile will be selected using the following steps:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Check if there is a profile called <code>my_document</code>. If so, use it.</p>
-</li>
-<li>
-<p>If not, check if there is a <em>default storage profile</em>. If so, use it.</p>
-</li>
-<li>
-<p>If none of the steps above succeeded, an exception is thrown.</p>
-</li>
-</ol>
-</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_examples">Examples</h4>
 <div class="paragraph">
 <p>The following example shows the simplest possible configuration. The type definition does not contain any content element.
-It implicitly uses the wildcard content element and supports content elements with arbitrary names. The content elements
-will be stored in a storage profile called <em>my_document</em>, or, if no such profile exists, in the default storage profile.</p>
+It implicitly uses the default content element named <code>content</code>. The content element will be stored in a storage profile
+called <em>my_document</em>, or, if no such profile exists, in the default storage profile.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4822,14 +4825,14 @@ will be stored in a storage profile called <em>my_document</em>, or, if no such 
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ContentType.DOCUMENT)
-<span class="annotation">@ContentElement</span>(profile=<span class="string"><span class="delimiter">&quot;</span><span class="content">fileSystemProfile</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@ContentElement</span>(name = ContentElement.CONTENT, profile=<span class="string"><span class="delimiter">&quot;</span><span class="content">fileSystemProfile</span><span class="delimiter">&quot;</span></span>)
 <span class="directive">public</span> <span class="type">interface</span> <span class="class">MyDocument</span> {
 
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The next example shows a type definition that limits the number of possible content element to two. The "rendition"
+<p>The next example shows a type definition that contains two content elements. The "rendition"
 content element will support only PDF documents. The PDFs contained in the rendition content element will be stored
 in an S3 storage. The content in the other element will either be stored in a profile called <em>my_document-content</em>, in
 a profile called <em>my_document</em> or, if neither of those profiles exists, in the default profile.</p>
@@ -7578,19 +7581,6 @@ fulltext data of the content elements will be stored in a field called
 <code>&lt;typeDefinitionName&gt;.&lt;contentElementName&gt;.fulltext</code> in SOLR. This field can be used in queries
 just like any other field.</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Fulltext extraction is possible for named content elements only. The wildcard content element does not support fulltext
-extraction.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>The fulltext extraction is performed by the document conversion service. Which types of content are supported for
 fulltext extraction depends on the active plugins of the document conversion service. The open source plugins contained
@@ -7645,7 +7635,7 @@ for the type definition. In the following example, this method is used to find a
 <div class="listingblock">
 <div class="title">Searching for an entity by ID in SOLR</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Optional&lt;FieldTypeContainer&gt; optional = serviceClient.getNoSqlSearchService()
+<pre class="CodeRay highlight"><code data-lang="java">Optional&lt;TypedNOSqlSearchHit&lt;FieldTypeContainer&gt;&gt; optional = serviceClient.getNoSqlSearchService()
     .where().id().equalTo().value(identifier).holds().uniqueResult();</code></pre>
 </div>
 </div>
@@ -7655,7 +7645,7 @@ for the type definition. In the following example, this method is used to find a
 <div class="listingblock">
 <div class="title">Searching for fulltext data in SOLR</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where().contextReference(noSqlSearchHelper.getFulltextField(SimpleInvoice.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>))
+<pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where().contextReference(SimpleInvoiceNames.CONTENT_FULLTEXT)
     .contains().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">Gubergren accumsan takimata</span><span class="delimiter">&quot;</span></span>).holds().unpaged();</code></pre>
 </div>
 </div>
@@ -7722,7 +7712,7 @@ stored in SOLR.
 <div class="listingblock">
 <div class="title">Searching for relation child IDs in SOLR</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;SimpleInvoice&gt; list = documentServiceClient.getNoSqlSearchService().where() <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; list = documentServiceClient.getNoSqlSearchService().where() <i class="conum" data-value="1"></i><b>(1)</b>
     .contextReference(noSqlSearchHelper.getRelationChildIdsField(SimpleInvoice.class, InvoicePersonRelation.class)) <i class="conum" data-value="2"></i><b>(2)</b>
     .contains().value(containerClient.getIdentifier()).holds().unpaged(); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
@@ -8546,6 +8536,73 @@ standby mode:</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_monitoring"><strong>Monitoring</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/html/actuator.html">Spring Boot Actuator</a>
+to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/">Prometheus</a> or
+the Administration Service. The Actuator documentation linked above contains information about the available monitoring
+data, how to enable or disable specific endpoints and how to configure security.</p>
+</div>
+<div class="paragraph">
+<p>The overview of all actuator endpoints is available at <code>/actuator</code>. Health information is available at <code>/actuator/health</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_custom_health_indicators">Custom health indicators</h3>
+<div class="paragraph">
+<p>In addition to the default health indicators, <em>arveo</em> provides the following additional health indicators:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>storagePlugins: Checks if at least one storage profile is configured and if all storage plugins configured in the
+storage profiles are able to store data. The endpoint can be disabled by setting <code>management.health.storagePlugins</code>
+to false.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>FileSystemPlugin</code>: Checks if the configured storage directory exists and whether the database sequence used to
+generate storage IDs is available.</p>
+</li>
+<li>
+<p><code>S3Plugin</code>: Checks if the configured bucket exists. When the last storage operation has failed, the endpoint checks
+if the S3 service is available.</p>
+</li>
+<li>
+<p><code>SwiftV2Plugin</code>, <code>SwiftV3Plugin</code>: Checks if the configured container exists. When the last storage operation has
+failed, the endpoint checks if the Swift service is available.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>typeDefinitions: Checks if there is at least one registered type definition. The endpoint can be disabled by setting
+<code>management.health.typeDefinitions</code> to false.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_endpoints">Custom endpoints</h3>
+<div class="paragraph">
+<p>In addition to the default actuator endpoints, <em>arveo</em> provides the following custom endpoints.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>/storageProfiles</code>: Provides a list of all storage profiles and the storage plugin used by each profile. The endpoint can
+be disabled by setting <code>management.endpoint.storageProfiles</code> to false.</p>
+</li>
+<li>
+<p><code>/typeDefinitions</code>: Provides a list of all type definitions. The endpoint can be disabled by setting
+<code>management.endpoint.typeDefinitions</code> to false.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -16113,7 +16170,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-20 23:28:00 UTC
+Last updated 2022-07-01 10:48:49 UTC
 </div>
 </div>
 <style>
