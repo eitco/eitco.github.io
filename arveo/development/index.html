@@ -147,6 +147,9 @@ a, a:hover, a:focus {
 <ul class="sectlevel2">
 <li><a href="#_custom_health_indicators">Custom health indicators</a></li>
 <li><a href="#_custom_endpoints">Custom endpoints</a></li>
+<li><a href="#_custom_metrics">Custom metrics</a></li>
+<li><a href="#_prometheus">Prometheus</a></li>
+<li><a href="#_other_monitoring_systems">Other monitoring systems</a></li>
 </ul>
 </li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
@@ -8595,6 +8598,137 @@ be disabled by setting <code>management.endpoint.storageProfiles</code> to false
 </ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_custom_metrics">Custom metrics</h3>
+<div class="paragraph">
+<p>In addition to the default metrics, <em>arveo</em> provides additional metrics that can be used to monitor the
+performance of the system.</p>
+</div>
+<div class="sect3">
+<h4 id="_storage">Storage</h4>
+<div class="paragraph">
+<p>For each storage profile a metric is available that records the following statistics:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Number of read operations: <code>actuator/metrics/ecr.storage.read.count</code></p>
+</li>
+<li>
+<p>Number of write operations: <code>actuator/metrics/ecr.storage.write.count</code></p>
+</li>
+<li>
+<p>Total amount of bytes read: <code>actuator/metrics/ecr.storage.read.bytes</code></p>
+</li>
+<li>
+<p>Total amount of bytes written: <code>actuator/metrics/ecr.storage.write.bytes</code></p>
+</li>
+<li>
+<p>Number of read errors: <code>actuator/metrics/ecr.storage.read.error</code></p>
+</li>
+<li>
+<p>Number of write errors: <code>actuator/metrics/ecr.storage.write.error</code></p>
+</li>
+<li>
+<p>Read times: <code>actuator/metrics/ecr.storage.read.time</code></p>
+</li>
+<li>
+<p>Write times: <code>actuator/metrics/ecr.storage.write.time</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each metric contains a tag named <code>profile</code> with a value for each configured storage profile.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These metrics are reset each time the repository service instance is restarted.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Profiles that use the <code>BucketOrganizerPlugin</code> are not included in the metrics. Instead, a separate metric for each of
+the referenced profiles used by the bucket organizer profile is available.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is possible to disable the recording of these metrics by setting the following parameters to false. This does not
+only disable the availability of the metrics but the entire recording mechanism.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
+  <span class="key">metrics</span>:
+    <span class="key">enable</span>:
+      <span class="key">storage</span>:
+        <span class="key">read</span>: <span class="string"><span class="content">false</span></span>
+        <span class="key">write</span>: <span class="string"><span class="content">false</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prometheus">Prometheus</h3>
+<div class="paragraph">
+<p><em>arveo</em> provides an actuator endpoint that can be used to collect metrics data using <a href="https://prometheus.io/">Prometheus</a>.
+Prometheus collects data by periodically calling configured sources ("scrapes"). The following example shows an entry
+in the <code>prometheus.yml</code> file for a scrape configuration that collects data from the prometheus actuator endpoint every
+15 seconds:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">global</span>:
+  <span class="key">scrape_interval</span>: <span class="string"><span class="content">15s</span></span>
+  <span class="key">evaluation_interval</span>: <span class="string"><span class="content">15s</span></span>
+
+<span class="key">scrape_configs</span>:
+  - <span class="string"><span class="content">job_name: 'arveo'</span></span>
+    <span class="key">metrics_path</span>: <span class="string"><span class="content">'/actuator/prometheus'</span></span>
+    <span class="key">static_configs</span>:
+      - <span class="string"><span class="content">targets: ['localhost:39001']</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The metrics support of <em>arveo</em> is based on <a href="https://micrometer.io">Micrometer</a>. To support monitoring systems
+like Prometheus, micrometer remembers the last maximum value of time based metrics for a configurable amount of time.
+This time should be close to the scrape interval of Prometheus and can be
+configured in the configuration properties of <em>arveo</em> as shown in the example below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
+  <span class="key">metrics</span>:
+    <span class="key">export</span>:
+      <span class="key">prometheus</span>:
+        <span class="key">step</span>: <span class="string"><span class="content">15s</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The data collected by Prometheus can be visualized using <a href="https://grafana.com/oss/grafana/">Grafana</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_other_monitoring_systems">Other monitoring systems</h3>
+<div class="paragraph">
+<p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
+The <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#actuator.metrics.export">Spring Boot Documentation</a>
+contains a list of the supported monitoring systems and further information about how to configure them.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -16160,7 +16294,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-04 22:31:36 UTC
+Last updated 2022-07-05 11:18:56 UTC
 </div>
 </div>
 <style>
