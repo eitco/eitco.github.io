@@ -140,6 +140,7 @@ a, a:hover, a:focus {
 <li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
+<li><a href="#_system_jobs">System jobs</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
 </ul>
 </li>
@@ -7723,11 +7724,166 @@ child IDs in SOLR</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Get the ID of the child entity to search for from the entity client of the relation child entity
-=== System jobs</td>
+<td>Get the ID of the child entity to search for from the entity client of the relation child entity</td>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_rebuilding_the_solr_index">Rebuilding the SOLR index</h4>
+<div class="paragraph">
+<p>Currently, there is no automated way to rebuild the SOLR index. If the data in SOLR was lost or corrupted, it can be
+rebuilt using the NOSql queue tables of the affected type definitions.</p>
+</div>
+<div class="paragraph">
+<p>When an entity is added or updated in a type
+definition that is annotated with <code>@NOSql</code>, an entry for this entity is added to a queue table by a trigger on the
+database. This queue table is named like the main table for the type definition with a <code>_nq</code> suffix. So for example,
+if the main table is called <code>my_type_definition</code>, the queue table would be called <code>my_type_definition_nq</code>. It contains
+a column for each attribute that is supposed to be contained in SOLR and the following system fields:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nosql_queue_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the entry in the queue. This value is assigned automatically by the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nosql_processing_counter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A counter that is incremented each time the system has tried to store the entry in SOLR. The initial value is supposed
+ to be 0.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nosql_trigger_operation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the operation that caused the entry to be added to the queue table. Could be INSERT, UPDATE or DELETE.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A system job periodically reads the entries contained in the queue table and stores them in SOLR. When the entry was
+successfully stored in SOLR, it is deleted from the queue. If the entry could not be stored in SOLR, the processing
+counter is incremented and the job will try again until the maximum number of tries has been reached.</p>
+</div>
+<div class="paragraph">
+<p>To rebuild the SOLR index, the data to be stored in SOLR has to be added to the queue table by copying the data
+contained in the main table of the type definition. By definition, only the most recent version of each entity is
+contained in SOLR, so the data contained in the version table of the type definition is of no interest here. The
+value of the <code>nosql_processing_counter</code> field must be set to 0. To treat the entity as a new object in SOLR, set the
+value of the <code>nosql_trigger_operation</code> field to <code>INSERT</code>. To perform an update on an already existing object in SOLR,
+set the value to <code>UPDATE</code>.</p>
+</div>
+<div class="paragraph">
+<p>The code of the trigger function used to populate the queue table might be useful when creating the SQL script that
+copies the entries. The trigger function is called like the main table of the type definition with a <code>_ntf</code> suffix.</p>
+</div>
+<div class="paragraph">
+<p>When the type definition makes use of the <code>@NOSqlResolvedRelations</code> annotation, an additional field containing the
+resolved IDs of the child entities of the relations on each entity will be contained in the queue table. This field
+will be called <code>relation_&lt;type-id&gt;_child_ids</code> where <code>type-id</code> is the numeric ID of the relation type definition. This
+ID can be found in the <code>ecr_types</code> table. To store the resolved child IDs in SOLR, additional entries for each entity
+containing the entity ID, the resolved child IDs, the update counter and the trigger operation are added to the queue
+table. Note that the value for the trigger operation field must be set to <code>UPDATE</code> in this case.
+The resolved child IDs can be copied from the table containing the relation. The <code>parent_id</code> field in this table will
+contain the ID of the entity that is to be stored in SOLR. The <code>child_id</code> field contains the IDs of the related child
+entities.</p>
+</div>
+<div class="paragraph">
+<p>The code of the trigger function used to populate the queue with the entries containing the resolved child ID might be
+useful when writing the SQL script to copy these values. The trigger function will be called like the main table of
+the relation type definition with a <code>_nrtf</code> suffix.</p>
+</div>
+<div class="sect4">
+<h5 id="_example_scripts">Example scripts</h5>
+<div class="paragraph">
+<p>The following examples show how to copy data to the queue table. The main table of the type definition in the example
+is called <code>test_simple_invoice</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">copying data from the main table to the queue table</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">insert</span>
+    <span class="class">into</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">test_simple_invoice_nq</span><span class="delimiter">&quot;</span></span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">version_number</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">latest_version_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">version_comment</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">initial_creation_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">creator_user_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">retention_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_user_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">creation_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">update_counter</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">last_delete_restore_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">litigation_hold</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">deleted</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">acl_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">amount</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice_number</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_processing_counter</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_trigger_operation</span><span class="delimiter">&quot;</span></span>
+    )
+<span class="class">select</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">version_number</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">latest_version_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">version_comment</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">initial_creation_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">creator_user_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">retention_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_user_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">creation_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">update_counter</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">last_delete_restore_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">litigation_hold</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">deleted</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">acl_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">amount</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice_number</span><span class="delimiter">&quot;</span></span>,
+    <span class="integer">0</span>,
+    <span class="string"><span class="delimiter">'</span><span class="content">INSERT</span><span class="delimiter">'</span></span>
+<span class="keyword">from</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">test_simple_invoice</span><span class="delimiter">&quot;</span></span>;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">copying the resolved child IDs to the queue table</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">insert</span>
+    <span class="class">into</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">test_simple_invoice_nq</span><span class="delimiter">&quot;</span></span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">relation_32877_child_ids</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_processing_counter</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_trigger_operation</span><span class="delimiter">&quot;</span></span>
+    )
+<span class="class">select</span> <span class="keyword">distinct</span>
+    a.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span>,
+    array(<span class="class">select</span> b.<span class="string"><span class="delimiter">&quot;</span><span class="content">child_id</span><span class="delimiter">&quot;</span></span> <span class="keyword">from</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">test_invoice_person_relation</span><span class="delimiter">&quot;</span></span> b
+        <span class="keyword">where</span> b.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span> = a.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span> <span class="keyword">and</span> b.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_version_id</span><span class="delimiter">&quot;</span></span> <span class="keyword">is</span> <span class="predefined-constant">null</span>),
+    <span class="integer">0</span>,
+    <span class="string"><span class="delimiter">'</span><span class="content">UPDATE</span><span class="delimiter">'</span></span>
+<span class="keyword">from</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">test_invoice_person_relation</span><span class="delimiter">&quot;</span></span> a;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_system_jobs">System jobs</h3>
 <div class="paragraph">
 <p>The <em>arveo</em> system uses several background jobs to perform essential functions. These jobs are managed by
 a clustered Quartz scheduler running inside the repository service and/or in a dedicated job service. The scheduler
@@ -7759,7 +7915,6 @@ authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code> and the a
 </td>
 </tr>
 </table>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_clean_recovery_table_job">Clean recovery table job</h4>
@@ -16294,7 +16449,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-06 07:15:53 UTC
+Last updated 2022-07-06 09:24:45 UTC
 </div>
 </div>
 <style>
