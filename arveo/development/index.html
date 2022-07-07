@@ -6351,7 +6351,7 @@ service haveged start</pre>
 <div class="sect2">
 <h3 id="_configure_active_mq">Configure Active MQ</h3>
 <div class="paragraph">
-<p>The <em>arveo</em> uses Apache ActiveMQ to queue asynchronous tasks. Access to the message broker is configured in the YAML file of
+<p><em>arveo</em> uses Apache ActiveMQ to queue asynchronous tasks. Access to the message broker is configured in the YAML file of
 the <em>arveo</em> service using the default configuration properties of the Spring ActiveMQ integration:</p>
 </div>
 <div class="listingblock">
@@ -6372,8 +6372,12 @@ components not implemented in Java. The JSON data uses the same serialization me
 <div class="paragraph">
 <p>The <em>arveo</em> uses ActiveMQ&#8217;s scheduler support for features like automated deletion of entities in the recycle bin after a
 configurable time. Therefore it is required to enable the scheduler in ActiveMQ by setting schedulerSupport="true" in the
-broker tag in <em>activemq.xml</em>.
-=== Configure <em>arveo</em> User Management As Authentication Service</p>
+broker tag in <em>activemq.xml</em>.</p>
+</div>
+<div class="paragraph">
+<p>When the automatic rendition creation feature is used, a separate dead letter queue must be configured in ActiveMQ. See
+<a href="#<em>error_handling">renditions</a> for details.
+=== Configure _arveo</em> User Management As Authentication Service</p>
 </div>
 <div class="paragraph">
 <p>The User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue
@@ -7479,6 +7483,152 @@ the entities that have to be stored in SOLR. A <a href="#_nosql_queue_job">syste
 entries in the queue table.</p>
 </div>
 <div class="sect3">
+<h4 id="_solr_deployment">SOLR Deployment</h4>
+<div class="paragraph">
+<p>A small tutorial for setting up solr for <em>arveo</em>.</p>
+</div>
+<div class="sect4">
+<h5 id="_arveo_yaml_configuration"><em>arveo</em> yaml configuration:</h5>
+<div class="paragraph">
+<p>In the following example you can see a minimal <em>arveo</em> yaml configuration for solr:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">solr</span>:
+      <span class="key">defaultConfigName</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ecr-config</span><span class="delimiter">&quot;</span></span>
+      <span class="key">host</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:38983/solr</span><span class="delimiter">&quot;</span></span>
+      <span class="key">username</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ecr-solr-user</span><span class="delimiter">&quot;</span></span>
+      <span class="key">password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Collections will be created automatically from <em>arveo</em>. Every tenant gets his own collection.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>More information you can find in the chapter <a href="#_ecr_server_solr">ecr.server.solr</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_solr_security">Solr Security</h5>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+As default solr has <strong>no security settings</strong> set. It is very important to add the security settings for solr!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For more information for setting up the security settings for solr you can go the chapter <a href="#_solr_security_configuration">solr security configuration</a></p>
+</div>
+<div class="paragraph">
+<p>If you use the <em>arveo</em> acl functionallity you can setup the solr-acl-plugin. More information for the solr-acl-plugin you can find <a href="#_acl_filter_plugin">here</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_solr_configurations">Solr Configurations</h5>
+<div class="paragraph">
+<p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the solr zookeeper. The ecr-config you can find at the following url <a href="https://nexus.eitco.de">nexus.eitco.de</a> as zip-file.<br></p>
+</div>
+<div class="paragraph">
+<p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
+</div>
+<div class="paragraph">
+<p>Shell:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">[path to zookeeper in solr]/zkcli.sh -cmd upconfig -confdir [path to solr-config from nexus.eitco.de]/solr-config -confname ecr-config -z [zookeeper host]:[zookeeper port]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Bash:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">[path to zookeeper in solr]\zkcli.bat -cmd upconfig -confdir [path to solr-config from nexus.eitco.de]\solr-config -confname ecr-config -z [zookeeper host]:[zookeeper port]</code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_type_definitions">Type Definitions</h6>
+<div class="paragraph">
+<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the solr manged-schema.xml. If you want to deactivate an attribute of an type definition for solr you can do the following:</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If you have a type definition which is using the annotation @NOSql you must be setup a solr. Otherwise, <em>arveo</em> will be not starting!
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@NOSql</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">PersonSimple</span> {
+    <span class="predefined-type">String</span> getFirstName();
+    <span class="type">void</span> setFirstName(<span class="predefined-type">String</span> value);
+
+    <span class="annotation">@NOSql</span>(value = <span class="predefined-constant">false</span>)
+    <span class="predefined-type">String</span> getLastName();
+    <span class="type">void</span> setLastName(<span class="predefined-type">String</span> value);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example only the firstname will be automatically created in the managed-schema.xml of solr.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_fulltext_extraction">Fulltext Extraction</h6>
+<div class="paragraph">
+<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with @Type(ObjectType.DOCUMENT) and @NOSql. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of solr:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Arveo saves the documents who are annotated with @NOSql in a queue table named <em>type_definition_name + _ng</em>.</p>
+</li>
+<li>
+<p>Now a job will fetch all entry in the queue table</p>
+</li>
+<li>
+<p>For each entry which are annotated with @Type(ObjectType.DOCUMENT) arveo will call the document conversion service to extract the fulltext from the content</p>
+</li>
+<li>
+<p>At the end all information will be saved to solr</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>More general information about the document service full text extraction can be found <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/document-conversion-parent/0.0.10-SNAPSHOT/documentation/index.html#_extracting_text_from_a_pdf_file">here</a> and <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/document-conversion-parent/0.0.10-SNAPSHOT/documentation/index.html#_fulltext_plugins">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>More general information about extracting text with arveo and solr you can find at chapter <a href="#_fulltext_extraction_2">Fulltext extraction</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_solr_security_configuration">SOLR security configuration</h4>
 <div class="paragraph">
 <p>By default, SOLR does not use any kind of authorization or authentication. In productive systems, SOLR must be secured
@@ -7556,6 +7706,52 @@ configuration for <em>arveo</em>:</p>
 </div>
 </div>
 <div class="sect3">
+<h4 id="_acl_filter_plugin">ACL filter plugin</h4>
+<div class="paragraph">
+<p>When searching for ACL protected entities in SOLR, the search result is filtered by ACL right. This is achieved by
+using a custom SOLR plugin, which must be installed manually by following the steps below:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.8) from the nexus repository.</p>
+</li>
+<li>
+<p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
+</li>
+<li>
+<p>Configure the plugin in <code>solrconfig.xml</code> as shown below:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;queryParser</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">aclright</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.user.management.access.control.solr.AclRightParserPlugin</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUrl</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>jdbc:postgresql://localhost:5432/mydatabase?currentSchema=mytenant<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUser</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>myuser<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcPassword</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>mypassword<span class="tag">&lt;/str&gt;</span>
+<span class="tag">&lt;/queryParser&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The plugin requires a JDBC connection to the relational database to load ACL rights. Do not change the name of the
+query parser. SOLR queries generated by arveo will contain a filter query using the <code>aclright</code> prefix to
+perform the actual filtering.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The Access Control SOLR Plugin does not yet support multiple tenants!
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_storing_entities_in_solr">Storing entities in SOLR</h4>
 <div class="paragraph">
 <p>To be able to use SOLR for advanced queries, the entities must be stored in SOLR, too. To enable this, simply add the
@@ -7567,7 +7763,7 @@ by a dot. For example, an attribute called "name" in a type definition called "i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_fulltext_extraction">Fulltext extraction</h4>
+<h4 id="_fulltext_extraction_2">Fulltext extraction</h4>
 <div class="paragraph">
 <p>It is also possible to store fulltext data of the content of documents in SOLR. For this, set the <code>fulltextExtraction</code>
 attribute of the <code>@ContentElement</code> annotation to true (see <a href="#_configure_storage_locations">Content Elements</a>). The
@@ -8465,36 +8661,6 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The username used for basic authorization to SOLR.</p></td>
 <td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zk-digest-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password used for digest authentication for SOLR Zookeeper.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zk-digest-username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The username used for digest authentication for SOLR Zookeeper.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-client-host</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the host for the connection of the Solr Zookeeper Client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">localhost:39983</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-client-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the Timeout for the Connection of the Solr Zookeeper Client in milliseconds.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-connect-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the connect-timeout for the Zookeeper client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
 </tr>
 </tbody>
 </table>
@@ -16449,7 +16615,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-06 23:28:03 UTC
+Last updated 2022-07-07 06:14:15 UTC
 </div>
 </div>
 <style>
