@@ -133,7 +133,7 @@ a, a:hover, a:focus {
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_implementation_details">Implementation details</a></li>
+<li><a href="#_implementation_details_of_aes_encryption">Implementation details of AES encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
 <li><a href="#_configure_authenticationsso_with_keycloak">Configure Authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure Authentication between Content Services</a></li>
@@ -3307,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.2<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>5.0.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -6047,18 +6047,79 @@ If you want to use directories instead of buckets you can configure file system 
 <div class="sect2">
 <h3 id="_encryption">Configure Encryption</h3>
 <div class="paragraph">
-<p>The <em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
+<p><em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
 for each storage profile.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_overview">Overview</h3>
 <div class="paragraph">
-<p>Encrypting and decrypting is performed by configurable encryption providers. Currently, there
-is one provider that supports AES encryption with 256bit keys. When a new content element is created in an encrypted
-profile, the <em>arveo</em> generates a random cipher key for the element. The key is encrypted using a master password that is
-configured in the profile&#8217;s encryption settings and stored in the database, which creates an identifier for the key. The
-keys are stored in individual tables for each profile called ecr_keys_&lt;profileName&gt;. After that, the content is encrypted
+<p>Encrypting and decrypting is performed by configurable encryption providers. Each provider is identified by a unique
+name. The available providers are described below.</p>
+</div>
+<div class="paragraph">
+<p>The following tables give an overview of encryption settings for a storage profile.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. Encryption settings</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enables or disables the encryption</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">providerName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the encryption provider to use</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commons-aes</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To make sure all content of a specific type definition is encrypted, make sure to limit the content types supported
+by the type definition to types that use an encrypting storage profile.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the <a href="#_bucketorganizer">BucketOrganizerPlugin</a> is used, the encryption settings must be configured for each plugin referenced
+by the bucket selection rules. Configuring the encryption for the BucketOrganizerPlugin itself is not supported.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_commons_aes_provider">Commons AES provider</h4>
+<div class="paragraph">
+<p>The <code>commons-aes</code> provider supports AES encryption with 256bit keys. When a new content element is created in an encrypted
+profile, the provider generates a random cipher key for the element. The key is encrypted using a master password that is
+configured in the profile&#8217;s encryption settings. It is then stored in the database, which creates an identifier for the key.
+The keys are stored in individual tables for each profile called ecr_keys_&lt;profileName&gt;. After that, the content is encrypted
 and stored using the profile&#8217;s storage plugin. The key-id is stored in a header together with the encrypted data. When
 the data is read, the cipher key is loaded from the database using the key-id read from the header. The key is decrypted
 using the master password and used to decrypt the data read by the profile&#8217;s storage plugin.</p>
@@ -6102,35 +6163,8 @@ The encryption feature is configured as shown in the following example:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The following tables give an overview of encryption settings and specific settings for the module <em>commons-aes</em>:</p>
+<p>The following tables give an overview of encryption settings for the <em>commons-aes</em> provider:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Encryption settings</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enables or disables the encryption</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">providerName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name of the encryption provider to use</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commons-aes</p></td>
-</tr>
-</tbody>
-</table>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 16. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
@@ -6159,18 +6193,18 @@ most secure algorithm available will be used</p></td>
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-To make sure all content of a specific type definition is encrypted, make sure to limit the content types supported
-by the type definition to types that use an encrypting storage profile.
-</td>
-</tr>
-</table>
+</div>
+<div class="sect3">
+<h4 id="_vault_aes_provider">Vault AES provider</h4>
+<div class="paragraph">
+<p>The <code>vault-aes</code> encryption provider uses the transit secrets engine of
+<a href="https://www.vaultproject.io/docs/secrets/transit">Hashicorp Vault</a> to encrypt and decrypt a generated random cipher key.
+The cipher key is generated using a configurable random data generation algorithm and then used to encrypt the content
+with AES as described below. The cipher key is then encrypted by Vault and stored in a header together with the encrypted
+content data. When the data is decrypted, the encrypted cipher key is read from the header, decrypted using Vault and
+then used to decrypt the content. The advantage in comparison to the <code>commons-aes</code> provider is that no master key and
+no stored encryption keys in the database are required. The keys required to decrypt the cipher keys (and though the
+data, too) are securely stored in Vault and are never known to <em>arveo</em>.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -6179,24 +6213,77 @@ by the type definition to types that use an encrypting storage profile.
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-When the <a href="#_bucketorganizer">BucketOrganizerPlugin</a> is used, the encryption settings must be configured for each plugin referenced
-by the bucket selection rules. Configuring the encryption for the BucketOrganizerPlugin itself is not supported.
+When the Vault instance containing the keyring used to encrypt the random cipher keys is lost, it is impossible to
+decrypt the content data!
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>The following tables give an overview of encryption settings for the <code>vault-aes</code> provider:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 17. Provider specific settings for 'commons-aes'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">keyring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the key ring contained in Vault&#8217;s transit secrets engine used to encrypt the cipher keys</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">transitEnginePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(optional) path of the transit engine. If null, the default path will be used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rngAlgorithm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the algorithm used to generate secure random data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Platform specific. See docs for SecureRandom.getInstanceStrong(). If not specified, the
+most secure algorithm available will be used</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following example shows a storage profile configuration using the <code>vault-aes</code> encryption provider.</p>
+</div>
+<div class="listingblock">
+<div class="title">example configuration for the vault-aes provider</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">vaultEncryptedProfile</span>:
+  <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.storage.plugin.filesystem.FileSystemPlugin</span></span>
+  <span class="key">pluginSettings</span>:
+    <span class="key">storagePath</span>: <span class="string"><span class="content">/storage/vault-encrypted</span></span>
+  <span class="key">encryptionSettings</span>:
+    <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
+    <span class="key">providerName</span>: <span class="string"><span class="content">vault-aes</span></span>
+    <span class="key">providerSettings</span>:
+      <span class="key">keyring</span>: <span class="string"><span class="content">arveo</span></span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_implementation_details">Implementation details</h3>
+<h3 id="_implementation_details_of_aes_encryption">Implementation details of AES encryption</h3>
 <div class="paragraph">
-<p>Encryption in the <em>arveo</em> is based on the implementation in the module <em>commons</em>. The following chapter
-contains information about the implementation details of this library.</p>
+<p>The following chapter contains information about the implementation details of the AES encryption used by <em>arveo</em>.</p>
 </div>
 <div class="sect3">
 <h4 id="_header">Header</h4>
 <div class="paragraph">
-<p>The library is designed to encrypt data in such a way that it can be stored permanently in encrypted form and possibly
-only decrypted after a long time. In order to guarantee decryption, all data required for this (except the key, of
+<p>The encryption library is designed to encrypt data in such a way that it can be stored permanently in encrypted form and
+possibly only decrypted after a long time. In order to guarantee decryption, all data required for this (except the key, of
 course) are stored in a header together with the encrypted data. Using the data from the header, the library can thus
 obtain, for example, the algorithm used and the data for key derivation, and only needs the password or the derived key
 for decryption.</p>
@@ -6268,7 +6355,7 @@ performance and compatibility reasons, the BouncyCastle implementations are used
 </div>
 <div class="paragraph">
 <p>Since the default implementation of the <em>CipherInputStream</em> from <em>javax.crypto</em> is not suitable for block ciphers with data
-authentication, the implementations for <em>CipherInputStream</em> and CipherOutputStream from the <em>BouncyCastle</em> library are used.
+authentication, the implementations for <em>CipherInputStream</em> and <em>CipherOutputStream</em> from the <em>BouncyCastle</em> library are used.
 To generate the random data for the initialisation vector and the salt, a <em>SecureRandom</em> instance created with
 <em>SecureRandom.getInstanceStrong()</em> is used by default. However, the library allows you to specify a different RNG algorithm
 (see <a href="#_note_on_linux">Note on Linux</a> below).</p>
@@ -6277,7 +6364,7 @@ To generate the random data for the initialisation vector and the salt, a <em>Se
 <div class="sect3">
 <h4 id="_header_format">Header Format</h4>
 <div class="paragraph">
-<p>The header begins with a string to identify data encrypted with the library (&gt;ENC&lt;) followed by the length of the
+<p>The header begins with a string to identify data encrypted with the library followed by the length of the
 payload data in the header. The header is divided into blocks and can be read serially.</p>
 </div>
 <div class="literalblock">
@@ -6298,7 +6385,8 @@ which avoids having to derive the key from the password again. The library is no
 the key. Generating keys using random data is a much faster operation compared to key derivation. The disadvantage is,
 that it is not possible to derive the key from a master password in case it was lost. When generated keys are used,
 it is crucial to store those keys in a secure location. In this case, the header will not contain a salt but only the
-ID of the stored key.</p>
+ID of the stored key. When an external system like Vault is used to encrypt generated keys, the encrypted generated key
+is stored in the header instead.</p>
 </div>
 </div>
 <div class="sect3">
@@ -11070,7 +11158,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <div class="sect2">
 <h3 id="_type_annotations">Type Annotations</h3>
 <table id="type_annotations" class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 17. Type Annotations</caption>
+<caption class="title">Table 18. Type Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -11208,7 +11296,7 @@ the full-text support is disabled: <a href="#_nosql_example"><strong>Example</st
 <div class="sect2">
 <h3 id="_property_annotations">Property Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 18. Property Annotations</caption>
+<caption class="title">Table 19. Property Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -11899,7 +11987,7 @@ Can only be used on relation types that support relations to or from versions.</
 <div class="sect2">
 <h3 id="_data_types">Data Types</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Property Data Types</caption>
+<caption class="title">Table 20. Property Data Types</caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12076,7 +12164,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. <em>General system properties:</em></caption>
+<caption class="title">Table 21. <em>General system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12138,7 +12226,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. <em>Versioned entity system properties:</em></caption>
+<caption class="title">Table 22. <em>Versioned entity system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12185,7 +12273,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. <em>Document system properties:</em></caption>
+<caption class="title">Table 23. <em>Document system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12219,7 +12307,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. <em>Folder system properties:</em></caption>
+<caption class="title">Table 24. <em>Folder system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12246,7 +12334,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. <em>Relation system properties:</em></caption>
+<caption class="title">Table 25. <em>Relation system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12283,7 +12371,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. <em>Version system properties:</em></caption>
+<caption class="title">Table 26. <em>Version system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12569,7 +12657,7 @@ the <code>@Source</code> and <code>@Target</code> annotations used for relation 
 values (defined in <code>de.eitco.ecr.type.definition.annotations.reference.SupportedNodeVersion</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Possible values of the supportedNodeVersion attribute</caption>
+<caption class="title">Table 27. Possible values of the supportedNodeVersion attribute</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12749,7 +12837,7 @@ You can use the <em>@PrimaryKey</em> annotation to define one or more properties
 The object to be inherited and its initial state is shown in the following table.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 40%;">
-<caption class="title">Table 27. The object to be inherited</caption>
+<caption class="title">Table 28. The object to be inherited</caption>
 <colgroup>
 <col style="width: 40%;">
 <col>
@@ -12796,7 +12884,7 @@ Here, <strong>Invoice</strong> is an object that inherited from <strong>Company<
 The following table describes its initial state, and the update status after 3 different updates.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Inheritance Scheme</caption>
+<caption class="title">Table 29. Inheritance Scheme</caption>
 <colgroup>
 <col style="width: 11%;">
 <col>
@@ -12961,7 +13049,7 @@ The initial object is still the same, its initial state is described in the tabl
 <p>In the following table, the second object <strong>Creditor</strong>, which inherits from the first object, is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 29. The object to be inherited and inheriting</caption>
+<caption class="title">Table 30. The object to be inherited and inheriting</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -13028,7 +13116,7 @@ In the table above, the object <strong>Creditor</strong> inherited the following
 <p>The results of multilevel inheritance through an intermediate object are shown in the table below:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Inheritance Scheme in Multilevel inheritance</caption>
+<caption class="title">Table 31. Inheritance Scheme in Multilevel inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -13127,7 +13215,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>In the following table, the object <strong>Creditor</strong> is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 31. An object to be inherited</caption>
+<caption class="title">Table 32. An object to be inherited</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -13167,7 +13255,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>The table below describes the mechanism of indirect inheritance.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Inheritance Scheme in Indirect inheritance</caption>
+<caption class="title">Table 33. Inheritance Scheme in Indirect inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -14608,7 +14696,7 @@ In this case, a certain property is defined to let the system know, a certain ve
 <p>The version system table consists of the following columns (this is not a complete excerpt):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Structure of the system table</caption>
+<caption class="title">Table 34. Structure of the system table</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -15714,7 +15802,7 @@ overview page for each model class. Example:</p>
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">identifier</span><span class="delimiter">&quot;</span></span>: {
   <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">container-id</span><span class="delimiter">&quot;</span></span>,
   <span class="key"><span class="delimiter">&quot;</span><span class="content">identifier</span><span class="delimiter">&quot;</span></span>: {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">@long</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@long</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>
   }
 }</code></pre>
 </div>
@@ -15729,7 +15817,7 @@ overview page for each model class. Example:</p>
 <p>The following table lists types and their corresponding identifiers.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Types in Java and their Identifiers in <em>arveo</em></caption>
+<caption class="title">Table 35. Types in Java and their Identifiers in <em>arveo</em></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15812,7 +15900,7 @@ overview page for each model class. Example:</p>
 types.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Identifiers for the Types List and Set</caption>
+<caption class="title">Table 36. Identifiers for the Types List and Set</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16075,7 +16163,7 @@ used:</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Columns of ecr_types</caption>
+<caption class="title">Table 37. Columns of ecr_types</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16112,7 +16200,7 @@ used:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Columns of ecr_types_content_elements</caption>
+<caption class="title">Table 38. Columns of ecr_types_content_elements</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16178,7 +16266,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Columns of ecr_folder_structure</caption>
+<caption class="title">Table 39. Columns of ecr_folder_structure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16215,7 +16303,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Columns of ecr_folder_structure_closure</caption>
+<caption class="title">Table 40. Columns of ecr_folder_structure_closure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16283,7 +16371,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Columns of <em>ecr_recovery</em></caption>
+<caption class="title">Table 41. Columns of <em>ecr_recovery</em></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16351,7 +16439,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Columns of ecr_keys_&lt;profile&gt;</caption>
+<caption class="title">Table 42. Columns of ecr_keys_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16378,7 +16466,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
+<caption class="title">Table 43. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -16422,7 +16510,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="title">Figure 9. Architecture Overview</div>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 43. 3rd Party Services in <em>arveo</em></caption>
+<caption class="title">Table 44. 3rd Party Services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -16615,7 +16703,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-07 06:14:15 UTC
+Last updated 2022-07-08 15:40:38 UTC
 </div>
 </div>
 <style>
