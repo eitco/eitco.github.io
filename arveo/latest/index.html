@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 8.0.0</div>
+<div id="toctitle">arveo 8.0.1</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -119,10 +119,6 @@ a, a:hover, a:focus {
 <li><a href="#_step_2_command_line_tool">Step 2 - Command line tool</a></li>
 <li><a href="#_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</a></li>
 <li><a href="#_the_types_archetype">The Types Archetype</a></li>
-</ul>
-</li>
-<li><a href="#_archetype_overview">The Types Archetype</a>
-<ul class="sectlevel2">
 <li><a href="#_overview_of_the_generated_project">Overview of the generated project</a></li>
 <li><a href="#_the_full_featured_archetype">The Full-Featured Archetype</a></li>
 <li><a href="#_overview_of_the_generated_project_2">Overview of the generated project</a></li>
@@ -137,13 +133,14 @@ a, a:hover, a:focus {
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_implementation_details">Implementation details</a></li>
+<li><a href="#_implementation_details_of_aes_encryption">Implementation details of AES encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
 <li><a href="#_configure_authenticationsso_with_keycloak">Configure Authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure Authentication between Content Services</a></li>
 <li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
+<li><a href="#_system_jobs">System jobs</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
 </ul>
 </li>
@@ -151,6 +148,9 @@ a, a:hover, a:focus {
 <ul class="sectlevel2">
 <li><a href="#_custom_health_indicators">Custom health indicators</a></li>
 <li><a href="#_custom_endpoints">Custom endpoints</a></li>
+<li><a href="#_custom_metrics">Custom metrics</a></li>
+<li><a href="#_prometheus">Prometheus</a></li>
+<li><a href="#_other_monitoring_systems">Other monitoring systems</a></li>
 </ul>
 </li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
@@ -173,7 +173,7 @@ a, a:hover, a:focus {
 </li>
 <li><a href="#_data_modelling"><strong>Data Modelling</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_entity_types">Entity Types</a></li>
+<li><a href="#_objects_types_definitions">Entity Types</a></li>
 <li><a href="#_type_annotations">Type Annotations</a></li>
 <li><a href="#_property_annotations">Property Annotations</a></li>
 <li><a href="#_data_types">Data Types</a></li>
@@ -2795,7 +2795,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 8.0.0.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 8.0.1.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3254,7 +3254,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>8.0.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>8.0.1<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3307,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.2<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>5.0.3<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -3996,14 +3996,7 @@ Imported file Incoming_invoice.png belonging to project Webclient
 </div>
 <div class="sect2">
 <h3 id="_the_types_archetype">The Types Archetype</h3>
-
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_archetype_overview">The Types Archetype</h2>
-<div class="sectionbody">
-<div class="paragraph">
+<div id="_archetype_overview" class="paragraph">
 <p>This archetype creates a rather small project. It consists of an arveo scenario and tests for that.</p>
 </div>
 <div class="paragraph">
@@ -4074,6 +4067,7 @@ have switched into this folder on your command line.</p>
 <div class="paragraph">
 <p>would not ask for any parameters and just create the project.</p>
 </div>
+</div>
 <div class="sect2">
 <h3 id="_overview_of_the_generated_project">Overview of the generated project</h3>
 <div class="paragraph">
@@ -4082,7 +4076,7 @@ have switched into this folder on your command line.</p>
 <div class="sect3">
 <h4 id="_implementationtypes">implementation\types</h4>
 <div class="paragraph">
-<p>This module contains your arveo scenario. An example type will be created with the name &lt;class-name-prefix&gt;Model. You can define more types here, but you will need to register them in register in &lt;class-name-prefix&gt;TypeRegistration. The chapter <a href="#Object types and definitions">Object types and definitions</a> describes how to define types.</p>
+<p>This module contains your arveo scenario. An example type will be created with the name &lt;class-name-prefix&gt;Model. You can define more types here, but you will need to register them in register in &lt;class-name-prefix&gt;TypeRegistration. The chapter <a href="#_objects_types_definitions"><strong>arveo type definitions</strong></a> describes how to define types.</p>
 </div>
 </div>
 <div class="sect3">
@@ -4300,7 +4294,7 @@ The maven coordinate of this archetype are:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>this submodule contains the arveo based model. The generated interface named &lt;class-name-prefix&gt;Model describes an <a href="#Object types and definitions">arveo type definition</a> as will every interface you register in &lt;class-name-prefix&gt;TypeRegistration. The jar compiled by this module will be available on the server side and client side. Additionally, it needs to be in the class path of your arveo instance. For the system tests (se below) this is already taken care of.</p>
+<p>this submodule contains the arveo based model. The generated interface named &lt;class-name-prefix&gt;Model describes an  <a href="#_objects_types_definitions"><strong>arveo type definition</strong></a> as will every interface you register in &lt;class-name-prefix&gt;TypeRegistration. The jar compiled by this module will be available on the server side and client side. Additionally, it needs to be in the class path of your arveo instance. For the system tests (se below) this is already taken care of.</p>
 </li>
 </ul>
 </div>
@@ -5021,6 +5015,52 @@ of the different strategies.</p>
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_azure_blob_storage">Azure blob storage</h5>
+<div class="paragraph">
+<p>Class name: <code>de.eitco.ecr.storage.plugin.azureblob.AzureBlobStoragePlugin</code></p>
+</div>
+<div class="paragraph">
+<p>The Azure blob storage plugin can be used to connect to a storage account in Microsoft Azure.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. Configuration parameter of the azure blob storage plugin</caption>
+<colgroup>
+<col style="width: 20%;">
+<col>
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">parameter</th>
+<th class="tableblock halign-left valign-top">meaning</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">connectionString</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The connection string used to connect to the storage account. The access string can be obtained
+ from the azure portal.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">containerName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the container in the storage account that will contain the data of the storage profile.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timeoutMillis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The timeout in milliseconds for requests to Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional parameters contained in the plugin configuration will be passed on to the <code>Configuration</code> used for the
+Azure SDK.</p>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_bucketorganizer">BucketOrganizer</h4>
@@ -5072,7 +5112,7 @@ While the literal <code>&#42;</code> will always match, the other literals will 
 <div class="sect4">
 <h5 id="_configuration_parameters">Configuration parameters</h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Configuration parameters of BucketOrganizer plugin</caption>
+<caption class="title">Table 13. Configuration parameters of BucketOrganizer plugin</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -5280,7 +5320,7 @@ a status value and the number of times the system tried to create the rendition,
 be one of the following values:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Rendition status values</caption>
+<caption class="title">Table 14. Rendition status values</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -5318,7 +5358,7 @@ be one of the following values:</p>
 <p>The <code>@Rendition</code> annotation accepts the following parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Parameters of <code>@Rendition</code></caption>
+<caption class="title">Table 15. Parameters of <code>@Rendition</code></caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -6053,18 +6093,79 @@ If you want to use directories instead of buckets you can configure file system 
 <div class="sect2">
 <h3 id="_encryption">Configure Encryption</h3>
 <div class="paragraph">
-<p>The <em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
+<p><em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
 for each storage profile.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_overview">Overview</h3>
 <div class="paragraph">
-<p>Encrypting and decrypting is performed by configurable encryption providers. Currently, there
-is one provider that supports AES encryption with 256bit keys. When a new content element is created in an encrypted
-profile, the <em>arveo</em> generates a random cipher key for the element. The key is encrypted using a master password that is
-configured in the profile&#8217;s encryption settings and stored in the database, which creates an identifier for the key. The
-keys are stored in individual tables for each profile called ecr_keys_&lt;profileName&gt;. After that, the content is encrypted
+<p>Encrypting and decrypting is performed by configurable encryption providers. Each provider is identified by a unique
+name. The available providers are described below.</p>
+</div>
+<div class="paragraph">
+<p>The following tables give an overview of encryption settings for a storage profile.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 16. Encryption settings</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enables or disables the encryption</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">providerName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the encryption provider to use</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commons-aes</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To make sure all content of a specific type definition is encrypted, make sure to limit the content types supported
+by the type definition to types that use an encrypting storage profile.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the <a href="#_bucketorganizer">BucketOrganizerPlugin</a> is used, the encryption settings must be configured for each plugin referenced
+by the bucket selection rules. Configuring the encryption for the BucketOrganizerPlugin itself is not supported.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_commons_aes_provider">Commons AES provider</h4>
+<div class="paragraph">
+<p>The <code>commons-aes</code> provider supports AES encryption with 256bit keys. When a new content element is created in an encrypted
+profile, the provider generates a random cipher key for the element. The key is encrypted using a master password that is
+configured in the profile&#8217;s encryption settings. It is then stored in the database, which creates an identifier for the key.
+The keys are stored in individual tables for each profile called ecr_keys_&lt;profileName&gt;. After that, the content is encrypted
 and stored using the profile&#8217;s storage plugin. The key-id is stored in a header together with the encrypted data. When
 the data is read, the cipher key is loaded from the database using the key-id read from the header. The key is decrypted
 using the master password and used to decrypt the data read by the profile&#8217;s storage plugin.</p>
@@ -6108,37 +6209,10 @@ The encryption feature is configured as shown in the following example:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The following tables give an overview of encryption settings and specific settings for the module <em>commons-aes</em>:</p>
+<p>The following tables give an overview of encryption settings for the <em>commons-aes</em> provider:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Encryption settings</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enables or disables the encryption</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">providerName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name of the encryption provider to use</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commons-aes</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 17. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6165,18 +6239,18 @@ most secure algorithm available will be used</p></td>
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-To make sure all content of a specific type definition is encrypted, make sure to limit the content types supported
-by the type definition to types that use an encrypting storage profile.
-</td>
-</tr>
-</table>
+</div>
+<div class="sect3">
+<h4 id="_vault_aes_provider">Vault AES provider</h4>
+<div class="paragraph">
+<p>The <code>vault-aes</code> encryption provider uses the transit secrets engine of
+<a href="https://www.vaultproject.io/docs/secrets/transit">Hashicorp Vault</a> to encrypt and decrypt a generated random cipher key.
+The cipher key is generated using a configurable random data generation algorithm and then used to encrypt the content
+with AES as described below. The cipher key is then encrypted by Vault and stored in a header together with the encrypted
+content data. When the data is decrypted, the encrypted cipher key is read from the header, decrypted using Vault and
+then used to decrypt the content. The advantage in comparison to the <code>commons-aes</code> provider is that no master key and
+no stored encryption keys in the database are required. The keys required to decrypt the cipher keys (and though the
+data, too) are securely stored in Vault and are never known to <em>arveo</em>.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -6185,24 +6259,77 @@ by the type definition to types that use an encrypting storage profile.
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-When the <a href="#_bucketorganizer">BucketOrganizerPlugin</a> is used, the encryption settings must be configured for each plugin referenced
-by the bucket selection rules. Configuring the encryption for the BucketOrganizerPlugin itself is not supported.
+When the Vault instance containing the keyring used to encrypt the random cipher keys is lost, it is impossible to
+decrypt the content data!
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>The following tables give an overview of encryption settings for the <code>vault-aes</code> provider:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 18. Provider specific settings for 'commons-aes'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">keyring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the key ring contained in Vault&#8217;s transit secrets engine used to encrypt the cipher keys</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">transitEnginePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(optional) path of the transit engine. If null, the default path will be used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rngAlgorithm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the algorithm used to generate secure random data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Platform specific. See docs for SecureRandom.getInstanceStrong(). If not specified, the
+most secure algorithm available will be used</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following example shows a storage profile configuration using the <code>vault-aes</code> encryption provider.</p>
+</div>
+<div class="listingblock">
+<div class="title">example configuration for the vault-aes provider</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">vaultEncryptedProfile</span>:
+  <span class="key">pluginClassName</span>: <span class="string"><span class="content">de.eitco.ecr.storage.plugin.filesystem.FileSystemPlugin</span></span>
+  <span class="key">pluginSettings</span>:
+    <span class="key">storagePath</span>: <span class="string"><span class="content">/storage/vault-encrypted</span></span>
+  <span class="key">encryptionSettings</span>:
+    <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
+    <span class="key">providerName</span>: <span class="string"><span class="content">vault-aes</span></span>
+    <span class="key">providerSettings</span>:
+      <span class="key">keyring</span>: <span class="string"><span class="content">arveo</span></span></code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_implementation_details">Implementation details</h3>
+<h3 id="_implementation_details_of_aes_encryption">Implementation details of AES encryption</h3>
 <div class="paragraph">
-<p>Encryption in the <em>arveo</em> is based on the implementation in the module <em>commons</em>. The following chapter
-contains information about the implementation details of this library.</p>
+<p>The following chapter contains information about the implementation details of the AES encryption used by <em>arveo</em>.</p>
 </div>
 <div class="sect3">
 <h4 id="_header">Header</h4>
 <div class="paragraph">
-<p>The library is designed to encrypt data in such a way that it can be stored permanently in encrypted form and possibly
-only decrypted after a long time. In order to guarantee decryption, all data required for this (except the key, of
+<p>The encryption library is designed to encrypt data in such a way that it can be stored permanently in encrypted form and
+possibly only decrypted after a long time. In order to guarantee decryption, all data required for this (except the key, of
 course) are stored in a header together with the encrypted data. Using the data from the header, the library can thus
 obtain, for example, the algorithm used and the data for key derivation, and only needs the password or the derived key
 for decryption.</p>
@@ -6274,7 +6401,7 @@ performance and compatibility reasons, the BouncyCastle implementations are used
 </div>
 <div class="paragraph">
 <p>Since the default implementation of the <em>CipherInputStream</em> from <em>javax.crypto</em> is not suitable for block ciphers with data
-authentication, the implementations for <em>CipherInputStream</em> and CipherOutputStream from the <em>BouncyCastle</em> library are used.
+authentication, the implementations for <em>CipherInputStream</em> and <em>CipherOutputStream</em> from the <em>BouncyCastle</em> library are used.
 To generate the random data for the initialisation vector and the salt, a <em>SecureRandom</em> instance created with
 <em>SecureRandom.getInstanceStrong()</em> is used by default. However, the library allows you to specify a different RNG algorithm
 (see <a href="#_note_on_linux">Note on Linux</a> below).</p>
@@ -6283,7 +6410,7 @@ To generate the random data for the initialisation vector and the salt, a <em>Se
 <div class="sect3">
 <h4 id="_header_format">Header Format</h4>
 <div class="paragraph">
-<p>The header begins with a string to identify data encrypted with the library (&gt;ENC&lt;) followed by the length of the
+<p>The header begins with a string to identify data encrypted with the library followed by the length of the
 payload data in the header. The header is divided into blocks and can be read serially.</p>
 </div>
 <div class="literalblock">
@@ -6304,7 +6431,8 @@ which avoids having to derive the key from the password again. The library is no
 the key. Generating keys using random data is a much faster operation compared to key derivation. The disadvantage is,
 that it is not possible to derive the key from a master password in case it was lost. When generated keys are used,
 it is crucial to store those keys in a secure location. In this case, the header will not contain a salt but only the
-ID of the stored key.</p>
+ID of the stored key. When an external system like Vault is used to encrypt generated keys, the encrypted generated key
+is stored in the header instead.</p>
 </div>
 </div>
 <div class="sect3">
@@ -6357,7 +6485,7 @@ service haveged start</pre>
 <div class="sect2">
 <h3 id="_configure_active_mq">Configure Active MQ</h3>
 <div class="paragraph">
-<p>The <em>arveo</em> uses Apache ActiveMQ to queue asynchronous tasks. Access to the message broker is configured in the YAML file of
+<p><em>arveo</em> uses Apache ActiveMQ to queue asynchronous tasks. Access to the message broker is configured in the YAML file of
 the <em>arveo</em> service using the default configuration properties of the Spring ActiveMQ integration:</p>
 </div>
 <div class="listingblock">
@@ -6378,8 +6506,12 @@ components not implemented in Java. The JSON data uses the same serialization me
 <div class="paragraph">
 <p>The <em>arveo</em> uses ActiveMQ&#8217;s scheduler support for features like automated deletion of entities in the recycle bin after a
 configurable time. Therefore it is required to enable the scheduler in ActiveMQ by setting schedulerSupport="true" in the
-broker tag in <em>activemq.xml</em>.
-=== Configure <em>arveo</em> User Management As Authentication Service</p>
+broker tag in <em>activemq.xml</em>.</p>
+</div>
+<div class="paragraph">
+<p>When the automatic rendition creation feature is used, a separate dead letter queue must be configured in ActiveMQ. See
+<a href="#<em>error_handling">renditions</a> for details.
+=== Configure _arveo</em> User Management As Authentication Service</p>
 </div>
 <div class="paragraph">
 <p>The User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue
@@ -7458,7 +7590,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/0.0.21/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/0.0.22/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit">Access audit</h4>
@@ -7483,6 +7615,152 @@ SOLR, too. See <a href="#_entity_annotations_nosql_example">NOSQL Example</a> fo
 will create a special queue table in the relational database for such a type definition. The queue table will contain
 the entities that have to be stored in SOLR. A <a href="#_nosql_queue_job">system job</a> is used to process the
 entries in the queue table.</p>
+</div>
+<div class="sect3">
+<h4 id="_solr_deployment">SOLR Deployment</h4>
+<div class="paragraph">
+<p>A small tutorial for setting up solr for <em>arveo</em>.</p>
+</div>
+<div class="sect4">
+<h5 id="_arveo_yaml_configuration"><em>arveo</em> yaml configuration:</h5>
+<div class="paragraph">
+<p>In the following example you can see a minimal <em>arveo</em> yaml configuration for solr:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">solr</span>:
+      <span class="key">defaultConfigName</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ecr-config</span><span class="delimiter">&quot;</span></span>
+      <span class="key">host</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:38983/solr</span><span class="delimiter">&quot;</span></span>
+      <span class="key">username</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ecr-solr-user</span><span class="delimiter">&quot;</span></span>
+      <span class="key">password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Collections will be created automatically from <em>arveo</em>. Every tenant gets his own collection.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>More information you can find in the chapter <a href="#_ecr_server_solr">ecr.server.solr</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_solr_security">Solr Security</h5>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+As default solr has <strong>no security settings</strong> set. It is very important to add the security settings for solr!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For more information for setting up the security settings for solr you can go the chapter <a href="#_solr_security_configuration">solr security configuration</a></p>
+</div>
+<div class="paragraph">
+<p>If you use the <em>arveo</em> acl functionallity you can setup the solr-acl-plugin. More information for the solr-acl-plugin you can find <a href="#_acl_filter_plugin">here</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_solr_configurations">Solr Configurations</h5>
+<div class="paragraph">
+<p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the solr zookeeper. The ecr-config you can find at the following url <a href="https://nexus.eitco.de">nexus.eitco.de</a> as zip-file.<br></p>
+</div>
+<div class="paragraph">
+<p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
+</div>
+<div class="paragraph">
+<p>Shell:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell script">[path to zookeeper in solr]/zkcli.sh -cmd upconfig -confdir [path to solr-config from nexus.eitco.de]/solr-config -confname ecr-config -z [zookeeper host]:[zookeeper port]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Bash:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">[path to zookeeper in solr]\zkcli.bat -cmd upconfig -confdir [path to solr-config from nexus.eitco.de]\solr-config -confname ecr-config -z [zookeeper host]:[zookeeper port]</code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_type_definitions">Type Definitions</h6>
+<div class="paragraph">
+<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the solr manged-schema.xml. If you want to deactivate an attribute of an type definition for solr you can do the following:</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If you have a type definition which is using the annotation @NOSql you must be setup a solr. Otherwise, <em>arveo</em> will be not starting!
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@NOSql</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">PersonSimple</span> {
+    <span class="predefined-type">String</span> getFirstName();
+    <span class="type">void</span> setFirstName(<span class="predefined-type">String</span> value);
+
+    <span class="annotation">@NOSql</span>(value = <span class="predefined-constant">false</span>)
+    <span class="predefined-type">String</span> getLastName();
+    <span class="type">void</span> setLastName(<span class="predefined-type">String</span> value);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example only the firstname will be automatically created in the managed-schema.xml of solr.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_fulltext_extraction">Fulltext Extraction</h6>
+<div class="paragraph">
+<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with @Type(ObjectType.DOCUMENT) and @NOSql. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of solr:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Arveo saves the documents who are annotated with @NOSql in a queue table named <em>type_definition_name + _ng</em>.</p>
+</li>
+<li>
+<p>Now a job will fetch all entry in the queue table</p>
+</li>
+<li>
+<p>For each entry which are annotated with @Type(ObjectType.DOCUMENT) arveo will call the document conversion service to extract the fulltext from the content</p>
+</li>
+<li>
+<p>At the end all information will be saved to solr</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>More general information about the document service full text extraction can be found <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/document-conversion-parent/0.0.10-SNAPSHOT/documentation/index.html#_extracting_text_from_a_pdf_file">here</a> and <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/document-conversion-parent/0.0.10-SNAPSHOT/documentation/index.html#_fulltext_plugins">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>More general information about extracting text with arveo and solr you can find at chapter <a href="#_fulltext_extraction_2">Fulltext extraction</a></p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_solr_security_configuration">SOLR security configuration</h4>
@@ -7562,6 +7840,52 @@ configuration for <em>arveo</em>:</p>
 </div>
 </div>
 <div class="sect3">
+<h4 id="_acl_filter_plugin">ACL filter plugin</h4>
+<div class="paragraph">
+<p>When searching for ACL protected entities in SOLR, the search result is filtered by ACL right. This is achieved by
+using a custom SOLR plugin, which must be installed manually by following the steps below:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.9) from the nexus repository.</p>
+</li>
+<li>
+<p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
+</li>
+<li>
+<p>Configure the plugin in <code>solrconfig.xml</code> as shown below:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;queryParser</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">aclright</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.user.management.access.control.solr.AclRightParserPlugin</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUrl</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>jdbc:postgresql://localhost:5432/mydatabase?currentSchema=mytenant<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUser</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>myuser<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcPassword</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>mypassword<span class="tag">&lt;/str&gt;</span>
+<span class="tag">&lt;/queryParser&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The plugin requires a JDBC connection to the relational database to load ACL rights. Do not change the name of the
+query parser. SOLR queries generated by arveo will contain a filter query using the <code>aclright</code> prefix to
+perform the actual filtering.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The Access Control SOLR Plugin does not yet support multiple tenants!
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_storing_entities_in_solr">Storing entities in SOLR</h4>
 <div class="paragraph">
 <p>To be able to use SOLR for advanced queries, the entities must be stored in SOLR, too. To enable this, simply add the
@@ -7573,7 +7897,7 @@ by a dot. For example, an attribute called "name" in a type definition called "i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_fulltext_extraction">Fulltext extraction</h4>
+<h4 id="_fulltext_extraction_2">Fulltext extraction</h4>
 <div class="paragraph">
 <p>It is also possible to store fulltext data of the content of documents in SOLR. For this, set the <code>fulltextExtraction</code>
 attribute of the <code>@ContentElement</code> annotation to true (see <a href="#_configure_storage_locations">Content Elements</a>). The
@@ -7730,11 +8054,166 @@ child IDs in SOLR</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Get the ID of the child entity to search for from the entity client of the relation child entity
-=== System jobs</td>
+<td>Get the ID of the child entity to search for from the entity client of the relation child entity</td>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_rebuilding_the_solr_index">Rebuilding the SOLR index</h4>
+<div class="paragraph">
+<p>Currently, there is no automated way to rebuild the SOLR index. If the data in SOLR was lost or corrupted, it can be
+rebuilt using the NOSql queue tables of the affected type definitions.</p>
+</div>
+<div class="paragraph">
+<p>When an entity is added or updated in a type
+definition that is annotated with <code>@NOSql</code>, an entry for this entity is added to a queue table by a trigger on the
+database. This queue table is named like the main table for the type definition with a <code>_nq</code> suffix. So for example,
+if the main table is called <code>my_type_definition</code>, the queue table would be called <code>my_type_definition_nq</code>. It contains
+a column for each attribute that is supposed to be contained in SOLR and the following system fields:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nosql_queue_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the entry in the queue. This value is assigned automatically by the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nosql_processing_counter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A counter that is incremented each time the system has tried to store the entry in SOLR. The initial value is supposed
+ to be 0.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nosql_trigger_operation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the operation that caused the entry to be added to the queue table. Could be INSERT, UPDATE or DELETE.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A system job periodically reads the entries contained in the queue table and stores them in SOLR. When the entry was
+successfully stored in SOLR, it is deleted from the queue. If the entry could not be stored in SOLR, the processing
+counter is incremented and the job will try again until the maximum number of tries has been reached.</p>
+</div>
+<div class="paragraph">
+<p>To rebuild the SOLR index, the data to be stored in SOLR has to be added to the queue table by copying the data
+contained in the main table of the type definition. By definition, only the most recent version of each entity is
+contained in SOLR, so the data contained in the version table of the type definition is of no interest here. The
+value of the <code>nosql_processing_counter</code> field must be set to 0. To treat the entity as a new object in SOLR, set the
+value of the <code>nosql_trigger_operation</code> field to <code>INSERT</code>. To perform an update on an already existing object in SOLR,
+set the value to <code>UPDATE</code>.</p>
+</div>
+<div class="paragraph">
+<p>The code of the trigger function used to populate the queue table might be useful when creating the SQL script that
+copies the entries. The trigger function is called like the main table of the type definition with a <code>_ntf</code> suffix.</p>
+</div>
+<div class="paragraph">
+<p>When the type definition makes use of the <code>@NOSqlResolvedRelations</code> annotation, an additional field containing the
+resolved IDs of the child entities of the relations on each entity will be contained in the queue table. This field
+will be called <code>relation_&lt;type-id&gt;_child_ids</code> where <code>type-id</code> is the numeric ID of the relation type definition. This
+ID can be found in the <code>ecr_types</code> table. To store the resolved child IDs in SOLR, additional entries for each entity
+containing the entity ID, the resolved child IDs, the update counter and the trigger operation are added to the queue
+table. Note that the value for the trigger operation field must be set to <code>UPDATE</code> in this case.
+The resolved child IDs can be copied from the table containing the relation. The <code>parent_id</code> field in this table will
+contain the ID of the entity that is to be stored in SOLR. The <code>child_id</code> field contains the IDs of the related child
+entities.</p>
+</div>
+<div class="paragraph">
+<p>The code of the trigger function used to populate the queue with the entries containing the resolved child ID might be
+useful when writing the SQL script to copy these values. The trigger function will be called like the main table of
+the relation type definition with a <code>_nrtf</code> suffix.</p>
+</div>
+<div class="sect4">
+<h5 id="_example_scripts">Example scripts</h5>
+<div class="paragraph">
+<p>The following examples show how to copy data to the queue table. The main table of the type definition in the example
+is called <code>test_simple_invoice</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">copying data from the main table to the queue table</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">insert</span>
+    <span class="class">into</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">test_simple_invoice_nq</span><span class="delimiter">&quot;</span></span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">version_number</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">latest_version_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">version_comment</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">initial_creation_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">creator_user_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">retention_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_user_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">creation_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">update_counter</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">last_delete_restore_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">litigation_hold</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">deleted</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_date</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">acl_id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">amount</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice_number</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_processing_counter</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_trigger_operation</span><span class="delimiter">&quot;</span></span>
+    )
+<span class="class">select</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">version_number</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">latest_version_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">version_comment</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">initial_creation_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">creator_user_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">retention_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_user_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">creation_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">update_counter</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">last_delete_restore_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">litigation_hold</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">deleted</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">modification_date</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">acl_id</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">amount</span><span class="delimiter">&quot;</span></span>,
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice_number</span><span class="delimiter">&quot;</span></span>,
+    <span class="integer">0</span>,
+    <span class="string"><span class="delimiter">'</span><span class="content">INSERT</span><span class="delimiter">'</span></span>
+<span class="keyword">from</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">test_simple_invoice</span><span class="delimiter">&quot;</span></span>;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">copying the resolved child IDs to the queue table</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">insert</span>
+    <span class="class">into</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">test_simple_invoice_nq</span><span class="delimiter">&quot;</span></span>(
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">relation_32877_child_ids</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_processing_counter</span><span class="delimiter">&quot;</span></span>,
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">nosql_trigger_operation</span><span class="delimiter">&quot;</span></span>
+    )
+<span class="class">select</span> <span class="keyword">distinct</span>
+    a.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span>,
+    array(<span class="class">select</span> b.<span class="string"><span class="delimiter">&quot;</span><span class="content">child_id</span><span class="delimiter">&quot;</span></span> <span class="keyword">from</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">test_invoice_person_relation</span><span class="delimiter">&quot;</span></span> b
+        <span class="keyword">where</span> b.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span> = a.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_id</span><span class="delimiter">&quot;</span></span> <span class="keyword">and</span> b.<span class="string"><span class="delimiter">&quot;</span><span class="content">parent_version_id</span><span class="delimiter">&quot;</span></span> <span class="keyword">is</span> <span class="predefined-constant">null</span>),
+    <span class="integer">0</span>,
+    <span class="string"><span class="delimiter">'</span><span class="content">UPDATE</span><span class="delimiter">'</span></span>
+<span class="keyword">from</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">test_invoice_person_relation</span><span class="delimiter">&quot;</span></span> a;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_system_jobs">System jobs</h3>
 <div class="paragraph">
 <p>The <em>arveo</em> system uses several background jobs to perform essential functions. These jobs are managed by
 a clustered Quartz scheduler running inside the repository service and/or in a dedicated job service. The scheduler
@@ -7766,7 +8245,6 @@ authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code> and the a
 </td>
 </tr>
 </table>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_clean_recovery_table_job">Clean recovery table job</h4>
@@ -8318,36 +8796,6 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The username used for basic authorization to SOLR.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zk-digest-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password used for digest authentication for SOLR Zookeeper.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zk-digest-username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The username used for digest authentication for SOLR Zookeeper.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-client-host</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the host for the connection of the Solr Zookeeper Client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">localhost:39983</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-client-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the Timeout for the Connection of the Solr Zookeeper Client in milliseconds.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zookeeper-connect-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the connect-timeout for the Zookeeper client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -8603,6 +9051,137 @@ be disabled by setting <code>management.endpoint.storageProfiles</code> to false
 <code>management.endpoint.typeDefinitions</code> to false.</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_metrics">Custom metrics</h3>
+<div class="paragraph">
+<p>In addition to the default metrics, <em>arveo</em> provides additional metrics that can be used to monitor the
+performance of the system.</p>
+</div>
+<div class="sect3">
+<h4 id="_storage">Storage</h4>
+<div class="paragraph">
+<p>For each storage profile a metric is available that records the following statistics:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Number of read operations: <code>actuator/metrics/ecr.storage.read.count</code></p>
+</li>
+<li>
+<p>Number of write operations: <code>actuator/metrics/ecr.storage.write.count</code></p>
+</li>
+<li>
+<p>Total amount of bytes read: <code>actuator/metrics/ecr.storage.read.bytes</code></p>
+</li>
+<li>
+<p>Total amount of bytes written: <code>actuator/metrics/ecr.storage.write.bytes</code></p>
+</li>
+<li>
+<p>Number of read errors: <code>actuator/metrics/ecr.storage.read.error</code></p>
+</li>
+<li>
+<p>Number of write errors: <code>actuator/metrics/ecr.storage.write.error</code></p>
+</li>
+<li>
+<p>Read times: <code>actuator/metrics/ecr.storage.read.time</code></p>
+</li>
+<li>
+<p>Write times: <code>actuator/metrics/ecr.storage.write.time</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each metric contains a tag named <code>profile</code> with a value for each configured storage profile.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These metrics are reset each time the repository service instance is restarted.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Profiles that use the <code>BucketOrganizerPlugin</code> are not included in the metrics. Instead, a separate metric for each of
+the referenced profiles used by the bucket organizer profile is available.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is possible to disable the recording of these metrics by setting the following parameters to false. This does not
+only disable the availability of the metrics but the entire recording mechanism.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
+  <span class="key">metrics</span>:
+    <span class="key">enable</span>:
+      <span class="key">storage</span>:
+        <span class="key">read</span>: <span class="string"><span class="content">false</span></span>
+        <span class="key">write</span>: <span class="string"><span class="content">false</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prometheus">Prometheus</h3>
+<div class="paragraph">
+<p><em>arveo</em> provides an actuator endpoint that can be used to collect metrics data using <a href="https://prometheus.io/">Prometheus</a>.
+Prometheus collects data by periodically calling configured sources ("scrapes"). The following example shows an entry
+in the <code>prometheus.yml</code> file for a scrape configuration that collects data from the prometheus actuator endpoint every
+15 seconds:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">global</span>:
+  <span class="key">scrape_interval</span>: <span class="string"><span class="content">15s</span></span>
+  <span class="key">evaluation_interval</span>: <span class="string"><span class="content">15s</span></span>
+
+<span class="key">scrape_configs</span>:
+  - <span class="string"><span class="content">job_name: 'arveo'</span></span>
+    <span class="key">metrics_path</span>: <span class="string"><span class="content">'/actuator/prometheus'</span></span>
+    <span class="key">static_configs</span>:
+      - <span class="string"><span class="content">targets: ['localhost:39001']</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The metrics support of <em>arveo</em> is based on <a href="https://micrometer.io">Micrometer</a>. To support monitoring systems
+like Prometheus, micrometer remembers the last maximum value of time based metrics for a configurable amount of time.
+This time should be close to the scrape interval of Prometheus and can be
+configured in the configuration properties of <em>arveo</em> as shown in the example below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
+  <span class="key">metrics</span>:
+    <span class="key">export</span>:
+      <span class="key">prometheus</span>:
+        <span class="key">step</span>: <span class="string"><span class="content">15s</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The data collected by Prometheus can be visualized using <a href="https://grafana.com/oss/grafana/">Grafana</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_other_monitoring_systems">Other monitoring systems</h3>
+<div class="paragraph">
+<p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
+The <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#actuator.metrics.export">Spring Boot Documentation</a>
+contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
 </div>
@@ -10254,7 +10833,7 @@ This means arveo will not create the corresponding table.</td>
 <h2 id="_data_modelling"><strong>Data Modelling</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_entity_types">Entity Types</h3>
+<h3 id="_objects_types_definitions">Entity Types</h3>
 <div class="paragraph">
 <p>The following chapter defines entity types and type definitions, used in <em>arveo</em>.</p>
 </div>
@@ -10625,7 +11204,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <div class="sect2">
 <h3 id="_type_annotations">Type Annotations</h3>
 <table id="type_annotations" class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 17. Type Annotations</caption>
+<caption class="title">Table 19. Type Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -10763,7 +11342,7 @@ the full-text support is disabled: <a href="#_nosql_example"><strong>Example</st
 <div class="sect2">
 <h3 id="_property_annotations">Property Annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 18. Property Annotations</caption>
+<caption class="title">Table 20. Property Annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -11454,7 +12033,7 @@ Can only be used on relation types that support relations to or from versions.</
 <div class="sect2">
 <h3 id="_data_types">Data Types</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Property Data Types</caption>
+<caption class="title">Table 21. Property Data Types</caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -11631,7 +12210,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. <em>General system properties:</em></caption>
+<caption class="title">Table 22. <em>General system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -11693,7 +12272,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. <em>Versioned entity system properties:</em></caption>
+<caption class="title">Table 23. <em>Versioned entity system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -11740,7 +12319,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. <em>Document system properties:</em></caption>
+<caption class="title">Table 24. <em>Document system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -11774,7 +12353,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. <em>Folder system properties:</em></caption>
+<caption class="title">Table 25. <em>Folder system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -11801,7 +12380,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. <em>Relation system properties:</em></caption>
+<caption class="title">Table 26. <em>Relation system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -11838,7 +12417,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. <em>Version system properties:</em></caption>
+<caption class="title">Table 27. <em>Version system properties:</em></caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12124,7 +12703,7 @@ the <code>@Source</code> and <code>@Target</code> annotations used for relation 
 values (defined in <code>de.eitco.ecr.type.definition.annotations.reference.SupportedNodeVersion</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Possible values of the supportedNodeVersion attribute</caption>
+<caption class="title">Table 28. Possible values of the supportedNodeVersion attribute</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12304,7 +12883,7 @@ You can use the <em>@PrimaryKey</em> annotation to define one or more properties
 The object to be inherited and its initial state is shown in the following table.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 40%;">
-<caption class="title">Table 27. The object to be inherited</caption>
+<caption class="title">Table 29. The object to be inherited</caption>
 <colgroup>
 <col style="width: 40%;">
 <col>
@@ -12351,7 +12930,7 @@ Here, <strong>Invoice</strong> is an object that inherited from <strong>Company<
 The following table describes its initial state, and the update status after 3 different updates.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Inheritance Scheme</caption>
+<caption class="title">Table 30. Inheritance Scheme</caption>
 <colgroup>
 <col style="width: 11%;">
 <col>
@@ -12516,7 +13095,7 @@ The initial object is still the same, its initial state is described in the tabl
 <p>In the following table, the second object <strong>Creditor</strong>, which inherits from the first object, is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 29. The object to be inherited and inheriting</caption>
+<caption class="title">Table 31. The object to be inherited and inheriting</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -12583,7 +13162,7 @@ In the table above, the object <strong>Creditor</strong> inherited the following
 <p>The results of multilevel inheritance through an intermediate object are shown in the table below:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Inheritance Scheme in Multilevel inheritance</caption>
+<caption class="title">Table 32. Inheritance Scheme in Multilevel inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -12682,7 +13261,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>In the following table, the object <strong>Creditor</strong> is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 31. An object to be inherited</caption>
+<caption class="title">Table 33. An object to be inherited</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -12722,7 +13301,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>The table below describes the mechanism of indirect inheritance.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Inheritance Scheme in Indirect inheritance</caption>
+<caption class="title">Table 34. Inheritance Scheme in Indirect inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -14163,7 +14742,7 @@ In this case, a certain property is defined to let the system know, a certain ve
 <p>The version system table consists of the following columns (this is not a complete excerpt):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Structure of the system table</caption>
+<caption class="title">Table 35. Structure of the system table</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -15269,7 +15848,7 @@ overview page for each model class. Example:</p>
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">identifier</span><span class="delimiter">&quot;</span></span>: {
   <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">container-id</span><span class="delimiter">&quot;</span></span>,
   <span class="key"><span class="delimiter">&quot;</span><span class="content">identifier</span><span class="delimiter">&quot;</span></span>: {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">@long</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@long</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>
   }
 }</code></pre>
 </div>
@@ -15284,7 +15863,7 @@ overview page for each model class. Example:</p>
 <p>The following table lists types and their corresponding identifiers.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Types in Java and their Identifiers in <em>arveo</em></caption>
+<caption class="title">Table 36. Types in Java and their Identifiers in <em>arveo</em></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15367,7 +15946,7 @@ overview page for each model class. Example:</p>
 types.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Identifiers for the Types List and Set</caption>
+<caption class="title">Table 37. Identifiers for the Types List and Set</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15630,7 +16209,7 @@ used:</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Columns of ecr_types</caption>
+<caption class="title">Table 38. Columns of ecr_types</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15667,7 +16246,7 @@ used:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Columns of ecr_types_content_elements</caption>
+<caption class="title">Table 39. Columns of ecr_types_content_elements</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15733,7 +16312,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Columns of ecr_folder_structure</caption>
+<caption class="title">Table 40. Columns of ecr_folder_structure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15770,7 +16349,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Columns of ecr_folder_structure_closure</caption>
+<caption class="title">Table 41. Columns of ecr_folder_structure_closure</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15838,7 +16417,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Columns of <em>ecr_recovery</em></caption>
+<caption class="title">Table 42. Columns of <em>ecr_recovery</em></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15906,7 +16485,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Columns of ecr_keys_&lt;profile&gt;</caption>
+<caption class="title">Table 43. Columns of ecr_keys_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15933,7 +16512,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
+<caption class="title">Table 44. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -15977,7 +16556,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="title">Figure 9. Architecture Overview</div>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 43. 3rd Party Services in <em>arveo</em></caption>
+<caption class="title">Table 45. 3rd Party Services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -16170,7 +16749,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-01 10:48:49 UTC
+Last updated 2022-07-15 13:41:01 UTC
 </div>
 </div>
 <style>
