@@ -3307,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.3<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>5.0.4-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -7990,6 +7990,50 @@ The following example shows how to use this method to search in a specific field
 <p>When using the <code>getNoSqlSearchService</code> method, the query performed in SOLR will automatically be limited to entities
 belonging to one single type definition. To search for entities in multiple type definitions, the method
 <code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_combined_search">Combined search</h4>
+<div class="paragraph">
+<p><em>arveo</em> creates a special multi-valued field called <code>ecr_attributes</code> in SOLR. When a getter (or an entire
+interface) is annotated with <code>@NOSql(combinedSearch = true)</code>, the attribute of the getter (or all attributes of the interface)
+will be copied in this field. The <code>ecr_attributes</code> field is of type string. The values of the attributes copied into
+this field, will be converted automatically by SOLR.</p>
+</div>
+<div class="paragraph">
+<p>The <code>ecr_attributes</code> field can be used for a combined search of all attribute values. This makes it possible to provide
+a search method where the user does not need to know the name of the attribute to search for:</p>
+</div>
+<div class="listingblock">
+<div class="title">Performing a combined search</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Optional&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; hit =
+    serviceClient1.getNoSqlSearchService().where().noSqlCombinedField().equalTo()
+        .value(invoiceNumber).holds().uniqueResult();
+Optional&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; hit =
+    serviceClient1.getNoSqlSearchService().where().noSqlCombinedField().equalTo()
+        .value(invoiceNumber).and().noSqlCombinedField().equalTo().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">29.99</span><span class="delimiter">&quot;</span></span>).holds().uniqueResult();
+Optional&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; hit =
+    serviceClient1.getNoSqlSearchService().where().noSqlCombinedField().like()
+        .value(<span class="string"><span class="delimiter">&quot;</span><span class="content">Kasd invidunt stet dolor</span><span class="delimiter">&quot;</span></span>)
+        .and().contextReference(EcrQueryLanguage.COMBINED_SEARCH_FIELD).equalTo().value(invoiceNumber)
+        .holds().uniqueResult();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is possible to copy the extracted fulltext data of content elements to the combined <code>ecr_attributes</code> field, too. To
+do so, configure the respective content element as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using combined search for extracted fulltext data</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">pdf</span><span class="delimiter">&quot;</span></span>, contentType = <span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>, fulltextExtraction = <span class="predefined-constant">true</span>, textCombinedSearch = <span class="predefined-constant">true</span>, textCombinedSearchLimit = <span class="integer">200</span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The relevant settings are <code>textCombinedSearch=true</code>, which enables the copying of the extracted fulltext data. The
+<code>textCombinedSearchLimit</code> setting limits the number of characters to copy. This makes it possible to reduce the size of
+the SOLR index. A value of <code>0</code> means no limit.</p>
 </div>
 </div>
 <div class="sect3">
@@ -16749,7 +16793,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-19 23:27:29 UTC
+Last updated 2022-07-20 15:51:24 UTC
 </div>
 </div>
 <style>
