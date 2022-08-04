@@ -151,6 +151,8 @@ a, a:hover, a:focus {
 <li><a href="#_custom_metrics">Custom metrics</a></li>
 <li><a href="#_prometheus">Prometheus</a></li>
 <li><a href="#_other_monitoring_systems">Other monitoring systems</a></li>
+<li><a href="#_attributes_in_mdc">Attributes in MDC</a></li>
+<li><a href="#_open_telemetry">Open Telemetry</a></li>
 </ul>
 </li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
@@ -7846,7 +7848,7 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.10) from the nexus repository.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.11-SNAPSHOT) from the nexus repository.</p>
 </li>
 <li>
 <p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
@@ -9317,6 +9319,63 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
 The <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#actuator.metrics.export">Spring Boot Documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attributes_in_mdc">Attributes in MDC</h3>
+<div class="paragraph">
+<p><em>arveo</em> adds the following additional attributes to the mapped diagnostic context (MDC) of the logging framework
+to make it easier to analyze the system&#8217;s behavior:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr.user-id</code>: The ID of the user performing the current request, if available</p>
+</li>
+<li>
+<p><code>ecr.tenant</code>: The tenant for which the current request is executed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These attributes are added using a <code>HandlerInterceptor</code> for the REST endpoints using Spring WebMVC.Note that these
+attributes will not be added when <em>arveo</em> is used embedded.In this case, the application using the embedded
+<em>arveo</em> instance is responsible for adding required information to the MDC.</p>
+</div>
+<div class="paragraph">
+<p>Depending on the logger appender in use, it is possible to add these attributes to log messages. See the
+<a href="https://logback.qos.ch/manual/mdc.html">documentation</a> of logback for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_open_telemetry">Open Telemetry</h3>
+<div class="paragraph">
+<p><em>arveo</em> supports using <a href="https://opentelemetry.io/">Open Telemetry</a> to monitor the system&#8217;s behavior. Most notably
+it is possible to view traces of requests across the different services using a tracing backend like
+<a href="https://www.jaegertracing.io/">Jaeger</a> or <a href="https://zipkin.io/">Zipkin</a>. The outermost span of a trace that was started by
+a user&#8217;s request will contain the <code>ecr.user-id</code> and <code>ecr.tenant</code> attributes containing the user&#8217;s ID and the current
+tenant. This is done by the same mechanism as described above for the <a href="#_attributes_in_mdc">MDC</a>.</p>
+</div>
+<div class="paragraph">
+<p>Because <em>arveo</em> is based on several widely used open source libraries, the automatic instrumentation mode of
+Open Telemetry can be used to record traces. This is done by the Open Telemetry java agent as described in the
+<a href="https://opentelemetry.io/docs/instrumentation/java/automatic/">Open Telemetry documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows the required parameters to use Open Telemetry with Jaeger for the repository service.</p>
+</div>
+<div class="listingblock">
+<div class="title">start parameters for Open Telemetry</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">-Dotel.traces.exporter=jaeger
+-Dotel.metrics.exporter=none
+-Dotel.service.name=repository-service
+-javaagent:&lt;path&gt;/opentelemetry-javaagent.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The metrics export is disabled in the above example. As described in the sections above, metrics can be collected using
+the actuator endpoints.</p>
 </div>
 </div>
 </div>
@@ -16689,7 +16748,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-03 23:27:34 UTC
+Last updated 2022-08-04 08:47:46 UTC
 </div>
 </div>
 <style>
