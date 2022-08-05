@@ -5206,7 +5206,7 @@ target storage profile name.</td>
 <div class="paragraph">
 <p>To reduce the number of required entries in the list of bucket selection rules, storage profile templates can be used.
 A storage profile template consists of a name template with placeholders, a specific time range and the regular
-configuration parameters like the class name of the storage profile. The <code>&lt;year&gt;</code> placeholder can be used as a variable
+configuration parameters like the class name of the storage profile.The <code>&lt;year&gt;</code> placeholder can be used as a variable
 for the current year.</p>
 </div>
 <div class="paragraph">
@@ -5253,6 +5253,80 @@ for the current year.</p>
 <td>The year placeholder can be used in the configuration properties of the plugin.</td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_writing_a_custom_storage_plugin">Writing a custom storage plugin</h4>
+<div class="paragraph">
+<p>As mentioned above, <em>arveo</em> uses a plugin interface for the connection to the storage backends. This section
+describes how to write a new storage plugin.</p>
+</div>
+<div class="paragraph">
+<p>All classes and interfaces required to implement a custom plugin are contained in the dependency</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>8.0.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A storage plugin must implement the interface <code>de.eitco.ecr.server.storage.StoragePlugin</code>. There are two abstract
+implementations that can be extended to simplify the implementation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>AbstractStoragePlugin</code>: Provides several methods that make it easier to get plugin configuration settings.</p>
+</li>
+<li>
+<p><code>AbstractSimplifiedStoragePlugin</code>: The superclass of all plugins that do not need retention support</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition to the interface to implement, there are some guidelines to respect when writing a custom storage plugin:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The plugin must provide a default no argument constructor because it will be instantiated using reflection.</p>
+</li>
+<li>
+<p>The plugin can use dependency injection, but because of the need for a default constructor, only field injection
+using <code>@Autowired</code> is possible.</p>
+</li>
+<li>
+<p>There will be one instance of the plugin for each storage profile configured to use the plugin, so the plugin must
+be thread-safe.</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_configuration_settings">Configuration settings</h5>
+<div class="paragraph">
+<p>The <code>StoragePlugin</code> interface contains a method called <code>configure</code>, which will be called once for each plugin instance.
+It is used to process the generic parameter values that might be required to configure the plugin. For example, the
+parameters might contain a path to a file system directory or credentials for a remote storage system. Because storage
+plugins can be configured in <a href="#_storage_profile_templates">profile templates</a>, it might be necessary to replace
+placeholders configured in the template. The class <code>AbstractStoragePlugin</code> already contains helper methods like
+<code>getMandatoryProperty</code> that take care of these replacements. The <code>configure</code> method is expected to return the actual
+configuration with all replacements that is used by this plugin instance. The returned configuration settings are used
+by the health checks.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_using_the_custom_storage_plugin">Using the custom storage plugin</h5>
+<div class="paragraph">
+<p>To use the custom plugin, it is enough to add its classes to the classpath of the repository service. The plugin can then
+be used for a storage profile by specifying it&#8217;s qualified class name in the <code>pluginClassName</code> parameter. To add the
+plugin&#8217;s class to the classpath, use the <code>-Dloader.path=&lt;path&gt;</code> argument to start the service. The argument must point
+to a directory containing the required jar files.</p>
 </div>
 </div>
 </div>
@@ -16748,7 +16822,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-05 08:13:27 UTC
+Last updated 2022-08-05 08:58:01 UTC
 </div>
 </div>
 <style>
