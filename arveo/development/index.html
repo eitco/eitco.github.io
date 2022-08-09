@@ -8603,6 +8603,18 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jms-statistics.cron-expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the CRON expression used to schedule the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*/15 * * * * ?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jms-statistics.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to false, the job will not be scheduled.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no-sql-queue.batch-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the number of entries to load from the queue table in one batch.</p></td>
@@ -9344,6 +9356,96 @@ be configured using the setting <code>ecr.server.query.noSqlQueryTimeWarningMill
       <span class="key">ecr</span>:
         <span class="key">solr</span>: <span class="string"><span class="content">false</span></span></code></pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_jms_queues">JMS queues</h4>
+<div class="paragraph">
+<p><em>arveo</em> provides metrics to monitor the state of the JMS queues used for asynchronous operations. These
+metrics rely on the <a href="https://activemq.apache.org/statisticsplugin">statistics plugin</a> of ActiveMQ to retrieve statistics.
+The plugin must be activated in <code>activemq.xml</code> as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;broker...&gt;</span>
+    <span class="tag">&lt;plugins&gt;</span>
+        <span class="tag">&lt;statisticsBrokerPlugin</span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/plugins&gt;</span>
+<span class="tag">&lt;/broker&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The statistics collected by the statistics plugin are polled periodically by a job running in the repository service.
+The job is disabled by default. To activate it, set the following parameters in the configuration of the repository
+service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">jobs</span>:
+      <span class="key">jms-statistics</span>:
+        <span class="key">cron-expression</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">*/15 * * * * ?</span><span class="delimiter">&quot;</span></span>
+        <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example configuration above, the job is triggered every 15 seconds.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Unlike other system jobs, this job always runs within the repository service. It cannot be offloaded to a separate job
+service instance.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following metrics will be available once the job was activated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr.jms.queue.size</code>: The number of messages currently contained in the queue.</p>
+</li>
+<li>
+<p><code>ecr.jms.queue.enqueuecount</code>: The total number of messages that have been enqueued in the queue.</p>
+</li>
+<li>
+<p><code>ecr.jms.queue.dequeuecount</code>: The total number of messages that have been dequeued from the queue.</p>
+</li>
+<li>
+<p><code>ecr.jms.queue.averageenqueuetime</code>: The average time a message was enqueued before it was dequeued.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each metric contains a tag called <code>queue</code> containing the name of the queue. The following queues are currently used
+by the repository service:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr-queue-content-to-purge</code>: Contains messages containing IDs of content elements that have to be purged from the
+storage.</p>
+</li>
+<li>
+<p><code>ecr-queue-delete-recycled</code>: Contains messages with a delivery delay that will cause an entity to be deleted from the
+recycle bin once it&#8217;s recycle delay has expired.</p>
+</li>
+<li>
+<p><code>ecr-queue-create-renditions</code>: Contains messages of renditions that have to be created for new content elements.</p>
+</li>
+<li>
+<p><code>DLQ.ecr-queue-create-renditions</code>: The dead letter queue for the ecr-queue-create-renditions queue. This is used to
+set the rendition availability status to failed once all retries for the creation of a rendition have failed.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -16822,7 +16924,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-05 15:51:00 UTC
+Last updated 2022-08-09 16:27:59 UTC
 </div>
 </div>
 <style>
