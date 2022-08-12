@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 8.0.2</div>
+<div id="toctitle">arveo 8.0.3</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -151,6 +151,8 @@ a, a:hover, a:focus {
 <li><a href="#_custom_metrics">Custom metrics</a></li>
 <li><a href="#_prometheus">Prometheus</a></li>
 <li><a href="#_other_monitoring_systems">Other monitoring systems</a></li>
+<li><a href="#_attributes_in_mdc">Attributes in MDC</a></li>
+<li><a href="#_open_telemetry">Open Telemetry</a></li>
 </ul>
 </li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
@@ -2793,7 +2795,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 8.0.2.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 8.0.3.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3252,7 +3254,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>8.0.2<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>8.0.3<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3305,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.4<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>5.0.5<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -5204,7 +5206,7 @@ target storage profile name.</td>
 <div class="paragraph">
 <p>To reduce the number of required entries in the list of bucket selection rules, storage profile templates can be used.
 A storage profile template consists of a name template with placeholders, a specific time range and the regular
-configuration parameters like the class name of the storage profile. The <code>&lt;year&gt;</code> placeholder can be used as a variable
+configuration parameters like the class name of the storage profile.The <code>&lt;year&gt;</code> placeholder can be used as a variable
 for the current year.</p>
 </div>
 <div class="paragraph">
@@ -5251,6 +5253,80 @@ for the current year.</p>
 <td>The year placeholder can be used in the configuration properties of the plugin.</td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_writing_a_custom_storage_plugin">Writing a custom storage plugin</h4>
+<div class="paragraph">
+<p>As mentioned above, <em>arveo</em> uses a plugin interface for the connection to the storage backends. This section
+describes how to write a new storage plugin.</p>
+</div>
+<div class="paragraph">
+<p>All classes and interfaces required to implement a custom plugin are contained in the dependency</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>8.0.3<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A storage plugin must implement the interface <code>de.eitco.ecr.server.storage.StoragePlugin</code>. There are two abstract
+implementations that can be extended to simplify the implementation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>AbstractStoragePlugin</code>: Provides several methods that make it easier to get plugin configuration settings.</p>
+</li>
+<li>
+<p><code>AbstractSimplifiedStoragePlugin</code>: The superclass of all plugins that do not need retention support</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition to the interface to implement, there are some guidelines to respect when writing a custom storage plugin:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The plugin must provide a default no argument constructor because it will be instantiated using reflection.</p>
+</li>
+<li>
+<p>The plugin can use dependency injection, but because of the need for a default constructor, only field injection
+using <code>@Autowired</code> is possible.</p>
+</li>
+<li>
+<p>There will be one instance of the plugin for each storage profile configured to use the plugin, so the plugin must
+be thread-safe.</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_configuration_settings">Configuration settings</h5>
+<div class="paragraph">
+<p>The <code>StoragePlugin</code> interface contains a method called <code>configure</code>, which will be called once for each plugin instance.
+It is used to process the generic parameter values that might be required to configure the plugin. For example, the
+parameters might contain a path to a file system directory or credentials for a remote storage system. Because storage
+plugins can be configured in <a href="#_storage_profile_templates">profile templates</a>, it might be necessary to replace
+placeholders configured in the template. The class <code>AbstractStoragePlugin</code> already contains helper methods like
+<code>getMandatoryProperty</code> that take care of these replacements. The <code>configure</code> method is expected to return the actual
+configuration with all replacements that is used by this plugin instance. The returned configuration settings are used
+by the health checks.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_using_the_custom_storage_plugin">Using the custom storage plugin</h5>
+<div class="paragraph">
+<p>To use the custom plugin, it is enough to add its classes to the classpath of the repository service. The plugin can then
+be used for a storage profile by specifying it&#8217;s qualified class name in the <code>pluginClassName</code> parameter. To add the
+plugin&#8217;s class to the classpath, use the <code>-Dloader.path=&lt;path&gt;</code> argument to start the service. The argument must point
+to a directory containing the required jar files.</p>
 </div>
 </div>
 </div>
@@ -7846,7 +7922,7 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.10) from the nexus repository.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.11) from the nexus repository.</p>
 </li>
 <li>
 <p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
@@ -8527,6 +8603,18 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jms-statistics.cron-expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the CRON expression used to schedule the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*/15 * * * * ?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jms-statistics.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to false, the job will not be scheduled.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no-sql-queue.batch-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the number of entries to load from the queue table in one batch.</p></td>
@@ -8735,6 +8823,18 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the number of entries in an in clause from which in the optimized query is used. -1 disables that feature.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no-sql-query-time-warning-millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum duration in milliseconds for the execution time of queries on the noSql database after which a warning will be logged.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">statement-execution-time-warning-millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum duration in milliseconds for the execution time of a database statement after which a warning will be logged. This setting applies to the relational database.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 </tr>
 </tbody>
 </table>
@@ -9050,9 +9150,8 @@ data, how to enable or disable specific endpoints and how to configure security.
 <div class="ulist">
 <ul>
 <li>
-<p>storagePlugins: Checks if at least one storage profile is configured and if all storage plugins configured in the
-storage profiles are able to store data. The endpoint can be disabled by setting <code>management.health.storagePlugins</code>
-to false.</p>
+<p><code>storagePlugins</code>: Checks if at least one storage profile is configured and if all storage plugins configured in the
+storage profiles are able to store data.</p>
 <div class="ulist">
 <ul>
 <li>
@@ -9071,28 +9170,33 @@ failed, the endpoint checks if the Swift service is available.</p>
 </div>
 </li>
 <li>
-<p>typeDefinitions: Checks if there is at least one registered type definition. The endpoint can be disabled by setting
-<code>management.health.typeDefinitions</code> to false.</p>
+<p><code>typeDefinitions</code>: Checks if there is at least one registered type definition.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The custom health indicators can be disabled like any other health indicator by setting the configuration property
+<code>management.health.key.enabled</code> (where key is the name of the indicator) to false.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_custom_endpoints">Custom endpoints</h3>
 <div class="paragraph">
-<p>In addition to the default actuator endpoints, <em>arveo</em> provides the following custom endpoints.</p>
+<p>In addition to the default actuator endpoints, <em>arveo</em> provides the following custom actuator endpoints.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>/storageProfiles</code>: Provides a list of all storage profiles and the storage plugin used by each profile. The endpoint can
-be disabled by setting <code>management.endpoint.storageProfiles</code> to false.</p>
+<p><code>storageProfiles</code>: Provides a list of all storage profiles and the storage plugin used by each profile.</p>
 </li>
 <li>
-<p><code>/typeDefinitions</code>: Provides a list of all type definitions. The endpoint can be disabled by setting
-<code>management.endpoint.typeDefinitions</code> to false.</p>
+<p><code>typeDefinitions</code>: Provides a list of all type definitions.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The custom endpoints can be disabled like any other actuator endpoint by setting the property
+<code>management.endpoint.key.enabled</code> (where key is the name of the endpoint) to false.</p>
 </div>
 </div>
 <div class="sect2">
@@ -9109,28 +9213,28 @@ performance of the system.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Number of read operations: <code>actuator/metrics/ecr.storage.read.count</code></p>
+<p>Number of read operations: <code>ecr.storage.read.count</code></p>
 </li>
 <li>
-<p>Number of write operations: <code>actuator/metrics/ecr.storage.write.count</code></p>
+<p>Number of write operations: <code>ecr.storage.write.count</code></p>
 </li>
 <li>
-<p>Total amount of bytes read: <code>actuator/metrics/ecr.storage.read.bytes</code></p>
+<p>Total amount of bytes read: <code>ecr.storage.read.bytes</code></p>
 </li>
 <li>
-<p>Total amount of bytes written: <code>actuator/metrics/ecr.storage.write.bytes</code></p>
+<p>Total amount of bytes written: <code>ecr.storage.write.bytes</code></p>
 </li>
 <li>
-<p>Number of read errors: <code>actuator/metrics/ecr.storage.read.error</code></p>
+<p>Number of read errors: <code>ecr.storage.read.error</code></p>
 </li>
 <li>
-<p>Number of write errors: <code>actuator/metrics/ecr.storage.write.error</code></p>
+<p>Number of write errors: <code>ecr.storage.write.error</code></p>
 </li>
 <li>
-<p>Read times: <code>actuator/metrics/ecr.storage.read.time</code></p>
+<p>Read times: <code>ecr.storage.read.time</code></p>
 </li>
 <li>
-<p>Write times: <code>actuator/metrics/ecr.storage.write.time</code></p>
+<p>Write times: <code>ecr.storage.write.time</code></p>
 </li>
 </ul>
 </div>
@@ -9171,10 +9275,177 @@ only disable the availability of the metrics but the entire recording mechanism.
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
   <span class="key">metrics</span>:
     <span class="key">enable</span>:
-      <span class="key">storage</span>:
-        <span class="key">read</span>: <span class="string"><span class="content">false</span></span>
-        <span class="key">write</span>: <span class="string"><span class="content">false</span></span></code></pre>
+      <span class="key">ecr</span>:
+        <span class="key">storage</span>: <span class="string"><span class="content">false</span></span></code></pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_relational_database">Relational database</h4>
+<div class="paragraph">
+<p>The following metrics are collected for operations on the relational database:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Maximum and total execution time as well as the number of executed database statements: <code>ecr.rdb.statement</code></p>
+</li>
+<li>
+<p>Number of database errors: <code>ecr.rdb.error.count</code>.</p>
+</li>
+<li>
+<p>Number of statements that took longer than the configured threshold to execute: <code>ecr.rdb.time.warning</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each of these metrics contains a tag for the current tenant and the type of statement that was executed. The threshold
+time after which an execution time warning is logged and the counter is incremented can be configured using the setting
+<code>ecr.server.query.statementExecutionTimeWarningMillis</code> (in milliseconds).</p>
+</div>
+<div class="paragraph">
+<p>The recording of these metrics can be disabled using the following configuration parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
+  <span class="key">metrics</span>:
+    <span class="key">enable</span>:
+      <span class="key">ecr</span>:
+        <span class="key">rdb</span>: <span class="string"><span class="content">false</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solr_2">Solr</h4>
+<div class="paragraph">
+<p>The following metrics are collected for the Solr object database:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Maximum and total time as well as a counter for add operations: <code>ecr.solr.add</code></p>
+</li>
+<li>
+<p>Maximum and total time as well as a counter for query operations: <code>ecr.solr.query</code></p>
+</li>
+<li>
+<p>Maximum and total time as well as a counter for delete-by-id operations: <code>ecr.solr.deletebyid</code></p>
+</li>
+<li>
+<p>A counter for all Solr exceptions: <code>ecr.solr.error</code></p>
+</li>
+<li>
+<p>Number of queries that took longer than the configured threshold to execute: <code>ecr.solr.time.warning</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All of the above metrics contain a tag for the current tenant. The error counter contains a tag for the type of operation
+that has failed. The threshold time after which an execution time warning is logged and the counter is incremented can
+be configured using the setting <code>ecr.server.query.noSqlQueryTimeWarningMillis</code> (in milliseconds).</p>
+</div>
+<div class="paragraph">
+<p>It is possible to disable the collection of these metrics using the following configuration parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
+  <span class="key">metrics</span>:
+    <span class="key">enable</span>:
+      <span class="key">ecr</span>:
+        <span class="key">solr</span>: <span class="string"><span class="content">false</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_jms_queues">JMS queues</h4>
+<div class="paragraph">
+<p><em>arveo</em> provides metrics to monitor the state of the JMS queues used for asynchronous operations. These
+metrics rely on the <a href="https://activemq.apache.org/statisticsplugin">statistics plugin</a> of ActiveMQ to retrieve statistics.
+The plugin must be activated in <code>activemq.xml</code> as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;broker...&gt;</span>
+    <span class="tag">&lt;plugins&gt;</span>
+        <span class="tag">&lt;statisticsBrokerPlugin</span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/plugins&gt;</span>
+<span class="tag">&lt;/broker&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The statistics collected by the statistics plugin are polled periodically by a job running in the repository service.
+The job is disabled by default. To activate it, set the following parameters in the configuration of the repository
+service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">jobs</span>:
+      <span class="key">jms-statistics</span>:
+        <span class="key">cron-expression</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">*/15 * * * * ?</span><span class="delimiter">&quot;</span></span>
+        <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example configuration above, the job is triggered every 15 seconds.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Unlike other system jobs, this job always runs within the repository service. It cannot be offloaded to a separate job
+service instance.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following metrics will be available once the job was activated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr.jms.queue.size</code>: The number of messages currently contained in the queue.</p>
+</li>
+<li>
+<p><code>ecr.jms.queue.enqueuecount</code>: The total number of messages that have been enqueued in the queue.</p>
+</li>
+<li>
+<p><code>ecr.jms.queue.dequeuecount</code>: The total number of messages that have been dequeued from the queue.</p>
+</li>
+<li>
+<p><code>ecr.jms.queue.averageenqueuetime</code>: The average time a message was enqueued before it was dequeued.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each metric contains a tag called <code>queue</code> containing the name of the queue. The following queues are currently used
+by the repository service:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr-queue-content-to-purge</code>: Contains messages containing IDs of content elements that have to be purged from the
+storage.</p>
+</li>
+<li>
+<p><code>ecr-queue-delete-recycled</code>: Contains messages with a delivery delay that will cause an entity to be deleted from the
+recycle bin once it&#8217;s recycle delay has expired.</p>
+</li>
+<li>
+<p><code>ecr-queue-create-renditions</code>: Contains messages of renditions that have to be created for new content elements.</p>
+</li>
+<li>
+<p><code>DLQ.ecr-queue-create-renditions</code>: The dead letter queue for the ecr-queue-create-renditions queue. This is used to
+set the rendition availability status to failed once all retries for the creation of a rendition have failed.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -9224,6 +9495,63 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
 The <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#actuator.metrics.export">Spring Boot Documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attributes_in_mdc">Attributes in MDC</h3>
+<div class="paragraph">
+<p><em>arveo</em> adds the following additional attributes to the mapped diagnostic context (MDC) of the logging framework
+to make it easier to analyze the system&#8217;s behavior:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr.user-id</code>: The ID of the user performing the current request, if available</p>
+</li>
+<li>
+<p><code>ecr.tenant</code>: The tenant for which the current request is executed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These attributes are added using a <code>HandlerInterceptor</code> for the REST endpoints using Spring WebMVC.Note that these
+attributes will not be added when <em>arveo</em> is used embedded.In this case, the application using the embedded
+<em>arveo</em> instance is responsible for adding required information to the MDC.</p>
+</div>
+<div class="paragraph">
+<p>Depending on the logger appender in use, it is possible to add these attributes to log messages. See the
+<a href="https://logback.qos.ch/manual/mdc.html">documentation</a> of logback for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_open_telemetry">Open Telemetry</h3>
+<div class="paragraph">
+<p><em>arveo</em> supports using <a href="https://opentelemetry.io/">Open Telemetry</a> to monitor the system&#8217;s behavior. Most notably
+it is possible to view traces of requests across the different services using a tracing backend like
+<a href="https://www.jaegertracing.io/">Jaeger</a> or <a href="https://zipkin.io/">Zipkin</a>. The outermost span of a trace that was started by
+a user&#8217;s request will contain the <code>ecr.user-id</code> and <code>ecr.tenant</code> attributes containing the user&#8217;s ID and the current
+tenant. This is done by the same mechanism as described above for the <a href="#_attributes_in_mdc">MDC</a>.</p>
+</div>
+<div class="paragraph">
+<p>Because <em>arveo</em> is based on several widely used open source libraries, the automatic instrumentation mode of
+Open Telemetry can be used to record traces. This is done by the Open Telemetry java agent as described in the
+<a href="https://opentelemetry.io/docs/instrumentation/java/automatic/">Open Telemetry documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows the required parameters to use Open Telemetry with Jaeger for the repository service.</p>
+</div>
+<div class="listingblock">
+<div class="title">start parameters for Open Telemetry</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">-Dotel.traces.exporter=jaeger
+-Dotel.metrics.exporter=none
+-Dotel.service.name=repository-service
+-javaagent:&lt;path&gt;/opentelemetry-javaagent.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The metrics export is disabled in the above example. As described in the sections above, metrics can be collected using
+the actuator endpoints.</p>
 </div>
 </div>
 </div>
@@ -16596,7 +16924,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-29 10:39:43 UTC
+Last updated 2022-08-12 12:07:10 UTC
 </div>
 </div>
 <style>
