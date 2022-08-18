@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 8.0.4-SNAPSHOT</div>
+<div id="toctitle">arveo 9.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -2795,7 +2795,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 8.0.4-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 9.0.0-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3254,7 +3254,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>8.0.4-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>9.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3265,7 +3265,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <span class="tag">&lt;dependency&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client-non-web<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>2.0.12-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>3.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span>
 <span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.demo<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -3307,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.6-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>6.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -5270,7 +5270,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>8.0.4-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>9.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -7922,7 +7922,7 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.12-SNAPSHOT) from the nexus repository.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 3.0.0-SNAPSHOT) from the nexus repository.</p>
 </li>
 <li>
 <p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
@@ -8663,6 +8663,12 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tenant-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the tenant of the user used to run the jobs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the user used to run the jobs.</p></td>
@@ -8885,6 +8891,12 @@ standby mode:</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">collection-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ecr</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">collection-replicas</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default number of replicas for a new collection created by the respository service.</p></td>
@@ -8930,6 +8942,12 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The password used for basic authorization to SOLR.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">schema-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -9106,12 +9124,6 @@ standby mode:</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">configuration-tenant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the tenant to use to store job-information in the database.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">standby-only-scheduler</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
@@ -15721,7 +15733,7 @@ assertDateEquals(prolongedRetentionDocument.getRetentionInformation().getRetenti
 <div class="literalblock">
 <div class="content">
 <pre>@Test
-@WithCredentials(username = "ecr-dsgvo-admin", password = "password", tenant = "integrationtest")
+@WithCredentials(username = "ecr-dsgvo-admin", password = "password", tenant = "master")
 public void createDocumentWithRetention() throws IOException {</pre>
 </div>
 </div>
@@ -16924,7 +16936,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-17 10:24:58 UTC
+Last updated 2022-08-18 16:54:54 UTC
 </div>
 </div>
 <style>
