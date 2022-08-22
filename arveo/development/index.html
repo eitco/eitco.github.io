@@ -184,7 +184,7 @@ a, a:hover, a:focus {
 <li><a href="#_folder_type">Folder Type</a></li>
 <li><a href="#_metadata_type">Metadata Type</a></li>
 <li><a href="#_inheritance">Inheritance</a></li>
-<li><a href="#_retention">Retention</a></li>
+<li><a href="#_retention_3">Retention</a></li>
 <li><a href="#_advanced_database_schema_changes">Advanced database schema changes</a></li>
 </ul>
 </li>
@@ -4902,90 +4902,114 @@ have to be created for every tenant separately.
 <colgroup>
 <col style="width: 20%;">
 <col>
+<col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">parameter</th>
 <th class="tableblock halign-left valign-top">meaning</th>
+<th class="tableblock halign-left valign-top">default value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pathStyleAccessEnabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use path-style access for all requests.
-Amazon S3 supports virtual-hosted-style and path-style access in all regions.
-The path-style syntax, however, requires that you use the region-specific endpoint when attempting to access a bucket</p></td>
+  Amazon S3 supports virtual-hosted-style and path-style access in all regions.
+  The path-style syntax, however, requires that you use the region-specific endpoint when attempting to access a bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">serviceEndpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The URL to the S3 endpoint to be used by the plugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">region</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The region for access to AWS</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">accessKey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Access Key</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">secretAccessKey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Secret Access Key</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">bucket</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the S3 bucket to be created by the plugin. The name can only contain lowercase letters.
-The name of the current tenant will be appended to the bucket name, separated by a "-" sign.</p></td>
+  The name of the current tenant will be appended to the bucket name, separated by a "-" sign.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">signer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of the signature algorithm to use for signing requests made by this client. If not set,
 the default configuration of the Amazon S3 SDK will be used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">proxyhost</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The optional proxy host used by the client when connecting to the S3 storage.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">proxyprotocol</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The protocol (HTTP or HTTPS) used to connect to the proxy.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">proxyport</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The port used by the client to connect to the proxy.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">streambuffersize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the send- and receive-buffers in bytes. The default is 32KB.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the send- and receive-buffers in bytes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32768</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">uploadpresignedurl</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the client will use pre-signed URL requests to communicate with the S3 storage.
-The default is false.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the client will use pre-signed URL requests to communicate with the S3 storage.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">acceleratemode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use S3 accelerate endpoint for all requests. The default is false.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use S3 accelerate endpoint for all requests.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">maxconnection</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of allowed open HTTP connections. Not configured by default.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of allowed open HTTP connections.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no limit)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">maxErrorRetries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of retries for failed requests.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no retries)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">baseDelay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The base delay in milliseconds for the retry policy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no delay)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">maxBackoffTime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum backoff time in milliseconds for the retry policy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no maximum backoff time)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">backoffStrategy</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The backoff strategy used by the retry policy.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retentionEnabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the use of S3 object locks for object retention.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 </tbody>
 </table>
@@ -5016,6 +5040,31 @@ of the different strategies.</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="_retention">Retention</h5>
+<div class="paragraph">
+<p>The S3 plugin supports the usage of S3 object locks to set a retention period and litigation hold status on content
+elements stored in the S3 compatible storage. To enable the feature, set the parameter <code>retentionEnabled</code> to true.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the retention support is enabled, the bucket used by the storage profile must be created manually.
+The S3 Object Locks option must be enabled for the bucket.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The S3 plugin uses the compliance retention mode, which means, that objects under retention or in a litigation hold
+can not be deleted by or overwritten by the root user of the AWS account. More information about object locks can be
+found in the <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-overview.html">AWS documentation</a>.</p>
+</div>
+</div>
+<div class="sect4">
 <h5 id="_azure_blob_storage">Azure blob storage</h5>
 <div class="paragraph">
 <p>Class name: <code>de.eitco.ecr.storage.plugin.azureblob.AzureBlobStoragePlugin</code></p>
@@ -5040,8 +5089,7 @@ of the different strategies.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">connectionString</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The connection string used to connect to the storage account. The access string can be obtained
- from the azure portal.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The connection string used to connect to the storage account. The access string can be obtained from the azure portal.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -5054,11 +5102,47 @@ of the different strategies.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The timeout in milliseconds for requests to Azure.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retentionSupport</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables usage of the immutability policy feature of Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Additional parameters contained in the plugin configuration will be passed on to the <code>Configuration</code> used for the
 Azure SDK.</p>
+</div>
+<div class="sect5">
+<h6 id="_retention_2">Retention</h6>
+<div class="paragraph">
+<p>The Azure blob storage plugin supports the immutability policy feature of Azure blob storage. Using this feature
+enables an additional security level for retention protected content elements. If a content element is retention
+protected or in a litigation hold, it will not be possible to delete it using the Azure management interface or the
+Azure SDK.</p>
+</div>
+<div class="paragraph">
+<p>To enable the retention support, the parameter <code>retentionSupport</code> must be set to true.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the retention support is enabled, the container used by the storage profile must be created manually in Azure.
+The setting <em>version-level immutability support</em> must be enabled when the container is created. To be able to
+enable the version-level immutability support, the storage account must support versioning for blobs. More information
+can be found in the <a href="https://docs.microsoft.com/en-us/azure/storage/blobs/immutable-storage-overview">Azure documentation</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The plugin always creates locked immutability policies. Locked immutability policies can neither be deleted nor can
+the expiry time be shortened. Prolonging the expiry time (and by this, the retention period), is still possible.</p>
+</div>
 </div>
 </div>
 </div>
@@ -14047,7 +14131,7 @@ you must convert your properties e.g. MyCamelCaseProperty = my_camel_case_proper
 </div>
 </div>
 <div class="sect2">
-<h3 id="_retention">Retention</h3>
+<h3 id="_retention_3">Retention</h3>
 <div class="sect3">
 <h4 id="_annotations_retentionprotected">Annotations_@RetentionProtected_</h4>
 <div class="paragraph">
@@ -15608,7 +15692,7 @@ newDocument.setRetentionDate(now);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent()), TEST_DATA.getBytes());
+<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
 DocumentWithRetention loadedDocument = newClient.getEntity();</pre>
 </div>
 </div>
@@ -15692,7 +15776,7 @@ newDocument.setMimeType(TEST_DATA_MIMETYPE);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent()), TEST_DATA.getBytes());
+<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
 DocumentWithRetention emptyRetentionDocument = newClient.getEntity();</pre>
 </div>
 </div>
@@ -15777,7 +15861,7 @@ newDocument.setRetentionDate(now);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent()), TEST_DATA.getBytes());
+<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
 DocumentWithRetention loadedDocument = newClient.getEntity();</pre>
 </div>
 </div>
@@ -16936,7 +17020,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-22 14:41:49 UTC
+Last updated 2022-08-22 15:41:59 UTC
 </div>
 </div>
 <style>
