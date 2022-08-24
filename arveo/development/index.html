@@ -132,8 +132,6 @@ a, a:hover, a:focus {
 <li><a href="#_renditions">Renditions</a></li>
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
-<li><a href="#_overview">Overview</a></li>
-<li><a href="#_implementation_details_of_aes_encryption">Implementation details of AES encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
 <li><a href="#_configure_authenticationsso_with_keycloak">Configure Authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure Authentication between Content Services</a></li>
@@ -141,6 +139,7 @@ a, a:hover, a:focus {
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
 <li><a href="#_system_jobs">System jobs</a></li>
+<li><a href="#_hashicorp_vault">Using Hashicorp Vault</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
 </ul>
 </li>
@@ -6254,9 +6253,8 @@ If you want to use directories instead of buckets you can configure file system 
 <p><em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
 for each storage profile.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_overview">Overview</h3>
+<div class="sect3">
+<h4 id="_overview">Overview</h4>
 <div class="paragraph">
 <p>Encrypting and decrypting is performed by configurable encryption providers. Each provider is identified by a unique
 name. The available providers are described below.</p>
@@ -6316,6 +6314,7 @@ by the bucket selection rules. Configuring the encryption for the BucketOrganize
 </td>
 </tr>
 </table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_commons_aes_provider">Commons AES provider</h4>
@@ -6477,14 +6476,13 @@ most secure algorithm available will be used</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_implementation_details_of_aes_encryption">Implementation details of AES encryption</h3>
+<div class="sect3">
+<h4 id="_implementation_details_of_aes_encryption">Implementation details of AES encryption</h4>
 <div class="paragraph">
 <p>The following chapter contains information about the implementation details of the AES encryption used by <em>arveo</em>.</p>
 </div>
-<div class="sect3">
-<h4 id="_header">Header</h4>
+<div class="sect4">
+<h5 id="_header">Header</h5>
 <div class="paragraph">
 <p>The encryption library is designed to encrypt data in such a way that it can be stored permanently in encrypted form and
 possibly only decrypted after a long time. In order to guarantee decryption, all data required for this (except the key, of
@@ -6493,8 +6491,8 @@ obtain, for example, the algorithm used and the data for key derivation, and onl
 for decryption.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_aes">AES</h4>
+<div class="sect4">
+<h5 id="_aes">AES</h5>
 <div class="paragraph">
 <p>The library uses AES according to the recommendation of the Federal Office for Information Security of March 2020:</p>
 </div>
@@ -6565,8 +6563,8 @@ To generate the random data for the initialisation vector and the salt, a <em>Se
 (see <a href="#_note_on_linux">Note on Linux</a> below).</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_header_format">Header Format</h4>
+<div class="sect4">
+<h5 id="_header_format">Header Format</h5>
 <div class="paragraph">
 <p>The header begins with a string to identify data encrypted with the library followed by the length of the
 payload data in the header. The header is divided into blocks and can be read serially.</p>
@@ -6579,8 +6577,8 @@ Marker|length|method|header version|key length|checksum length|iteration|storage
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_key">Key</h4>
+<div class="sect4">
+<h5 id="_key">Key</h5>
 <div class="paragraph">
 <p>The keys used for encryption are either generated using random data or derived from any password using the Argon2 hash
 function. Since deriving keys can be very computationally intensive depending on the configuration, a key ID can be
@@ -6593,8 +6591,8 @@ ID of the stored key. When an external system like Vault is used to encrypt gene
 is stored in the header instead.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_usage">Usage</h4>
+<div class="sect4">
+<h5 id="_usage">Usage</h5>
 <div class="paragraph">
 <p>Instantiation of the AesEncryptorAndDecryptor:</p>
 </div>
@@ -6623,8 +6621,8 @@ is stored in the header instead.</p>
 <p>Examples of usage can be found in the test class <em>de.eitco.commons.crypto.AesEncryptionTest</em>.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_note_on_linux">Note on Linux</h4>
+<div class="sect4">
+<h5 id="_note_on_linux">Note on Linux</h5>
 <div class="paragraph">
 <p>On Linux, Java uses the NativePRNG algorithm by default for generating random data with SecureRandom.getInstanceStrong().
 This implementation uses /dev/random and may block if there is not enough data available there. This can lead to very
@@ -6636,6 +6634,7 @@ long waiting times for key derivation and encryption. You can then either use a 
 <pre>apt-get install haveged
 update-rc.d haveged defaults
 service haveged start</pre>
+</div>
 </div>
 </div>
 </div>
@@ -8538,6 +8537,112 @@ standby mode:</p>
   <span class="key">standbyOnlyScheduler</span>: <span class="string"><span class="content">true</span></span></code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hashicorp_vault">Using Hashicorp Vault</h3>
+<div class="paragraph">
+<p><a href="https://www.vaultproject.io/">Hashicorp Vault</a> can be used to store sensitive configuration parameters like database
+passwords or encryption master keys. Each <em>arveo</em> service tries to load configuration data from a Vault
+instance at startup. To configure the location and access method for Vault, the following application arguments can
+be used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.cloud.vault.host</code>: Defines the host name of the Vault host.</p>
+</li>
+<li>
+<p><code>spring.cloud.vault.port</code>: Sets the port used to connect to Vault.</p>
+</li>
+<li>
+<p><code>spring.cloud.vault.scheme</code>: Either https or http</p>
+</li>
+<li>
+<p><code>spring.cloud.vault.authentication</code>: Sets the authentication mechanism to use.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+These properties cannot be configured using the Configuration Service. Configuration data from the Configuration Service
+is loaded after the connection to Vault has been established. Instead, these properties must be set as application
+parameters. Example: <code>java -jar service.jar --spring.cloud.vault.port=8200</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is possible to disable the Vault integration by setting <code>spring.cloud.vault.enabled=false</code>.</p>
+</div>
+<div class="paragraph">
+<p>Additional information about the configuration parameters, especially the possible authentication mechanisms, can be
+found in the <a href="https://docs.spring.io/spring-cloud-vault/docs/current/reference/html/#client-side-usage">Documentation</a> of
+the Spring Cloud Vault project.</p>
+</div>
+<div class="sect3">
+<h4 id="_defining_secrets">Defining secrets</h4>
+<div class="paragraph">
+<p>Vault features several ways to provide secrets to applications. Configuration properties for the <em>arveo</em>
+services must be stored in the key value secrets engine. Each secret consists of a <em>path</em> and several <em>key-value-pairs</em>.
+The path defines the scope of the property. It can either be set to <code>application</code> to store a secret for all services,
+or to the name of the service just like the name of the configuration files in the Configuration Service. For example,
+to configure the password of the JDBC datasource used by all services, a key-value-pair of <code>spring.datasource.password=password</code>
+would be stored under the path <code>application</code>. A property for the repository service (ecr-service) would be stored
+in a key-value-pair <code>property=value</code> under the path <code>ecr-service</code>. The following table contains the application names
+of the different services.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Service</th>
+<th class="tableblock halign-left valign-top">Application name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Repository Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ecr-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Access Control Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-access-control-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise User Management Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-enterprise-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document-conversion-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administration Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-administration-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-audit-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integration Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-integration-service</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -17020,7 +17125,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-23 13:54:23 UTC
+Last updated 2022-08-24 08:32:22 UTC
 </div>
 </div>
 <style>
