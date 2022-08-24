@@ -5010,6 +5010,11 @@ the default configuration of the Amazon S3 SDK will be used.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enables the use of S3 object locks for object retention.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retentionMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the protection level of retention object locks. Can be <code>COMPLIANCE</code> or <code>GOVERNANCE</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GOVERNANCE</code></p></td>
+</tr>
 </tbody>
 </table>
 <div class="sect5">
@@ -5041,7 +5046,7 @@ of the different strategies.</p>
 <div class="sect4">
 <h5 id="_retention">Retention</h5>
 <div class="paragraph">
-<p>The S3 plugin supports the usage of S3 object locks to set a retention period and litigation hold status on content
+<p>The S3 plugin supports the usage of S3 object locks to set a retention time and litigation hold status on content
 elements stored in the S3 compatible storage. To enable the feature, set the parameter <code>retentionEnabled</code> to true.</p>
 </div>
 <div class="admonitionblock important">
@@ -5058,9 +5063,25 @@ The S3 Object Locks option must be enabled for the bucket.
 </table>
 </div>
 <div class="paragraph">
-<p>The S3 plugin uses the compliance retention mode, which means, that objects under retention or in a litigation hold
-can not be deleted by or overwritten by the root user of the AWS account. More information about object locks can be
-found in the <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-overview.html">AWS documentation</a>.</p>
+<p>The S3 plugin uses the governance retention mode by default, which means, that retention protected objects
+can be deleted by or overwritten by any user of the AWS account with the required privileges. When the compliance
+retention mode is used, no user (not even the root administrator of the S3 account) is able to delete or overwrite
+retention protected objects. To configure this behavior, set the property <code>retentionMode</code> to <code>GOVERNANCE</code> or
+<code>COMPLIANCE</code>. More information about object locks can be found in the
+<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-overview.html">AWS documentation</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the <code>COMPLIANCE</code> retention mode is used, it is impossible to delete objects from the S3 storage account before
+the end of the retention interval is reached.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect4">
@@ -5106,6 +5127,11 @@ found in the <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/obje
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enables usage of the immutability policy feature of Azure.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">policyMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the protection level of the immutability policies. Can be <code>LOCKED</code> or <code>UNLOCKED</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNLOCKED</code></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -5139,8 +5165,24 @@ can be found in the <a href="https://docs.microsoft.com/en-us/azure/storage/blob
 </table>
 </div>
 <div class="paragraph">
-<p>The plugin always creates locked immutability policies. Locked immutability policies can neither be deleted nor can
-the expiry time be shortened. Prolonging the expiry time (and by this, the retention period), is still possible.</p>
+<p>The plugin creates unlocked immutability policies by default. Unlocked policies can be altered by Azure users with the
+required privileges. Locked immutability policies can neither be deleted nor can the expiry time be shortened.
+Prolonging the expiry time (and by this, the retention period), is still possible. Note that even the administrator
+of the storage account is not able to delete objects with a locked immutability policy. To configure the policy mode,
+set the parameter <code>policyMode</code> to <code>LOCKED</code> or <code>UNLOCKED</code>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the <code>policyMode</code> is set to <code>LOCKED</code>, it is not possible to delete retention protected objects from the storage
+account before the end of the retention interval is reached.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -17125,7 +17167,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-24 08:32:22 UTC
+Last updated 2022-08-24 09:07:10 UTC
 </div>
 </div>
 <style>
