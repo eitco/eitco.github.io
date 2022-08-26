@@ -4890,8 +4890,7 @@ are currently available:</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If <em>arveo</em> has no permissions to create buckets, then the administrator has to create the buckets manually. Buckets
-have to be created for every tenant separately.
+If <em>arveo</em> has no permissions to create buckets, then the administrator has to create the buckets manually.
 </td>
 </tr>
 </table>
@@ -4940,8 +4939,7 @@ have to be created for every tenant separately.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">bucket</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the S3 bucket to be created by the plugin. The name can only contain lowercase letters.
-  The name of the current tenant will be appended to the bucket name, separated by a "-" sign.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the S3 bucket to be created by the plugin. The name can only contain lowercase letters.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -8060,9 +8058,9 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;queryParser</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">aclright</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.user.management.access.control.solr.AclRightParserPlugin</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUrl</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>jdbc:postgresql://localhost:5432/mydatabase?currentSchema=mytenant<span class="tag">&lt;/str&gt;</span>
-    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUser</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>myuser<span class="tag">&lt;/str&gt;</span>
-    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcPassword</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>mypassword<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">solrAclPlugin.jdbcUrl</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>jdbc:postgresql://localhost:5432/mydatabase?currentSchema=mytenant<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">solrAclPlugin.jdbcUser</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>myuser<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">solrAclPlugin.jdbcPassword</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>mypassword<span class="tag">&lt;/str&gt;</span>
 <span class="tag">&lt;/queryParser&gt;</span></code></pre>
 </div>
 </div>
@@ -8082,6 +8080,44 @@ The Access Control SOLR Plugin does not yet support multiple tenants!
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Alternatively, the configuration parameters for the ACL filter plugin can be set as Java system properties for the
+Solr server, as environment variables, or they can be stored as secrets in Vault. To use Vault, set the following
+parameters either in the <code>solrconfig.xml</code> file, as Java system properties, or as environment variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>solrAclPlugin.vaultEnabled=true</code></p>
+</li>
+<li>
+<p><code>solrAclPlugin.vaultAddress=https://myvaultserver:port</code> (optional, the default value is "http://127.0.0.1:8200")</p>
+</li>
+<li>
+<p><code>solrAclPlugin.vaultToken=token</code> (optional, can be a token value or the path to a token file. By default, the plugin
+will try to load a token from ~/.vault-token)</p>
+</li>
+<li>
+<p><code>solrAclPlugin.vaultSecretEnginePath=path</code> (optional, the default is "secret")</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The order in which the plugin loads configuration properties is:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Vault</p>
+</li>
+<li>
+<p>System properties</p>
+</li>
+<li>
+<p>Environment variables</p>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect3">
@@ -17167,7 +17203,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-24 09:07:10 UTC
+Last updated 2022-08-26 12:00:35 UTC
 </div>
 </div>
 <style>
