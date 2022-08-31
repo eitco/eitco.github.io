@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 9.0.0-SNAPSHOT</div>
+<div id="toctitle">arveo 9.0.1-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -203,6 +203,12 @@ a, a:hover, a:focus {
 <li><a href="#_sap_archive_link_service"><strong>SAP Archive Link Service</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_sap_content_service_archive_link">SAP Content Service (Archive Link)</a></li>
+<li><a href="#_standardized_sap_archivelink_interface_certification_for_sap_archivelink_7_20">Standardized SAP ArchiveLink ™ interface, certification for SAP ArchiveLink ™ 7.20</a></li>
+<li><a href="#_early_capture_with_barcode_paper_based">Early capture with barcode (paper-based):</a></li>
+<li><a href="#_early_capture_with_without_barcode_sap_business_process">Early capture with / without barcode (SAP business process):</a></li>
+<li><a href="#_late_capture_without_barcode">Late capture without barcode</a></li>
+<li><a href="#_simultaneous_capture">Simultaneous capture</a></li>
+<li><a href="#_interface_for_linking_and_archiving_in_late_early_archiving">Interface for linking and archiving in late / early archiving</a></li>
 </ul>
 </li>
 <li><a href="#_rest_api"><strong>REST API</strong></a>
@@ -2794,7 +2800,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 9.0.0-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 9.0.1-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3253,7 +3259,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>9.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>9.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -5393,7 +5399,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>9.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>9.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -16181,84 +16187,122 @@ content with retention to different document types.
 <p>The SAP user does not need any special training, as the existing SAP document viewer is used in the usual SAP specialist application to display documents. A special ViewClient rollout is therefore superfluous.</p>
 </div>
 <div class="paragraph">
-<p>Eitco Content Server supports all SAP archiving scenarios such as: early recording, simultaneous recording, late recording without barcode, late recording with barcode up to support of the SAP business workflow.
-feature
-Standardized SAP ArchiveLink ™ interface, certification for SAP ArchiveLink ™ 7.20</p>
+<p>Eitco Content Server supports all SAP archiving scenarios such as: early recording, simultaneous recording, late recording without barcode, late recording with barcode up to support of the SAP business workflow.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_standardized_sap_archivelink_interface_certification_for_sap_archivelink_7_20">Standardized SAP ArchiveLink ™ interface, certification for SAP ArchiveLink ™ 7.20</h3>
+<div class="paragraph">
+<p>The Eitco Archive Link Server fully implements the SAP Archive Link Standard and is certified for SAP and SAP / HANA. SAP basic knowledge is sufficient for the administration of the integration. The Eitco Archive Link supports all SAP releases from R / 3.</p>
 </div>
 <div class="paragraph">
-<p>The Eitco Archive Link Server fully implements the SAP Archive Link Standard and is certified for SAP and SAP / HANA</p>
-</div>
-<div class="paragraph">
-<p>SAP basic knowledge is sufficient for the administration of the integration.</p>
-</div>
-<div class="paragraph">
-<p>The Eitco Archive Link supports all SAP releases from R / 3</p>
-</div>
-<div class="paragraph">
-<p>The Eitco Archive Link offers the e: c r repository to store the SAP business objects in accordance with GOBD and GoBS and thus supports legally secure archiving.
-Document display using standard SAP functions</p>
-</div>
-<div class="paragraph">
-<p>All digitized documents stored via the Archive Link can be displayed with the SAP Standard Viewer. It is possible to use the additional component Eiutco Web Viewer via the Eitco Archive Link to display digitized invoices, delivery notes, etc. inside or outside in every web portal and to add comments / annotations.
-Support of all archiving scenarios</p>
-</div>
-<div class="paragraph">
-<p>There are two ways of working when processing incoming documents. The early recording, the receipt is provided at the earliest possible point in time in the process in digital form, and on the other hand the late recording. Here, the entire processing process is operated unchanged as before the use of SAP. The paper document continues to flow through the full process until at some point it is scanned and archived.
-Late entry with barcode (paper-based):</p>
-</div>
-<div class="paragraph">
-<p>An invoice is recorded with a barcode + accounting records the posting:
-At the beginning of the processing sequence after receipt of the mail, the incoming document is directly provided with a barcode sticker on the first side (e.g. by means of a barcode roll / label)
-Incoming documents are initially generated using SAP transactions (e.g. FB60 or MIGO) SAP objects. When the documents are posted later, there is an automatic barcode query. So that the barcode can later be assigned to the corresponding document, the barcode is recorded with a handheld barcode scanner, for example, and the result is automatically transferred to the SAP dialog window. Alternatively, the barcode can also be read and typed into the data entry mask
-With transaction OAM1, all SAP objects that are provided with a barcode are visible.
-The paper document goes through a paper-based approval process and finally scanned to SAP for digitization to complete the booking.
-Document scanning, barcode autom. read out and assigned to the business object in SAP:
-The documents that have already been provided with a barcode and recorded using a hand scanner are then scanned in batches (&gt; document separation via barcode), and the barcode is read out. The scanning software sends the content including the recognized barcode to the Eitco Archive Link Server. This links the archived documents with the SAP business object (TA01). This process, namely the linking of a document with a "waiting", i.e. previously created SAP object, is known as "late archiving". In SAP, the data in the archive can then be accessed directly via the booking record with a click of the mouse without leaving SAP
-The payment can now be triggered as a result of the complete approval process in SAP.</p>
+<p>The Eitco Archive Link offers the <em>arveo</em> repository to store the SAP business objects in accordance with GOBD and GoBS and thus supports legally secure archiving.</p>
 </div>
 <div class="sect3">
-<h4 id="_early_recording_with_barcode_paper_based">Early recording with barcode (paper-based):</h4>
+<h4 id="_document_display_using_standard_sap_functions">Document display using standard SAP functions</h4>
 <div class="paragraph">
-<p>An invoice is recorded with metadata and sent directly to SAP:
-    When the incoming document is filed with a barcode at the beginning of the processing sequence after the incoming mail, it is provided with a barcode sticker directly on the first page. This is followed by the central scanning point in the inbox with the process of digitization (scanning). The capture software reads the barcode, which also serves as a document separator. The barcode read out is reported to SAP together with the document ID via the interface of the Eitco ArchiveLink.
-    The paper document goes through the paper-based approval process.
-    During the posting (creation of the business object in SAP), e. For example, the employee can read the barcode of the document with a wand or barcode gun and automatically transfers the result to the SAP dialog box. Alternatively, the barcode can also be read and manually entered into the data entry mask. SAP then connects the business object in SAP with the digital document stored by the Eitco Archive Link. In SAP, the data in the archive can then be accessed directly via the booking record with a click of the mouse without leaving SAP</p>
+<p>All digitized documents stored via the Archive Link can be displayed with the SAP Standard Viewer. It is possible to use the additional component Eitco Web Viewer via the Eitco Archive Link to display digitized invoices, delivery notes, etc. inside or outside in every web portal and to add comments / annotations.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_early_recording_with_without_barcode_sap_business_process">Early recording with / without barcode (SAP business process):</h4>
+<h4 id="_support_of_all_archiving_scenarios">Support of all archiving scenarios</h4>
 <div class="paragraph">
-<p>An invoice is recorded with metadata and sent directly to SAP.
-    The central scanning point digitizes the incoming documents and the capture software reads out the barcode and other metadata if necessary. Any existing barcode also serves as a document separator. The read barcode is sent together with the metadata via the interface to the Eitco ArchiveLink.
-    The Eitco Archive Link starts a SAP business process for checking incoming invoices based on the met data and transfers this to the SAP process.
-    The approval process and everything else take place without further use of the Eitco Archive Link in SAP.</p>
+<p>There are two ways of working when processing incoming documents. The early recording - the receipt - is provided at the earliest possible point in time in the process in digital form, and on the other hand the late recording. Here, the entire processing is done in the same way as before the use of SAP. The paper document continues to flow through the full process until at some point it is scanned and archived.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_late_capture_without_barcode">Late capture without barcode:</h4>
+<h4 id="_late_entry_with_barcode_paper_based">Late entry with barcode (paper-based)</h4>
 <div class="paragraph">
-<p>The invoice is digitized and the content is transferred to SAP via the Eitco archive link, but not linked to a business object. All further work steps are carried out manually in SAP.
-Simultaneous acquisition:</p>
+<p>An invoice is recorded with a barcode, the accounting department records the posting:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>At the beginning of the processing sequence after receipt of the mail, the incoming document is directly provided with a barcode sticker on the first side (e.g. by means of a barcode roll / label).</p>
+</li>
+<li>
+<p>Incoming documents are initially generated using SAP transactions (e.g. FB60 or MIGO) SAP objects. When the documents are posted later, there is an automatic barcode query. So that the barcode can later be assigned to the corresponding document, the barcode is recorded with a handheld barcode scanner, for example, and the result is automatically transferred to the SAP dialog window. Alternatively, the barcode can also be read and typed into the data entry mask.</p>
+</li>
+<li>
+<p>With transaction OAM1, all SAP objects that are provided with a barcode are visible.</p>
+</li>
+<li>
+<p>The paper document goes through a paper-based approval process and finally scanned to SAP for digitization to complete the booking.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_document_scanning_barcode_autom_read_out_and_assigned_to_the_business_object_in_sap">Document scanning, barcode autom. read out and assigned to the business object in SAP</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>The documents that have already been provided with a barcode and recorded using a hand scanner are then scanned in batches (document separation via barcode), and the barcode is read out.
+The scanning software sends the content including the recognized barcode to the Eitco Archive Link Server. This links the archived documents with the SAP business object (TA01). This process, namely the linking of a document with a "waiting", i.e. previously created SAP object, is known as "late archiving". In SAP, the data in the archive can then be accessed directly via the booking record with a click of the mouse without leaving SAP.</p>
+</li>
+<li>
+<p>The payment can now be triggered as a result of the complete approval process in SAP.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_early_capture_with_barcode_paper_based">Early capture with barcode (paper-based):</h3>
+<div class="paragraph">
+<p>An invoice is recorded with metadata and sent directly to SAP:</p>
 </div>
 <div class="paragraph">
-<p>At the time of processing the security-critical data, e.g. personnel data, the scanning of documents for this process is triggered at the office of the clerk. All further steps, such as inserting it into the personnel file, then take place at the office of the clerk.
-Interface for linking and archiving in late / early archiving</p>
+<p>When the incoming document is filed with a barcode at the beginning of the processing sequence after the incoming mail, it is provided with a barcode sticker directly on the first page. This is followed by the central scanning point in the inbox with the process of digitization (scanning). The capture software reads the barcode, which also serves as a document separator. The barcode read out is reported to SAP together with the document ID via the interface of the Eitco ArchiveLink.</p>
 </div>
 <div class="paragraph">
-<p>Save barcode in SAP. In SAP, a suitable entry is created in the SAP barcode table BDS_BAR_IN and linked to the SAP invoice object (SAP TA OAM1)</p>
+<p>The paper document goes through the paper-based approval process.</p>
 </div>
 <div class="paragraph">
-<p>Our Archive Link Service has a REST interface to which you can send a barcode and the type of doctor. (?? for a certain document whose SAPDOCID you know ?! or does the content and the SAPDOCID come with you?)</p>
+<p>During the posting (creation of the business object in SAP), for example, the employee can read the barcode of the document with a wand or barcode gun and automatically transfers the result to the SAP dialog box. Alternatively, the barcode can also be read and manually entered into the data entry mask. SAP then connects the business object in SAP with the digital document stored by the Eitco Archive Link. In SAP, the data in the archive can then be accessed directly via the booking record with a click of the mouse without leaving SAP.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_early_capture_with_without_barcode_sap_business_process">Early capture with / without barcode (SAP business process):</h3>
+<div class="paragraph">
+<p>An invoice is captured with metadata and sent directly to SAP.</p>
 </div>
 <div class="paragraph">
-<p>The Eitco Archive Link archives the object, creates (created? According to which logic?) A SAPDOCID and reports this to SAP so that an entry is created in the link table TA01. (???)</p>
+<p>The central scanning point digitizes the incoming documents and the capture software reads out the barcode and other metadata if necessary. Any existing barcode also serves as a document separator. The read barcode is sent together with the metadata via the interface to the Eitco ArchiveLink.</p>
 </div>
 <div class="paragraph">
-<p>The Eitco Archive Link then sends the barcode to SAP, including a SAPDOCID generated by us and the appropriate SAP repository name. The Archive Link uses the SAP Java Connector (JCo, <a href="https://help.sap.com/saphelp_nwpi711/helpdata/de/48/70792c872c1b5ae10000000a42189c/frameset.htm" class="bare">https://help.sap.com/saphelp_nwpi711/helpdata/de/48/70792c872c1b5ae10000000a42189c/frameset.htm</a>) and calls the SAP FM BAPI_BARCODE_SENDLIST (https: //www.sapdatasheet .org / abap / func / bapi_barcode_sendlist.html) (not yet 100% sure, possibly also other SAP TA).</p>
+<p>The Eitco Archive Link starts a SAP business process for checking incoming invoices based on the met data and transfers this to the SAP process.
+The approval process and everything else take place without further use of the Eitco Archive Link in SAP.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_late_capture_without_barcode">Late capture without barcode</h3>
+<div class="paragraph">
+<p>The invoice is digitized and the content is transferred to SAP via the Eitco archive link, but not linked to a business object. All further work steps are carried out manually in SAP.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_simultaneous_capture">Simultaneous capture</h3>
+<div class="paragraph">
+<p>At the time of processing the security-critical data, e.g. personnel data, the scanning of documents for this process is triggered at the office of the clerk. All further steps, such as inserting it into the personnel file, then take place at the office of the clerk.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_interface_for_linking_and_archiving_in_late_early_archiving">Interface for linking and archiving in late / early archiving</h3>
+<div class="paragraph">
+<p>The barcode must be saved to SAP. In SAP, a suitable entry is created in the SAP barcode table BDS_BAR_IN and linked to the SAP invoice object (SAP TA OAM1).</p>
+</div>
+<div class="paragraph">
+<p>Eitco Archive Link Service has a REST interface to which you can send a barcode and the type of document.</p>
+</div>
+<div class="paragraph">
+<p>The Eitco Archive Link archives the object, creates s SAPDOCID and reports this to SAP so that an entry is created in the link table TA01.</p>
+</div>
+<div class="paragraph">
+<p>The Eitco Archive Link then sends the barcode to SAP, including a SAPDOCID generated by Eitco system and the appropriate SAP repository name. The Archive Link uses the SAP Java Connector (JCo, <a href="https://help.sap.com/saphelp_nwpi711/helpdata/de/48/70792c872c1b5ae10000000a42189c/frameset.htm" class="bare">https://help.sap.com/saphelp_nwpi711/helpdata/de/48/70792c872c1b5ae10000000a42189c/frameset.htm</a>) and calls the SAP FM BAPI_BARCODE_SENDLIST (https: //www.sapdatasheet .org / abap / func / bapi_barcode_sendlist.html)</p>
 </div>
 <div class="paragraph">
 <p>SAP then enters this information in the BarcodeExt a.k.a. BDS_BAR_EX table. In SAP, the OAM1 / SBDS7 then compares the BarcodeExt and the BDS_BAR_IN table. If he finds a barcode match, an entry is made in TA01 and the SAP business object is linked to the invoice in the Archive Link.</p>
-</div>
 </div>
 </div>
 </div>
@@ -16665,9 +16709,9 @@ used:</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 38. Columns of ecr_types</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -16702,9 +16746,9 @@ used:</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 39. Columns of ecr_types_content_elements</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -16768,9 +16812,9 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 40. Columns of ecr_folder_structure</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -16805,9 +16849,9 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 41. Columns of ecr_folder_structure_closure</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -16873,9 +16917,9 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 42. Columns of <em>ecr_recovery</em></caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col>
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -16921,7 +16965,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="sect2">
 <h3 id="_keystore_tables">Keystore tables</h3>
 <div class="paragraph">
-<p>When the <a href="#">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
+<p>When the <a href="#_encryption">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
 profile-specific database tables. For each encrypted profile, a table called <code>ecr_keys-&lt;profile&gt;</code> and a table called
 <code>ecr_keys_assoc_&lt;profile&gt;</code> is created. The ecr_keys_&lt;profile&gt; table contains the generated keys, and the
 ecr_keys_assoc_&lt;profile&gt; table contains the associations between content elements and keys.</p>
@@ -17203,7 +17247,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-30 12:54:30 UTC
+Last updated 2022-08-31 16:24:47 UTC
 </div>
 </div>
 <style>
