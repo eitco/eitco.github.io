@@ -225,11 +225,7 @@ a, a:hover, a:focus {
 <li><a href="#_keystore_tables">Keystore tables</a></li>
 </ul>
 </li>
-<li><a href="#_compatibility_list">Compatibility List*</a>
-<ul class="sectlevel2">
-<li><a href="#_compatibility_list_2">Compatibility List</a></li>
-</ul>
-</li>
+<li><a href="#_compatibility_list">Compatibility List*</a></li>
 <li><a href="#_important_terminology"><strong>Important Terminology</strong></a></li>
 </ul>
 </div>
@@ -312,9 +308,9 @@ Connect our lightweight <em>arveo</em> content services with a single, lean API 
 <p><em>arveo</em> allows the free configuration of the content objects including metadata and mapping of folder hierarchies and electronic files.</p>
 </div>
 <div class="paragraph">
-<p>The NOSQL technologies allow you to search across all meta values and document content with high performance regardless of the complexity of your search. Decisive advantages in mass data processing and search
-performance through the additional use of horizontally scalable NOSQL technologies.
-The used NOSQL apache solr 8.6 enterprise search engine combined with key value caches leads to an increase in speed of up to a factor of 1,000 compared to relational database systems.</p>
+<p>The NoSQL technologies allow you to search across all meta values and document content with high performance regardless of the complexity of your search. Decisive advantages in mass data processing and search
+performance through the additional use of horizontally scalable NoSQL technologies.
+The used NoSQL apache solr 8.6 enterprise search engine combined with key value caches leads to an increase in speed of up to a factor of 1,000 compared to relational database systems.</p>
 </div>
 </div>
 <div class="sect2">
@@ -448,7 +444,7 @@ Through the consistent microservice architecture and the use of open source clou
 </li>
 <li>
 <p>No additional license costs due to the consistent use of open source technology such as Linux,
-postgreSQL 12 and apache solr 8.6 NOSQL.</p>
+postgreSQL 12 and apache solr 8.6 NoSQL.</p>
 </li>
 <li>
 <p>Container deployment: Simple integration into existing cloud platforms enables load-dependent,
@@ -533,7 +529,7 @@ For the highest possible security on the web and to be suitable for mobile acces
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Store, edit and version documents, records/folders and their metadata.</p>
 <p class="tableblock">Manage storage locations with retention periods (GoBD certificate &amp; GDPR/DSGVO compliant)</p>
-<p class="tableblock">Search of metadata with relational database postgreSQL 12 and NOSQL document db apache solr 8.6</p></td>
+<p class="tableblock">Search of metadata with relational database postgreSQL 12 and NoSQL document db apache solr 8.6</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
@@ -610,7 +606,7 @@ Easily integrate all your applications and IT systems e.g. scheduled data import
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">apache solr 8.6</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NOSQL document database to support high performance content and metadata full text search</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NoSQL document database to support high performance content and metadata full text search</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Content Storage</p></td>
@@ -1391,7 +1387,7 @@ either a cloud object storage or a file system storage.<br>
 Most cloud providers like AWS S3, NetAPP ONTAP, EMC Elastic Cloud, etc. provide file system storage or object storage systems.
 Object storages are organized in buckets and allow you to store an almost unlimited numbers of objects in a bucket.
 <em>arveo</em> accesses the content via REST Standard S3.<br>
-For an optimized and fast access of often used content objects <em>arveo</em> can integrate a NOSQL Keyvalue
+For an optimized and fast access of often used content objects <em>arveo</em> can integrate a NoSQL Keyvalue
 Cache DB like redis.</p>
 </li>
 <li>
@@ -1406,7 +1402,7 @@ semi structured and new properties might be added during the life cycle of the a
 <ul>
 <li>
 <p>Eventually consistent customer information: Sometimes the consistency of the data is not important, but we must guarantee a high performance and facets support when we filter by any value without the risk of a full table scan.
-<em>arveo</em> saves customer metadata on a NOSQL document DB apache solr 8.6 which
+<em>arveo</em> saves customer metadata on a NoSQL document DB apache solr 8.6 which
 is highly efficient for inserting and searching and offers automatic completion and facets.</p>
 </li>
 <li>
@@ -1703,10 +1699,10 @@ that has passed since the last replication and the number of objects stored sinc
 </div>
 </div>
 <div class="sect3">
-<h4 id="_eventually_consistent_meta_data_storage_nosql_document_database_apache_solr_8_6">Eventually Consistent Meta Data Storage (NOSQL Document Database apache solr 8.6)</h4>
+<h4 id="_eventually_consistent_meta_data_storage_nosql_document_database_apache_solr_8_6">Eventually Consistent Meta Data Storage (NoSQL Document Database apache solr 8.6)</h4>
 <div class="paragraph">
-<p><em>arveo</em> uses modern NOSQL storage technologies to guarantee high search performance and horizontal scalability at
-all times. We store semi-structured or dynamic document metadata to a NOSQL document database apache solr 8.6.</p>
+<p><em>arveo</em> uses modern NoSQL storage technologies to guarantee high search performance and horizontal scalability at
+all times. We store semi-structured or dynamic document metadata to a NoSQL document database apache solr 8.6.</p>
 </div>
 <div class="paragraph">
 <p>Solr is an open source search platform that has been partially integrated into <em>arveo</em>.</p>
@@ -12825,24 +12821,27 @@ Enumeration data types allow you to set one or more values from a fixed set of v
 <div class="ulist">
 <ul>
 <li>
-<p>General system properties: System properties that are available on all types of entity (except for meta data entities).</p>
+<p>General system properties: system properties that are available on all types of entity (except for meta data entities).</p>
 </li>
 <li>
-<p>Versioned entity system properties: System properties that are only available on entities that can be versioned
+<p>General system properties: system properties that are available on all types of entity (except for meta data entities).</p>
+</li>
+<li>
+<p>Versioned entity system properties: system properties that are only available on entities that can be versioned
 (Containers, Documents, Folders, Relations).
 Those properties are contained in the main table of a type definition.</p>
 </li>
 <li>
-<p>Document system properties: System properties that are only available on documents.</p>
+<p>Document system properties: system properties that are only available on documents.</p>
 </li>
 <li>
-<p>Folder system properties: System properties that are only available on folders.</p>
+<p>Folder system properties: system properties that are only available on folders.</p>
 </li>
 <li>
-<p>Relation system properties: System properties that are only available on relations.</p>
+<p>Relation system properties: system properties that are only available on relations.</p>
 </li>
 <li>
-<p>Version System properties: System properties that are only available on versions of entities. Those properties are
+<p>Version system properties: system properties that are only available on versions of entities. Those properties are
 contained in the version table of a type definition.</p>
 </li>
 </ul>
@@ -12864,61 +12863,61 @@ All system columns in the database are snake case but not camel case. e.g. the J
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 22. <em>General system properties:</em></caption>
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 10.5263%;">
-<col style="width: 78.9474%;">
+<col style="width: 23%;">
+<col style="width: 11%;">
+<col>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Name</th>
-<th class="tableblock halign-center valign-top">Database Type</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Database Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique identifier of the entity. Use EcrId properties (or subclasses as applicable). Can be used on any entity and is applied by <em>arveo</em> for all types but metadata.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">acl_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acl_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the ACL currently assigned to the entity. Might be null. This is not supported for metadata entities or type with disabled ACLs.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">creation_date</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">datetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">creation_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">datetime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GMT timestamp when the entity or version was created, precision (1/1000 second)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">creator_user_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">creator_user_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the user who created the entity or version (<a href="user-management.html"><strong>User Management</strong></a>)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">deleted</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deleted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional flag that indicates that an entity is currently contained in the recycle bin.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">last_delete_restore_date</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">datetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">last_delete_restore_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">datetime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional GMT timestamp of when the entity was last moved in or out of the recycle bin.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">retention_date</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">datetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retention_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">datetime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The GMT based retention timestamp defines the minimum storage date i.e. the related object can not be deleted until after this date passed. Cannot be used on meta data entities and is only available on entity types that declared to be retention protected (<a href="#"><strong>Retention</strong></a>)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">litigation_hold</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">litigation_hold</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The boolean indicates whether a document is related to a litigation. If the flag is set the document must never be deleted - even if the retention date has passed by. Cannot be used on meta data entites and is only available on entity types that declared to be retention protected (<a href="#"><strong>Retention</strong></a>)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">update_counter</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update_counter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional counter for the number of updates on an entity used for optimistic locking.</p></td>
 </tr>
 </tbody>
@@ -12926,46 +12925,46 @@ All system columns in the database are snake case but not camel case. e.g. the J
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 23. <em>Versioned entity system properties:</em></caption>
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 10.5263%;">
-<col style="width: 78.9474%;">
+<col style="width: 23%;">
+<col style="width: 11%;">
+<col>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Name</th>
-<th class="tableblock halign-center valign-top">Database Type</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Database Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">version_number</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version_number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The sequential number of the latest version of the versioned entity.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">latest_version_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latest_version_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique identifier of the latest version of the entity.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">version_comment</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version_comment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A comment set by the client when a new version is created.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">modification_date</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">datetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">modification_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">datetime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GMT timestamp when the version was created or changed, precision (1/1000 second)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">modification_user_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the user who created or changed the version (<a href="user-management.html"><strong>User Management</strong></a>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">modification_user_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the user who created or changed the version</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">initial_creation_date</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">datetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial_creation_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">datetime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GMT timestamp of when the first version of an entity was created.</p></td>
 </tr>
 </tbody>
@@ -12973,21 +12972,21 @@ All system columns in the database are snake case but not camel case. e.g. the J
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 24. <em>Document system properties:</em></caption>
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 10.5263%;">
-<col style="width: 78.9474%;">
+<col>
+<col>
+<col>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Name</th>
-<th class="tableblock halign-center valign-top">Database Type</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Database Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">content</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">json</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">JSON containing content properties:<br>
 ID :  unique id of the content<br>
 Hash : SHA256 hash of the content stream <br>
@@ -12998,8 +12997,8 @@ FileName: Name of the file, if stored on a file system storage<br>
 Size: bigint value containing the size of the content stream in bytes</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">parent_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional field that contains the ID of the folder the document is contained in.</p></td>
 </tr>
 </tbody>
@@ -13007,26 +13006,26 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 25. <em>Folder system properties:</em></caption>
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 10.5263%;">
-<col style="width: 78.9474%;">
+<col style="width: 17%;">
+<col style="width: 11%;">
+<col>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Name</th>
-<th class="tableblock halign-center valign-top">Database Type</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Database Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">folder_name</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">folder_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the folder.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">parent_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the parent of the folder in the folder tree.</p></td>
 </tr>
 </tbody>
@@ -13034,36 +13033,36 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 26. <em>Relation system properties:</em></caption>
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 10.5263%;">
-<col style="width: 78.9474%;">
+<col style="width: 17%;">
+<col style="width: 11%;">
+<col>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Name</th>
-<th class="tableblock halign-center valign-top">Database Type</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Database Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">parent_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the parent of this relation.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">parent_version_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">parent_version_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The version-id of the parent of this relation. Can only be used on relation types that support relations to or from versions.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">child_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">child_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the child of this relation.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">child_version_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">child_version_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The version-id of the child of this relation. Can only be used on relation types that support relations to or from versions.</p></td>
 </tr>
 </tbody>
@@ -13071,36 +13070,36 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 27. <em>Version system properties:</em></caption>
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 10.5263%;">
-<col style="width: 78.9474%;">
+<col style="width: 17%;">
+<col style="width: 11%;">
+<col>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Name</th>
-<th class="tableblock halign-center valign-top">Database Type</th>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Database Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">version_number</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version_number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The sequential number of the version.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">version_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique identifier of the version.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">version_comment</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version_comment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A comment set by the client when a new version is created.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">entity_id</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">bigint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">entity_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the entity the version belongs to.</p></td>
 </tr>
 </tbody>
@@ -15739,7 +15738,7 @@ Queries like this can be executed using the aggregated search. As opposed to the
 <div class="paragraph">
 <p>Note that we can reference the invoices field <code>open</code> by using the alias <code>i</code> we provided earlier, even though it is not part of the result.
 === Enterprise Search
-==== NOSQL Document Database apache solr 8.6
+==== NoSQL Document Database apache solr 8.6
 Apache Solr is a search server and is used as an independent full-text search server for ECR Healthcare. Solr uses the Apache Lucene search library as the core for full-text indexing and search.</p>
 </div>
 </div>
@@ -17517,8 +17516,6 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="sect1">
 <h2 id="_compatibility_list">Compatibility List*</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_compatibility_list_2">Compatibility List</h3>
 <div class="paragraph">
 <p>To operate <em>arveo</em> successfully the operator of the platform must provide and manage the following services.</p>
 </div>
@@ -17526,10 +17523,13 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="content">
 <img src="images/arveo-architecture.png" alt="diagram">
 </div>
-<div class="title">Figure 9. Architecture Overview</div>
+<div class="title">Figure 9. Architecture overview</div>
+</div>
+<div class="paragraph">
+<p>The following table lists 3rd party services used in <em>arveo</em>.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 45. 3rd Party Services in <em>arveo</em></caption>
+<caption class="title">Table 45. 3rd Party services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -17559,8 +17559,8 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">apache solr</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">apache solr 8.6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr 8.6</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -17628,7 +17628,6 @@ ADFS 2.0</p></td>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -17722,7 +17721,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-15 11:37:59 UTC
+Last updated 2022-09-15 12:13:41 UTC
 </div>
 </div>
 <style>
