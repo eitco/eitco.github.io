@@ -17046,18 +17046,16 @@ invalid customer. The customer must be replaced with a new customer and the refe
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">Customer customer = customerServiceClient.createTypeInstance();
 customer.setName(<span class="predefined-type">UUID</span>.randomUUID().toString());
-TypedDocumentBatchCreateInput&lt;Customer&gt; customerInput =
-    <span class="keyword">new</span> TypedDocumentBatchCreateInput&lt;&gt;(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(customer));
 
 TypedDocumentBatchCreateOperation&lt;Customer&gt; createCustomerOperation = <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="keyword">new</span> TypedDocumentBatchCreateOperation&lt;&gt;(customerInput);
+    <span class="keyword">new</span> TypedDocumentBatchCreateOperation&lt;&gt;(customer);
 
 Invoice invoice = invoiceServiceClient.createTypeInstance();
 
 BatchAttributeReference reference = <span class="keyword">new</span> BatchAttributeReference( <i class="conum" data-value="2"></i><b>(2)</b>
     InvoiceNames.CUSTOMER_NUMBER,
     SystemFieldList.GeneralSystemField.Id.INSTANCE.getName(),
-    customerInput.getVirtualIdentifier().getUuid()
+    createCustomerOperation.getVirtualId().getUuid()
 );
 
 TypedDocumentBatchUpdateInput&lt;Invoice&gt; invoiceInput =
@@ -17716,7 +17714,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-15 13:04:59 UTC
+Last updated 2022-09-16 16:49:49 UTC
 </div>
 </div>
 <style>
