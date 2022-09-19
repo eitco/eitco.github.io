@@ -133,7 +133,7 @@ a, a:hover, a:focus {
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
-<li><a href="#_configure_authenticationsso_with_keycloak">Configure Authentication/SSO with Keycloak</a></li>
+<li><a href="#_configure_authenticationsso_with_keycloak">Configure authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></li>
 <li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure Audit</a></li>
@@ -2351,7 +2351,7 @@ individual project setup as well as the requirements of the project.</p>
 <div class="sect2">
 <h3 id="_installation_2">Installation</h3>
 <div class="sect3">
-<h4 id="_general_concept">General Concept</h4>
+<h4 id="_general_concept">General concept</h4>
 <div class="paragraph">
 <p>These instructions describe the installation procedure, the installation content and the items required for commissioning the product.
 We recommend controlling the rollout of the <em>_arveo</em> services by a continuous integration process that provides all artefact required for the deployment of the required content services and your web solution and integrations.</p>
@@ -2361,7 +2361,7 @@ We recommend controlling the rollout of the <em>_arveo</em> services by a contin
 </div>
 </div>
 <div class="sect3">
-<h4 id="_on_premise_installation_by_eitco">On Premise Installation By Eitco</h4>
+<h4 id="_on_premise_installation_by_eitco">On premise installation By Eitco</h4>
 <div class="paragraph">
 <p>This chapter describes the compliant On Premise installation provided by Eitco. The configuration and deployment of all required artefacts is performed by Eitco or a partner by the automated deployment tool "Puppet".</p>
 </div>
@@ -2389,7 +2389,7 @@ The installation is completely automated and carried out remotely.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_installed_services">Installed Services</h4>
+<h4 id="_installed_services">Installed services</h4>
 <div class="paragraph">
 <p><a href="#_3rd_party_services"><strong>3rd Party Services</strong></a></p>
 </div>
@@ -2448,7 +2448,7 @@ The installation is completely automated and carried out remotely.</p>
 <p>Enterprise User Management Service (optional)</p>
 </li>
 <li>
-<p>Enterprise Federation Service (optional)</p>
+<p>Enterprise Federation Service (optional).</p>
 </li>
 </ul>
 </div>
@@ -2464,7 +2464,7 @@ The installation is completely automated and carried out remotely.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_order_of_services">Order Of Services</h4>
+<h4 id="_order_of_services">Order Of services</h4>
 <div class="paragraph">
 <p>Following you find the order of the service starts. The content services may not work before important services are started.</p>
 </div>
@@ -2488,40 +2488,40 @@ Additional information on registration, user management and the use of the web c
 <div class="ulist">
 <ul>
 <li>
-<p><strong>postgreSQL 12: systemctl start/stop postgresql</strong></p>
+<p>postgreSQL 12: systemctl start/stop postgresql</p>
 </li>
 <li>
-<p><strong>apache solr 8.6: systemctl start/stop solr.service, systemctl start/stop zookeeper.service</strong></p>
+<p>apache solr 8.6: systemctl start/stop solr.service, systemctl start/stop zookeeper.service</p>
 </li>
 <li>
-<p><strong>Config Service: systemctl start/stop common_config_service.service</strong></p>
+<p>Config Service: systemctl start/stop common_config_service.service</p>
 </li>
 <li>
-<p><strong>Registry Service: systemctl start/stop common_registry_service.service</strong></p>
+<p>Registry Service: systemctl start/stop common_registry_service.service</p>
 </li>
 <li>
-<p><strong>User Management Service: systemctl start/stop common_user_management.service</strong></p>
+<p>User Management Service: systemctl start/stop common_user_management.service</p>
 </li>
 <li>
-<p><strong>ACL Service: systemctl start/stop common_access_control.service</strong></p>
+<p>ACL Service: systemctl start/stop common_access_control.service</p>
 </li>
 <li>
-<p><strong>Enterprise User Management Service: systemctl start/stop common_enterprise_user_management.service (optional)</strong></p>
+<p>Enterprise User Management Service: systemctl start/stop common_enterprise_user_management.service (optional)*</p>
 </li>
 <li>
-<p><strong>Federation Service: esystemctl start/stop cr_federation.service (optional)</strong></p>
+<p>Federation Service: esystemctl start/stop cr_federation.service (optional)</p>
 </li>
 <li>
-<p><strong>Audit Service: systemctl start/stop common_audit.service (optional)</strong></p>
+<p>Audit Service: systemctl start/stop common_audit.service (optional)</p>
 </li>
 <li>
-<p><strong>Document Service: systemctl start/stop ecr_repository_service.service</strong></p>
+<p>Document Service: systemctl start/stop ecr_repository_service.service</p>
 </li>
 <li>
-<p>Document Conversion Service: systemctl start/stop common_document_conversion.service (optional)</p>
+<p><em>Document Conversion Service: systemctl start/stop common_document_conversion.service</em> (optional)</p>
 </li>
 <li>
-<p>Enterprise Integration Service: systemctl start/stop common_enterprise_integration.service (optional)</p>
+<p><em>Enterprise Integration Service: systemctl start/stop common_enterprise_integration.service</em> (optional)</p>
 </li>
 </ul>
 </div>
@@ -6779,7 +6779,7 @@ must be taken to specify the master tenant in the configuration.
 </table>
 </div>
 <div class="sect4">
-<h5 id="_refresh_tokens">Refresh Tokens</h5>
+<h5 id="_refresh_tokens">Refresh tokens</h5>
 <div class="paragraph">
 <p>When a new token is issued, a refresh token is also generated (except for the client_credentials grant). This refresh
 token can be used to renew an expiring token without requiring the user to log in again. By default, when a token refresh
@@ -6800,7 +6800,7 @@ header in the token request. The remaining parameters are sent as form data via 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_authenticationsso_with_keycloak">Configure Authentication/SSO with Keycloak</h3>
+<h3 id="_configure_authenticationsso_with_keycloak">Configure authentication/SSO with Keycloak</h3>
 <div class="paragraph">
 <p>The <em>arveo</em> content services support OAuth2.0 with OpenID Connect to authenticate users and services.
 You can install Keycloak as your identity management and use it as OAuth2.0 authentication service instead of the _arveo user management service.
@@ -6832,7 +6832,7 @@ This will also allow you to enable single sign on for your web clients.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_create_keycloak_realm">Create Keycloak Realm</h5>
+<h5 id="_create_keycloak_realm">Create Keycloak realm</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -6845,7 +6845,7 @@ This will also allow you to enable single sign on for your web clients.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_create_keycloak_clients">Create Keycloak Clients</h5>
+<h5 id="_create_keycloak_clients">Create Keycloak clients</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -6885,7 +6885,7 @@ Implicit flow is no longer recommended. The standard flow should be used. Furthe
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_a_client">Configure a Client</h5>
+<h5 id="_configure_a_client">Configure a client</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -13479,7 +13479,7 @@ document type.
 <div class="sect2">
 <h3 id="_metadata_type">Metadata Type</h3>
 <div class="paragraph">
-<p>Metadata types are used e.g. to connect external tables.They do not contain any specific system fields and no typed ID
+<p>Metadata types are used for example to connect external tables.They do not contain any specific system fields and no typed ID
 as a primary key.The database table can be created by the <em>arveo</em> or an existing table can be used.</p>
 </div>
 <div class="admonitionblock tip">
@@ -13495,17 +13495,8 @@ Use the <em>@View</em> annotation to mark a metadata type as a view for which th
 </tr>
 </table>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Metadata types do not support versioning and retention protection.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>Metadata types do not support versioning and retention protection.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -17713,7 +17704,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-19 09:27:44 UTC
+Last updated 2022-09-19 13:50:57 UTC
 </div>
 </div>
 <style>
