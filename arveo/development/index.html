@@ -184,6 +184,7 @@ a, a:hover, a:focus {
 <li><a href="#_metadata_type">Metadata Type</a></li>
 <li><a href="#_inheritance">Inheritance</a></li>
 <li><a href="#_retention_3">Retention</a></li>
+<li><a href="#_tenant_separation">Tenant Separation</a></li>
 <li><a href="#_advanced_database_schema_changes">Advanced database schema changes</a></li>
 </ul>
 </li>
@@ -14500,9 +14501,9 @@ automatically and will vary from deployment to deployment, even between test and
 <div class="sect2">
 <h3 id="_retention_3">Retention</h3>
 <div class="sect3">
-<h4 id="_annotations_retentionprotected">Annotations_@RetentionProtected_</h4>
+<h4 id="_annotations_retentionprotected">Annotations <em>@RetentionProtected</em></h4>
 <div class="paragraph">
-<p>An object may be annotated as <em>@RetentionProtected</em>.This will enable all further retention annotations listed below.Every retention enabled object extends the data model by</p>
+<p>An object may be annotated as <em>@RetentionProtected</em>. This will enable all further retention annotations listed below.Every retention enabled object extends the data model by</p>
 </div>
 <div class="ulist">
 <ul>
@@ -14528,7 +14529,7 @@ The convenience class 'Retention_Info' contains both values and can be used to r
 </div>
 </div>
 <div class="sect3">
-<h4 id="_annotations_defaultsystempropertyvalueretention_date">Annotations_@DefaultSystemPropertyValue(RETENTION_DATE)_</h4>
+<h4 id="_annotations_defaultsystempropertyvalueretention_date">Annotations <em>@DefaultSystemPropertyValue(RETENTION_DATE)</em></h4>
 <div class="paragraph">
 <p>It is possible to define a default value for the <em>RETENTION_DATE</em> system column
 (<a href="#_default_values">Default Values</a>]).</p>
@@ -14547,7 +14548,7 @@ function implemented by the document type.</p>
 </pre></td>
   <td class="code"><pre><span class="annotation">@DefaultSystemPropertyValue</span>(SystemPropertyName.RETENTION_DATE)
 <span class="keyword">default</span> ZonedDateTime defaultDatum() {
-<span class="keyword">return</span> ZonedDateTime.Now().plusYears(<span class="integer">10</span>);
+    <span class="keyword">return</span> ZonedDateTime.Now().plusYears(<span class="integer">10</span>);
 }</pre></td>
 </tr></table></code></pre>
 </div>
@@ -14726,6 +14727,57 @@ The retention annotations also work for the document types: container, folder an
 </tr>
 </table>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tenant_separation">Tenant Separation</h3>
+<div class="paragraph">
+<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2-SNAPSHOT/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2-SNAPSHOT/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+</div>
+<div class="paragraph">
+<p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
+</div>
+<div class="sect3">
+<h4 id="_fallback_tenant">fallback-tenant</h4>
+<div class="paragraph">
+<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2-SNAPSHOT/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
+Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_usage_2">usage</h4>
+<div class="paragraph">
+<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+</div>
+<div class="paragraph">
+<p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">A type separating its entities by tenant</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.CONTAINER)
+<span class="annotation">@TenantSeparation</span>(<span class="predefined-constant">true</span>)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">Person</span> {
+
+<span class="comment">// property definitions ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
+</div>
+<div class="paragraph">
+<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
+</div>
+<div class="paragraph">
+<p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
+</div>
+<div class="paragraph">
+<p>If it is <em>disabled</em>, types are not separated by tenant by default. Any type specified to be separated by tenant will cause arveo to fail at startup.</p>
+</div>
+<div class="paragraph">
+<p>If it is <em>allowed</em>, types are not separated by tenant by default.</p>
 </div>
 </div>
 </div>
@@ -15511,7 +15563,7 @@ that can be used to create any joins on search statements.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_usage_2">Usage</h4>
+<h4 id="_usage_3">Usage</h4>
 <div class="paragraph">
 <p>The following examples demonstrates the usage of the Search Service to retrieve an object page.</p>
 </div>
@@ -17704,7 +17756,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-20 14:32:23 UTC
+Last updated 2022-09-21 07:42:24 UTC
 </div>
 </div>
 <style>
