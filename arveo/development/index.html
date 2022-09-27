@@ -172,7 +172,7 @@ a, a:hover, a:focus {
 </li>
 <li><a href="#_data_modelling"><strong>Data Modelling</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_objects_types_definitions">Entity Types</a></li>
+<li><a href="#_objects_types_definitions">Entity types</a></li>
 <li><a href="#_type_annotations">Type Annotations</a></li>
 <li><a href="#_property_annotations">Property Annotations</a></li>
 <li><a href="#_data_types">Data Types</a></li>
@@ -184,17 +184,17 @@ a, a:hover, a:focus {
 <li><a href="#_metadata_type">Metadata Type</a></li>
 <li><a href="#_inheritance">Inheritance</a></li>
 <li><a href="#_retention_3">Retention</a></li>
-<li><a href="#_tenant_separation">Tenant Separation</a></li>
-<li><a href="#_advanced_database_schema_changes">Advanced database schema changes</a></li>
+<li><a href="#_tenant_separation">Tenant separation</a></li>
+<li><a href="#_advanced_db_schema_changes">Advanced db schema changes</a></li>
 </ul>
 </li>
 <li><a href="#_document_service"><strong>Document Service</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_upload_data">Upload Data</a></li>
-<li><a href="#_download_data">Download Data</a></li>
-<li><a href="#_document_service_recycle_bin">Delete An Object</a></li>
+<li><a href="#_upload_data">Upload data</a></li>
+<li><a href="#_download_data">Download data</a></li>
+<li><a href="#_document_service_recycle_bin">Delete an object</a></li>
 <li><a href="#_locking">Locking</a></li>
-<li><a href="#_checkin_checkout">Checkin / Checkout</a></li>
+<li><a href="#_checkin_and_checkout">Checkin and checkout</a></li>
 <li><a href="#_versioning_v">Versioning</a></li>
 <li><a href="#_search_language">Search Language</a></li>
 <li><a href="#_search_endpoints">Search Endpoints</a></li>
@@ -204,8 +204,8 @@ a, a:hover, a:focus {
 <li><a href="#_sap_archive_link_service"><strong>SAP Archive Link Service</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_sap_content_service_archive_link">SAP Content Service (Archive Link)</a></li>
-<li><a href="#_standardized_sap_archivelink_interface_certification_for_sap_archivelink_7_20">Standardized SAP ArchiveLink ™ interface, certification for SAP ArchiveLink ™ 7.20</a></li>
-<li><a href="#_interface_for_linking_and_archiving_in_late_early_archiving">Interface for linking and archiving in late / early archiving</a></li>
+<li><a href="#_standardized_sap_archivelink_interface">Standardized SAP ArchiveLink interface</a></li>
+<li><a href="#_interface_for_archiving">Interface for archiving</a></li>
 </ul>
 </li>
 <li><a href="#_rest_api"><strong>REST API</strong></a>
@@ -11497,7 +11497,7 @@ This means arveo will not create the corresponding table.</td>
 <h2 id="_data_modelling"><strong>Data Modelling</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_objects_types_definitions">Entity Types</h3>
+<h3 id="_objects_types_definitions">Entity types</h3>
 <div class="paragraph">
 <p>The following chapter defines entity types and type definitions, used in <em>arveo</em>.</p>
 </div>
@@ -11531,7 +11531,7 @@ Each entity is referred by its system-wide unique id, which consists of a tenant
 <p>[12bit Tenant id][14bit Type Definition id][38bit Entity id].</p>
 </div>
 <div class="sect3">
-<h4 id="_versioned_entities">Versioned Entities</h4>
+<h4 id="_versioned_entities">Versioned entities</h4>
 <div class="paragraph">
 <p>All above listed entities (except for meta) are versioned by default. It means that they store version information, modification information. The class <em>VersionInformation</em> combines information about a version, including version id, version number and version comment. The version modification object stores a modification stamp, consisting of a user id and a <em>ZonedDateTime</em> object, both for the events of creation and last modification of the entity. The version information is stored in a separate table for each typed entity.</p>
 </div>
@@ -11553,7 +11553,7 @@ For the type <em>Document</em> the content changes are always versioned.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_custom_types">Custom Types</h4>
+<h4 id="_custom_types">Custom types</h4>
 <div class="paragraph">
 <p>You can make your class a type and add features by annotating your classes. You can define the custom metadata schema with simple getter and setter methods.</p>
 </div>
@@ -11770,7 +11770,7 @@ MyEnum getEnum();
 </div>
 </div>
 <div class="sect4">
-<h5 id="_container_type_example">Container Type Example</h5>
+<h5 id="_container_type_example">Container type example</h5>
 <div class="paragraph">
 <p>The following example class is marked as type <em>Container</em>. To use an entity type, we annotate the class using the <em>@Type</em> annotation.</p>
 </div>
@@ -14751,7 +14751,7 @@ The retention annotations also work for the document types: container, folder an
 </div>
 </div>
 <div class="sect2">
-<h3 id="_tenant_separation">Tenant Separation</h3>
+<h3 id="_tenant_separation">Tenant separation</h3>
 <div class="paragraph">
 <p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.2/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
 </div>
@@ -14802,7 +14802,7 @@ Should a querying user reside in the fallback-tenant, the query will not be filt
 </div>
 </div>
 <div class="sect2">
-<h3 id="_advanced_database_schema_changes">Advanced database schema changes</h3>
+<h3 id="_advanced_db_schema_changes">Advanced db schema changes</h3>
 <div class="paragraph">
 <p>Simple changes of the database schema like adding a new attribute are performed automatically by the system in
 maintenance mode. In some cases it might be required to perform more complex schema changes, which cannot be handled by
@@ -15018,7 +15018,7 @@ attribute. In a real-life scenario, this is the place where the actual data migr
 <p>The service saves the binary data belonging to the documents and delivers them again. Various plugins are available for connecting storage devices and services. A plug-in is assigned to a profile and configured. When saving data, the client has to specify the profile to be used and thereby decides where the data will be saved.</p>
 </div>
 <div class="sect2">
-<h3 id="_upload_data">Upload Data</h3>
+<h3 id="_upload_data">Upload data</h3>
 <div class="paragraph">
 <p>Content, annotations (see below) and metadata can be uploaded as a coherent document. 0-n content elements of different
 content types are possible. Each content element is named. As a result, you get a globally unique ID (DocumentID),
@@ -15213,7 +15213,7 @@ It is possible to check the content of a specific version of a document, too.</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="_download_data">Download Data</h3>
+<h3 id="_download_data">Download data</h3>
 <div class="paragraph">
 <p>Content, annotations and metadata of a document can be downloaded via API. It is possible to load the entire document as
 a multipart or a structure of the document that includes all metadata, annotations and a list of content elements with
@@ -15230,7 +15230,7 @@ overhead of a version. However, in the event of an audit, the changes are not tr
 </div>
 </div>
 <div class="sect2">
-<h3 id="_document_service_recycle_bin">Delete An Object</h3>
+<h3 id="_document_service_recycle_bin">Delete an object</h3>
 <div class="paragraph">
 <p>Documents contain one or more content elements which are not stored in the database but in the storage system. When a document is deleted using one of the delete-calls, the content elements will remain on the storage. To delete both the database entries and all content elements (including those referenced from older versions), a client can use the purge
 methods provided by the document clients.</p>
@@ -15268,7 +15268,7 @@ If an object has relations to other objects is related by other objects the dele
 </table>
 </div>
 <div class="sect3">
-<h4 id="_filter_recycle_bin">Filter Recycle Bin</h4>
+<h4 id="_filter_recycle_bin">Filter recycle bin</h4>
 <div class="paragraph">
 <p>Entities in the recycle bin will be filtered from normal queries by default, but a client can compose search expressions that override this behavior. To do that it is sufficient to include a reference to the deleted system field in the expression. The following example shows a part of a query that will show only deleted entities:</p>
 </div>
@@ -15334,9 +15334,9 @@ e.g. two processes A and B load the same object including content and versions a
 </div>
 </div>
 <div class="sect2">
-<h3 id="_checkin_checkout">Checkin / Checkout</h3>
+<h3 id="_checkin_and_checkout">Checkin and checkout</h3>
 <div class="paragraph">
-<p>TYou can check out a document via the API and blocking it for other users. You can optionally specify a timeout after which the lock is automatically reset. Otherwise, the document is locked endlessly or until the global lock timeout takes effect.</p>
+<p>You can check out a document via the API and blocking it for other users. You can optionally specify a timeout after which the lock is automatically reset. Otherwise, the document is locked endlessly or until the global lock timeout takes effect.</p>
 </div>
 <div class="paragraph">
 <p>You can check in a checked-out document via the API and save the changes (stream) as a new version in the repository or overwrite the existing version (traceable via the audit). You can optionally specify whether the lock (checkout) will be retained. Optional parameters as when creating a new version.</p>
@@ -16444,7 +16444,10 @@ content with retention to different document types.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_standardized_sap_archivelink_interface_certification_for_sap_archivelink_7_20">Standardized SAP ArchiveLink ™ interface, certification for SAP ArchiveLink ™ 7.20</h3>
+<h3 id="_standardized_sap_archivelink_interface">Standardized SAP ArchiveLink interface</h3>
+<div class="paragraph">
+<p>In this chapter a detailed description of the Standardized SAP ArchiveLink ™ interface as well as the certification for SAP ArchiveLink ™ 7.20 is provided.</p>
+</div>
 <div class="paragraph">
 <p>The Eitco Archive Link Server fully implements the SAP Archive Link Standard and is certified for SAP and SAP / HANA. SAP basic knowledge is sufficient for the administration of the integration. The Eitco Archive Link supports all SAP releases from R / 3.</p>
 </div>
@@ -16541,7 +16544,10 @@ The approval process and everything else take place without further use of the E
 </div>
 </div>
 <div class="sect2">
-<h3 id="_interface_for_linking_and_archiving_in_late_early_archiving">Interface for linking and archiving in late / early archiving</h3>
+<h3 id="_interface_for_archiving">Interface for archiving</h3>
+<div class="paragraph">
+<p>Here the interface for linking and archiving in late / early archiving is described.</p>
+</div>
 <div class="paragraph">
 <p>The barcode must be saved to SAP. In SAP, a suitable entry is created in the SAP barcode table BDS_BAR_IN and linked to the SAP invoice object (SAP TA OAM1).</p>
 </div>
@@ -17776,7 +17782,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-27 11:34:42 UTC
+Last updated 2022-09-27 12:23:55 UTC
 </div>
 </div>
 <style>
