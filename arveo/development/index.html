@@ -87,7 +87,7 @@ a, a:hover, a:focus {
 <li><a href="#_application_security">Application security</a></li>
 <li><a href="#_data_security">Data security</a></li>
 <li><a href="#_tenant_security">Tenant security</a></li>
-<li><a href="#_security_patches">Security Patches</a></li>
+<li><a href="#_security_patches">Security patches</a></li>
 <li><a href="#_application_protection_by_design">Application protection by design</a></li>
 <li><a href="#_compliance_recommendations_gobd">Compliance Recommendations (GoBD)</a></li>
 </ul>
@@ -156,7 +156,7 @@ a, a:hover, a:focus {
 </li>
 <li><a href="#_access_control"><strong>Access Control</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_access_rights">Access Rights</a></li>
+<li><a href="#_access_rights">Access rights</a></li>
 <li><a href="#_access_control_lists">Access control lists</a></li>
 </ul>
 </li>
@@ -165,19 +165,19 @@ a, a:hover, a:focus {
 <li><a href="#_parameters">Parameters</a></li>
 <li><a href="#_examples_2">Examples</a></li>
 <li><a href="#_interface_inheritance">Interface inheritance</a></li>
-<li><a href="#_complex_scenario_hospital">Complex Scenario: Hospital</a></li>
-<li><a href="#_revision_history_and_attribute_based_access_control">Revision history and Attribute Based Access Control</a></li>
+<li><a href="#_complex_scenario_a_hospital">Complex scenario: a Hospital</a></li>
+<li><a href="#_revision_history_and_abac">Revision history and ABAC</a></li>
 <li><a href="#_accessing_external_tables">Accessing external tables</a></li>
 </ul>
 </li>
 <li><a href="#_data_modelling"><strong>Data Modelling</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_objects_types_definitions">Entity types</a></li>
-<li><a href="#_type_annotations">Type Annotations</a></li>
-<li><a href="#_property_annotations">Property Annotations</a></li>
+<li><a href="#_type_annotations">Type annotations</a></li>
+<li><a href="#_property_annotations">Property annotations</a></li>
 <li><a href="#_data_types">Data Types</a></li>
 <li><a href="#_system_properties">System Properties</a></li>
-<li><a href="#_document_type">Document Type</a></li>
+<li><a href="#_document_type">Document type</a></li>
 <li><a href="#_container_type">Container Type</a></li>
 <li><a href="#_relation_type">Relation Type</a></li>
 <li><a href="#_folder_type">Folder Type</a></li>
@@ -916,7 +916,7 @@ The data of a tenant can be easily exported.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_security_patches">Security Patches</h3>
+<h3 id="_security_patches">Security patches</h3>
 <div class="paragraph">
 <p>For us it is important to continuously ensure that all known vulnerabilities are fixed
 and that we deliver security patches and hotfixes as early as possible to our customers.</p>
@@ -1000,24 +1000,17 @@ Dependency check checks our dependencies against a database with all known vulne
 </li>
 </ul>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<strong>OWASP Dependency-Check tool:</strong><br>
-it is a Software Composition Analysis tool trying to find vulnerabilities made public within the project dependencies.<br>
+<div class="sect3">
+<h4 id="_owasp_dependency_check_tool">OWASP dependency-check tool</h4>
+<div class="paragraph">
+<p>it is a Software Composition Analysis tool trying to find vulnerabilities made public within the project dependencies.<br>
 The tool checks if there is an issue tracked in the "Common Platform Enumeration (CPE)" for the dependency.<br>
 If a vulnerability is found it creates report with a link to the CVE entry.<br>
 It is command line interface that can be easily integrated in any nightly build process.<br>
 For further information, consult National Vulnerability Database (NVD)– (<a href="https://nvd.nist.gov" class="bare">https://nvd.nist.gov</a>). <br>
 The following source is worth having a look at: Jeff Williams und Arshan Dabirsiaghi “Unfortunate Reality of Insecure Libraries”<br>
- (<a href="https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf" class="bare">https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf</a>).<br>
-</td>
-</tr>
-</table>
+ (<a href="https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf" class="bare">https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf</a>).<br></p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -10049,7 +10042,7 @@ the actuator endpoints.</p>
 <h2 id="_access_control"><strong>Access Control</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_access_rights">Access Rights</h3>
+<h3 id="_access_rights">Access rights</h3>
 <div class="paragraph">
 <p>The REST API has the following user-rights (authorities) for different endpoints:</p>
 </div>
@@ -10253,10 +10246,10 @@ It will be called by arveo when entities of the given type are accessed to retri
 </ul>
 </div>
 <div class="paragraph">
-<p>The simplest case would look as follows:</p>
+<p>The simplest case would look like this:</p>
 </div>
 <div class="listingblock">
-<div class="title">the simplest access check</div>
+<div class="title">The simplest access check</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -10579,22 +10572,13 @@ Avoid confusion with another <code>Alias</code> class.
 <div class="sect3">
 <h4 id="_dslcontext"><code>DSLContext</code></h4>
 <div class="paragraph">
-<p>In some cases using expressions on the entity itself may become cumbersome or slow.
+<p>In some cases, using expressions on the entity itself may become cumbersome or slow.
 For that, one can use the DSLContext parameter.
 This allows access by <a href="https://www.jooq.org/doc/3.15/manual/">jooq</a> to any table in the same schema the table of the requested entity is located in.
 It can be used to obtain specific data directly.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Since the access is directly to the database, there are no further access checks on queries using DSLContext.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>Since the access is directly to the database, there are no further access checks on queries using DSLContext.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -10839,16 +10823,16 @@ In this case it is a good practice to combine the access method and field in a c
 </div>
 </div>
 <div class="sect2">
-<h3 id="_complex_scenario_hospital">Complex Scenario: Hospital</h3>
+<h3 id="_complex_scenario_a_hospital">Complex scenario: a Hospital</h3>
 <div class="paragraph">
-<p>Here we look at a more complex example: a Hospital.
+<p>Here we take a look at a more complex example: a Hospital.
 The hospital manages <strong>documents</strong> concerning <strong>cases</strong>.
 A case belongs to a <strong>patient</strong>.
 Users of the system are hospital employees and may access data about documents, cases and patients.
 These users are part of one or several <strong>wards</strong>.
 For every ward there is a group in the system containing the users that are part of this ward.
 Cases have a list of wards - that may change over time - where the patient was treated for that case.
-Access is specified as follows</p>
+Access is specified as follows;</p>
 </div>
 <div class="ulist">
 <ul>
@@ -11164,25 +11148,25 @@ This is mandatory.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_revision_history_and_attribute_based_access_control">Revision history and Attribute Based Access Control</h3>
+<h3 id="_revision_history_and_abac">Revision history and ABAC</h3>
 <div class="paragraph">
-<p>In the example above access to the entities is defined by one attribute: the wards of a case.
-It is assumed that a case may be treated in several wards - one after another - and every employee belonging to those wards needs access to the case, its patients data and its documents.
-Visiting the wards one after another will result in several updates on the case - each adding another ward - and thus in a revision history where the list of wards will build up over time.</p>
+<p>In the example above access to the entities is defined by one attribute: the wards of a case. It is assumed that a case may be treated in several wards - one after another - and every employee belonging to those wards needs access  to the case, its patients data and its documents. Visiting the wards one after another will result in several updates on the case - each adding another ward - and thus in a revision history where the list of wards will build up over time.</p>
 </div>
 <div class="paragraph">
-<p>In the scenario above this has an interesting consequence: The access to older versions of the case will be granted to users that were allowed to access it at the time the version was created.
-For example if a case started in the pulmonology it would have the following revision list:</p>
+<p>This has an interesting consequence in the scenario above : The access to older versions of the case will be granted to users who were allowed to access it at the time the version was created.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<div class="paragraph">
+<p>For instance, if a case started in the pulmonology it would have the following revision list:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 50%;">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 30%;">
+<col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">revision</th>
-<th class="tableblock halign-left valign-top">wards</th>
+<th class="tableblock halign-left valign-top">ward(s)</th>
 </tr>
 </thead>
 <tbody>
@@ -11195,15 +11179,15 @@ For example if a case started in the pulmonology it would have the following rev
 <div class="paragraph">
 <p>If it was moved to intensive care after that, it would result in the following revision list:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all" style="width: 50%;">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 30%;">
+<col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">revision</th>
-<th class="tableblock halign-left valign-top">wards</th>
+<th class="tableblock halign-left valign-top">ward(s)</th>
 </tr>
 </thead>
 <tbody>
@@ -11245,15 +11229,15 @@ Depending on the scenario this might or might not be desired.</p>
 <p>By simply specifying the <code>wards</code> attribute as not versioned, changes on the attribute will affect every revision of the case.
 If a case started in the pulmonology it would at first have the same revision history as above:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all" style="width: 50%;">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 30%;">
+<col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">revision</th>
-<th class="tableblock halign-left valign-top">wards</th>
+<th class="tableblock halign-left valign-top">ward(s)</th>
 </tr>
 </thead>
 <tbody>
@@ -11266,15 +11250,15 @@ If a case started in the pulmonology it would at first have the same revision hi
 <div class="paragraph">
 <p>However, if it was moved to intensive care now, the revision list would look like this:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all" style="width: 50%;">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 30%;">
+<col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">revision</th>
-<th class="tableblock halign-left valign-top">wards</th>
+<th class="tableblock halign-left valign-top">ward(s)</th>
 </tr>
 </thead>
 <tbody>
@@ -11376,7 +11360,7 @@ Depending on the scenario, it might improve performance to cache the result of t
 </div>
 </div>
 <div class="sect3">
-<h4 id="_using_a_metadata_type">Using a Metadata Type</h4>
+<h4 id="_using_a_metadata_type">Using a Metadata type</h4>
 <div class="paragraph">
 <p>Alternatively, an arveo custom <code>@Type</code> could be used to access the external table:</p>
 </div>
@@ -11866,9 +11850,9 @@ containing the type annotations. The processor is picked up by the compiler auto
 </div>
 </div>
 <div class="sect2">
-<h3 id="_type_annotations">Type Annotations</h3>
+<h3 id="_type_annotations">Type annotations</h3>
 <table id="type_annotations" class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 19. Type Annotations</caption>
+<caption class="title">Table 19. Type annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -12004,9 +11988,9 @@ the full-text support is disabled: <a href="#_nosql_example"><strong>Example</st
 </table>
 </div>
 <div class="sect2">
-<h3 id="_property_annotations">Property Annotations</h3>
+<h3 id="_property_annotations">Property annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 20. Property Annotations</caption>
+<caption class="title">Table 20. Property annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -12157,7 +12141,7 @@ the full-text support is disabled: <a href="#_nosql_example"><strong>Example</st
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-<strong>Unique Identifiers</strong><br>
+<strong>Unique identifiers</strong><br>
 To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique
 and immutable property.<br>
 The property must be <em>@Unique</em> to ensure that an application can identify the item.<br>
@@ -12188,9 +12172,9 @@ types.
 <div class="sect3">
 <h4 id="_annotation_examples">Examples</h4>
 <div class="sect4">
-<h5 id="_default_values">Default Values</h5>
+<h5 id="_default_values">Default values</h5>
 <div class="listingblock">
-<div class="title">Example for a default value definition</div>
+<div class="title">Example of a default value definition</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -12251,7 +12235,7 @@ types.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_index_example">Index Example</h5>
+<h5 id="_index_example">Index example</h5>
 <div class="paragraph">
 <p>As an example of annotations usage let us define an interface <em>BookIndex</em> with two properties, <em>page</em> and <em>chapter</em>.These properties have to be indexed.</p>
 </div>
@@ -12281,7 +12265,7 @@ types.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_formatted_counters_example">Formatted Counters Example</h5>
+<h5 id="_formatted_counters_example">Formatted counters example</h5>
 <div class="paragraph">
 <p>Using the <em>@FormattedCounter</em> annotation it is possible to define counters with prefix and suffix that are backed by a
 sequence on the database.There are several properties that can be defined in the annotation:</p>
@@ -13140,14 +13124,15 @@ It will be updated in the main table and in the version table when a version get
 </div>
 </div>
 <div class="sect2">
-<h3 id="_document_type">Document Type</h3>
+<h3 id="_document_type">Document type</h3>
 <div class="paragraph">
-<p>The following chapter provides a more detailed overview of the type <em>Document</em>.</p>
+<p>The following chapter provides a more detailed overview of the type <code>Document</code>.</p>
 </div>
 <div class="paragraph">
-<p>A Document is one of five entity types supported by the <em>arveo</em> system.Unlike the other entity types,
-documents are always versioned too keep track of changes of the binary content.
-A Document consists of the following components:</p>
+<p>A <code>Document</code> is one of five entity types supported by the <em>arveo</em> system. Unlike the other entity types, documents are always versioned too keep track of changes of the binary content.</p>
+</div>
+<div class="paragraph">
+<p>A <code>Document</code> consists of the following components:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -13172,8 +13157,7 @@ in a layer independent of the document.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Any number of versions can be created for a document.All the versions are traceable in the repository and can be
-referenced via independent system-wide unique IDs.</p>
+<p>Any number of versions can be created for a <code>Document</code>. All the versions are traceable in the repository and can be referenced via independent system-wide unique IDs.</p>
 </div>
 </div>
 <div class="sect2">
@@ -14420,7 +14404,7 @@ automatically and will vary from deployment to deployment, even between test and
 </div>
 </div>
 <div class="paragraph">
-<p>Since that exposes ACLs as <em>arveo</em> type instances, ACLs can be used for <a href="#Direct inheritance">inheritance</a>. And since ACL names are unique they can be used as a foreign key, particularly as one defining inheritance. That way the actual ACL id can be inherited by a key that is an ACL name, for which we can easily define a <a href="#_default_values">default value</a> that is stable over every environment:</p>
+<p>Since that exposes ACLs as <em>arveo</em> type instances, ACLs can be used for <a href="#Direct inheritance">inheritance</a>. And since ACL names are unique they can be used as a foreign key, particularly as one defining inheritance. That way the actual ACL id can be inherited by a key that is an ACL name, for which we can easily define a <a href="#Default Values">default value</a> that is stable over every environment:</p>
 </div>
 <div class="listingblock">
 <div class="title">A sofisticated example of an ACL default value</div>
@@ -17782,7 +17766,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-27 15:22:42 UTC
+Last updated 2022-09-28 11:43:31 UTC
 </div>
 </div>
 <style>
