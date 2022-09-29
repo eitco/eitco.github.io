@@ -180,8 +180,8 @@ a, a:hover, a:focus {
 <li><a href="#_document_type">Document type</a></li>
 <li><a href="#_container_type">Container Type</a></li>
 <li><a href="#_relation_type">Relation Type</a></li>
-<li><a href="#_folder_type">Folder Type</a></li>
-<li><a href="#_metadata_type">Metadata Type</a></li>
+<li><a href="#_folder_type">Folder type</a></li>
+<li><a href="#_metadata_type">Metadata type</a></li>
 <li><a href="#_inheritance">Inheritance</a></li>
 <li><a href="#_retention_3">Retention</a></li>
 <li><a href="#_tenant_separation">Tenant separation</a></li>
@@ -1047,7 +1047,7 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_retention_periods">Retention Periods</h4>
+<h4 id="_retention_periods">Retention periods</h4>
 <div class="paragraph">
 <p>Enable that the statutory retention periods are assigned to the records, cases and document types  (<a href="#_retention_periods_retention"><strong>Retention Periods</strong></a>, <a href="#_retention"><strong>Retention Rules</strong></a>) and ensure that the storage container are configured correctly (<a href="#_retention_container"><strong>Retention Container</strong></a>) .</p>
 </div>
@@ -1071,7 +1071,7 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <p>Because the new legal data privacy / protection act makes it necessary to erase data even before the expected retention period has expired <em>arveo</em> please take care that the content storage has no default hardware retention activated.</p>
 </div>
 <div class="sect4">
-<h5 id="_audit_log">Audit Log</h5>
+<h5 id="_audit_log">Audit log</h5>
 <div class="paragraph">
 <p>Enable the audit option for all types containing legally compliant content (<a href="#_configure_audit">Audit Log</a>). If the platform is operated safely (<a href="#<em>platform_link">Platform Security</a>) users and applications can exclusively write content and metadata using the _arveo</em> REST API. <em>arveo</em> logs all user or application update operations of content and metadata to the audit table.</p>
 </div>
@@ -1094,7 +1094,7 @@ Save the dumps as an <em>arveo</em> document with a 10-year retention period. If
 </div>
 </div>
 <div class="sect3">
-<h4 id="_download_and_migration">Download And Migration</h4>
+<h4 id="_download_and_migration">Download and migration</h4>
 <div class="paragraph">
 <p>All documents in <em>arveo</em> that are subject to retention are available by the REST API and can be downloaded. The integrity and availability of the content is the responsibility of the provider and operator of the platform. The provider must ensure that failures of the storage systems for database and content are identified at an early stage and take appropriate countermeasures. See chapter <a href="#_fail_safety">Fail Safety</a> for technical and organizational measures for high availability of the <em>arveo</em> platform.</p>
 </div>
@@ -1102,9 +1102,9 @@ Save the dumps as an <em>arveo</em> document with a 10-year retention period. If
 <p>In the event that data has to be migrated, <em>arveo</em> offers an extensive export API that enables content and metadata to be exported.
 <em>arveo</em> saves the hash value (<a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" class="bare">https://en.wikipedia.org/wiki/Cryptographic_hash_function</a>) in the database that was determined when the content was first uploaded (<a href="#_upload_data">Upload Data</a>). This hash value can be used as a checksum to detect accidental or intentionally corruption of data. If the hash value of the content after the migration is identical to the original hash the migration report proves the correctness of the migration process. To report the completeness of the migration process  the <em>arveo</em> API allows you to export a list of all records, cases and documents in a document type.</p>
 </div>
-<div class="paragraph">
-<p><strong>Legally Compliant Migration</strong></p>
 </div>
+<div class="sect3">
+<h4 id="_legally_compliant_migration">Legally compliant migration</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1138,7 +1138,7 @@ Save the dumps as an <em>arveo</em> document with a 10-year retention period. If
 <div class="ulist">
 <ul>
 <li>
-<p>Correctness: .compare hash, metadata and retention period for each original and migrated record, case and document.</p>
+<p>Correctness: compare hash, metadata and retention period for each original and migrated record, case and document.</p>
 </li>
 <li>
 <p>Completeness: check that each migrated document can be found using the unique identifier</p>
@@ -1155,7 +1155,7 @@ Depending on your retention policy you can create separate reports for a retenti
 </div>
 </div>
 <div class="sect3">
-<h4 id="_data_integrity">Data Integrity</h4>
+<h4 id="_data_integrity">Data integrity</h4>
 <div class="paragraph">
 <p><em>arveo</em> guarantees high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by proven and well-thought concepts. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via ACLs. User rights are based on the developed concepts for roles, groups and ACLs. More detailed information on this is provided in the relevant chapters of this manual.</p>
 </div>
@@ -1163,13 +1163,13 @@ Depending on your retention policy you can create separate reports for a retenti
 <p>Access to all data (documents, metadata) takes place exclusively via the API, with the corresponding protection mechanisms so that the security of the data is guaranteed at all times.</p>
 </div>
 <div class="sect4">
-<h5 id="_content_storage">Content Storage</h5>
+<h5 id="_content_storage">Content storage</h5>
 <div class="paragraph">
 <p>The operator must take appropriate technical or organizational measures to ensure that the data is stored in the storage in such a way that it cannot be changed within the legally prescribed retention period.</p>
 </div>
 <div class="paragraph">
-<p>Enable the verify option for all clients and integrations The upload API optionally can verify the uploaded content. The content service downloads the just uploaded stream from the
-content storage and compares the hash once again with the expected value (<a href="#_upload_data">Upload Content</a>).
+<p>Enable the verify option for all clients and integrations. The upload API optionally can verify the uploaded content. The content service downloads the just uploaded stream from the
+content storage and compares the hash once again with the expected value (<a href="#_upload_data">Upload content</a>).
 <em>arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
 </div>
 <div class="paragraph">
@@ -1200,7 +1200,7 @@ the backup strategy prevents data loss.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_fail_safety">Fail Safety</h4>
+<h4 id="_fail_safety">Fail safety</h4>
 <div class="paragraph">
 <p>The system operator is responsible for data security and recovery. He must ensure that the backups of the data are checked regularly and that recovery is reliably possible in the event of a failure.
 The IT processes that ensure the secure, redundant and highly available storage of <em>arveo</em> data in databases and object or file system storage systems are particularly decisive for the proper operation of the platform.
@@ -1271,7 +1271,7 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>provide adequate protection of passwords by using a state-of-the-art IDP such as Keycloak or MS Active Directory and increasing the password complexity accordingly.</p>
 </li>
 <li>
-<p>take actions against denial of service attacks</p>
+<p>take actions against denial of service attacks.</p>
 </li>
 </ul>
 </div>
@@ -1284,13 +1284,13 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <div class="ulist">
 <ul>
 <li>
-<p>make sure that only authorized persons receive an account that grants access to <em>arveo</em> documents.</p>
+<p>make sure that only authorized persons receive an account that grants access to <em>arveo</em> documents;</p>
 </li>
 <li>
-<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="#_access_control_lists"><strong>ACLs</strong></a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read)</p>
+<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="#_access_control_lists"><strong>ACLs</strong></a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read);</p>
 </li>
 <li>
-<p>the activities of managers who can change ACLs are logged via <em>arveo</em> audit and checked at regular intervals.</p>
+<p>the activities of managers who can change ACLs are logged via <em>arveo</em> audit and checked at regular intervals;</p>
 </li>
 <li>
 <p>organizationally ensure that the password the <em>arveo</em> administration users are changed regularly.</p>
@@ -13442,30 +13442,29 @@ parent or the child.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_folder_type">Folder Type</h3>
+<h3 id="_folder_type">Folder type</h3>
 <div class="paragraph">
-<p>The following chapter provides a more detailed overview of the type <em>Folder</em>.</p>
+<p>The following chapter provides a more detailed overview of the type <code>Folder</code>.</p>
 </div>
 <div class="paragraph">
-<p>A folder is an entity that is organized in a file system like tree structure.A folder can contain custom metadata
-attributes.Documents can be <em>filed</em> in a folder.</p>
+<p>A <code>Folder</code> is an entity that is organized in a file system like tree structure. A <code>Folder</code> can contain custom metadata
+attributes. Documents can be <em>filed</em> in a <code>Folder</code>.</p>
 </div>
 <div class="paragraph">
-<p>A Folder consists of the following components:</p>
+<p>A <code>Folder</code> consists of the following components:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Technical meta information, which is filled by <em>arveo</em> and cannot be changed, see <a href="#_system_properties"><strong>System properties</strong></a></p>
+<p>Technical meta information, which is filled by <em>arveo</em> and cannot be changed, see <a href="#_system_properties"><strong>System properties</strong></a>.</p>
 </li>
 <li>
-<p>Typed folder type metadata according to a schema defined for the document type</p>
+<p>Typed folder type metadata according to a schema defined for the document type.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Any number of versions can be created for a folder.All the versions are traceable in the repository and can be
-referenced via independent IDs.</p>
+<p>Any number of versions can be created for a <code>Folder</code>. All the versions are traceable in the repository and can be referenced via independent IDs.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -13474,7 +13473,7 @@ referenced via independent IDs.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Only documents can be <em>filed</em> in a folder. To enable the filing feature, add the <em>@FilingEnabled</em> annotation to your
+Only documents can be <em>filed</em> in a <code>Folder</code>. To enable the filing feature, add the <em>@FilingEnabled</em> annotation to your
 document type.
 </td>
 </tr>
@@ -13482,10 +13481,10 @@ document type.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_metadata_type">Metadata Type</h3>
+<h3 id="_metadata_type">Metadata type</h3>
 <div class="paragraph">
-<p>Metadata types are used for example to connect external tables.They do not contain any specific system fields and no typed ID
-as a primary key.The database table can be created by the <em>arveo</em> or an existing table can be used.</p>
+<p><code>Metadata</code> types are used for example to connect external tables. They do not contain any specific system fields and no typed ID
+as a primary key. The database table can be created by the <em>arveo</em> or an existing table can be used.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -13501,7 +13500,7 @@ Use the <em>@View</em> annotation to mark a metadata type as a view for which th
 </table>
 </div>
 <div class="paragraph">
-<p>Metadata types do not support versioning and retention protection.</p>
+<p><code>Metadata</code> types do not support versioning and retention protection.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -13510,7 +13509,7 @@ Use the <em>@View</em> annotation to mark a metadata type as a view for which th
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-You can use the <em>@PrimaryKey</em> annotation to define one or more properties of a metadata type to be the primary key.
+You can use the <em>@PrimaryKey</em> annotation to define one or more properties of a <code>Metadata</code> type to be the primary key.
 </td>
 </tr>
 </table>
@@ -15206,7 +15205,7 @@ document ID / content type. Access to individual content elements without a docu
 access control. Access control based on the document ID is ensured with every access.</p>
 </div>
 <div class="sect3">
-<h4 id="_update_metadata_without_version">Update Metadata Without Version</h4>
+<h4 id="_update_metadata_without_a_version">Update metadata without a version</h4>
 <div class="paragraph">
 <p>The meta information of a document can be changed. The changes can be persisted in the database without creating a version. It is possible, to maintain frequently changing information on the document quickly without creating the
 overhead of a version. However, in the event of an audit, the changes are not traceable.</p>
@@ -17766,7 +17765,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-28 16:43:39 UTC
+Last updated 2022-09-29 07:50:58 UTC
 </div>
 </div>
 <style>
