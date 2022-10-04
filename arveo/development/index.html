@@ -89,7 +89,7 @@ a, a:hover, a:focus {
 <li><a href="#_tenant_security">Tenant security</a></li>
 <li><a href="#_security_patches">Security patches</a></li>
 <li><a href="#_application_protection_by_design">Application protection by design</a></li>
-<li><a href="#_compliance_recommendations_gobd">Compliance Recommendations (GoBD)</a></li>
+<li><a href="#_compliance_recommendations_gobd">Compliance recommendations (GoBD)</a></li>
 </ul>
 </li>
 <li><a href="#_data_store"><strong>Data Store</strong></a>
@@ -179,7 +179,7 @@ a, a:hover, a:focus {
 <li><a href="#_system_properties">System Properties</a></li>
 <li><a href="#_document_type">Document type</a></li>
 <li><a href="#_container_type">Container type</a></li>
-<li><a href="#_relation_type">Relation Type</a></li>
+<li><a href="#_relation_type">Relation type</a></li>
 <li><a href="#_folder_type">Folder type</a></li>
 <li><a href="#_metadata_type">Metadata type</a></li>
 <li><a href="#_inheritance">Inheritance</a></li>
@@ -1014,7 +1014,7 @@ The following source is worth having a look at: Jeff Williams und Arshan Dabirsi
 </div>
 </div>
 <div class="sect2">
-<h3 id="_compliance_recommendations_gobd">Compliance Recommendations (GoBD)</h3>
+<h3 id="_compliance_recommendations_gobd">Compliance recommendations (GoBD)</h3>
 <div class="paragraph">
 <p>All companies using electronic data processing for legally or tax relevant documents have to be compliant to the "Principles for the proper management and storage of books, records and documents in electronic form and for data access" (GoBD, BMF letter November 28, 2019).</p>
 </div>
@@ -1022,7 +1022,7 @@ The following source is worth having a look at: Jeff Williams und Arshan Dabirsi
 <p>In addition to the proper use of the <em>arveo</em> and 3rd party services, we recommend implementing these measures when using <em>Eitco</em> as compliant repository for legally compliant storage of records and documents.</p>
 </div>
 <div class="sect4">
-<h5 id="_indexing_and_retrievel">Indexing And Retrievel</h5>
+<h5 id="_indexing_and_retrievel">Indexing and retrievel</h5>
 <div class="paragraph">
 <p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique and immutable unique identifier property ( <a href="#type_annotations"><strong>Data Modelling</strong></a>).
 The property must be <em>@Unique</em> to ensure that a user or business application can clearly identify the item.
@@ -9975,7 +9975,7 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <h3 id="_other_monitoring_systems">Other monitoring systems</h3>
 <div class="paragraph">
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
-The <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#actuator.metrics.export">Spring Boot Documentation</a>
+The <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
@@ -13218,16 +13218,14 @@ referenced via independent IDs.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_relation_type">Relation Type</h3>
+<h3 id="_relation_type">Relation type</h3>
 <div class="paragraph">
-<p>The following chapter provides a more detailed overview of the type <em>Relation</em>.</p>
+<p>The following chapter provides a more detailed overview of the type <code>Relation</code>.</p>
 </div>
 <div class="paragraph">
-<p>A relation represents a connection between two entities (document, container, folder or meta). It is directed, having
-a parent and a child and it can contain custom metadata attributes. A relation type must specify the type of the parent
-and child entities.
-Any number of versions can be created for a relation. All the versions are traceable in the repository and can be
-referenced via independent IDs.</p>
+<p>A <code>Relation</code> represents a connection between two entities (document, container, folder or meta). It is directed, having
+a parent and a child and it can contain custom metadata attributes. A <code>Relation</code> type must specify the type of the parent
+and child entities. Any number of versions can be created for a <code>Relation</code>. All the versions are traceable in the repository and can be referenced via independent IDs.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -13242,7 +13240,7 @@ Changes of the child-id or parent-id are not tracked in the version table.
 </table>
 </div>
 <div class="literalblock">
-<div class="title">Data model of a relation</div>
+<div class="title">Data model of a <code>Relation</code></div>
 <div class="content">
 <pre> +------------+               +--------+-----+              +------------+
  |   Parent   |               +   Relation   +              |   Child    |
@@ -13254,7 +13252,7 @@ Changes of the child-id or parent-id are not tracked in the version table.
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Example: A relation type definition</div>
+<div class="title">Example: A <code>Relation</code> type definition</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.RELATION) <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="annotation">@SourceType</span>(Customer.class) <i class="conum" data-value="2"></i><b>(2)</b>
@@ -17792,7 +17790,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-04 08:19:39 UTC
+Last updated 2022-10-04 09:35:44 UTC
 </div>
 </div>
 <style>
