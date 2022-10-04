@@ -79,7 +79,7 @@ a, a:hover, a:focus {
 <li><a href="#_content__services">Content Services</a></li>
 <li><a href="#_3rd_party_services">3rd Party Services</a></li>
 <li><a href="#_industry_standards">Industry standards</a></li>
-<li><a href="#_opensource_technology_stack">Opensource Technology Stack</a></li>
+<li><a href="#_opensource_technology_stack">Opensource technology stack</a></li>
 </ul>
 </li>
 <li><a href="#_security"><strong>Security</strong></a>
@@ -136,7 +136,7 @@ a, a:hover, a:focus {
 <li><a href="#_configure_authenticationsso_with_keycloak">Configure authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></li>
 <li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
-<li><a href="#_configure_audit">Configure Audit</a></li>
+<li><a href="#_configure_audit">Configure audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
 <li><a href="#_system_jobs">System jobs</a></li>
 <li><a href="#_hashicorp_vault">Using Hashicorp Vault</a></li>
@@ -178,7 +178,7 @@ a, a:hover, a:focus {
 <li><a href="#_data_types">Data Types</a></li>
 <li><a href="#_system_properties">System Properties</a></li>
 <li><a href="#_document_type">Document type</a></li>
-<li><a href="#_container_type">Container Type</a></li>
+<li><a href="#_container_type">Container type</a></li>
 <li><a href="#_relation_type">Relation Type</a></li>
 <li><a href="#_folder_type">Folder type</a></li>
 <li><a href="#_metadata_type">Metadata type</a></li>
@@ -652,7 +652,7 @@ Implement Single Sign On (SSO) with identity management providers:  Keycloak, Ac
 </div>
 </div>
 <div class="sect2">
-<h3 id="_opensource_technology_stack">Opensource Technology Stack</h3>
+<h3 id="_opensource_technology_stack">Opensource technology stack</h3>
 <div class="paragraph">
 <p>The technology stack has been chosen to ensure creating high-performance, cloud- and client-capable and scalable state-of-the-art (micro) services with a modern web user interface. Our chose tech stack enables the implementation of both small projects, which only consist of a single component in the backend, and large projects with various distributed components. The created components are deployable both locally on the customer&#8217;s hardware and
 in a cloud environment.</p>
@@ -7700,7 +7700,7 @@ possible when the schema update itself is skipped.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_audit">Configure Audit</h3>
+<h3 id="_configure_audit">Configure audit</h3>
 <div class="paragraph">
 <p>A <code>@Type</code> may define to be audited. This means, that any write access i.e. any create, update and delete operation to any entity of this type will be logged into another table. This is done with the annotation <code>@Audit</code>:</p>
 </div>
@@ -11508,8 +11508,10 @@ This means arveo will not create the corresponding table.</td>
 </ul>
 </div>
 <div class="paragraph">
-<p>Each type definition is represented by one (or more) tables in the database.
-Each entity is referred by its system-wide unique id, which consists of a tenant id and its type definition id, followed by the sequential database id of this entity:</p>
+<p>Each type definition is represented by one (or more) tables in the database.</p>
+</div>
+<div class="paragraph">
+<p>Each entity is referred by its system-wide unique id, which consists of a tenant id and its type definition id, followed by the sequential database id of this entity:</p>
 </div>
 <div class="paragraph">
 <p>[12bit Tenant id][14bit Type Definition id][38bit Entity id].</p>
@@ -11649,7 +11651,7 @@ need to list the system property name.</p>
 <div class="sect3">
 <h4 id="_entity_types_examples">Examples</h4>
 <div class="sect4">
-<h5 id="_enumeration_example">Enumeration Example</h5>
+<h5 id="_enumeration_example">Enumeration example</h5>
 <div class="paragraph">
 <p>Define a enum class and use it in a another object type (<a href="#_document_type_example"><strong>Example</strong></a>).</p>
 </div>
@@ -11663,7 +11665,7 @@ need to list the system property name.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_document_type_example">Document Type Example</h5>
+<h5 id="_document_type_example">Document type example</h5>
 <div class="listingblock">
 <div class="title">Example of a type definition using the object type <em>Document</em></div>
 <div class="content">
@@ -13161,12 +13163,12 @@ in a layer independent of the document.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_container_type">Container Type</h3>
+<h3 id="_container_type">Container type</h3>
 <div class="paragraph">
-<p>The following chapter provides a more detailed overview of the type <em>Container</em>.</p>
+<p>The following chapter provides a more detailed overview of the type <code>Container</code>.</p>
 </div>
 <div class="paragraph">
-<p>A Container is an object without content. It supports all system managed metadata attributes and custom attributes
+<p>A <code>Container</code> is an object without content. It supports all system managed metadata attributes and custom attributes
 defined by the type definition. It is called 'Container' because it&#8217;s primary use case is to serve as an entity that
 contains custom metadata and that is related to other entities like a document via foreign keys or relations.</p>
 </div>
@@ -13198,7 +13200,7 @@ children (<a href="#_inheritance"><strong>Inheritance</strong></a>)
 </table>
 </div>
 <div class="paragraph">
-<p>Containers can be versioned. A Container consists of the following components:</p>
+<p>Containers can be versioned. A <code>Container</code> consists of the following components:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -13211,7 +13213,7 @@ children (<a href="#_inheritance"><strong>Inheritance</strong></a>)
 </ul>
 </div>
 <div class="paragraph">
-<p>Any number of versions can be created for a container.All the versions are traceable in the repository and can be
+<p>Any number of versions can be created for a <code>Container</code>. All the versions are traceable in the repository and can be
 referenced via independent IDs.</p>
 </div>
 </div>
@@ -14985,7 +14987,32 @@ attribute. In a real-life scenario, this is the place where the actual data migr
 <li>
 <p><strong>formatted counter sequence names</strong>: Changing the name of the sequence of a formatted counter will take effect. This can have an impact on your application. It will result in the creation of a new sequence and effectively reset the counters value. This might be desired effect - it could also be the result of an oversight in the type changes. To protect oneself from accidental changes it is deemed could practice to mark formatted counter fields with <code>@Unique</code>.</p>
 </li>
+<li>
+<p><strong>indexes prefixed with <code>ecr_mnl_</code>:</strong> Indexes defined on tables belonging to ecr types will be created and deleted according to changes in the types. However, indexes whose names start with the prefix <code>ecr_mnl_</code> will be excluded from that. This enables admins to quickly react on slow systems without a system update inferring with such a patch. This has two consequences</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Admins, that manually add an index, should pick a name for the index that starts with <code>ecr_mnl_</code></p>
+</li>
+<li>
+<p>Developers, that add an index to an arveo type should pick a name that does not start with <code>ecr_mnl_</code></p>
+</li>
+</ol>
+</div>
+</li>
 </ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In a case where an index prefixed with <code>ecr_mnl_</code> is used it will be beneficially in the long-run, to add the index to the type. In this case the prefix <code>ecr_mnl_</code> in the name must be omitted when defining the index on the type.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -17765,7 +17792,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-09-29 19:24:30 UTC
+Last updated 2022-10-04 08:19:39 UTC
 </div>
 </div>
 <style>
