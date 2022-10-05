@@ -94,11 +94,11 @@ a, a:hover, a:focus {
 </li>
 <li><a href="#_data_store"><strong>Data Store</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_persistence_architecture">Persistence Architecture</a></li>
-<li><a href="#_data_kinds">Data Kinds</a></li>
-<li><a href="#_high_availability">High Availability</a></li>
-<li><a href="#_data_integrity">Data Integrity</a></li>
-<li><a href="#_content_storage_2">Content Storage</a></li>
+<li><a href="#_persistence_architecture">Persistence architecture</a></li>
+<li><a href="#_data_types">Data types</a></li>
+<li><a href="#_high_availability">High availability</a></li>
+<li><a href="#_data_integrity">Data integrity</a></li>
+<li><a href="#_content_storage_2">Content storage</a></li>
 <li><a href="#_clustering">Clustering</a></li>
 <li><a href="#_data_deletion">Data Deletion</a></li>
 <li><a href="#_recycle_bin">Recycle Bin</a></li>
@@ -115,12 +115,12 @@ a, a:hover, a:focus {
 <ul class="sectlevel2">
 <li><a href="#_prerequisites">Prerequisites</a></li>
 <li><a href="#_maven_configuration">Maven configuration</a></li>
-<li><a href="#_step_1_type_definitions">Step 1 - type definitions</a></li>
+<li><a href="#_step_1_type_definitions">Step 1 - Type definitions</a></li>
 <li><a href="#_step_2_command_line_tool">Step 2 - Command line tool</a></li>
 <li><a href="#_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</a></li>
-<li><a href="#_the_types_archetype">The Types Archetype</a></li>
+<li><a href="#_the_types_archetype">The Types archetype</a></li>
 <li><a href="#_overview_of_the_generated_project">Overview of the generated project</a></li>
-<li><a href="#_the_full_featured_archetype">The Full-Featured Archetype</a></li>
+<li><a href="#_the_full_featured_archetype">The full-featured archetype</a></li>
 <li><a href="#_overview_of_the_generated_project_2">Overview of the generated project</a></li>
 <li><a href="#_working_on_the_generated_project">Working on the generated project</a></li>
 </ul>
@@ -137,7 +137,7 @@ a, a:hover, a:focus {
 <li><a href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></li>
 <li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure audit</a></li>
-<li><a href="#_solr">SOLR</a></li>
+<li><a href="#_solr">Solr</a></li>
 <li><a href="#_system_jobs">System jobs</a></li>
 <li><a href="#_hashicorp_vault">Using Hashicorp Vault</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
@@ -175,7 +175,7 @@ a, a:hover, a:focus {
 <li><a href="#_objects_types_definitions">Entity types</a></li>
 <li><a href="#_type_annotations">Type annotations</a></li>
 <li><a href="#_property_annotations">Property annotations</a></li>
-<li><a href="#_data_types">Data Types</a></li>
+<li><a href="#_data_types_2">Data Types</a></li>
 <li><a href="#_system_properties">System Properties</a></li>
 <li><a href="#_document_type">Document type</a></li>
 <li><a href="#_container_type">Container type</a></li>
@@ -1306,7 +1306,7 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <h2 id="_data_store"><strong>Data Store</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_persistence_architecture">Persistence Architecture</h3>
+<h3 id="_persistence_architecture">Persistence architecture</h3>
 <div class="paragraph">
 <p><em>arveo</em> guarantees forgery-proof long term availability of your content and metadata.</p>
 </div>
@@ -1364,7 +1364,7 @@ with <em>arveo</em>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_data_kinds">Data Kinds</h3>
+<h3 id="_data_types">Data types</h3>
 <div class="paragraph">
 <p><em>arveo</em> distinguishes three kinds of data and stores each to the most suitable storage system.</p>
 </div>
@@ -1405,7 +1405,7 @@ transaction support. <em>arveo</em> saves the data on a relational database.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_high_availability">High Availability</h3>
+<h3 id="_high_availability">High availability</h3>
 <div class="paragraph">
 <p>The high availability (HA) of <em>arveo</em> depends highly on the HA of the storage systems for all kind of data.
 Each of the storage systems and as a result the <em>arveo</em> services follow the CAP (Consistency, Availability and
@@ -1452,7 +1452,7 @@ The <em>arveo</em> micro services should be deployed as containers in your cloud
 </div>
 </div>
 <div class="sect2">
-<h3 id="_data_integrity">Data Integrity</h3>
+<h3 id="_data_integrity">Data integrity</h3>
 <div class="paragraph">
 <p><em>arveo</em> ensures the immutability and integrity of all your digital content and evidence records by an automated hash check each time content is up- or downloaded.</p>
 </div>
@@ -1536,7 +1536,7 @@ Distributed management roles of the storage systems and the <em>arveo</em> trans
 </div>
 </div>
 <div class="sect2">
-<h3 id="_content_storage_2">Content Storage</h3>
+<h3 id="_content_storage_2">Content storage</h3>
 <div class="paragraph">
 <p><em>arveo</em> support evidence proof long term storage of your content and metadata by storing the content legally secure to either a S3 object storage or a file system. The storage must be redundant.
 Object storage systems like AWS, NetAPP or EMC Elastic Cloud Storage guarantee the long term availability and integrity of your content.</p>
@@ -1568,7 +1568,7 @@ In case of very sensible data you can enable encryption (<a href="#_encryption">
 loss of data. The better your data replication the better is your availability in case of a failure.</p>
 </div>
 <div class="sect4">
-<h5 id="_data_replication_redundancy">Data Replication (Redundancy)</h5>
+<h5 id="_data_replication_redundancy">Data replication (redundancy)</h5>
 <div class="paragraph">
 <p>For both supported storages (S3, file system) you can select between different data replication strategies:</p>
 </div>
@@ -1646,12 +1646,12 @@ The REST S3 API is very tolerant against network and infrastructure failures.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_consistent_meta_data_storage_relational_database">Consistent Meta Data Storage (relational Database)</h4>
+<h4 id="_consistent_meta_data_storage_relational_database">Consistent meta data storage (relational database)</h4>
 <div class="paragraph">
 <p>The relational database postgreSQL 12 is responsible for 100% consistent processing of the structured metadata and transactions.</p>
 </div>
 <div class="sect4">
-<h5 id="_data_replication_redundancy_2">Data Replication (Redundancy)</h5>
+<h5 id="_data_replication_redundancy_2">Data replication (redundancy)</h5>
 <div class="paragraph">
 <p>For the supported databases postgreSQL 12 you can select between different data replication strategies:</p>
 </div>
@@ -1680,7 +1680,7 @@ The provider of the postgreSQL 12 cluster must guarantee that data is stored red
 </div>
 </div>
 <div class="sect3">
-<h4 id="_fail_safety_consistency_availability_2">Fail Safety (Consistency, Availability)</h4>
+<h4 id="_fail_safety_consistency_availability_2">Fail safety (consistency, availability)</h4>
 <div class="paragraph">
 <p>In case the database cluster is down or allows only read access <em>arveo</em> is not available (Deny Of Service/DOS).
 If the database has a long term outage and the data files are affected the potential data loss is limited by the time
@@ -1688,7 +1688,7 @@ that has passed since the last replication and the number of objects stored sinc
 </div>
 </div>
 <div class="sect3">
-<h4 id="_eventually_consistent_meta_data_storage_nosql_document_database_apache_solr_8_6">Eventually Consistent Meta Data Storage (NoSQL Document Database apache solr 8.6)</h4>
+<h4 id="_eventually_consistent_meta_data_storage_nosql_document_database_apache_solr_8_6">Eventually consistent meta data storage (NoSQL document database apache solr 8.6)</h4>
 <div class="paragraph">
 <p><em>arveo</em> uses modern NoSQL storage technologies to guarantee high search performance and horizontal scalability at
 all times. We store semi-structured or dynamic document metadata to a NoSQL document database apache solr 8.6.</p>
@@ -1714,7 +1714,7 @@ Solr, so that there is also a separation of data there.</p>
 setup a redundant cluster.</p>
 </div>
 <div class="sect4">
-<h5 id="_fail_safety_availability_partition_tolerance">Fail Safety (Availability, Partition Tolerance)</h5>
+<h5 id="_fail_safety_availability_partition_tolerance">Fail safety (availability, partition tolerance)</h5>
 <div class="paragraph">
 <p>In case the database cluster is down <em>arveo</em> is still available but free customer searches fail.
 In case one database node is down or the database is read only <em>arveo</em> is still available but searches may return outdated results.
@@ -1743,7 +1743,7 @@ the a backup strategy prevents data loss.
 <p>Each <em>arveo</em> service can be configured as a service cluster to achieve HA. Depending on the deployment you can either set up an application server cluster (WAR deployment) or run our containerized applications on a cloud platform like open-stack with kubernetes.</p>
 </div>
 <div class="sect4">
-<h5 id="_fail_safety_consistency_availability_3">Fail Safety (Consistency, Availability)</h5>
+<h5 id="_fail_safety_consistency_availability_3">Fail safety (consistency, availability)</h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. Content services in <em>arveo</em></caption>
 <colgroup>
@@ -1808,7 +1808,7 @@ the a backup strategy prevents data loss.
 </table>
 </div>
 <div class="sect3">
-<h4 id="_required_3rd_party_services">Required 3rd Party services</h4>
+<h4 id="_required_3rd_party_services">Required 3rd party services</h4>
 <div class="paragraph">
 <p>To operate <em>arveo</em> successfully with high availability the operator of the platform must provide
 the following services as a cluster.</p>
@@ -2785,7 +2785,7 @@ unencrypted repository connections.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_1_type_definitions">Step 1 - type definitions</h3>
+<h3 id="_step_1_type_definitions">Step 1 - Type definitions</h3>
 <div class="paragraph">
 <p>In the first step you will define the data model of your application. In arveo, this is done by creating Java
 (or Kotlin) interfaces which contain getters and setters for the fields that will be available on each individual entity
@@ -4003,7 +4003,7 @@ Imported file Incoming_invoice.png belonging to project Webclient
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_types_archetype">The Types Archetype</h3>
+<h3 id="_the_types_archetype">The Types archetype</h3>
 <div id="_archetype_overview" class="paragraph">
 <p>This archetype creates a rather small project. It consists of an arveo scenario and tests for that.</p>
 </div>
@@ -4106,7 +4106,7 @@ have switched into this folder on your command line.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_full_featured_archetype">The Full-Featured Archetype</h3>
+<h3 id="_the_full_featured_archetype">The full-featured archetype</h3>
 <div class="paragraph">
 <p>This archetype creates a more complex project. It is based on the eitco commons archetype It will contain a simple web service, with an automatically generated client layer, based on eitco commons.
 The maven coordinate of this archetype are:</p>
@@ -7806,31 +7806,31 @@ possible when the schema update itself is skipped.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_solr">SOLR</h3>
+<h3 id="_solr">Solr</h3>
 <div class="paragraph">
-<p>In order to use SOLR in connection with <em>arveo</em>, an installation of a SOLR service is required. Under the
-following link you can download the current versions of SOLR: <a href="https://solr.apache.org/downloads.html" class="bare">https://solr.apache.org/downloads.html</a>.</p>
+<p>In order to use Solr in connection with <em>arveo</em>, an installation of a Solr service is required. Under the
+following link you can download the current versions of Solr: <a href="https://solr.apache.org/downloads.html" class="bare">https://solr.apache.org/downloads.html</a>.</p>
 </div>
 <div class="paragraph">
-<p>The SOLR service must be configured in <em>arveo</em> within the <em>application.yaml</em>. See
+<p>The Solr service must be configured in <em>arveo</em> within the <em>application.yaml</em>. See
 <a href="#_ecr_server_solr">Configuration properties</a> for details.</p>
 </div>
 <div class="paragraph">
 <p>When a type definition is annotated with <code>@NOSql</code>, the entities stored in this type definition will be stored in
-SOLR, too. See <a href="#_entity_annotations_nosql_example">NOSQL Example</a> for how to enable this feature. The system
+Solr, too. See <a href="#_entity_annotations_nosql_example">NOSQL Example</a> for how to enable this feature. The system
 will create a special queue table in the relational database for such a type definition. The queue table will contain
-the entities that have to be stored in SOLR. A <a href="#_nosql_queue_job">system job</a> is used to process the
+the entities that have to be stored in Solr. A <a href="#_nosql_queue_job">system job</a> is used to process the
 entries in the queue table.</p>
 </div>
 <div class="sect3">
-<h4 id="_solr_deployment">SOLR Deployment</h4>
+<h4 id="_solr_deployment">Solr deployment</h4>
 <div class="paragraph">
-<p>A small tutorial for setting up solr for <em>arveo</em>.</p>
+<p>A small tutorial for setting up Solr for <em>arveo</em>.</p>
 </div>
 <div class="sect4">
 <h5 id="_arveo_yaml_configuration"><em>arveo</em> yaml configuration:</h5>
 <div class="paragraph">
-<p>In the following example you can see a minimal <em>arveo</em> yaml configuration for solr:</p>
+<p>In the following example you can see a minimal <em>arveo</em> yaml configuration for Solr:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7860,7 +7860,7 @@ Collections will be created automatically from <em>arveo</em>. Every tenant gets
 </div>
 </div>
 <div class="sect4">
-<h5 id="_solr_security">Solr Security</h5>
+<h5 id="_solr_security">Solr security</h5>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -7868,13 +7868,13 @@ Collections will be created automatically from <em>arveo</em>. Every tenant gets
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-As default solr has <strong>no security settings</strong> set. It is very important to add the security settings for solr!
+As default Solr has <strong>no security settings</strong> set. It is very important to add the security settings for Solr!
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>For more information for setting up the security settings for solr you can go the chapter <a href="#_solr_security_configuration">solr security configuration</a></p>
+<p>For more information for setting up the security settings for Solr you can go the chapter <a href="#_solr_security_configuration">solr security configuration</a></p>
 </div>
 <div class="paragraph">
 <p>If you use the <em>arveo</em> acl functionallity you can setup the solr-acl-plugin. More information for the solr-acl-plugin you can find <a href="#_acl_filter_plugin">here</a>.</p>
@@ -7883,7 +7883,7 @@ As default solr has <strong>no security settings</strong> set. It is very import
 <div class="sect4">
 <h5 id="_solr_configurations">Solr Configurations</h5>
 <div class="paragraph">
-<p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the solr zookeeper. The ecr-config you can find at the following url <a href="https://nexus.eitco.de">nexus.eitco.de</a> as zip-file.<br></p>
+<p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url <a href="https://nexus.eitco.de">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -7905,9 +7905,9 @@ As default solr has <strong>no security settings</strong> set. It is very import
 </div>
 </div>
 <div class="sect5">
-<h6 id="_type_definitions">Type Definitions</h6>
+<h6 id="_type_definitions">Type definitions</h6>
 <div class="paragraph">
-<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the solr manged-schema.xml. If you want to deactivate an attribute of an type definition for solr you can do the following:</p>
+<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the Solr manged-schema.xml. If you want to deactivate an attribute of an type definition for Solr you can do the following:</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -7916,7 +7916,7 @@ As default solr has <strong>no security settings</strong> set. It is very import
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If you have a type definition which is using the annotation @NOSql you must be setup a solr. Otherwise, <em>arveo</em> will be not starting!
+If you have a type definition which is using the annotation @NOSql you must be setup a Solr. Otherwise, <em>arveo</em> will be not starting!
 </td>
 </tr>
 </table>
@@ -7935,27 +7935,27 @@ If you have a type definition which is using the annotation @NOSql you must be s
 </div>
 </div>
 <div class="paragraph">
-<p>In this example only the firstname will be automatically created in the managed-schema.xml of solr.</p>
+<p>In this example only the firstname will be automatically created in the managed-schema.xml of Solr.</p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="_fulltext_extraction">Fulltext Extraction</h6>
 <div class="paragraph">
-<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with @Type(ObjectType.DOCUMENT) and @NOSql. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of solr:</p>
+<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with @Type(ObjectType.DOCUMENT) and @NOSql. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of Solr:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Arveo saves the documents who are annotated with @NOSql in a queue table named <em>type_definition_name + _ng</em>.</p>
+<p>Arveo saves the documents who are annotated with @NOSql in a queue table named <em>type_definition_name + _ng</em>;</p>
 </li>
 <li>
-<p>Now a job will fetch all entry in the queue table</p>
+<p>Now a job will fetch all entry in the queue table;</p>
 </li>
 <li>
-<p>For each entry which are annotated with @Type(ObjectType.DOCUMENT) arveo will call the document conversion service to extract the fulltext from the content</p>
+<p>For each entry which are annotated with @Type(ObjectType.DOCUMENT) arveo will call the document conversion service to extract the fulltext from the content;</p>
 </li>
 <li>
-<p>At the end all information will be saved to solr</p>
+<p>At the end all information will be saved to Solr.</p>
 </li>
 </ol>
 </div>
@@ -7963,26 +7963,26 @@ If you have a type definition which is using the annotation @NOSql you must be s
 <p>More general information about the document service full text extraction can be found <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/document-conversion-parent/0.0.10-SNAPSHOT/documentation/index.html#_extracting_text_from_a_pdf_file">here</a> and <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/document-conversion-parent/0.0.10-SNAPSHOT/documentation/index.html#_fulltext_plugins">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>More general information about extracting text with arveo and solr you can find at chapter <a href="#_fulltext_extraction_2">Fulltext extraction</a></p>
+<p>More general information about extracting text with arveo and Solr you can find at chapter <a href="#_fulltext_extraction_2">Fulltext extraction</a>.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_solr_security_configuration">SOLR security configuration</h4>
+<h4 id="_solr_security_configuration">Solr security configuration</h4>
 <div class="paragraph">
-<p>By default, SOLR does not use any kind of authorization or authentication. In productive systems, SOLR must be secured
+<p>By default, Solr does not use any kind of authorization or authentication. In productive systems, Solr must be secured
 by enabling transport encryption, authentication and authorization.</p>
 </div>
 <div class="paragraph">
-<p>The transport encryption can be enabled by enabling HTTPs in SOLR. See the
-<a href="https://solr.apache.org/guide/8_11/enabling-ssl.html">SOLR documentation</a> for instructions. When SSL is enabled, the
+<p>The transport encryption can be enabled by enabling HTTPs in Solr. See the
+<a href="https://solr.apache.org/guide/8_11/enabling-ssl.html">Solr documentation</a> for instructions. When SSL is enabled, the
 url in the configuration property <code>ecr.server.solr.host</code> must use the <em>https</em> scheme.</p>
 </div>
 <div class="paragraph">
-<p><em>arveo</em> can use basic authentication to authenticate requests sent to SOLR. SOLR provides a basic authentication
+<p><em>arveo</em> can use basic authentication to authenticate requests sent to Solr. Solr provides a basic authentication
 plugin that must be enabled as described in the <a href="https://solr.apache.org/guide/8_11/basic-authentication-plugin.html">documentation</a>.
-Enabling authentication and authorization in SOLR requires uploading a <em>security.json</em> file to Zookeeper. The following
+Enabling authentication and authorization in Solr requires uploading a <em>security.json</em> file to Zookeeper. The following
 example shows a security.json file that enables the basic auth plugin and a
 <a href="https://solr.apache.org/guide/8_11/rule-based-authorization-plugin.html">rule based authorization plugin</a>.</p>
 </div>
@@ -8032,7 +8032,7 @@ for the salt and password used in the credentials-property of the basic auth plu
 </div>
 </div>
 <div class="paragraph">
-<p>To enable basic auth support for the SOLR client used by <em>arveo</em>, you have to set the following parameters in the
+<p>To enable basic auth support for the Solr client used by <em>arveo</em>, you have to set the following parameters in the
 configuration for <em>arveo</em>:</p>
 </div>
 <div class="listingblock">
@@ -8048,8 +8048,8 @@ configuration for <em>arveo</em>:</p>
 <div class="sect3">
 <h4 id="_acl_filter_plugin">ACL filter plugin</h4>
 <div class="paragraph">
-<p>When searching for ACL protected entities in SOLR, the search result is filtered by ACL right. This is achieved by
-using a custom SOLR plugin, which must be installed manually by following the steps below:</p>
+<p>When searching for ACL protected entities in Solr, the search result is filtered by ACL right. This is achieved by
+using a custom Solr plugin, which must be installed manually by following the steps below:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -8057,7 +8057,7 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 3.0.2-SNAPSHOT) from the nexus repository.</p>
 </li>
 <li>
-<p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
+<p>Install the plugin in Solr as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
 </li>
 <li>
 <p>Configure the plugin in <code>solrconfig.xml</code> as shown below:</p>
@@ -8075,7 +8075,7 @@ using a custom SOLR plugin, which must be installed manually by following the st
 </div>
 <div class="paragraph">
 <p>The plugin requires a JDBC connection to the relational database to load ACL rights. Do not change the name of the
-query parser. SOLR queries generated by arveo will contain a filter query using the <code>aclright</code> prefix to
+query parser. Solr queries generated by arveo will contain a filter query using the <code>aclright</code> prefix to
 perform the actual filtering.</p>
 </div>
 <div class="admonitionblock warning">
@@ -8085,7 +8085,7 @@ perform the actual filtering.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-The Access Control SOLR Plugin does not yet support multiple tenants!
+The Access Control Solr Plugin does not yet support multiple tenants!
 </td>
 </tr>
 </table>
@@ -8130,23 +8130,23 @@ will try to load a token from ~/.vault-token)</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_storing_entities_in_solr">Storing entities in SOLR</h4>
+<h4 id="_storing_entities_in_solr">Storing entities in Solr</h4>
 <div class="paragraph">
-<p>To be able to use SOLR for advanced queries, the entities must be stored in SOLR, too. To enable this, simply add the
-<code>@NOSql</code> annotation to the attributes to be stored in SOLR to the getters of your type definitions. The annotation can
-be added to the class to store all attributes in SOLR. <em>arveo</em> will automatically create the required fields
-in the SOLR schema. All entities of one tenant will be stored in a single collection in SOLR. To avoid name collisions,
-the names of the fields in SOLR will consist of the name of the type definition and the name of the attribute, separated
+<p>To be able to use Solr for advanced queries, the entities must be stored in Solr, too. To enable this, simply add the
+<code>@NOSql</code> annotation to the attributes to be stored in Solr to the getters of your type definitions. The annotation can
+be added to the class to store all attributes in Solr. <em>arveo</em> will automatically create the required fields
+in the Solr schema. All entities of one tenant will be stored in a single collection in Solr. To avoid name collisions,
+the names of the fields in Solr will consist of the name of the type definition and the name of the attribute, separated
 by a dot. For example, an attribute called "name" in a type definition called "invoice" would be named "invoice.name".</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_fulltext_extraction_2">Fulltext extraction</h4>
 <div class="paragraph">
-<p>It is also possible to store fulltext data of the content of documents in SOLR. For this, set the <code>fulltextExtraction</code>
+<p>It is also possible to store fulltext data of the content of documents in Solr. For this, set the <code>fulltextExtraction</code>
 attribute of the <code>@ContentElement</code> annotation to true (see <a href="#_configure_storage_locations">Content Elements</a>). The
 fulltext data of the content elements will be stored in a field called
-<code>&lt;typeDefinitionName&gt;.&lt;contentElementName&gt;.fulltext</code> in SOLR. This field can be used in queries
+<code>&lt;typeDefinitionName&gt;.&lt;contentElementName&gt;.fulltext</code> in Solr. This field can be used in queries
 just like any other field.</p>
 </div>
 <div class="paragraph">
@@ -8160,11 +8160,11 @@ the mime type is set to the default value (application/octet-stream), the servic
 </div>
 </div>
 <div class="sect3">
-<h4 id="_searching_in_solr">Searching in SOLR</h4>
+<h4 id="_searching_in_solr">Searching in Solr</h4>
 <div class="paragraph">
-<p>The <em>arveo</em> API provides methods to perform queries in SOLR. The methods use the EQL just like the regular
+<p>The <em>arveo</em> API provides methods to perform queries in Solr. The methods use the EQL just like the regular
 search methods that perform queries on the relational database. There are some EQL features that are not supported
-when searching in SOLR:</p>
+when searching in Solr:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -8192,26 +8192,26 @@ when searching in SOLR:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The behavior of the supported query expressions is dependent from the configuration of the field in SOLR. For example,
+<p>The behavior of the supported query expressions is dependent from the configuration of the field in Solr. For example,
 a text field with a tokenizer that splits text by whitespaces will deliver different results for equality expressions
 than a text field without such a tokenizer.</p>
 </div>
 <div class="paragraph">
-<p>To perform a query in SOLR for one specific type definition, use the <code>getNoSqlSearchService</code> method of the service client
-for the type definition. In the following example, this method is used to find an entity by it&#8217;s ID in SOLR:</p>
+<p>To perform a query in Solr for one specific type definition, use the <code>getNoSqlSearchService</code> method of the service client
+for the type definition. In the following example, this method is used to find an entity by its ID in Solr:</p>
 </div>
 <div class="listingblock">
-<div class="title">Searching for an entity by ID in SOLR</div>
+<div class="title">Searching for an entity by ID in Solr</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">Optional&lt;TypedNOSqlSearchHit&lt;FieldTypeContainer&gt;&gt; optional = serviceClient.getNoSqlSearchService()
     .where().id().equalTo().value(identifier).holds().uniqueResult();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The next example shows how to search in the fulltext data stored in SOLR.</p>
+<p>The next example shows how to search in the fulltext data stored in Solr.</p>
 </div>
 <div class="listingblock">
-<div class="title">Searching for fulltext data in SOLR</div>
+<div class="title">Searching for fulltext data in Solr</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where().contextReference(SimpleInvoiceNames.CONTENT_FULLTEXT)
     .contains().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">Gubergren accumsan takimata</span><span class="delimiter">&quot;</span></span>).holds().unpaged();</code></pre>
@@ -8223,7 +8223,7 @@ generated name constant classes for the type definition interfaces contain a hel
 The following example shows how to use this method to search in a specific field of an entity.</p>
 </div>
 <div class="listingblock">
-<div class="title">Searching for data in SOLR using a specific field</div>
+<div class="title">Searching for data in Solr using a specific field</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">list = serviceClient.getNoSqlSearchService().where()
     .contextReference(FieldTypeContainerNames.noSqlName(FieldTypeContainerNames.INTEGER_FIELD))
@@ -8231,7 +8231,7 @@ The following example shows how to use this method to search in a specific field
 </div>
 </div>
 <div class="paragraph">
-<p>When using the <code>getNoSqlSearchService</code> method, the query performed in SOLR will automatically be limited to entities
+<p>When using the <code>getNoSqlSearchService</code> method, the query performed in Solr will automatically be limited to entities
 belonging to one single type definition. To search for entities in multiple type definitions, the method
 <code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.</p>
 </div>
@@ -8239,10 +8239,10 @@ belonging to one single type definition. To search for entities in multiple type
 <div class="sect3">
 <h4 id="_combined_search">Combined search</h4>
 <div class="paragraph">
-<p><em>arveo</em> creates a special multi-valued field called <code>ecr_attributes</code> in SOLR. When a getter (or an entire
+<p><em>arveo</em> creates a special multi-valued field called <code>ecr_attributes</code> in Solr. When a getter (or an entire
 interface) is annotated with <code>@NOSql(combinedSearch = true)</code>, the attribute of the getter (or all attributes of the interface)
 will be copied in this field. The <code>ecr_attributes</code> field is of type string. The values of the attributes copied into
-this field, will be converted automatically by SOLR.</p>
+this field, will be converted automatically by Solr.</p>
 </div>
 <div class="paragraph">
 <p>The <code>ecr_attributes</code> field can be used for a combined search of all attribute values. This makes it possible to provide
@@ -8277,14 +8277,14 @@ do so, configure the respective content element as shown below:</p>
 <div class="paragraph">
 <p>The relevant settings are <code>textCombinedSearch=true</code>, which enables the copying of the extracted fulltext data. The
 <code>textCombinedSearchLimit</code> setting limits the number of characters to copy. This makes it possible to reduce the size of
-the SOLR index. A value of <code>0</code> means no limit.</p>
+the Solr index. A value of <code>0</code> means no limit.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_relations_in_solr">Relations in SOLR</h4>
+<h4 id="_relations_in_solr">Relations in Solr</h4>
 <div class="paragraph">
 <p>Relations between entities can be described using relation type definitions. While those relations can be easily
-resolved in the relational database, NoSQL databases like SOLR are not designed to support a relational data model as
+resolved in the relational database, NoSQL databases like Solr are not designed to support a relational data model as
 shown in the following diagram:</p>
 </div>
 <div class="literalblock">
@@ -8299,9 +8299,9 @@ shown in the following diagram:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>It is still possible to search for <em>Parent</em> entities by the IDs of the related <em>Child</em> entities in SOLR using
+<p>It is still possible to search for <em>Parent</em> entities by the IDs of the related <em>Child</em> entities in Solr using
 arveo. To make this possible arveo stores the IDs of the <em>Child</em> entities related to a <em>Parent</em>
-entity in a multi value field in SOLR. To enable this feature, the type definition interface of the <em>Parent</em> type
+entity in a multi value field in Solr. To enable this feature, the type definition interface of the <em>Parent</em> type
 must be annotated with <code>@NOSqlResolvedRelations</code>. The annotation requires a parameter containing the type definition
 classes of the relations to store in Solr.</p>
 </div>
@@ -8313,7 +8313,7 @@ classes of the relations to store in Solr.</p>
 </td>
 <td class="content">
 Only relations from the current version of the <em>Parent</em> entity to the current version of the <em>Child</em> entity can be
-stored in SOLR.
+stored in Solr.
 </td>
 </tr>
 </table>
@@ -8322,7 +8322,7 @@ stored in SOLR.
 <p>The following example shows how to search for entities by related child IDs:</p>
 </div>
 <div class="listingblock">
-<div class="title">Searching for relation child IDs in SOLR</div>
+<div class="title">Searching for relation child IDs in Solr</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; list = documentServiceClient.getNoSqlSearchService().where() <i class="conum" data-value="1"></i><b>(1)</b>
     .contextReference(noSqlSearchHelper.getRelationChildIdsField(SimpleInvoice.class, InvoicePersonRelation.class)) <i class="conum" data-value="2"></i><b>(2)</b>
@@ -8338,7 +8338,7 @@ stored in SOLR.
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Using an (injectable) instance of <code>NoSqlSearchHelper</code> it is possible to get the name of the field containing the
-child IDs in SOLR</td>
+child IDs in Solr</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -8348,9 +8348,9 @@ child IDs in SOLR</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rebuilding_the_solr_index">Rebuilding the SOLR index</h4>
+<h4 id="_rebuilding_the_solr_index">Rebuilding the Solr index</h4>
 <div class="paragraph">
-<p>Currently, there is no automated way to rebuild the SOLR index. If the data in SOLR was lost or corrupted, it can be
+<p>Currently, there is no automated way to rebuild the Solr index. If the data in Solr was lost or corrupted, it can be
 rebuilt using the NOSql queue tables of the affected type definitions.</p>
 </div>
 <div class="paragraph">
@@ -8358,7 +8358,7 @@ rebuilt using the NOSql queue tables of the affected type definitions.</p>
 definition that is annotated with <code>@NOSql</code>, an entry for this entity is added to a queue table by a trigger on the
 database. This queue table is named like the main table for the type definition with a <code>_nq</code> suffix. So for example,
 if the main table is called <code>my_type_definition</code>, the queue table would be called <code>my_type_definition_nq</code>. It contains
-a column for each attribute that is supposed to be contained in SOLR and the following system fields:</p>
+a column for each attribute that is supposed to be contained in Solr and the following system fields:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -8378,7 +8378,7 @@ a column for each attribute that is supposed to be contained in SOLR and the fol
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">nosql_processing_counter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A counter that is incremented each time the system has tried to store the entry in SOLR. The initial value is supposed
+<td class="tableblock halign-left valign-top"><p class="tableblock">A counter that is incremented each time the system has tried to store the entry in Solr. The initial value is supposed
  to be 0.</p></td>
 </tr>
 <tr>
@@ -8388,16 +8388,16 @@ a column for each attribute that is supposed to be contained in SOLR and the fol
 </tbody>
 </table>
 <div class="paragraph">
-<p>A system job periodically reads the entries contained in the queue table and stores them in SOLR. When the entry was
-successfully stored in SOLR, it is deleted from the queue. If the entry could not be stored in SOLR, the processing
+<p>A system job periodically reads the entries contained in the queue table and stores them in Solr. When the entry was
+successfully stored in Solr, it is deleted from the queue. If the entry could not be stored in Solr, the processing
 counter is incremented and the job will try again until the maximum number of tries has been reached.</p>
 </div>
 <div class="paragraph">
-<p>To rebuild the SOLR index, the data to be stored in SOLR has to be added to the queue table by copying the data
+<p>To rebuild the Solr index, the data to be stored in Solr has to be added to the queue table by copying the data
 contained in the main table of the type definition. By definition, only the most recent version of each entity is
-contained in SOLR, so the data contained in the version table of the type definition is of no interest here. The
-value of the <code>nosql_processing_counter</code> field must be set to 0. To treat the entity as a new object in SOLR, set the
-value of the <code>nosql_trigger_operation</code> field to <code>INSERT</code>. To perform an update on an already existing object in SOLR,
+contained in Solr, so the data contained in the version table of the type definition is of no interest here. The
+value of the <code>nosql_processing_counter</code> field must be set to 0. To treat the entity as a new object in Solr, set the
+value of the <code>nosql_trigger_operation</code> field to <code>INSERT</code>. To perform an update on an already existing object in Solr,
 set the value to <code>UPDATE</code>.</p>
 </div>
 <div class="paragraph">
@@ -8408,11 +8408,11 @@ copies the entries. The trigger function is called like the main table of the ty
 <p>When the type definition makes use of the <code>@NOSqlResolvedRelations</code> annotation, an additional field containing the
 resolved IDs of the child entities of the relations on each entity will be contained in the queue table. This field
 will be called <code>relation_&lt;type-id&gt;_child_ids</code> where <code>type-id</code> is the numeric ID of the relation type definition. This
-ID can be found in the <code>ecr_types</code> table. To store the resolved child IDs in SOLR, additional entries for each entity
+ID can be found in the <code>ecr_types</code> table. To store the resolved child IDs in Solr, additional entries for each entity
 containing the entity ID, the resolved child IDs, the update counter and the trigger operation are added to the queue
 table. Note that the value for the trigger operation field must be set to <code>UPDATE</code> in this case.
 The resolved child IDs can be copied from the table containing the relation. The <code>parent_id</code> field in this table will
-contain the ID of the entity that is to be stored in SOLR. The <code>child_id</code> field contains the IDs of the related child
+contain the ID of the entity that is to be stored in Solr. The <code>child_id</code> field contains the IDs of the related child
 entities.</p>
 </div>
 <div class="paragraph">
@@ -12681,7 +12681,7 @@ Can only be used on relation types that support relations to or from versions.</
 </div>
 </div>
 <div class="sect2">
-<h3 id="_data_types">Data Types</h3>
+<h3 id="_data_types_2">Data Types</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 21. Property Data Types</caption>
 <colgroup>
@@ -17790,7 +17790,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-04 11:34:52 UTC
+Last updated 2022-10-05 10:48:56 UTC
 </div>
 </div>
 <style>
