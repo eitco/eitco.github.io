@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 10.0.1-SNAPSHOT</div>
+<div id="toctitle">arveo 11.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -127,13 +127,12 @@ a, a:hover, a:focus {
 </li>
 <li><a href="#_administration"><strong>Administration</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_configure_database_access_and_tenants">Configure Database access and Tenants</a></li>
+<li><a href="#_configure_database_access">Configure Database access</a></li>
 <li><a href="#_configure_storage_locations">Configure Storage Locations</a></li>
 <li><a href="#_renditions">Renditions</a></li>
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
-<li><a href="#_configure_authenticationsso_with_keycloak">Configure authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></li>
 <li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure audit</a></li>
@@ -2796,7 +2795,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 10.0.1-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 11.0.0-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3219,7 +3218,7 @@ application.</p>
 <p>Under "Language", select "Java"</p>
 </li>
 <li>
-<p>Select Spring Boot version 2.6.6. If your required version is not available, select the most compatible one in terms of major.minor.patch.</p>
+<p>Select Spring Boot version 2.7.4. If your required version is not available, select the most compatible one in terms of major.minor.patch.</p>
 </li>
 <li>
 <p>Define project metadata. For example, use Group = de.eitco.demo, Artifact = demo-tool, Name = demo-tool, Package name = de.eitco.demo.tool</p>
@@ -3255,7 +3254,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>10.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>11.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3266,7 +3265,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <span class="tag">&lt;dependency&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client-non-web<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>3.0.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>3.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span>
 <span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.demo<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -3308,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>6.0.2-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>7.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -4363,122 +4362,43 @@ The maven coordinate of this archetype are:</p>
 <h2 id="_administration"><strong>Administration</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_configure_database_access_and_tenants">Configure Database access and Tenants</h3>
+<h3 id="_configure_database_access">Configure Database access</h3>
 <div class="paragraph">
-<p>The <em>arveo</em> (and the User Service, Enterprise User Service and the Access Control Service) support multiple tenants. The
-separation between the tenant&#8217;s data is done on the database layer by using separate JDBC connections for each tenant.
-The tenants could be located in different schemas or in different database instances. Each user is associated to a single
-client, so that all database queries performed in the user&#8217;s context are executed on the correct database connection. On
-systems that have only one tenant, it is not required to associate users to the tenant. Systems that use more than one
-tenant, have to have one tenant called 'master'. This tenant is used to store some tenant-spanning configuration properties.
-The available tenants are configured in the service&#8217;s configuration file:</p>
+<p><em>arveo</em> uses the default spring datasource configuration for the JDBC datasource. The datasource must be
+configured as shown in the following example:</p>
 </div>
 <div class="listingblock">
-<div class="title">Configuration of the service</div>
+<div class="title">configuring the datasource</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">tenants</span>:
-  - <span class="string"><span class="content">tenant-id: &quot;master&quot;</span></span>
-    <span class="key">numeric-id</span>: <span class="string"><span class="content">1</span></span>
-    <span class="key">db-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://localhost:5432/postgres?currentSchema=master</span><span class="delimiter">&quot;</span></span>
-    <span class="key">db-username</span>: <span class="string"><span class="content">username</span></span>
-    <span class="key">db-password</span>: <span class="string"><span class="content">password</span></span>
-    <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">org.postgresql.Driver</span></span>
-    <span class="key">db-maximum-pool-size</span>: <span class="string"><span class="content">5</span></span>
-    <span class="key">db-minimum-idle</span>: <span class="string"><span class="content">2</span></span>
-    <span class="key">db-connection-timeout</span>: <span class="string"><span class="content">10000</span></span>
-    <span class="key">db-idle-timeout</span>: <span class="string"><span class="content">60000</span></span>
-    <span class="key">db-max-lifetime</span>: <span class="string"><span class="content">1800000</span></span>
-    <span class="key">db-leak-detection-threshold</span>: <span class="string"><span class="content">20000</span></span>
-  - <span class="string"><span class="content">tenant-id: &quot;tenant1&quot;</span></span>
-    <span class="key">numeric-id</span>: <span class="string"><span class="content">2</span></span>
-    <span class="key">db-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://localhost:5432/postgres?currentSchema=tenant1</span><span class="delimiter">&quot;</span></span>
-    <span class="key">db-username</span>: <span class="string"><span class="content">username</span></span>
-    <span class="key">db-password</span>: <span class="string"><span class="content">password</span></span>
-    <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">org.postgresql.Driver</span></span>
-    <span class="key">db-maximum-pool-size</span>: <span class="string"><span class="content">5</span></span>
-    <span class="key">db-minimum-idle</span>: <span class="string"><span class="content">2</span></span>
-    <span class="key">db-connection-timeout</span>: <span class="string"><span class="content">10000</span></span>
-    <span class="key">db-idle-timeout</span>: <span class="string"><span class="content">60000</span></span>
-    <span class="key">db-max-lifetime</span>: <span class="string"><span class="content">1800000</span></span>
-    <span class="key">db-leak-detection-threshold</span>: <span class="string"><span class="content">20000</span></span>
-  - <span class="string"><span class="content">tenant-id: &quot;tenant2&quot;</span></span>
-    <span class="key">numeric-id</span>: <span class="string"><span class="content">3</span></span>
-    <span class="key">db-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://localhost:5432/postgres?currentSchema=tenant2</span><span class="delimiter">&quot;</span></span>
-    <span class="key">db-username</span>: <span class="string"><span class="content">username</span></span>
-    <span class="key">db-password</span>: <span class="string"><span class="content">password</span></span>
-    <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">org.postgresql.Driver</span></span>
-    <span class="key">db-maximum-pool-size</span>: <span class="string"><span class="content">5</span></span>
-    <span class="key">db-minimum-idle</span>: <span class="string"><span class="content">2</span></span>
-    <span class="key">db-connection-timeout</span>: <span class="string"><span class="content">10000</span></span>
-    <span class="key">db-idle-timeout</span>: <span class="string"><span class="content">60000</span></span>
-    <span class="key">db-max-lifetime</span>: <span class="string"><span class="content">1800000</span></span>
-    <span class="key">db-leak-detection-threshold</span>: <span class="string"><span class="content">20000</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">datasource</span>:
+    <span class="key">url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://localhost:5432/postgres?currentSchema=arveo&amp;ApplicationName=${spring.application.name}</span><span class="delimiter">&quot;</span></span>
+    <span class="key">driver-class-name</span>: <span class="string"><span class="content">org.postgresql.Driver</span></span>
+    <span class="key">username</span>: <span class="string"><span class="content">username</span></span>
+    <span class="key">password</span>: <span class="string"><span class="content">password</span></span></code></pre>
 </div>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Database parameters</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
+<div class="paragraph">
+<p>Specifying the <code>ApplicationName</code> property is optional but can be helpful when analyzing database issues. The name of the
+Spring application will then be visible in Postgres query analytics.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Meaning</th>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The username and password should not be stored in the configuration files. Instead, they should be stored in <a href="#">Vault</a>.
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The human-readable name of the tenant as it is used to associate a user to a tenant</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">numeric-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A numeric identifier for the tenant. The numeric identifier is used in IDs of entities to distinguish
-entities of different tenants</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-url</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The JDBC URL for the tenant</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The username used to log on to the database</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password used to log on to the database</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-driver-class-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the JDBC driver</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-maximum-pool-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum amount of connections in the connection pool for the tenant</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-minimum-idle</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The minimum number of idle connections to keep in the pool</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-connection-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds to wait for a connection to the database</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-idle-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds an idle connection is left in the pool</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-max-lifetime</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum lifetime of a connection in the pool in milliseconds</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">db-leak-detection-threshold</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds a connection can be active before a warning is logged</p></td>
-</tr>
-</tbody>
 </table>
+</div>
+<div class="paragraph">
+<p>Advanced configuration properties can be found in the
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.data">Spring boot documentation</a>.
+To configure the connection pool, use the <code>spring.datasource.hikari</code> properties.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_configure_storage_locations">Configure Storage Locations</h3>
@@ -4585,7 +4505,7 @@ field of the type definition and it accepts any kind of content type.</p>
 <p>The following Table contains an Overview of the available attributes of the <code>@ContentElement</code> annotation.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Attributes of the ContentElement annotation</caption>
+<caption class="title">Table 8. Attributes of the ContentElement annotation</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4858,7 +4778,7 @@ are currently available:</p>
 <p>The FileSystemPlugin offers storage of the data as files in the file system.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Configuration parameters of the file system</caption>
+<caption class="title">Table 9. Configuration parameters of the file system</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -4898,7 +4818,7 @@ If <em>arveo</em> has no permissions to create buckets, then the administrator h
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Configuration parameter of the S3 plugin</caption>
+<caption class="title">Table 10. Configuration parameter of the S3 plugin</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -5093,7 +5013,7 @@ the end of the retention interval is reached.
 <p>The Azure blob storage plugin can be used to connect to a storage account in Microsoft Azure.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Configuration parameter of the azure blob storage plugin</caption>
+<caption class="title">Table 11. Configuration parameter of the azure blob storage plugin</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -5237,7 +5157,7 @@ While the literal <code>&#42;</code> will always match, the other literals will 
 <div class="sect4">
 <h5 id="_configuration_parameters">Configuration parameters</h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Configuration parameters of BucketOrganizer plugin</caption>
+<caption class="title">Table 12. Configuration parameters of BucketOrganizer plugin</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -5395,7 +5315,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>10.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>11.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -5519,7 +5439,7 @@ a status value and the number of times the system tried to create the rendition,
 be one of the following values:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Rendition status values</caption>
+<caption class="title">Table 13. Rendition status values</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -5557,7 +5477,7 @@ be one of the following values:</p>
 <p>The <code>@Rendition</code> annotation accepts the following parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Parameters of <code>@Rendition</code></caption>
+<caption class="title">Table 14. Parameters of <code>@Rendition</code></caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -6305,7 +6225,7 @@ name. The available providers are described below.</p>
 <p>The following tables give an overview of encryption settings for a storage profile.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Encryption settings</caption>
+<caption class="title">Table 15. Encryption settings</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -6411,7 +6331,7 @@ The encryption feature is configured as shown in the following example:</p>
 <p>The following tables give an overview of encryption settings for the <em>commons-aes</em> provider:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 16. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 30%;">
@@ -6468,7 +6388,7 @@ decrypt the content data!
 <p>The following tables give an overview of encryption settings for the <code>vault-aes</code> provider:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 17. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 40%;">
@@ -6710,11 +6630,10 @@ broker tag in <em>activemq.xml</em>.</p>
 <div class="paragraph">
 <p>When the automatic rendition creation feature is used, a separate dead letter queue must be configured in ActiveMQ. See
 <a href="#<em>error_handling">renditions</a> for details.
-=== Configure _arveo</em> User Management As Authentication Service</p>
+=== Configure _arveo</em> user management as Authentication Service</p>
 </div>
 <div class="paragraph">
-<p>The User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue
-JSON web tokens that can be used to log in to services that are also secured with OAuth2.</p>
+<p>The User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue JSON web tokens that can be used to log in to services that are also secured with OAuth2.</p>
 </div>
 <div class="sect3">
 <h4 id="_configuration_of_the_authorization_server">Configuration of the Authorization Server</h4>
@@ -6736,7 +6655,7 @@ enabled and a keystore must be configured. The keystore must contain an RSA keyp
 </div>
 </div>
 <div class="sect3">
-<h4 id="_oauth_clients">OAuth Clients</h4>
+<h4 id="_oauth_clients">OAuth clients</h4>
 <div class="paragraph">
 <p>To obtain a token, a client application must log on to a specific client configured in the Authorization Server. Clients can be created both by API and by configuration. At least one client must have been configured to be able to log in via OAuth. Clients are always stored in the master
 tenant. In the configuration, clients can be specified as follows:</p>
@@ -6779,8 +6698,7 @@ being included in the tokens, the <em>user-service.authorization-server.inherit-
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The clients are always stored in the master tenant. For systems with multiple clients, care
-must be taken to specify the master tenant in the configuration.
+The clients are always stored in the master tenant. For systems with multiple clients, care must be taken to specify the master tenant in the configuration.
 </td>
 </tr>
 </table>
@@ -6801,13 +6719,9 @@ parameter can be set to false.</p>
 <div class="paragraph">
 <p>To get a token, the client application must send the respective client id and the client secret as HTTP Basic Auth
 header in the token request. The remaining parameters are sent as form data via POST to the endpoint
-<a href="https://user-management-service/oauth/token" class="bare">https://user-management-service/oauth/token</a>.</p>
+<a href="https://user-management-service/oauth/token" class="bare">https://user-management-service/oauth/token</a>.
+=== Configure authentication/SSO with Keycloak</p>
 </div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_configure_authenticationsso_with_keycloak">Configure authentication/SSO with Keycloak</h3>
 <div class="paragraph">
 <p>The <em>arveo</em> content services support OAuth2.0 with OpenID Connect to authenticate users and services.
 You can install Keycloak as your identity management and use it as OAuth2.0 authentication service instead of the _arveo user management service.
@@ -6818,6 +6732,7 @@ This will also allow you to enable single sign on for your web clients.</p>
 </div>
 <div class="paragraph">
 <p>In principle, any authentication server that supports OAuth2.0 and OpenID Connect can be used. Currently Keycloak, Active Directory are approved for use with <em>arveo</em>.</p>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_install_keycloak">Install Keycloak</h5>
@@ -7104,6 +7019,7 @@ Tenant=master<br>
 Role Mappings=&lt;add arveo-service-user&gt;</p>
 </li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -9415,7 +9331,7 @@ of the different services.</p>
 <h2 id="_monitoring"><strong>Monitoring</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/html/actuator.html">Spring Boot Actuator</a>
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/2.7.4/reference/html/actuator.html">Spring Boot Actuator</a>
 to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/">Prometheus</a> or
 the Administration Service. The Actuator documentation linked above contains information about the available monitoring
 data, how to enable or disable specific endpoints and how to configure security.</p>
@@ -9968,7 +9884,7 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <h3 id="_other_monitoring_systems">Other monitoring systems</h3>
 <div class="paragraph">
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
-The <a href="https://docs.spring.io/spring-boot/docs/2.6.6/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
+The <a href="https://docs.spring.io/spring-boot/docs/2.7.4/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
@@ -11847,7 +11763,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <div class="sect2">
 <h3 id="_type_annotations">Type annotations</h3>
 <table id="type_annotations" class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 19. Type annotations</caption>
+<caption class="title">Table 18. Type annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -11985,7 +11901,7 @@ the full-text support is disabled: <a href="#_nosql_example"><strong>Example</st
 <div class="sect2">
 <h3 id="_property_annotations">Property annotations</h3>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 20. Property annotations</caption>
+<caption class="title">Table 19. Property annotations</caption>
 <colgroup>
 <col>
 <col>
@@ -12676,7 +12592,7 @@ Can only be used on relation types that support relations to or from versions.</
 <div class="sect2">
 <h3 id="_data_types_2">Data Types</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Property Data Types</caption>
+<caption class="title">Table 20. Property Data Types</caption>
 <colgroup>
 <col style="width: 10.5263%;">
 <col style="width: 10.5263%;">
@@ -12856,7 +12772,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. <em>General system properties:</em></caption>
+<caption class="title">Table 21. <em>General system properties:</em></caption>
 <colgroup>
 <col style="width: 23%;">
 <col style="width: 11%;">
@@ -12918,7 +12834,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. <em>Versioned entity system properties:</em></caption>
+<caption class="title">Table 22. <em>Versioned entity system properties:</em></caption>
 <colgroup>
 <col style="width: 23%;">
 <col style="width: 11%;">
@@ -12965,7 +12881,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. <em>Document system properties:</em></caption>
+<caption class="title">Table 23. <em>Document system properties:</em></caption>
 <colgroup>
 <col>
 <col>
@@ -12999,7 +12915,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. <em>Folder system properties:</em></caption>
+<caption class="title">Table 24. <em>Folder system properties:</em></caption>
 <colgroup>
 <col style="width: 17%;">
 <col style="width: 11%;">
@@ -13026,7 +12942,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. <em>Relation system properties:</em></caption>
+<caption class="title">Table 25. <em>Relation system properties:</em></caption>
 <colgroup>
 <col style="width: 17%;">
 <col style="width: 11%;">
@@ -13063,7 +12979,7 @@ Size: bigint value containing the size of the content stream in bytes</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. <em>Version system properties:</em></caption>
+<caption class="title">Table 26. <em>Version system properties:</em></caption>
 <colgroup>
 <col style="width: 17%;">
 <col style="width: 11%;">
@@ -13347,7 +13263,7 @@ the <code>@Source</code> and <code>@Target</code> annotations used for relation 
 values (defined in <code>de.eitco.ecr.type.definition.annotations.reference.SupportedNodeVersion</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Possible values of the supportedNodeVersion attribute</caption>
+<caption class="title">Table 27. Possible values of the supportedNodeVersion attribute</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -13517,7 +13433,7 @@ You can use the <em>@PrimaryKey</em> annotation to define one or more properties
 The object to be inherited and its initial state is shown in the following table.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 40%;">
-<caption class="title">Table 29. The object to be inherited</caption>
+<caption class="title">Table 28. The object to be inherited</caption>
 <colgroup>
 <col style="width: 40%;">
 <col>
@@ -13564,7 +13480,7 @@ Here, <strong>Invoice</strong> is an object that inherited from <strong>Company<
 The following table describes its initial state, and the update status after 3 different updates.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Inheritance scheme</caption>
+<caption class="title">Table 29. Inheritance scheme</caption>
 <colgroup>
 <col style="width: 11%;">
 <col>
@@ -13729,7 +13645,7 @@ The initial object is still the same, its initial state is described in the tabl
 <p>In the following table, the second object <strong>Creditor</strong>, which inherits from the first object, is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 31. The object to be inherited and inheriting</caption>
+<caption class="title">Table 30. The object to be inherited and inheriting</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -13796,7 +13712,7 @@ In the table above, the object <strong>Creditor</strong> inherited the following
 <p>The results of multilevel inheritance through an intermediate object are shown in the table below:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Inheritance Scheme in Multilevel inheritance</caption>
+<caption class="title">Table 31. Inheritance Scheme in Multilevel inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -13895,7 +13811,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>In the following table, the object <strong>Creditor</strong> is described.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 33. An object to be inherited</caption>
+<caption class="title">Table 32. An object to be inherited</caption>
 <colgroup>
 <col style="width: 45%;">
 <col>
@@ -13935,7 +13851,7 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <p>The table below describes the mechanism of indirect inheritance.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Inheritance scheme in indirect inheritance</caption>
+<caption class="title">Table 33. Inheritance scheme in indirect inheritance</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -15452,7 +15368,7 @@ In this case, a certain property is defined to let the system know, a certain ve
 <p>The version system table consists of the following columns (this is not a complete excerpt):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Structure of the system table</caption>
+<caption class="title">Table 34. Structure of the system table</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -16483,7 +16399,7 @@ overview page for each model class. Example:</p>
 <p>The following table lists types and their corresponding identifiers.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 36. Types in Java and their Identifiers in <em>arveo</em></caption>
+<caption class="title">Table 35. Types in Java and their Identifiers in <em>arveo</em></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -16566,7 +16482,7 @@ overview page for each model class. Example:</p>
 types.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Table 37. Identifiers for the Types List and Set</caption>
+<caption class="title">Table 36. Identifiers for the Types List and Set</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -17105,7 +17021,7 @@ used:</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Columns of ecr_types</caption>
+<caption class="title">Table 37. Columns of ecr_types</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -17142,7 +17058,7 @@ used:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Columns of ecr_types_content_elements</caption>
+<caption class="title">Table 38. Columns of ecr_types_content_elements</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -17208,7 +17124,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Columns of ecr_folder_structure</caption>
+<caption class="title">Table 39. Columns of ecr_folder_structure</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -17245,7 +17161,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Columns of ecr_folder_structure_closure</caption>
+<caption class="title">Table 40. Columns of ecr_folder_structure_closure</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -17313,7 +17229,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. Columns of <em>ecr_recovery</em></caption>
+<caption class="title">Table 41. Columns of <em>ecr_recovery</em></caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -17381,7 +17297,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. Columns of ecr_keys_&lt;profile&gt;</caption>
+<caption class="title">Table 42. Columns of ecr_keys_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -17408,7 +17324,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
+<caption class="title">Table 43. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -17453,7 +17369,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <p>The following table lists 3rd party services used in <em>arveo</em>.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 45. 3rd Party services in <em>arveo</em></caption>
+<caption class="title">Table 44. 3rd party services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -17645,7 +17561,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-06 15:15:27 UTC
+Last updated 2022-10-07 09:20:41 UTC
 </div>
 </div>
 <style>
