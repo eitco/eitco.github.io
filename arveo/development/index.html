@@ -100,13 +100,13 @@ a, a:hover, a:focus {
 <li><a href="#_data_integrity">Data integrity</a></li>
 <li><a href="#_content_storage_2">Content storage</a></li>
 <li><a href="#_clustering">Clustering</a></li>
-<li><a href="#_data_deletion">Data Deletion</a></li>
-<li><a href="#_recycle_bin">Recycle Bin</a></li>
+<li><a href="#_data_deletion">Data deletion</a></li>
+<li><a href="#_recycle_bin">Recycle bin</a></li>
 </ul>
 </li>
 <li><a href="#_installation"><strong>Installation</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_deployment_options">Deployment Options</a></li>
+<li><a href="#_deployment_options">Deployment options</a></li>
 <li><a href="#_system_requirements">System requirements</a></li>
 <li><a href="#_installation_2">Installation</a></li>
 </ul>
@@ -1866,7 +1866,7 @@ To achieve high availability for <em>arveo</em> the provider must guarantee that
 </div>
 </div>
 <div class="sect2">
-<h3 id="_data_deletion">Data Deletion</h3>
+<h3 id="_data_deletion">Data deletion</h3>
 <div class="paragraph">
 <p>By default all documents of a specific document type stored in <em>arveo</em> store the metadata to the configured database and their content to the object storage. When a version is created the content or metadata is stored as a traceable and immutable version (<a href="#_versioning_v">Versioning</a>) to the database and storage system. That means that we have separate content objects and database entries for each version.
 Each document can have a retention period that ensures that the document cannot be deleted before the period expires.</p>
@@ -1894,7 +1894,7 @@ If you delete objects only in the database the content objects are orphaned, and
 </div>
 </div>
 <div class="sect2">
-<h3 id="_recycle_bin">Recycle Bin</h3>
+<h3 id="_recycle_bin">Recycle bin</h3>
 <div class="paragraph">
 <p>Any document, container or folder type can use the optional <em>recycle bin</em> feature. If it is enabled, entities in the type definition can be moved to and restored from the recycle bin.</p>
 </div>
@@ -1917,13 +1917,13 @@ For compliance reasons the audit entries in the database are not deleted by the 
 </table>
 </div>
 <div class="sect3">
-<h4 id="_automated_recycle_bin_emptying">Automated Recycle Bin Emptying</h4>
+<h4 id="_automated_recycle_bin_emptying">Automated recycle bin emptying</h4>
 <div class="paragraph">
 <p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>.You can activate the predefined empty recycle bin job, and you can change the age from the 6 months default value to the age you choose. The job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_recovery_log">Recovery Log</h4>
+<h4 id="_recovery_log">Recovery log</h4>
 <div class="paragraph">
 <p>In addition to the recycle bin feature, the <em>arveo</em> offers an additional safety layer to recover permanently deleted entities.By annotating a type definition with <em>@Recovery</em>, it is possible to define a time period, in which permanently deleted entities will be kept in a system-wide recovery table before they are removed completely.An entity in such a type definition that is deleted (or purged) will be removed from the type definition&#8217;s table (and its version table).A copy of each version of the entity will be stored in the recovery table making it possible to restore it manually.If the entity is a document, its contents will not be deleted from the storage until the entity is removed from the recovery table.</p>
 </div>
@@ -1942,7 +1942,7 @@ This feature is only intended as a last backup in order to make accidentally del
 </div>
 </div>
 <div class="sect3">
-<h4 id="_recovery_log_emptying">Recovery Log Emptying</h4>
+<h4 id="_recovery_log_emptying">Recovery log emptying</h4>
 <div class="paragraph">
 <p>The system management API provides a method to remove expired entities from the recovery table.An entity is considered expired when its keep-until timestamp is in the past compared from the moment the method is invoked.A user who calls this
 method needs the <strong>ECR_PURGE_RECOVERY_TABLE</strong> authority (see <a href="#_access_rights">Access Rights</a>).</p>
@@ -1970,7 +1970,7 @@ It is possible to empty the recovery log by an automated custom job scheduled in
 <h2 id="_installation"><strong>Installation</strong></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_deployment_options">Deployment Options</h3>
+<h3 id="_deployment_options">Deployment options</h3>
 <div class="paragraph">
 <p>The lightweight and stateless services are delivered as
 containers for all platforms and allow the <em>arveo</em> to automatically scale horizontally. Customers have the choice between an on-premise, cloud or hybrid installation.</p>
@@ -1982,19 +1982,19 @@ containers for all platforms and allow the <em>arveo</em> to automatically scale
 <ol class="arabic">
 <li>
 <p>Docker images (for the <em>arveo</em> services): A Docker image is a template that contains a set of instructions for
-creating a container. Several containers can be started from one image.</p>
+creating a container. Several containers can be started from one image;</p>
 </li>
 <li>
-<p>executable jar: Integrate the content services in your java application and run on any platform that provides a JVM.</p>
+<p>executable jar: Integrate the content services in your java application and run on any platform that provides a JVM;</p>
 </li>
 <li>
-<p>a <em>.war</em> file: Deploy the services as web applications in an application server like Tomcat.</p>
+<p>a <em>.war</em> file: Deploy the services as web applications in an application server like Tomcat;</p>
 </li>
 <li>
-<p>Spring Boot application: Deployed as a self running service using an embedded undertow servlet container.</p>
+<p>Spring Boot application: Deployed as a self running service using an embedded undertow servlet container;</p>
 </li>
 <li>
-<p>Debian package: Debian packages are used for software installation on Debian-based operating systems.</p>
+<p>Debian package: Debian packages are used for software installation on Debian-based operating systems;</p>
 </li>
 <li>
 <p>Kubernetes HELM charts: Deploy the content services as containerized applications in your kubernetes environment with flexible HELM charts. That will enable load-dependent,
@@ -17559,7 +17559,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-14 11:50:20 UTC
+Last updated 2022-10-17 10:57:42 UTC
 </div>
 </div>
 <style>
