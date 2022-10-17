@@ -3,4 +3,5 @@
 
 Here you can find documentation for any version of the eql deployed so far
 
+ * [2.1.4](archive/2.1.4)
  * [2.1.3](archive/2.1.3)
