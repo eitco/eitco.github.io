@@ -1,7 +1,7 @@
 
-# Documentation for older versions of Eql - Eitco Query Language
+# EQL - Eitco Query Language - documentation archive
 
-Here you can find documentation for any version of the eql deployed so far
+Here you can find documentation for any version of EQL deployed so far
 
  * [2.1.4](archive/2.1.4)
  * [2.1.3](archive/2.1.3)
