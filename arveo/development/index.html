@@ -3307,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>7.0.0<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>7.0.1<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -6704,14 +6704,9 @@ The clients are always stored in the master tenant. For systems with multiple cl
 </table>
 </div>
 <div class="sect4">
-<h5 id="_refresh_tokens">Refresh tokens</h5>
+<h5 id="_refreshing_tokens">Refreshing tokens</h5>
 <div class="paragraph">
-<p>When a new token is issued, a refresh token is also generated (except for the client_credentials grant). This refresh
-token can be used to renew an expiring token without requiring the user to log in again. By default, when a token refresh
-request is made, the user also receives a new refresh token whose validity is still that of the first refresh token. This
-ensures that a user cannot be issued new access tokens by the service indefinitely. If this behavior is not desired, and
-the refresh tokens should each have an extended validity, the user-service.authorization-service.reuse-refresh-tokens
-parameter can be set to false.</p>
+<p>When a new token is issued, a refresh token is also generated (except for the client_credentials grant). This refresh token can be used to renew an expiring token without requiring the user to log in again. By default, when a token refresh request is made, the user also receives a new refresh token whose validity is still that of the first refresh token. This ensures that a user cannot be issued new access tokens by the service indefinitely. If this behavior is not desired, and the refresh tokens should each have an extended validity, the <em>user-service.authorization-service.reuse-refresh-tokens</em> parameter can be set to false.</p>
 </div>
 </div>
 <div class="sect4">
@@ -7963,7 +7958,7 @@ using a custom Solr plugin, which must be installed manually by following the st
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 3.0.2) from the nexus repository.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 3.0.3) from the nexus repository.</p>
 </li>
 <li>
 <p>Install the plugin in Solr as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
@@ -9078,7 +9073,7 @@ of the different services.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">collection-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the collection to use.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ecr</p></td>
 </tr>
 <tr>
@@ -9118,12 +9113,6 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">http-client-socket-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the socket timeout for the Solr HTTP client in milliseconds.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The password used for basic authorization to SOLR.</p></td>
@@ -9132,8 +9121,38 @@ of the different services.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">schema-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the schema. If null, the collection name is used.</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ssl-key-store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The path to the keystore to use for SSL communication.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ssl-key-store-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the SSL keystore.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ssl-tru-ststore</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The truststore to use for SSL communication.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ssl-truststore-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the SSL truststore.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use-ssl-client-auth</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use SSL client authentication.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
@@ -12043,26 +12062,21 @@ the full-text support is disabled: <a href="#_nosql_example"><strong>Example</st
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<strong>Unique identifiers</strong><br>
-To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique
-and immutable property.<br>
-The property must be <em>@Unique</em> to ensure that an application can identify the item.<br>
-Make the property <em>@ReadOnly</em> to ensure that the identifier is always set and immutable.<br>
-Your business application or the user must set the value when the object is created.<br>
+<div class="paragraph">
+<p>Please note the following tips regarding <strong>Unique identifiers</strong>:</p>
+</div>
+<div class="paragraph">
+<p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique
+and immutable property.
+The property must be <em>@Unique</em> to ensure that an application can identify the item.
+Make the property <em>@ReadOnly</em> to ensure that the identifier is always set and immutable.</p>
+</div>
+<div class="paragraph">
+<p>Your business application or the user must set the value when the object is created.
 Use the <em>@AutoIncrement</em> annotation instead of <em>@Unique</em> and <em>@Readonly</em> if a simple sequential Long id meets your
-requirements.<br>
+requirements.
 If you need a more sophisticated unique identifier you can use the annotation <em>@FormattedCounter</em> which allows you to
-create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="#_formatted_counters_example"><strong>Example</strong></a>)
-</td>
-</tr>
-</table>
+create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="#_formatted_counters_example"><strong>Example</strong></a>).</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -12149,7 +12163,7 @@ types.
 <p>As an example of annotations usage let us define an interface <em>BookIndex</em> with two properties, <em>page</em> and <em>chapter</em>.These properties have to be indexed.</p>
 </div>
 <div class="listingblock">
-<div class="title">Object annotation of type Meta</div>
+<div class="title">Object annotation of type <code>Meta</code></div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.META)
 <span class="annotation">@Index</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">book-chapter-page-index</span><span class="delimiter">&quot;</span></span>)
@@ -12179,10 +12193,10 @@ types.
 <p>Using the <em>@FormattedCounter</em> annotation it is possible to define counters with prefix and suffix that are backed by a
 sequence on the database.There are several properties that can be defined in the annotation:</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all fit-content">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col>
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -12193,7 +12207,7 @@ sequence on the database.There are several properties that can be defined in the
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">prefix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The prefix used for the counter values.Can contain placeholders.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The prefix used for the counter values. Can contain placeholders.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">suffix</p></td>
@@ -12354,7 +12368,7 @@ which it inherits:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_external_views">External Views</h4>
+<h4 id="_external_views">External views</h4>
 <div class="paragraph">
 <p>It is possible to expose tables that are under control of other applications to <em>arveo</em> and include them in its type system.This assumes that the given tables are in the same database schema as the tables of <em>arveo</em>.Also, one needs to know the name of these tables as well as their types.In this case one can define a meta-type annotated with <em>@View</em>.</p>
 </div>
@@ -12429,7 +12443,7 @@ External views will only be read from ecr.It will never write to an external vie
 </div>
 </div>
 <div class="sect3">
-<h4 id="_entity_annotations_nosql_example">NoSQL Example</h4>
+<h4 id="_entity_annotations_nosql_example">NoSQL example</h4>
 <div class="paragraph">
 <p>You can write the annotation <em>@NOSql</em> to the type definitions, which should also be created in the solr schema, so
 that the whole class is created with its fields.</p>
@@ -12466,7 +12480,7 @@ that the whole class is created with its fields.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_systemproperty_annotation"><em>@SystemProperty</em> Annotation</h4>
+<h4 id="_systemproperty_annotation"><em>@SystemProperty</em> annotation</h4>
 <div class="paragraph">
 <p>To access system properties you can use the annotation <em>@SystemProperty</em> and pass one of the following names (<a href="#_document_type_10_year_retention_period"><strong>Retention Information Getter</strong></a>)</p>
 </div>
@@ -14277,7 +14291,7 @@ automatically and will vary from deployment to deployment, even between test and
 </table>
 </div>
 <div class="paragraph">
-<p>However, the concepts presented so far can be used for a better solution. The main idea is to specify the ACL by its name instead of its id. For that we will need access to a table containing ACL names and their respective ids. Here <a href="#_external_views">external views</a> can be used. We have already seen an external view exposing the ACL table to <em>arveo</em>:</p>
+<p>However, the concepts presented so far can be used for a better solution. The main idea is to specify the ACL by its name instead of its id. For that we will need access to a table containing ACL names and their respective ids. Here <a href="#External Views">external views</a> can be used. We have already seen an external view exposing the ACL table to <em>arveo</em>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Defintion of a view to the acl table</div>
@@ -14643,7 +14657,7 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect2">
 <h3 id="_tenant_separation">Tenant separation</h3>
 <div class="paragraph">
-<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.3/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.3/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
 </div>
 <div class="paragraph">
 <p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
@@ -14651,14 +14665,14 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect3">
 <h4 id="_fallback_tenant">Fallback-tenant</h4>
 <div class="paragraph">
-<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.3/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
-Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.3/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
+<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
+Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_usage_2">Usage</h4>
 <div class="paragraph">
-<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.3/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
 </div>
 <div class="paragraph">
 <p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
@@ -14678,7 +14692,7 @@ Should a querying user reside in the fallback-tenant, the query will not be filt
 <p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
 </div>
 <div class="paragraph">
-<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.3/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
+<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
 </div>
 <div class="paragraph">
 <p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
@@ -17559,7 +17573,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-19 07:30:30 UTC
+Last updated 2022-10-21 20:37:00 UTC
 </div>
 </div>
 <style>
