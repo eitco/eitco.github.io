@@ -1,8 +1,8 @@
 
-# Document Conversion Service
+# EITCO Document Conversion Service
 
-The document conversion service is a microservice capable of converting different document formats and extracting full text of a document.
+The EITCO Document Conversion Service is a microservice capable of converting different document formats and extracting full text of a document.
 
- * [latest stable version](latest)
+ * [latest released version](latest)
  * [development version](development)
  * [archive (older versions)](archive.html)

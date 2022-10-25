@@ -441,7 +441,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Document Conversion Service</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">Document Conversion Service test-cicd-SNAPSHOT</div>
+<div id="toctitle">Document Conversion Service 0.0.20-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_about">About</a></li>
 <li><a href="#_plugins">Plugins</a>
@@ -531,7 +531,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-oss&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;test-cicd-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;0.0.20-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -727,7 +727,7 @@ of the service. Likewise the open source plugins the third party plugin will be 
     &lt;artifactId&gt;document-conversion-plugins-jadice&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;test-cicd-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;0.0.20-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -799,7 +799,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
     &lt;artifactId&gt;document-conversion-plugins-ms-graph&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;test-cicd-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;0.0.20-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -958,7 +958,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-ms-azure&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;test-cicd-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;0.0.20-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1216,11 +1216,7 @@ following dependency is required to get access to the http client API:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Autowired
-    private FulltextResourceClientFactory fulltextClientFactory;
-
-    @Autowired
-    private DocumentConversionResourceClientFactory conversionClientFactory;</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in usage.adoc - include::../../../../test/system-test/src/test/java/de/eitco/commons/conversion/service/test/ExampleIT.java[tag=usage-injection]</code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1243,20 +1239,7 @@ type of a file.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        DocumentConversionResourceClient client = conversionClientFactory.newClient(); <i class="conum" data-value="1"></i><b>(1)</b>
-
-        File jpeg = new File("src/test/data/source/source_inputstreamlist_images/jpgSample.jpg");
-
-        try (FileInputStream inputStream = new FileInputStream(jpeg)) {
-
-            InputStream rendition = client.render(MediaType.IMAGE_JPEG_VALUE, MediaType.APPLICATION_PDF_VALUE, inputStream); <i class="conum" data-value="2"></i><b>(2)</b>
-
-
-            try (FileOutputStream out = new FileOutputStream("target/rendition.pdf")) {
-
-                IOUtils.copy(rendition, out); <i class="conum" data-value="3"></i><b>(3)</b>
-            }
-        }</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in usage.adoc - include::../../../../test/system-test/src/test/java/de/eitco/commons/conversion/service/test/ExampleIT.java[tag=usage-image-to-pdf]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1284,14 +1267,7 @@ utility class containing standard mime type strings.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        FulltextResourceClient client = fulltextClientFactory.newClient(); <i class="conum" data-value="1"></i><b>(1)</b>
-
-        File pdf = new File("src/test/fulltext-data/source/test.pdf");
-
-        try (FileInputStream inputStream = new FileInputStream(pdf)) {
-
-            String text = client.extractText(MediaType.APPLICATION_PDF_VALUE, inputStream); <i class="conum" data-value="2"></i><b>(2)</b>
-        }</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in usage.adoc - include::../../../../test/system-test/src/test/java/de/eitco/commons/conversion/service/test/ExampleIT.java[tag=usage-extract-text]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1315,29 +1291,7 @@ utility class containing standard mime type strings.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        DocumentConversionResourceClient client = conversionClientFactory.newClient(); <i class="conum" data-value="1"></i><b>(1)</b>
-
-        File image1 = new File("src/test/data/source/source_inputstreamlist_images/jpgSample.jpg");
-        File image2 = new File("src/test/data/source/source_inputstreamlist_images/pngSample2.png");
-
-        List&lt;ConversionMultipartBodyElement&gt; inputStreamAndMediaTypeList = new ArrayList&lt;&gt;();
-
-        FileInputStream fileInputStream1 = null;
-        FileInputStream fileInputStream2 = null;
-
-        try {
-            fileInputStream1 = new FileInputStream(image1);
-            fileInputStream2 = new FileInputStream(image2);
-
-            inputStreamAndMediaTypeList.add(new ConversionMultipartBodyElement(MediaType.IMAGE_JPEG_VALUE, fileInputStream1)); <i class="conum" data-value="2"></i><b>(2)</b>
-            inputStreamAndMediaTypeList.add(new ConversionMultipartBodyElement(MediaType.IMAGE_PNG_VALUE, fileInputStream2));
-
-            InputStream combinedPdf = client.combineToPdf(inputStreamAndMediaTypeList); <i class="conum" data-value="3"></i><b>(3)</b>
-
-        } finally {
-            fileInputStream1.close();
-            fileInputStream2.close();
-        }</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in usage.adoc - include::../../../../test/system-test/src/test/java/de/eitco/commons/conversion/service/test/ExampleIT.java[tag=usage-combine-to-pdf]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1362,7 +1316,7 @@ utility class containing standard mime type strings.</td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-14 13:30:07 UTC
+Last updated 2022-10-25 09:30:25 UTC
 </div>
 </div>
 </body>
