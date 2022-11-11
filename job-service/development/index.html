@@ -7,53 +7,8 @@
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Eitco Job Service 2.0.4-SNAPSHOT</title>
 <style>
-@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
-@import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
+@import "https://eitco.github.io/eitco.css";
 
-body {
-    font-family: Segoe UI, Verdana, Geneva, sans-serif;
-    color: #3a3a3a;
-}
-
-h1,h2 {
-    color: #137080;
-}
-
-h3,h4,h5,h6 {
-    color: #084e58;
-}
-
-.title, #toctitle {
-    color: #137080 !important;
-}
-
-a, a:hover, a:focus {
-    color: #084e58;
-}
-
-#toc.toc2 {
-    background-color: #f9f9f9;
-}
-
-.icon-note::before {
-    color: #99cc33 !important;
-}
-
-.icon-warning::before {
-    color: #ee701e !important;
-}
-
-.icon-caution::before {
-    color: #812313 !important;
-}
-
-.icon-tip::before {
-    color: #3a3a3a !important;
-}
-
-#footer {
-    color: #3a3a3a;
-}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
@@ -324,8 +279,34 @@ All JobService instances in a cluster will compete for executing all pending job
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
 </pre></td>
-  <td class="code"><pre>Unresolved directive in jobservice.adoc - include::test/test-jobs/src/main/java/de/eitco/commons/job/service/test/testjobs/SampleJob.java[tag=<span class="type">class</span>]</pre></td>
+  <td class="code"><pre><span class="directive">public</span> <span class="type">class</span> <span class="class">SampleJob</span> <span class="directive">implements</span> Job {
+
+    <span class="comment">// just an arbitrary object to test if Autowired dependency injection works for Job's</span>
+    <span class="annotation">@Autowired</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> Tenants tenants;
+
+    <span class="directive">public</span> <span class="type">void</span> execute(JobExecutionContext context) <span class="directive">throws</span> JobExecutionException { <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="predefined-type">System</span>.out.println( <span class="string"><span class="delimiter">&quot;</span><span class="content">SampleJob - Tenant List:</span><span class="delimiter">&quot;</span></span> );
+        tenants.forEach( (tenant) -&gt;{
+            <span class="predefined-type">System</span>.out.println( tenant );
+        });
+    }
+}</pre></td>
 </tr></table></code></pre>
 </div>
 </div>
@@ -362,8 +343,22 @@ The job implementation classes will usually be bundled in a jar file containing 
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
 </pre></td>
-  <td class="code"><pre>Unresolved directive in jobservice.adoc - include::test/test-jobs/src/main/java/de/eitco/commons/job/service/test/testjobs/TestJobRegistrationConfiguration.java[tag=jobDetailBeanExample]</pre></td>
+  <td class="code"><pre>    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> JobDetailFactoryBean alienCheckJobDetail() {
+        JobDetailFactoryBean jobDetailFactory = <span class="keyword">new</span> JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(SampleJob.class); <i class="conum" data-value="1"></i><b>(1)</b>
+        jobDetailFactory.setDescription(<span class="string"><span class="delimiter">&quot;</span><span class="content">Invoke Alien check ...</span><span class="delimiter">&quot;</span></span>);
+        jobDetailFactory.setDurability(<span class="predefined-constant">true</span>); <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="keyword">return</span> jobDetailFactory;
+    }</pre></td>
 </tr></table></code></pre>
 </div>
 </div>
@@ -407,8 +402,70 @@ The script defines a custom table prefix for all the QUARTZ tables to prevent ta
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
 </pre></td>
-  <td class="code"><pre>Unresolved directive in jobservice.adoc - include::test/system-test/src/test/java/de/eitco/commons/job/service/client/test/JobServiceClientIT.java[tag=oneShotTriggernowExample]</pre></td>
+  <td class="code"><pre>    <span class="directive">public</span> <span class="type">void</span> simpleTriggerTest() <span class="directive">throws</span> <span class="exception">InterruptedException</span> {
+        SchedulerResourceClient client = newClient();
+
+        <span class="directive">final</span> JobKeyModel jobKey = <span class="keyword">new</span> JobKeyModel();
+        jobKey.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">alienCheckJobDetail</span><span class="delimiter">&quot;</span></span>);
+        <span class="comment">//jobKey.setGroup(&quot;DEFAULT&quot;); </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+        TriggerKeyModel triggerKey = <span class="keyword">new</span> TriggerKeyModel();
+        triggerKey.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">simpleTriggerTest</span><span class="delimiter">&quot;</span></span>);
+        <span class="comment">//triggerKey.setGroup(&quot;DEFAULT&quot;); </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+        SimpleTriggerModel model = <span class="keyword">new</span> SimpleTriggerModel();
+        model.setKey( triggerKey );
+        model.setJobKey( jobKey );
+        model.setStartTime( ZonedDateTime.now() );
+
+        <span class="comment">//model.setEndTime( ZonedDateTime.now().plusYears(11) ); </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//model.setRepeatInterval(10 * 365 * 24 * 60 * 60 * 1000L ); // 10 years </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//model.setRepeatCount(1); </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+        client.scheduleSimpleTrigger(model);
+
+        <span class="comment">// wait some time </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">// Thread.sleep(60 * 1000); // 60 seconds </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="comment">// fetch all the triggerDetails and see what has happened to our job... </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//final List&lt;TriggerModel&gt; triggerDetails = client.getTriggerDetails(); </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//... see </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="comment">// finally delete the trigger again </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//client.unscheduleJob(triggerKey); </span><i class="conum" data-value="2"></i><b>(2)</b>
+    }</pre></td>
 </tr></table></code></pre>
 </div>
 </div>
@@ -502,7 +559,7 @@ The script defines a custom table prefix for all the QUARTZ tables to prevent ta
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-21 14:07:27 UTC
+Last updated 2022-11-11 17:06:05 UTC
 </div>
 </div>
 <style>
