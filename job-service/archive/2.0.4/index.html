@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Eitco Job Service 2.0.4</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_eitco_job_service_2_0_4">1. Eitco Job Service 2.0.4</a>
+<ul class="sectlevel2">
+<li><a href="#_clustering">1.1. Clustering</a></li>
+<li><a href="#_rest_interface">1.2. REST Interface</a></li>
+<li><a href="#_providing_job_implementations">1.3. Providing job implementations</a></li>
+<li><a href="#_database">1.4. Database</a></li>
+<li><a href="#_miscellaneous">1.5. Miscellaneous</a></li>
+<li><a href="#_references">1.6. References</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_eitco_job_service_2_0_4">1. Eitco Job Service 2.0.4</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_clustering">1.1. Clustering</h3>
+<div class="paragraph">
+<p>The job service is designed to be used in cluster mode: that is several JobService instances care jointly about executing the scheduled jobs and strive to achieve a perfect load balancing between all JobService instances in the cluster. All JobService instances can change the triggers that define which jobs are to be triggered and when these jobs are to be triggered.</p>
+</div>
+<div class="paragraph">
+<p>The synchronization of the JobService instances is done by using a common database instance and leverages row-locks as synchronization mechanism. Hence all JobService instances must have access to very same database tables.</p>
+</div>
+<div class="paragraph">
+<p>The JobService is not multi-tenant capable! The JobService will currently fail to start if there are several tenants configured.</p>
+</div>
+<div class="paragraph">
+<p>Cluster mode is enabled by default via the following default properties in the <code>application.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="title">JobService Configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml">  <span class="key">quartz</span>:
+    <span class="key">job-store-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc</span><span class="delimiter">&quot;</span></span>
+    <span class="key">jdbc</span>:
+      <span class="key">initialize-schema</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">NEVER</span><span class="delimiter">&quot;</span></span>
+    <span class="key">properties</span>:
+      <span class="key">org</span>:
+        <span class="key">quartz</span>:
+          <span class="key">jobStore</span>:
+            <span class="key">driverDelegateClass</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">org.quartz.impl.jdbcjobstore.PostgreSQLDelegate</span><span class="delimiter">&quot;</span></span>
+            <span class="key">isClustered</span>: <span class="string"><span class="content">true</span></span>
+            <span class="key">tablePrefix</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ECQZ_</span><span class="delimiter">&quot;</span></span>
+          <span class="key">scheduler</span>:
+            <span class="key">instanceId</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">AUTO</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_disable_job_execution_on_individual_jobservice_instances">1.1.1. Disable job execution on individual JobService instances</h4>
+<div class="paragraph">
+<p>By default, all JobService instances will jointly take care of executing jobs and strive to achieve a perfect load balancing between all JobService instances in the cluster.
+The execution of job&#8217;s on individual JobService instances can disabled, such that these instances will not participate in executing  jobs.
+This can be achieved by setting the configuration option <code>spring.quartz.standbyOnlyScheduler</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">JobService Configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">quartz</span>:
+    <span class="key">standbyOnlyScheduler</span>: <span class="string"><span class="content">true</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rest_interface">1.2. REST Interface</h3>
+<div class="paragraph">
+<p>The REST interface allows the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Editing the triggers that define which jobs shall be executed at what time.</p>
+</li>
+<li>
+<p>Retrieving information about:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>available/known job types that could be scheduled</p>
+</li>
+<li>
+<p>the properties of the configured triggers</p>
+</li>
+<li>
+<p>when the triggers did fire last and when they will fire next</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There is no way to add new job implementations via the REST interface.</p>
+</div>
+<div class="paragraph">
+<p>Once the service is started you can access the API documentation located at:
+   <code><a href="http://localhost:50001/" class="bare">http://localhost:50001/</a></code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_providing_job_implementations">1.3. Providing job implementations</h3>
+<div class="paragraph">
+<p>The job implementations must be provided in terms of Java classes that implement the interface <code>org.quartz.Job</code>.
+All JobService instances in a cluster will compete for executing all pending jobs. Hence, the Java classes that implement the jobs must be available on all JobService instances in the cluster.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for an Job implementation</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td>
+  <td class="code"><pre><span class="directive">public</span> <span class="type">class</span> <span class="class">SampleJob</span> <span class="directive">implements</span> Job {
+
+    <span class="comment">// just an arbitrary object to test if Autowired dependency injection works for Job's</span>
+    <span class="annotation">@Autowired</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> Tenants tenants;
+
+    <span class="directive">public</span> <span class="type">void</span> execute(JobExecutionContext context) <span class="directive">throws</span> JobExecutionException { <i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="predefined-type">System</span>.out.println( <span class="string"><span class="delimiter">&quot;</span><span class="content">SampleJob - Tenant List:</span><span class="delimiter">&quot;</span></span> );
+        tenants.forEach( (tenant) -&gt;{
+            <span class="predefined-type">System</span>.out.println( tenant );
+        });
+    }
+}</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Dependency injection will work properly when Job class is instantiated using JobDetail-Beans</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Code your logic into the execute method</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Java classes that implement the interface <code>org.quartz.Job</code> are instantiated using a constructor without parameters. A new  java object is created for each execution.</p>
+</div>
+<div class="paragraph">
+<p>These job implementations can not be referenced directly from job triggers, but need to be "registered" with the scheduler. These registrations result in <code>JobDetail</code>-objects/<code>JobDetailFactoryBean</code>-beans that have names and can be referenced from job triggers by that name.
+To make use of spring based dependency injection in Job classes the <code>JobDetail</code>-objects ultimately required by the QUARTZ implementation must not be instantiated manually. One should make use of <code>JobDetailFactoryBean</code>-beans to let spring create the <code>JobDetail</code>-objects.
+The registration of <code>JobDetailFactoryBean</code>-beans is done via spring-boot auto-configuration.
+The name of the <code>JobDetail</code>-objects created via <code>JobDetailFactoryBean</code>-beans is the name of the bean! So you can reference the <code>JobDetail</code> by the name of the bean (and the <code>group</code>- name which defaults to <code>DEFAULT</code> if not specified) when creating triggers for the <code>JobDetail</code>.
+The job implementation classes will usually be bundled in a jar file containing a <code>META-INF/spring.factories</code> manifest file that specifies a configuration Bean, which defines <code>JobDetailFactoryBean</code>-Beans that define the jobs that can be executed. These <code>JobDetailFactoryBean</code>-beans do reference the Java classes that implement the interface <code>org.quartz.Job</code> and do specify additional properties/configuration parameters.</p>
+</div>
+<div class="listingblock">
+<div class="title">META-INF/spring.factories</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="ini">org.springframework.boot.autoconfigure.EnableAutoConfiguration=de.eitco.commons.job.service.test.testjobs.TestJobRegistrationConfiguration</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Example for a JobDetail-Bean</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td>
+  <td class="code"><pre>    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> JobDetailFactoryBean alienCheckJobDetail() {
+        JobDetailFactoryBean jobDetailFactory = <span class="keyword">new</span> JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(SampleJob.class); <i class="conum" data-value="1"></i><b>(1)</b>
+        jobDetailFactory.setDescription(<span class="string"><span class="delimiter">&quot;</span><span class="content">Invoke Alien check ...</span><span class="delimiter">&quot;</span></span>);
+        jobDetailFactory.setDurability(<span class="predefined-constant">true</span>); <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="keyword">return</span> jobDetailFactory;
+    }</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The Job implementation class to use</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Usually set to true, such that the job detail is not deleted, when it is no longer referenced by any trigger.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_database">1.4. Database</h3>
+<div class="sect3">
+<h4 id="_database_table_creation">1.4.1. Database table creation</h4>
+<div class="paragraph">
+<p>The data base tables are created by the JobService at startup via the liquibase script:
+<code>job-service\core\src\main\resources\liquibase-changeLog.xml</code>
+The script defines a custom table prefix for all the QUARTZ tables to prevent table-collisions if some other library or service uses the same database schema. Otherwise the change log simply includes the standard liquibase script provided by the QUARTZ implementation:
+<code>/org/quartz/impl/jdbcjobstore/liquibase.quartz.init.xml</code></p>
+</div>
+<div class="paragraph">
+<p>The QUARTZ implementation can take care of creating the database tables itself, but that solution caused problems in cluster mode.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_miscellaneous">1.5. Miscellaneous</h3>
+<div class="sect3">
+<h4 id="_immediately_triggering_a_job">1.5.1. Immediately triggering a job</h4>
+<div class="paragraph">
+<p>A job can be immediately triggered by scheduling a simple trigger with <code>StartTime</code> set to <code>now</code>. A simple trigger will be automatically deleted by the scheduler if all executions have been executed. If you want to check the progress of the job you could define the job to be repeated in the far future.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for immediately triggering a job</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+</pre></td>
+  <td class="code"><pre>    <span class="directive">public</span> <span class="type">void</span> simpleTriggerTest() <span class="directive">throws</span> <span class="exception">InterruptedException</span> {
+        SchedulerResourceClient client = newClient();
+
+        <span class="directive">final</span> JobKeyModel jobKey = <span class="keyword">new</span> JobKeyModel();
+        jobKey.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">alienCheckJobDetail</span><span class="delimiter">&quot;</span></span>);
+        <span class="comment">//jobKey.setGroup(&quot;DEFAULT&quot;); </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+        TriggerKeyModel triggerKey = <span class="keyword">new</span> TriggerKeyModel();
+        triggerKey.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">simpleTriggerTest</span><span class="delimiter">&quot;</span></span>);
+        <span class="comment">//triggerKey.setGroup(&quot;DEFAULT&quot;); </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+        SimpleTriggerModel model = <span class="keyword">new</span> SimpleTriggerModel();
+        model.setKey( triggerKey );
+        model.setJobKey( jobKey );
+        model.setStartTime( ZonedDateTime.now() );
+
+        <span class="comment">//model.setEndTime( ZonedDateTime.now().plusYears(11) ); </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//model.setRepeatInterval(10 * 365 * 24 * 60 * 60 * 1000L ); // 10 years </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//model.setRepeatCount(1); </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+        client.scheduleSimpleTrigger(model);
+
+        <span class="comment">// wait some time </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">// Thread.sleep(60 * 1000); // 60 seconds </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="comment">// fetch all the triggerDetails and see what has happened to our job... </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//final List&lt;TriggerModel&gt; triggerDetails = client.getTriggerDetails(); </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//... see </span><i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="comment">// finally delete the trigger again </span><i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="comment">//client.unscheduleJob(triggerKey); </span><i class="conum" data-value="2"></i><b>(2)</b>
+    }</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The group names need not be specified at all for the default group</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>If you want to check the creation and progress of the job you could define the job to be repeated at least once in the far future. The commented lines suggest how this could implemented&#8230;&#8203;</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_options">1.5.2. Configuration Options</h4>
+<div class="paragraph">
+<p>There are three sets of config options that can both be configured via the spring configuration files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>spring supported options, see: <code>org.springframework.boot.autoconfigure.quartz.QuartzProperties</code>. In the yaml file these properties are rooted at <code>spring.quartz</code>.</p>
+</li>
+<li>
+<p>standard quartz options, that are defined by the quartz implementation and exist independently form the spring support. See: <code><a href="http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/" class="bare">http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/</a></code>. In the yaml file these properties are rooted at <code>spring.quartz.properties</code>.</p>
+</li>
+<li>
+<p>the additional JobService specific option <code>standbyOnlyScheduler</code>. In the yaml file this property is located at <code>spring.quartz.standbyOnlyScheduler</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logging_of_quartzs_activities">1.5.3. Logging of QUARTZ&#8217;s activities</h4>
+<div class="paragraph">
+<p>QUARTZ has an event based extension interface that allows to get notified about activities in the local scheduler instance and there are two extensions that just log these events to a log file. This kind of logging comes in hand during development and can be enabled via these config options:</p>
+</div>
+<div class="listingblock">
+<div class="title">JobService Configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">quartz</span>:
+    <span class="key">properties</span>:
+      <span class="key">org</span>:
+        <span class="key">quartz</span>:
+          <span class="key">plugin</span>:
+            <span class="key">jobHistory</span>:
+              <span class="key">class</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">org.quartz.plugins.history.LoggingJobHistoryPlugin</span><span class="delimiter">&quot;</span></span>
+            <span class="key">triggHistory</span>:
+              <span class="key">class</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">org.quartz.plugins.history.LoggingTriggerHistoryPlugin</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_references">1.6. References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>The JobService makes use of the standard SpringBoot integration of QUARTZ:
+<a href="https://docs.spring.io/spring-boot/docs/2.0.0.M3/reference/html/boot-features-quartz.html" class="bare">https://docs.spring.io/spring-boot/docs/2.0.0.M3/reference/html/boot-features-quartz.html</a></p>
+</li>
+<li>
+<p>The QUARTZ Scheduler documentation:
+<a href="http://www.quartz-scheduler.org/documentation/quartz-2.2.2/configuration/" class="bare">http://www.quartz-scheduler.org/documentation/quartz-2.2.2/configuration/</a></p>
+</li>
+<li>
+<p>A very detailed book on QUARTZ&#8217;s usage and inner workings:
+<a href="https://flylib.com/books/en/2.65.1/configuring_jobstore_settings.html" class="bare">https://flylib.com/books/en/2.65.1/configuring_jobstore_settings.html</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here are some more references:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://dzone.com/articles/adding-quartz-to-spring-boot" class="bare">https://dzone.com/articles/adding-quartz-to-spring-boot</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.javarticles.com/2016/03/quartz-scheduler-model.html" class="bare">https://www.javarticles.com/2016/03/quartz-scheduler-model.html</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://jeroenbellen.com/configuring-a-quartz-scheduler-in-a-clustered-spring-boot-application/" class="bare">https://jeroenbellen.com/configuring-a-quartz-scheduler-in-a-clustered-spring-boot-application/</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2022-11-18 15:25:49 UTC
+</div>
+</div>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+pre.CodeRay{background:#f7f7f8}
+.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
+.CodeRay .line-numbers strong{color:#000}
+table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.CodeRay td{vertical-align:top;line-height:inherit}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.code{padding:0 0 0 .75em}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+</body>
+</html>
