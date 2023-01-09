@@ -8,5 +8,5 @@
 * [Document Conversion Service](document-conversion-service)
 * [Job Service](job-service)
 * [Integration Service](integration-service)
-* [Tenants](commons-tenant)
+* [Tenants](tenants)
 * [User Management Enterprise Service](user-management-enterprise-service)
