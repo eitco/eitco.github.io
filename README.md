@@ -3,7 +3,7 @@
 * [_arveo_](arveo)
 * [EQL (Eitco Query Language)](eql)
 * [User Management Service](user-management-service)
-* [Access Control Service](user-management-access-control)
+* [Access Control Service](access-control-service)
 * [Audit Service](audit-service)
 * [Document Conversion Service](document-conversion-service)
 * [Job Service](job-service)
