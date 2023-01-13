@@ -441,32 +441,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Document Conversion Service</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">Document Conversion Service 0.0.21-SNAPSHOT</div>
+<div id="toctitle">Document Conversion Service 1.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_about">About</a></li>
 <li><a href="#_plugins">Plugins</a>
 <ul class="sectlevel2">
 <li><a href="#_open_source_plugins">Open source plugins</a>
 <ul class="sectlevel3">
-<li><a href="#_render_plugins">Render plugins</a></li>
-<li><a href="#_fulltext_plugins">Fulltext plugins</a></li>
+<li><a href="#_plugins_contained_in_document_conversion_plugins_oss">Plugins contained in document-conversion-plugins-oss</a></li>
 </ul>
 </li>
 <li><a href="#_levigo_jadice_plugins">Levigo Jadice plugins</a>
 <ul class="sectlevel3">
-<li><a href="#_levigo_jadice_render_plugins">Levigo Jadice render plugins</a></li>
+<li><a href="#_plugins_contained_in_document_conversion_plugins_jadice">Plugins contained in document-conversion-plugins-jadice</a></li>
 <li><a href="#_configuration_considerations_of_levigo_jadice_usage">configuration considerations of Levigo Jadice usage</a></li>
 </ul>
 </li>
 <li><a href="#_microsoft_graph_plugins">Microsoft Graph Plugins</a>
 <ul class="sectlevel3">
-<li><a href="#_render_plugins_2">Render plugins</a></li>
+<li><a href="#_plugins_contained_in_document_conversion_plugins_ms_graph">Plugins contained in document-conversion-plugins-ms-graph</a></li>
 <li><a href="#_setup_microsoft_graph_render_plugins">Setup microsoft graph render plugins</a></li>
 </ul>
 </li>
 <li><a href="#_microsoft_azure_plugins">Microsoft Azure Plugins</a>
 <ul class="sectlevel3">
-<li><a href="#_fulltext_plugins_2">Fulltext plugins</a></li>
+<li><a href="#_plugins_contained_in_document_conversion_plugins_ms_azure">Plugins contained in document-conversion-plugins-ms-azure</a></li>
 <li><a href="#_setup_microsoft_azure_fulltext_plugin">Setup microsoft azure fulltext plugin</a></li>
 </ul>
 </li>
@@ -531,156 +530,551 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-oss&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;0.0.21-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_render_plugins">Render plugins</h4>
+<h4 id="_plugins_contained_in_document_conversion_plugins_oss">Plugins contained in document-conversion-plugins-oss</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
 <div class="paragraph">
-<p>The following render plugins exist:</p>
+<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.ExcelToPdfRenderPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders excel files to pdf using open source java solutions (namely apache poi and IText)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders image formats (jpg, png and gif) to pdf using an open source java solution (apache pdfbox)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders pdfs to image formats (jpg, png and gif) using an open source java solution (apache pdfbox)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders tiffs to pdf using an open source java solution (IText)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.WordToPdfRenderPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders word documents to pdf using open source java solutions (namely apache poi and IText)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders a msg document with all attachments to one combined pdf using open source java solutions (namely apache poi)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>merge a list of pdf documents to one combined pdf using open source java solutions (namely apache pdfbox)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders textfiles using an open source java solution (namely OpenPdf)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders xhtml using an open source java solution (namely OpenHtmlToPdf)</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Please note that the open source based plugins supporting Microsoft Office documents are very limited in their support
-of text formatting.</p>
-</div>
-<div class="admonitionblock important">
-<table>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
 <tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The OpenHtmlRenderPlugin has a problem with xml-structures who doesnt close the tags. This will give you an exception.
-</td>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
 </tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
 </table>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_fulltext_plugins">Fulltext plugins</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
 <div class="paragraph">
-<p>The following fulltext extraction plugins exist:</p>
+<p>Renders txt to pdf with openpdf.</p>
 </div>
-<div class="ulist">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p><code>de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</code></p>
-<div class="ulist">
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>extracts text from pdf, doc(x), xls(x), epub, html, msg, odp, ods, odt, pptx, rtf and xml files using open source
-java solutions (namely apache tika)</p>
+<p>application/pdf</p>
 </li>
 </ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
-</li>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</code></p>
-<div class="ulist">
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text by using Apache Tika.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>extracts text with ocr from pdf, doc(x), xls(x), epub, html, msg, odp, ods, odt, pptx, rtf and xml files using open source
-java solutions (namely apache tika and tesseract for ocr)</p>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
 </li>
 </ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<div class="paragraph">
+<p>Merges pdf files.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
 </li>
 </ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_exceltopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ExcelToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from Excel (.xls / .xlsx) to PDF by using apache poi and IText.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_imagestopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from JPG,PNG,GIF to PDF by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders TIF to Pdf using IText.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_wordtopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.WordToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Reads the text from .doc and renders to pdf by using Apache Poi and iText</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftotiffpagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToTiffPagesRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_enable_tesseract_ocr">Enable tesseract ocr:</h5>
@@ -759,28 +1153,86 @@ of the service. Likewise the open source plugins the third party plugin will be 
     &lt;artifactId&gt;document-conversion-plugins-jadice&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;0.0.21-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_levigo_jadice_render_plugins">Levigo Jadice render plugins</h4>
-<div class="ulist">
-<ul>
-<li>
-<p><code>de.eitco.commons.conversion.plugins.jadice.JadiceToPdfPlugin</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>renders excel, powerpoint, word files and diverse image-formats (bmp, gif, jpg, png) to pdf using the jadice-renderer</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
+<h4 id="_plugins_contained_in_document_conversion_plugins_jadice">Plugins contained in document-conversion-plugins-jadice</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_jadice_jadicetopdfplugin">de.eitco.commons.conversion.plugins.jadice.JadiceToPdfPlugin</h5>
 <div class="paragraph">
-<p>Please note that Microsoft Office documents (Powerpoint and Word) are here not confronted with any formatting related issues.</p>
+<p>Renders various formats to PDF using Jadice.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+<li>
+<p>message/rfc822</p>
+</li>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -831,28 +1283,89 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
     &lt;artifactId&gt;document-conversion-plugins-ms-graph&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;0.0.21-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_render_plugins_2">Render plugins</h4>
+<h4 id="_plugins_contained_in_document_conversion_plugins_ms_graph">Plugins contained in document-conversion-plugins-ms-graph</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_msgraph_graphrenderplugin">de.eitco.commons.conversion.plugins.msgraph.GraphRenderPlugin</h5>
 <div class="paragraph">
-<p>The following microsoft graph render plugins exist:</p>
+<p>Renders Microsoft Office Documents and some other formats to PDF using the Microsoft Graph API</p>
 </div>
-<div class="ulist">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p><code>de.eitco.commons.conversion.plugins.msgraph.GraphRenderPlugin</code></p>
-<div class="ulist">
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
+<p>message/rfc822</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>renders office files to pdf using the microsoft graph and sharepoint</p>
+<p>application/pdf</p>
 </li>
 </ul>
-</div>
-</li>
-</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -990,28 +1503,59 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-ms-azure&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;0.0.21-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_fulltext_plugins_2">Fulltext plugins</h4>
+<h4 id="_plugins_contained_in_document_conversion_plugins_ms_azure">Plugins contained in document-conversion-plugins-ms-azure</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_msazure_azurecognitiveocrextractionplugin">de.eitco.commons.conversion.plugins.msazure.AzureCognitiveOcrExtractionPlugin</h5>
 <div class="paragraph">
-<p>The following microsoft azure fulltext plugins exist:</p>
+<p>Extracts text from images and pdfs by using azure cognitive services.</p>
 </div>
-<div class="ulist">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p><code>de.eitco.commons.conversion.plugins.msazure.AzureCognitiveOcrExtractionPlugin</code></p>
-<div class="ulist">
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>renders office files to pdf using the microsoft graph and sharepoint</p>
+<p>text/plain</p>
 </li>
 </ul>
-</div>
-</li>
-</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -1348,7 +1892,7 @@ utility class containing standard mime type strings.</td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-29 16:03:46 UTC
+Last updated 2023-01-13 09:39:35 UTC
 </div>
 </div>
 </body>
