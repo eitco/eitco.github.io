@@ -164,16 +164,16 @@ window.onload = function() {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
+<div id="toctitle">commons tenant service 2.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
-<li><a href="#_commons_tenants_2_0_0_snapshot">1. Commons Tenants 2.0.0-SNAPSHOT</a>
+<li><a href="#_commons_tenants_2_0_0_snapshot">Commons Tenants 2.0.0-SNAPSHOT</a>
 <ul class="sectlevel2">
-<li><a href="#_tenants">1.1. Tenants</a></li>
-<li><a href="#_approach">1.2. Approach</a></li>
-<li><a href="#_usage">1.3. Usage</a></li>
-<li><a href="#_the_fallback_tenant">1.4. The fallback tenant</a></li>
-<li><a href="#_configuration">1.5. Configuration</a></li>
-<li><a href="#_migration_from_legacy_tenant_implementation">1.6. Migration from legacy tenant implementation</a></li>
+<li><a href="#_tenants">Tenants</a></li>
+<li><a href="#_approach">Approach</a></li>
+<li><a href="#_usage">Usage</a></li>
+<li><a href="#_the_fallback_tenant">The fallback tenant</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_migration_from_legacy_tenant_implementation">Migration from legacy tenant implementation</a></li>
 </ul>
 </li>
 </ul>
@@ -181,7 +181,7 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_commons_tenants_2_0_0_snapshot">1. Commons Tenants 2.0.0-SNAPSHOT</h2>
+<h2 id="_commons_tenants_2_0_0_snapshot">Commons Tenants 2.0.0-SNAPSHOT</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This project contains spring components that implement tenant awareness.
@@ -191,7 +191,7 @@ If a more strict separation is needed, it is advised to simply use a multi-insta
 <a href="https://kubernetes.io/de/">Kubernetes</a> will be a great help, then.</p>
 </div>
 <div class="sect2">
-<h3 id="_tenants">1.1. Tenants</h3>
+<h3 id="_tenants">Tenants</h3>
 <div class="paragraph">
 <p>Multitenancy means that multiple independent instances of one or multiple applications operate in a shared environment. The instances (tenants) are therefore logically isolated.</p>
 </div>
@@ -224,7 +224,7 @@ Client applications are advised to prefer showing the display-name.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_approach">1.2. Approach</h3>
+<h3 id="_approach">Approach</h3>
 <div class="paragraph">
 <p>As seen above, users are assigned to tenants.
 This is done in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/cmn-user-management-parent/development-SNAPSHOT/documentation/index.html">commons User Management Service</a>.
@@ -252,7 +252,7 @@ Utilities creating suitable database query conditions are provided here.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_usage">1.3. Usage</h3>
+<h3 id="_usage">Usage</h3>
 <div class="paragraph">
 <p>In order to use multi-tenancy add the following dependency to your project:</p>
 </div>
@@ -279,7 +279,7 @@ Utilities creating suitable database query conditions are provided here.</p>
 </ol>
 </div>
 <div class="sect3">
-<h4 id="_the_tenant_scope">1.3.1. The Tenant Scope</h4>
+<h4 id="_the_tenant_scope">The Tenant Scope</h4>
 <div class="paragraph">
 <p>There can be occasions where your components contain data, that should be separated by tenant.
 In a classical microservice architecture this is mostly the case with caches.
@@ -342,7 +342,7 @@ Should you use a different authentication service, it is your responsibility to 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_utilities_for_data_separation">1.3.2. Utilities for data separation</h4>
+<h4 id="_utilities_for_data_separation">Utilities for data separation</h4>
 <div class="paragraph">
 <p>In order to implement tenant separation, the data that is not stored by your application in-memory, will need to be separated, too.
 This module provides utilities to do this in a unified way.</p>
@@ -802,7 +802,7 @@ These utilities provide methods that create instances of <code>FilterExtender</c
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_fallback_tenant">1.4. The fallback tenant</h3>
+<h3 id="_the_fallback_tenant">The fallback tenant</h3>
 <div class="paragraph">
 <p>There are situations where the current authentication context does not have a tenant claim or is simply not available.
 In these cases the current tenant falls back to the fallback tenant.
@@ -820,7 +820,7 @@ tasks when the application starts. When actual data is handled, the absence of a
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration">1.5. Configuration</h3>
+<h3 id="_configuration">Configuration</h3>
 <div class="paragraph">
 <p>The core behaviour of the tenant feature is controlled by the <a href="https://spring.io/projects/spring-cloud-config">spring property</a> <code>multi-tenancy.mode</code>.
 The possible values are <code>disabled</code>, <code>test</code> and <code>enforced</code>.
@@ -879,7 +879,7 @@ In a scenario where tenant are enforced and another service as the commons user 
 </table>
 </div>
 <div class="sect3">
-<h4 id="_initial_tenants">1.5.1. Initial tenants</h4>
+<h4 id="_initial_tenants">Initial tenants</h4>
 <div class="paragraph">
 <p>The spring property <code>multi-tenancy.initial-tenants</code> holds a list containing the tenants to create when starting the application.
 This will only be read in the commons User Management Service and is only thought for application bootstrapping.
@@ -902,7 +902,7 @@ If the display name is not given, the name will also be used as display name.</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="_migration_from_legacy_tenant_implementation">1.6. Migration from legacy tenant implementation</h3>
+<h3 id="_migration_from_legacy_tenant_implementation">Migration from legacy tenant implementation</h3>
 <div class="paragraph">
 <p>The legacy tenant implementation separated tenants by database connection.
 This was enforced, so even applications that were not really tenant aware needed to specify at least one tenant that simply was used always.
@@ -910,7 +910,7 @@ This also meant, that database connections were configured differently than in a
 Depending on the tenant awareness of the application migrated, migration will be different.</p>
 </div>
 <div class="sect3">
-<h4 id="_migration_of_tenant_unaware_applications">1.6.1. Migration of tenant-unaware applications</h4>
+<h4 id="_migration_of_tenant_unaware_applications">Migration of tenant-unaware applications</h4>
 <div class="paragraph">
 <p>In the case of an application that is totally tenant unaware, the changes are pretty simple.
 There will be some default configuration defining a tenant, which will look like this:</p>
@@ -985,7 +985,7 @@ Some services did use the tenants numerical id for offsets of id sequences. This
 </div>
 </div>
 <div class="sect3">
-<h4 id="_migration_of_single_tenant_systems">1.6.2. Migration of single tenant systems</h4>
+<h4 id="_migration_of_single_tenant_systems">Migration of single tenant systems</h4>
 <div class="paragraph">
 <p>Some applications are tenant-aware by design, but are deployed in a single tenant environment. In most such cases by convention a second tenant named "master" was specified holding authentication client configuration. This second tenant is unnecessary with the new tenant implementation. This means - as with <a href="#_migration_of_tenant_unaware_applications">tenant unaware applications</a> - we can use the database from an existing tenant: The tenant that is not called "master". The old configuration will look like this:</p>
 </div>
@@ -1156,7 +1156,7 @@ As above, Some services did use the tenants numerical id for offsets of id seque
 </div>
 </div>
 <div class="sect3">
-<h4 id="_migrating_a_real_multi_tenant_application">1.6.3. Migrating a real multi-tenant application</h4>
+<h4 id="_migrating_a_real_multi_tenant_application">Migrating a real multi-tenant application</h4>
 <div class="paragraph">
 <p>In this case there is some work to do. The most cumbersome will be merging the databases. Choose one tenant to be your "main tenant". That is: The tenant whose database will be used after the migration. Let&#8217;s assume its name is <code>main-tenant</code>. In your configuration find a section that looks like this, by locating the tenant with the tenant-id <code>main-tenant</code>.</p>
 </div>
@@ -1208,7 +1208,7 @@ As above, some services did use the tenants numerical id for offsets of id seque
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-06 16:10:56 UTC
+Last updated 2023-02-09 13:28:25 UTC
 </div>
 </div>
 <style>
