@@ -11,7 +11,6 @@
 
 
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 .hidden {
 	display: none;
@@ -167,45 +166,49 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">EITCO User Management Service 6.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
-<li><a href="#_eitco_user_management_service_6_0_0_snapshot">1. EITCO User Management Service 6.0.0-SNAPSHOT</a></li>
-<li><a href="#_basic_functions_of_the_user_administration">2. Basic functions of the user administration</a></li>
-<li><a href="#_data_model">3. Data model</a>
+<li><a href="#_eitco_user_management_service_6_0_0_snapshot">EITCO User Management Service 6.0.0-SNAPSHOT</a></li>
+<li><a href="#_basic_functions_of_the_user_administration">Basic functions of the user administration</a></li>
+<li><a href="#_data_model">Data model</a>
 <ul class="sectlevel2">
-<li><a href="#_overview_of_the_database_tables">3.1. Overview of the database tables</a></li>
-<li><a href="#_integration_of_the_user_service_artifacts">3.2. Integration of the user service artifacts</a></li>
-<li><a href="#_user_service_configurations">3.3. User service configurations</a></li>
+<li><a href="#_overview_of_the_database_tables">Overview of the database tables</a></li>
+<li><a href="#_integration_of_the_user_service_artifacts">Integration of the user service artifacts</a></li>
+<li><a href="#_user_service_configurations">User service configurations</a></li>
 </ul>
 </li>
-<li><a href="#_auditing">4. Auditing</a></li>
-<li><a href="#_api_overview">5. API Overview</a>
+<li><a href="#_auditing">Auditing</a></li>
+<li><a href="#_api_overview">API Overview</a>
 <ul class="sectlevel2">
-<li><a href="#_create_modify_and_delete_a_user">5.1. Create, modify and delete a user</a></li>
-<li><a href="#_create_modify_and_delete_a_role_group_token_privilege">5.2. Create, modify and delete a role, group, token, privilege</a></li>
-<li><a href="#_assignment_management_of_user_to_group_etc">5.3. Assignment management of user to group etc.</a></li>
-<li><a href="#_create_and_modify_group_hierarchies">5.4. Create and modify group hierarchies</a></li>
-<li><a href="#_roleprivilege_inheritance_through_the_group_hierarchy">5.5. Role/privilege inheritance through the group hierarchy</a></li>
-<li><a href="#_queries_using_service_query">5.6. Queries using service query</a></li>
-<li><a href="#_create_assign_and_modify_events">5.7. Create, assign and modify events</a></li>
-<li><a href="#_api_lookup_cache">5.8. API Lookup / Cache</a></li>
-<li><a href="#_cache_implementation">5.9. Cache implementation</a></li>
-<li><a href="#_alternative_cache_implementation">5.10. Alternative cache implementation</a></li>
+<li><a href="#_create_modify_and_delete_a_user">Create, modify and delete a user</a></li>
+<li><a href="#_create_modify_and_delete_a_role_group_token_privilege">Create, modify and delete a role, group, token, privilege</a></li>
+<li><a href="#_assignment_management_of_user_to_group_etc">Assignment management of user to group etc.</a></li>
+<li><a href="#_create_and_modify_group_hierarchies">Create and modify group hierarchies</a></li>
+<li><a href="#_roleprivilege_inheritance_through_the_group_hierarchy">Role/privilege inheritance through the group hierarchy</a></li>
+<li><a href="#_queries_using_service_query">Queries using service query</a></li>
+<li><a href="#_create_assign_and_modify_events">Create, assign and modify events</a></li>
+<li><a href="#_api_lookup_cache">API Lookup / Cache</a></li>
+<li><a href="#_cache_implementation">Cache implementation</a></li>
+<li><a href="#_alternative_cache_implementation">Alternative cache implementation</a></li>
 </ul>
 </li>
-<li><a href="#_securing_rest_endpoints">6. Securing REST endpoints</a></li>
-<li><a href="#_client_management">7. Client management</a></li>
-<li><a href="#_ldap_synchronisation">8. LDAP synchronisation</a>
+<li><a href="#_securing_rest_endpoints">Securing REST endpoints</a></li>
+<li><a href="#_client_management">Client management</a></li>
+<li><a href="#_ldap_synchronisation">LDAP synchronisation</a>
 <ul class="sectlevel2">
-<li><a href="#_unit_testing">8.1. Unit testing</a></li>
-<li><a href="#_setup_import">8.2. Setup import</a></li>
-<li><a href="#_group_import">8.3. Group import</a></li>
+<li><a href="#_unit_testing">Unit testing</a></li>
+<li><a href="#_setup_import">Setup import</a></li>
+<li><a href="#_group_import">Group import</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
+<div class="paragraph">
+<p>:toclevels:2
+:icons: font</p>
+</div>
 <div class="sect1">
-<h2 id="_eitco_user_management_service_6_0_0_snapshot">1. EITCO User Management Service 6.0.0-SNAPSHOT</h2>
+<h2 id="_eitco_user_management_service_6_0_0_snapshot">EITCO User Management Service 6.0.0-SNAPSHOT</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The user service provides a user administration designed for different applications and systems. It is a database-based user administration.</p>
@@ -231,7 +234,7 @@ by the user service nor by Spring Security. This would require further solutions
 </div>
 </div>
 <div class="sect1">
-<h2 id="_basic_functions_of_the_user_administration">2. Basic functions of the user administration</h2>
+<h2 id="_basic_functions_of_the_user_administration">Basic functions of the user administration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The user administration supports the creation, modification and deletion of:</p>
@@ -262,7 +265,7 @@ privilege. By means of a token-to-role assignment, a privilege can in turn also 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_data_model">3. Data model</h2>
+<h2 id="_data_model">Data model</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following figure outlines the relationship between users, roles, etc. based on the database tables of the user service.</p>
@@ -274,7 +277,7 @@ privilege. By means of a token-to-role assignment, a privilege can in turn also 
 <div class="title">Figure 1. Data model of the User service</div>
 </div>
 <div class="sect2">
-<h3 id="_overview_of_the_database_tables">3.1. Overview of the database tables</h3>
+<h3 id="_overview_of_the_database_tables">Overview of the database tables</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Database tables</caption>
 <colgroup>
@@ -359,7 +362,7 @@ privilege. By means of a token-to-role assignment, a privilege can in turn also 
 </table>
 </div>
 <div class="sect2">
-<h3 id="_integration_of_the_user_service_artifacts">3.2. Integration of the user service artifacts</h3>
+<h3 id="_integration_of_the_user_service_artifacts">Integration of the user service artifacts</h3>
 <div class="paragraph">
 <p>The user service can be used as a standalone component in the sense of a microservice, or it can be integrated directly
 into the context of the actual application.</p>
@@ -382,7 +385,7 @@ It should be noted, however, that microservice calls cannot be included in a tra
 side.</p>
 </div>
 <div class="sect3">
-<h4 id="_dependencies">3.2.1. Dependencies</h4>
+<h4 id="_dependencies">Dependencies</h4>
 <div class="paragraph">
 <p>Integration of the Microservice client</p>
 </div>
@@ -428,7 +431,7 @@ side.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_user_service_configurations">3.3. User service configurations</h3>
+<h3 id="_user_service_configurations">User service configurations</h3>
 <div class="paragraph">
 <div class="title">Integration of the Microservice client</div>
 <p>The following is an example of the user service configuration using a Spring YAML configuration file.</p>
@@ -495,7 +498,7 @@ side.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_auditing">4. Auditing</h2>
+<h2 id="_auditing">Auditing</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The user management service supports auditing of changes made to the user management data. The auditing support must be
@@ -508,7 +511,7 @@ audit service</a> contains more information on how to create audit rules.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_api_overview">5. API Overview</h2>
+<h2 id="_api_overview">API Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The user service contains so-called managers in the form of interfaces and their implementations for user administration.
@@ -564,7 +567,7 @@ group. There is also the AuthManager which is described in the API Security chap
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_create_modify_and_delete_a_user">5.1. Create, modify and delete a user</h3>
+<h3 id="_create_modify_and_delete_a_user">Create, modify and delete a user</h3>
 <div class="listingblock">
 <div class="title">Create a user</div>
 <div class="content">
@@ -598,7 +601,7 @@ userMgr.deleteEntity(user.getId());</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_create_modify_and_delete_a_role_group_token_privilege">5.2. Create, modify and delete a role, group, token, privilege</h3>
+<h3 id="_create_modify_and_delete_a_role_group_token_privilege">Create, modify and delete a role, group, token, privilege</h3>
 <div class="paragraph">
 <p>Creating, changing and deleting roles, groups, tokens and privileges is done in the same way as described in the previous section for users. For this,
 of course, the respective manager and the corresponding POJO must be used. In the case of roles, for example, this would be the UserRole manager and the
@@ -606,7 +609,7 @@ UserRole POJO.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_assignment_management_of_user_to_group_etc">5.3. Assignment management of user to group etc.</h3>
+<h3 id="_assignment_management_of_user_to_group_etc">Assignment management of user to group etc.</h3>
 <div class="paragraph">
 <p>For assignment management, the assignment managers are used. These are:</p>
 </div>
@@ -671,7 +674,7 @@ UserToUserGroupManager userToGroupMgr;
 </div>
 </div>
 <div class="sect2">
-<h3 id="_create_and_modify_group_hierarchies">5.4. Create and modify group hierarchies</h3>
+<h3 id="_create_and_modify_group_hierarchies">Create and modify group hierarchies</h3>
 <div class="paragraph">
 <p>The creation and modification of group hierarchies are supported by the methods of the UserGroupToGroupManager. Following
 are code examples for this.</p>
@@ -708,11 +711,11 @@ UserGroupToGroupManager userGroupToGroupMgr;
 </div>
 </div>
 <div class="sect2">
-<h3 id="_roleprivilege_inheritance_through_the_group_hierarchy">5.5. Role/privilege inheritance through the group hierarchy</h3>
+<h3 id="_roleprivilege_inheritance_through_the_group_hierarchy">Role/privilege inheritance through the group hierarchy</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_queries_using_service_query">5.6. Queries using service query</h3>
+<h3 id="_queries_using_service_query">Queries using service query</h3>
 <div class="paragraph">
 <p>Using a service query implementation, simple database queries can be created and executed, which are usually sufficient
 for entity management. A service query is based on a root entity (user, group, role, privilege or token).</p>
@@ -815,7 +818,7 @@ serviceQuery.withCount(); <span class="comment">// in addition to the partial hi
 </div>
 </div>
 <div class="sect2">
-<h3 id="_create_assign_and_modify_events">5.7. Create, assign and modify events</h3>
+<h3 id="_create_assign_and_modify_events">Create, assign and modify events</h3>
 <div class="paragraph">
 <p>User Service Events serve to implement their own logic before, during or after actions of the User Service. Three types
 of events have been defined for this purpose:</p>
@@ -858,7 +861,7 @@ can then be implemented within the method.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_api_lookup_cache">5.8. API Lookup / Cache</h3>
+<h3 id="_api_lookup_cache">API Lookup / Cache</h3>
 <div class="paragraph">
 <p>The user service provides a lookup implementation. It can be used for queries whether a user is a member of a certain
 group, or whether a user is assigned a certain role, etc. In contrast to the queries of the manager classes, which access
@@ -929,7 +932,7 @@ User user = UserContext.getCurrentUser();</code></pre>
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 For authentication/authorization: The current user is determined using the Spring Security context. so this must
@@ -974,7 +977,7 @@ determine the current user.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cache_implementation">5.9. Cache implementation</h3>
+<h3 id="_cache_implementation">Cache implementation</h3>
 <div class="paragraph">
 <p>This document is based on the user service version 1.2. The cache implementation used for the above lookup methods is
 Infinispan. To use the Infinispan cache, the following Spring configuration and the Infinispan configuration itself must
@@ -1039,7 +1042,7 @@ an invalidation cache (see also <a href="https://infinispan.org/docs/stable/user
 </div>
 </div>
 <div class="sect2">
-<h3 id="_alternative_cache_implementation">5.10. Alternative cache implementation</h3>
+<h3 id="_alternative_cache_implementation">Alternative cache implementation</h3>
 <div class="paragraph">
 <p>In order to use a different cache implementation than Infinispan, the following entry must be made in the <em>yaml</em> configuration:</p>
 </div>
@@ -1079,7 +1082,7 @@ is expected in the Spring application context, defined as follows:</p>
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 The conditional annotation is not necessary; however, if the cache type is not CUSTOM, then the annotation will not
@@ -1109,7 +1112,7 @@ create the bean.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_securing_rest_endpoints">6. Securing REST endpoints</h2>
+<h2 id="_securing_rest_endpoints">Securing REST endpoints</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring security should be used to secure the REST endpoints. Below is a brief description of such a protection. Of course,
@@ -1225,7 +1228,7 @@ For more information, refer to the API documentation for <em>de.eitco.commons.us
 </div>
 </div>
 <div class="sect1">
-<h2 id="_client_management">7. Client management</h2>
+<h2 id="_client_management">Client management</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">Configuration of the client management</div>
@@ -1257,7 +1260,7 @@ For more information, refer to the API documentation for <em>de.eitco.commons.us
 </div>
 </div>
 <div class="sect1">
-<h2 id="_ldap_synchronisation">8. LDAP synchronisation</h2>
+<h2 id="_ldap_synchronisation">LDAP synchronisation</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">LDAP synchronisation configuration</div>
@@ -1296,7 +1299,7 @@ For more information, refer to the API documentation for <em>de.eitco.commons.us
 </div>
 </div>
 <div class="sect2">
-<h3 id="_unit_testing">8.1. Unit testing</h3>
+<h3 id="_unit_testing">Unit testing</h3>
 <div class="paragraph">
 <p>The User Service can be used to set a user context for unit tests. It is also possible to use the Spring Security on-board
 tools, such as the WithMockUser annotation. However, the full range of functions of the User Service is not available with
@@ -1328,7 +1331,7 @@ specified for Maven and Gradle:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_withtestuser_annotation">8.1.1. WithTestUser annotation</h4>
+<h4 id="_withtestuser_annotation">WithTestUser annotation</h4>
 <div class="paragraph">
 <p>The <em>@WithTestUser</em> annotation has two parameters. These are the value parameter and the resetData parameter. The <em>value</em>
 parameter is used to define the user context and the <em>resetData</em> parameter is used to indicate whether all user, group,
@@ -1386,7 +1389,7 @@ By means of the postfix superuser, the user becomes the superuser (e.g. u.fooUse
 </table>
 </div>
 <div class="sect3">
-<h4 id="_client_context">8.1.2. Client context</h4>
+<h4 id="_client_context">Client context</h4>
 <div class="paragraph">
 <p>The client context of a test class or a test method can be set with the <em>@WithTenant</em> annotation. If no annotation is set,
 the master tenant is automatically used. For this purpose, the <em>FullTestExecutionListener</em> must be set as <em>TestExecutionListener</em>
@@ -1395,7 +1398,7 @@ by means of the class annotation <em>TestExecutionListeners</em> (even if the an
 </div>
 </div>
 <div class="sect2">
-<h3 id="_setup_import">8.2. Setup import</h3>
+<h3 id="_setup_import">Setup import</h3>
 <div class="paragraph">
 <p>The setup import is used to import configured tokens, roles, groups, users and their assignments. In the same way, OAuth
 client configurations can be imported via setup import.</p>
@@ -1408,7 +1411,7 @@ client configurations can be imported via setup import.</p>
 instance in which the user service is embedded.</p>
 </div>
 <div class="sect3">
-<h4 id="_token_import">8.2.1. Token import</h4>
+<h4 id="_token_import">Token import</h4>
 <div class="paragraph">
 <p>The following exemplary YAML configuration shows the structure of a configuration for the token import. The two tokens
 fooToken1 and fooToken2 are defined.</p>
@@ -1417,7 +1420,7 @@ fooToken1 and fooToken2 are defined.</p>
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 To set a token value, the name of the SecToken pojo attribute is to be used in the configuration.
@@ -1459,7 +1462,7 @@ To set a token value, the name of the SecToken pojo attribute is to be used in t
 </div>
 </div>
 <div class="sect3">
-<h4 id="_role_import">8.2.2. Role Import</h4>
+<h4 id="_role_import">Role Import</h4>
 <div class="paragraph">
 <p>The following exemplary YAML configuration shows the structure of a configuration for role import. The two roles fooRole1
 and fooRole2 are defined.</p>
@@ -1468,7 +1471,7 @@ and fooRole2 are defined.</p>
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 To set a role value, the name of the UserRole pojo attribute must be used in the configuration.
@@ -1495,7 +1498,7 @@ To set a role value, the name of the UserRole pojo attribute must be used in the
 </div>
 </div>
 <div class="sect2">
-<h3 id="_group_import">8.3. Group import</h3>
+<h3 id="_group_import">Group import</h3>
 <div class="paragraph">
 <p>The following exemplary YAML configuration shows the structure of a configuration for the group import. The two groups fooGroup1
 and fooGroup2 are defined.</p>
@@ -1504,7 +1507,7 @@ and fooGroup2 are defined.</p>
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 To set a group value, the name of the UserGroup pojo attribute must be used in the configuration.
@@ -1554,7 +1557,7 @@ To set a group value, the name of the UserGroup pojo attribute must be used in t
 </div>
 </div>
 <div class="sect3">
-<h4 id="_user_import">8.3.1. User Import</h4>
+<h4 id="_user_import">User Import</h4>
 <div class="paragraph">
 <p>The following exemplary <em>yaml</em> configuration shows the structure of a configuration for the user import. The user fooUser1
 is defined.</p>
@@ -1563,7 +1566,7 @@ is defined.</p>
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<div class="title">Note</div>
 </td>
 <td class="content">
 To set a user value, the name of the user pojo attribute must be used in the configuration.
@@ -1610,7 +1613,7 @@ To set a user value, the name of the user pojo attribute must be used in the con
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-10 10:52:46 UTC
+Last updated 2023-02-13 10:30:02 UTC
 </div>
 </div>
 <style>
