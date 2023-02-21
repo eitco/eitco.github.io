@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Commons Tenants 1.0.5</title>
+<title>Commons Tenants 2.0.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -164,16 +164,16 @@ window.onload = function() {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
+<div id="toctitle">commons tenant service 2.0.0</div>
 <ul class="sectlevel1">
-<li><a href="#_commons_tenants_1_0_5">1. Commons Tenants 1.0.5</a>
+<li><a href="#_commons_tenants_2_0_0">Commons Tenants 2.0.0</a>
 <ul class="sectlevel2">
-<li><a href="#_tenants">1.1. Tenants</a></li>
-<li><a href="#_approach">1.2. Approach</a></li>
-<li><a href="#_usage">1.3. Usage</a></li>
-<li><a href="#_the_fallback_tenant">1.4. The fallback tenant</a></li>
-<li><a href="#_configuration">1.5. Configuration</a></li>
-<li><a href="#_migration_from_legacy_tenant_implementation">1.6. Migration from legacy tenant implementation</a></li>
+<li><a href="#_tenants">Tenants</a></li>
+<li><a href="#_approach">Approach</a></li>
+<li><a href="#_usage">Usage</a></li>
+<li><a href="#_the_fallback_tenant">The fallback tenant</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_migration_from_legacy_tenant_implementation">Migration from legacy tenant implementation</a></li>
 </ul>
 </li>
 </ul>
@@ -181,16 +181,17 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_commons_tenants_1_0_5">1. Commons Tenants 1.0.5</h2>
+<h2 id="_commons_tenants_2_0_0">Commons Tenants 2.0.0</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This project contains spring components that implement tenant awareness.
 The approach implemented here does not strictly separate all data of different tenants.
-Instead, it allows to specify what belongs to which tenant more fine-grained, and even allows for data to be available over all tenants.
-If a more strict separation is needed, it is advised to simply use a multi-instance architecture. <a href="https://kubernetes.io/de/">Kubernetes</a> will be a great help, then.</p>
+Instead, it allows to specify what belongs to which tenant more fine-grained.
+If a more strict separation is needed, it is advised to simply use a multi-instance architecture.
+<a href="https://kubernetes.io/de/">Kubernetes</a> will be a great help, then.</p>
 </div>
 <div class="sect2">
-<h3 id="_tenants">1.1. Tenants</h3>
+<h3 id="_tenants">Tenants</h3>
 <div class="paragraph">
 <p>Multitenancy means that multiple independent instances of one or multiple applications operate in a shared environment. The instances (tenants) are therefore logically isolated.</p>
 </div>
@@ -223,7 +224,7 @@ Client applications are advised to prefer showing the display-name.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_approach">1.2. Approach</h3>
+<h3 id="_approach">Approach</h3>
 <div class="paragraph">
 <p>As seen above, users are assigned to tenants.
 This is done in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/cmn-user-management-parent/development-SNAPSHOT/documentation/index.html">commons User Management Service</a>.
@@ -251,7 +252,7 @@ Utilities creating suitable database query conditions are provided here.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_usage">1.3. Usage</h3>
+<h3 id="_usage">Usage</h3>
 <div class="paragraph">
 <p>In order to use multi-tenancy add the following dependency to your project:</p>
 </div>
@@ -260,7 +261,7 @@ Utilities creating suitable database query conditions are provided here.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons.tenant<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>cmn-tenant-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>1.0.5<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>2.0.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -278,7 +279,7 @@ Utilities creating suitable database query conditions are provided here.</p>
 </ol>
 </div>
 <div class="sect3">
-<h4 id="_the_tenant_scope">1.3.1. The Tenant Scope</h4>
+<h4 id="_the_tenant_scope">The Tenant Scope</h4>
 <div class="paragraph">
 <p>There can be occasions where your components contain data, that should be separated by tenant.
 In a classical microservice architecture this is mostly the case with caches.
@@ -323,7 +324,7 @@ In such cases you can use the annotation <code>de.eitco.commons.tenant.scope.Ten
 If such a claim exists, it is the tenant name used.
 Otherwise - or if there is no current authentication, the <a href="#_the_fallback_tenant">fallback-tenant</a> will be used.
 The tenant scope basically holds a map of maps containing all tenant scoped bean instances grouped by tenant name first and then bean name.
-It will use the deduced tenant name and the name of the bean get the bean instance - creating it if necessary.</p>
+It will use the deduced tenant name and the name of the bean to get the bean instance - creating it if necessary.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -341,7 +342,7 @@ Should you use a different authentication service, it is your responsibility to 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_utilities_for_data_separation">1.3.2. Utilities for data separation</h4>
+<h4 id="_utilities_for_data_separation">Utilities for data separation</h4>
 <div class="paragraph">
 <p>In order to implement tenant separation, the data that is not stored by your application in-memory, will need to be separated, too.
 This module provides utilities to do this in a unified way.</p>
@@ -352,15 +353,15 @@ You could use the tenant name for this, but in most cases the application will p
 The tenant id is a numerical id assigned to tenants by creation.
 It will never change.
 To obtain the id (and other information) about the current tenant inject a bean of type <code>de.eitco.commons.tenant.list.CurrentTenant</code>.
-To obtain the id of the current tenant simply call its method <code>id()</code>.
 Keep in mind, that it does return <code>null</code> for the fallback tenant.
 So, your data model will need to be able to handle <code>null</code> as tenant id (see <a href="#_configuration">configuration</a> if this is not desired).
+To obtain the id of the current tenant simply call its method <code>id()</code>.
 In most situations you will want to add this id to your data when data is created and never change it.</p>
 </div>
 <div class="paragraph">
 <p>Second, you will need to adapt your queries to the application.
 In order to do that you can inject an instance of <code>de.eitco.commons.tenant.sdk.filter.EqlTenantFilterFactory</code> if you are using <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.query.language/eql-parent/development-SNAPSHOT/documentation/index.html">eql</a> or <code>de.eitco.commons.tenant.jooq.filter.JooqTenantFilterFactory</code> if you are using <a href="https://www.jooq.org/">jooq</a>.
-These utilities provide methods that create instances of <code>FilterExtender</code> - classes that can adapt query conditions to additionally only select instances that belong to the current tenant.</p>
+These utilities provide methods that create instances of <code>FilterExtender</code> - classes that can adapt query conditions to additionally only select entities that belong to the current tenant.</p>
 </div>
 <div class="sect4">
 <h5 id="_an_example_of_a_tenant_separated_model">An example of a tenant-separated model</h5>
@@ -433,7 +434,7 @@ These utilities provide methods that create instances of <code>FilterExtender</c
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Note, that the <code>tenant_id</code> may be <code>null</code>. In this case the customer resides in the fallback-tenant. Whether this should be allowed or not is the application developers decision and depends on the applications requirements. In this example it is allowed, for demonstration purposes.</td>
+<td>In this example the tenant id is allowed to be null for testing purposes. In most real world scenarios, the tenant id must never be null.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -609,7 +610,7 @@ These utilities provide methods that create instances of <code>FilterExtender</c
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Otherwise, the tenant id is set to <code>null</code></td>
+<td>Otherwise, the tenant id is set to <code>null</code>. Note that this would be an error in most real world scenarios and is done here for testing purposes only.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -755,7 +756,7 @@ These utilities provide methods that create instances of <code>FilterExtender</c
 <p>As one can see, the result is still an <code>TxmInvoiceRecord</code>. The downside however, is that the query contains a sub-select now, which - depending on your scenario - might have a performance impact.</p>
 </div>
 <div class="paragraph">
-<p>Should <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.query.language/eql-parent/2.1.1/documentation/index.html">eql</a> be used for searches, this is supported by its search service builder:</p>
+<p>Should <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.query.language/eql-parent/2.1.10/documentation/index.html">eql</a> be used for searches, this is supported by its search service builder:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -801,7 +802,7 @@ These utilities provide methods that create instances of <code>FilterExtender</c
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_fallback_tenant">1.4. The fallback tenant</h3>
+<h3 id="_the_fallback_tenant">The fallback tenant</h3>
 <div class="paragraph">
 <p>There are situations where the current authentication context does not have a tenant claim or is simply not available.
 In these cases the current tenant falls back to the fallback tenant.
@@ -812,14 +813,17 @@ It can be <a href="#_configuration">configured</a> in which cases this is allowe
 This means that the filter extenders will not add anything to the given conditions and just return them as given.
 However, it does have its own scope instance.
 So in a system where the fallback tenant is used additional to other tenants, the fallback tenant will have its own set of Spring beans - as any other tenant has.
-The fallback tenant will not be listed in any other internal lists, even the <code>CurrentTenant</code> bean sees the fallback tenant as non-existent.</p>
+The fallback tenant will not be listed in any other internal lists, even the <code>CurrentTenant</code> bean sees the fallback tenant as non-existent.
+The purpose of this implementation is to allow easy integration tests of tenant functionality in systems that support single-tenant and multi-tenant scenarios.
+In a productive environment, the fallback tenant might still be required in special circumstances like early initialization
+tasks when the application starts. When actual data is handled, the absence of a tenant context in a multi-tenant application indicates an error.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration">1.5. Configuration</h3>
+<h3 id="_configuration">Configuration</h3>
 <div class="paragraph">
 <p>The core behaviour of the tenant feature is controlled by the <a href="https://spring.io/projects/spring-cloud-config">spring property</a> <code>multi-tenancy.mode</code>.
-The possible values are <code>disabled</code>, <code>allowed</code> and <code>enforced</code>.
+The possible values are <code>disabled</code>, <code>test</code> and <code>enforced</code>.
 Changing this property after tenants (other than the fallback-tenant) are defined will lead to undefined behaviour.</p>
 </div>
 <div class="paragraph">
@@ -840,14 +844,26 @@ In a scenario where tenants are disabled and another service as the commons User
 </table>
 </div>
 <div class="paragraph">
-<p><code>allowed</code> will lead to the behaviour described above: Tenants can be defined in the commons User Management Service and will be available side by side with the fallback-tenant.
+<p><code>test</code> will lead to the behaviour described above: Tenants can be defined in the commons User Management Service and will be available side by side with the fallback-tenant.
 With the fallback tenant being a view to the system where tenants are not separated.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The test mode must not be used in a production environment because data separation between tenants is not enforced.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><code>enfored</code>, however, will lead to a behaviour where the fallback-tenant is not available.
 This means that the commons User Management Service will never issue tokens without a tenant claim and authentication tokens without a tenant claim will not be accepted.
 The scope instance for the fallback tenant might still exist.
-This will happen in cases where beans are requested in a situation where not authentication is available.
+This will happen in cases where beans are requested in a situation where no authentication is available.
 Even strictly separated systems may have code that is tenant-overlapping.</p>
 </div>
 <div class="admonitionblock warning">
@@ -863,7 +879,7 @@ In a scenario where tenant are enforced and another service as the commons user 
 </table>
 </div>
 <div class="sect3">
-<h4 id="_initial_tenants">1.5.1. Initial tenants</h4>
+<h4 id="_initial_tenants">Initial tenants</h4>
 <div class="paragraph">
 <p>The spring property <code>multi-tenancy.initial-tenants</code> holds a list containing the tenants to create when starting the application.
 This will only be read in the commons User Management Service and is only thought for application bootstrapping.
@@ -886,7 +902,7 @@ If the display name is not given, the name will also be used as display name.</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="_migration_from_legacy_tenant_implementation">1.6. Migration from legacy tenant implementation</h3>
+<h3 id="_migration_from_legacy_tenant_implementation">Migration from legacy tenant implementation</h3>
 <div class="paragraph">
 <p>The legacy tenant implementation separated tenants by database connection.
 This was enforced, so even applications that were not really tenant aware needed to specify at least one tenant that simply was used always.
@@ -894,7 +910,7 @@ This also meant, that database connections were configured differently than in a
 Depending on the tenant awareness of the application migrated, migration will be different.</p>
 </div>
 <div class="sect3">
-<h4 id="_migration_of_tenant_unaware_applications">1.6.1. Migration of tenant-unaware applications</h4>
+<h4 id="_migration_of_tenant_unaware_applications">Migration of tenant-unaware applications</h4>
 <div class="paragraph">
 <p>In the case of an application that is totally tenant unaware, the changes are pretty simple.
 There will be some default configuration defining a tenant, which will look like this:</p>
@@ -969,7 +985,7 @@ Some services did use the tenants numerical id for offsets of id sequences. This
 </div>
 </div>
 <div class="sect3">
-<h4 id="_migration_of_single_tenant_systems">1.6.2. Migration of single tenant systems</h4>
+<h4 id="_migration_of_single_tenant_systems">Migration of single tenant systems</h4>
 <div class="paragraph">
 <p>Some applications are tenant-aware by design, but are deployed in a single tenant environment. In most such cases by convention a second tenant named "master" was specified holding authentication client configuration. This second tenant is unnecessary with the new tenant implementation. This means - as with <a href="#_migration_of_tenant_unaware_applications">tenant unaware applications</a> - we can use the database from an existing tenant: The tenant that is not called "master". The old configuration will look like this:</p>
 </div>
@@ -1140,7 +1156,7 @@ As above, Some services did use the tenants numerical id for offsets of id seque
 </div>
 </div>
 <div class="sect3">
-<h4 id="_migrating_a_real_multi_tenant_application">1.6.3. Migrating a real multi-tenant application</h4>
+<h4 id="_migrating_a_real_multi_tenant_application">Migrating a real multi-tenant application</h4>
 <div class="paragraph">
 <p>In this case there is some work to do. The most cumbersome will be merging the databases. Choose one tenant to be your "main tenant". That is: The tenant whose database will be used after the migration. Let&#8217;s assume its name is <code>main-tenant</code>. In your configuration find a section that looks like this, by locating the tenant with the tenant-id <code>main-tenant</code>.</p>
 </div>
@@ -1192,7 +1208,7 @@ As above, some services did use the tenants numerical id for offsets of id seque
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-18 09:37:15 UTC
+Last updated 2023-02-21 14:18:18 UTC
 </div>
 </div>
 <style>
