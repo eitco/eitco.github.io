@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Commons Tenants 2.0.0</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">commons tenant service 2.0.0</div>
+<ul class="sectlevel1">
+<li><a href="#_commons_tenants_2_0_0">Commons Tenants 2.0.0</a>
+<ul class="sectlevel2">
+<li><a href="#_tenants">Tenants</a></li>
+<li><a href="#_approach">Approach</a></li>
+<li><a href="#_usage">Usage</a></li>
+<li><a href="#_the_fallback_tenant">The fallback tenant</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_migration_from_legacy_tenant_implementation">Migration from legacy tenant implementation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_commons_tenants_2_0_0">Commons Tenants 2.0.0</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This project contains spring components that implement tenant awareness.
+The approach implemented here does not strictly separate all data of different tenants.
+Instead, it allows to specify what belongs to which tenant more fine-grained.
+If a more strict separation is needed, it is advised to simply use a multi-instance architecture.
+<a href="https://kubernetes.io/de/">Kubernetes</a> will be a great help, then.</p>
+</div>
+<div class="sect2">
+<h3 id="_tenants">Tenants</h3>
+<div class="paragraph">
+<p>Multitenancy means that multiple independent instances of one or multiple applications operate in a shared environment. The instances (tenants) are therefore logically isolated.</p>
+</div>
+<div class="paragraph">
+<p>According to a Wikipedia definition,</p>
+</div>
+<div class="paragraph">
+<p><em>A tenant is a group of users who share a common access with specific privileges to the software instance.
+With a multitenant architecture, a software application is designed to provide every tenant a dedicated share of the instance - including its data, configuration, user management, tenant individual functionality and non-functional properties.</em></p>
+</div>
+<div class="paragraph">
+<p>This project aims at enabling developers to easily implement multi-tenancy in their project.
+It provides a service that manages tenants.
+Tenants can be created, queried, edited and deleted at runtime.</p>
+</div>
+<div class="paragraph">
+<p>A tenant has the following properties:</p>
+</div>
+<div class="paragraph">
+<p><code>name</code>: The name of a tenant is a unique string that identifies the tenant through the system.</p>
+</div>
+<div class="paragraph">
+<p><code>id</code>: The id of a tenant is a 32bit integer that also identifies the tenant through the system.</p>
+</div>
+<div class="paragraph">
+<p><code>display-name</code>: The display name of a tenant provides a human-readable name for a tenant.
+It is not necessarily unique - but keeping it unique is good practice.
+As opposed to the name, the display-name may change for an existing tenant.
+Client applications are advised to prefer showing the display-name.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_approach">Approach</h3>
+<div class="paragraph">
+<p>As seen above, users are assigned to tenants.
+This is done in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons/cmn-user-management-parent/development-SNAPSHOT/documentation/index.html">commons User Management Service</a>.
+When issuing an authentication token, the User Management Service adds the name of the tenant to the token.
+When the token is validated by any application that uses the components of this project the tenant is deduced from the token.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Note that the actual implementation is independent of the User Management Service.
+The user management does implement multi-tenancy, but could be omitted should your scenario use a different authentication service.
+This would require some work, though.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Information about the current tenant will then be available in a spring component, also a spring scope will be available that holds a different bean instance for every tenant.
+It is the applications responsibility then to use this information to separate its data by tenant.
+Utilities creating suitable database query conditions are provided here.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage">Usage</h3>
+<div class="paragraph">
+<p>In order to use multi-tenancy add the following dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.commons.tenant<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>cmn-tenant-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>2.0.0<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>add a scope named <code>"tenant"</code> to your Spring application</p>
+</li>
+<li>
+<p>provide utility beans to separate tenant specific data</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_the_tenant_scope">The Tenant Scope</h4>
+<div class="paragraph">
+<p>There can be occasions where your components contain data, that should be separated by tenant.
+In a classical microservice architecture this is mostly the case with caches.
+But also connections to 3rd party systems might be separated by tenant.</p>
+</div>
+<div class="paragraph">
+<p>To separate a bean tenant-wise simply use the scope named <code>"tenant"</code>.
+There is a constant for this in <code>de.eitco.commons.tenant.scope.TenantScope</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> NAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">tenant</span><span class="delimiter">&quot;</span></span>;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Thus you can simply add a scope annotation to your bean definition using this constant:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Bean</span>
+    <span class="annotation">@Lazy</span>
+    <span class="annotation">@Scope</span>(value = TenantScope.NAME, proxyMode = ScopedProxyMode.INTERFACES)
+    <span class="directive">public</span> CurrentTenantName nameOfCurrentTenant() {</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that a <em>proxyMode</em> is specified.
+Since for a tenant scoped bean there will most likely exist several instances at runtime, Spring will need to create thread-proxies to separate the bean instances by thread.
+In this example we use <code>ScopedProxyMode.INTERFACES</code>, since <code>CurrentTenantName</code> is an interface and only this class should be used for injection.
+Should your bean be designed to be used by its class - and not its interface(s) - use <code>ScopedProxyMode.TARGET_CLASS</code> instead.
+In such cases you can use the annotation <code>de.eitco.commons.tenant.scope.TenantScoped</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Bean</span>
+    <span class="annotation">@TenantScoped</span>
+    <span class="directive">public</span> TenantScopedMap map() {</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At runtime, when such a bean is used, the system will check the current authentication for a tenant name claim.
+If such a claim exists, it is the tenant name used.
+Otherwise - or if there is no current authentication, the <a href="#_the_fallback_tenant">fallback-tenant</a> will be used.
+The tenant scope basically holds a map of maps containing all tenant scoped bean instances grouped by tenant name first and then bean name.
+It will use the deduced tenant name and the name of the bean to get the bean instance - creating it if necessary.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This implementation trusts the tenant claim of the authentication token.
+The commons User services authentication component assures that only tenant claims are issued, where the tokens user is assigned to the claimed tenant.
+Should you use a different authentication service, it is your responsibility to assure that only valid tenant claims are issued.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_utilities_for_data_separation">Utilities for data separation</h4>
+<div class="paragraph">
+<p>In order to implement tenant separation, the data that is not stored by your application in-memory, will need to be separated, too.
+This module provides utilities to do this in a unified way.</p>
+</div>
+<div class="paragraph">
+<p>First, you will need to mark your data with the tenant assigned.
+You could use the tenant name for this, but in most cases the application will perform better if you use the tenant id.
+The tenant id is a numerical id assigned to tenants by creation.
+It will never change.
+To obtain the id (and other information) about the current tenant inject a bean of type <code>de.eitco.commons.tenant.list.CurrentTenant</code>.
+Keep in mind, that it does return <code>null</code> for the fallback tenant.
+So, your data model will need to be able to handle <code>null</code> as tenant id (see <a href="#_configuration">configuration</a> if this is not desired).
+To obtain the id of the current tenant simply call its method <code>id()</code>.
+In most situations you will want to add this id to your data when data is created and never change it.</p>
+</div>
+<div class="paragraph">
+<p>Second, you will need to adapt your queries to the application.
+In order to do that you can inject an instance of <code>de.eitco.commons.tenant.sdk.filter.EqlTenantFilterFactory</code> if you are using <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.query.language/eql-parent/development-SNAPSHOT/documentation/index.html">eql</a> or <code>de.eitco.commons.tenant.jooq.filter.JooqTenantFilterFactory</code> if you are using <a href="https://www.jooq.org/">jooq</a>.
+These utilities provide methods that create instances of <code>FilterExtender</code> - classes that can adapt query conditions to additionally only select entities that belong to the current tenant.</p>
+</div>
+<div class="sect4">
+<h5 id="_an_example_of_a_tenant_separated_model">An example of a tenant-separated model</h5>
+<div class="paragraph">
+<p>Assume we have a model defined be the following <a href="https://docs.liquibase.com/">liquibase script</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.1&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;databaseChangeLog</span>
+        <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.liquibase.org/xml/ns/dbchangelog</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.liquibase.org/xml/ns/dbchangelog</span>
+                      <span class="content">http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">logicalFilePath</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">tenant-tables.xml</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+
+
+    <span class="tag">&lt;changeSet</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">tenant-example</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">author</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">cmn-tenant-service</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">objectQuotingStrategy</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">QUOTE_ALL_OBJECTS</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+        <span class="tag">&lt;createTable</span> <span class="attribute-name">tableName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">txm_customer</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="tag">&lt;column</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">autoIncrement</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">startWith</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;constraints</span> <span class="attribute-name">nullable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">primaryKey</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">unique</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/column&gt;</span>
+            <span class="tag">&lt;column</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">first_name</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">varchar(128)</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;column</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">last_name</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">varchar(128)</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;column</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">tenant_id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="tag">&lt;constraints</span> <span class="attribute-name">nullable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="tag">&lt;/column&gt;</span>
+        <span class="tag">&lt;/createTable&gt;</span>
+
+        <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="tag">&lt;addForeignKeyConstraint</span> <span class="attribute-name">baseTableName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">txm_customer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">baseColumnNames</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">tenant_id</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">constraintName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fk_customer_tenant</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">referencedTableName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">usrv_tenant</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">referencedColumnNames</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">onDelete</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">CASCADE</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="5"></i><b>(5)</b>
+
+        <span class="tag">&lt;createTable</span> <span class="attribute-name">tableName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">txm_invoice</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="6"></i><b>(6)</b>
+            <span class="tag">&lt;column</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">autoIncrement</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">startWith</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;constraints</span> <span class="attribute-name">nullable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">primaryKey</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">unique</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/column&gt;</span>
+            <span class="tag">&lt;column</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;constraints</span> <span class="attribute-name">nullable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+            <span class="tag">&lt;/column&gt;</span>
+            <span class="tag">&lt;column</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">total</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">int</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;/createTable&gt;</span>
+
+        <i class="conum" data-value="7"></i><b>(7)</b>
+        <span class="tag">&lt;addForeignKeyConstraint</span> <span class="attribute-name">baseTableName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">txm_invoice</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">baseColumnNames</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">constraintName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fk_invoice_customter</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">referencedTableName</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">txm_customer</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">referencedColumnNames</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>
+                                 <span class="attribute-name">onDelete</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">CASCADE</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span> <i class="conum" data-value="8"></i><b>(8)</b>
+
+    <span class="tag">&lt;/changeSet&gt;</span>
+
+<span class="tag">&lt;/databaseChangeLog&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The first part of the model is the customer. A customer has an <code>id</code> and some personal data.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Customers also have a <code>tenant_id</code>. This is the numerical id of the tenant they reside in.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>In this example the tenant id is allowed to be null for testing purposes. In most real world scenarios, the tenant id must never be null.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A foreign key to the tenant table is added to ensure data consistency.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Note, that the foreign key cascades on delete. This means, should a tenant be deleted all customers residing in this tenant will be deleted, too. Again, adding this is or not depends on the applications requirements, more precisely on whether it is expected that tenants are deleted, or not.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The second part of the model is the invoice. An invoice belongs to a customer and has a total sum.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Also, to ensure data consistency a foreign key between invoice and customer is added.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Note, that for the deletion on cascade of the foreign key between customer and tenant to work properly, the foreign key between invoice and customer needs to delete on cascade, too</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note, that the information, in which tenant an invoice resides in, is only implicitly given by the invoices' customer. Depending on the scenario it could be a better choice to add a <code>tenant_id</code> field to the invoices, too. In this example this is not done, solely due to demonstration purposes.</p>
+</div>
+<div class="paragraph">
+<p>Using <a href="https://www.jooq.org/">jooq</a> we generate classes representing these tables. This is done using the <a href="https://www.jooq.org/doc/latest/manual/code-generation/">jooq code generator</a>.</p>
+</div>
+<div class="paragraph">
+<p>Further, to use the model in the code, or to serialize via json, simple immutable data classes are written:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Customer</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> id;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> firstName;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> lastName;
+
+    <span class="directive">public</span> Customer(<span class="type">int</span> id, <span class="predefined-type">String</span> firstName, <span class="predefined-type">String</span> lastName) {
+        <span class="local-variable">this</span>.id = id;
+        <span class="local-variable">this</span>.firstName = firstName;
+        <span class="local-variable">this</span>.lastName = lastName;
+    }
+
+    <span class="directive">public</span> <span class="type">int</span> getId() {
+        <span class="keyword">return</span> id;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getFirstName() {
+        <span class="keyword">return</span> firstName;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getLastName() {
+        <span class="keyword">return</span> lastName;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Invoice</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> id;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> customer;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> total;
+
+    <span class="directive">public</span> Invoice(<span class="type">int</span> id, <span class="type">int</span> customer, <span class="type">int</span> total) {
+        <span class="local-variable">this</span>.id = id;
+        <span class="local-variable">this</span>.customer = customer;
+        <span class="local-variable">this</span>.total = total;
+    }
+
+    <span class="directive">public</span> <span class="type">int</span> getId() {
+        <span class="keyword">return</span> id;
+    }
+
+    <span class="directive">public</span> <span class="type">int</span> getCustomer() {
+        <span class="keyword">return</span> customer;
+    }
+
+    <span class="directive">public</span> <span class="type">int</span> getTotal() {
+        <span class="keyword">return</span> total;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Those classes simply hold the same properties as the database tables. Also, there are data classes holding the properties of the tables that need to be provided on creation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">CustomerInput</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> firstName;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> lastName;
+
+    <span class="directive">public</span> CustomerInput(<span class="predefined-type">String</span> firstName, <span class="predefined-type">String</span> lastName) {
+        <span class="local-variable">this</span>.firstName = firstName;
+        <span class="local-variable">this</span>.lastName = lastName;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getFirstName() {
+        <span class="keyword">return</span> firstName;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getLastName() {
+        <span class="keyword">return</span> lastName;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">InvoiceInput</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> customer;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> total;
+
+    <span class="directive">public</span> InvoiceInput(<span class="type">int</span> customer, <span class="type">int</span> total) {
+        <span class="local-variable">this</span>.customer = customer;
+        <span class="local-variable">this</span>.total = total;
+    }
+
+    <span class="directive">public</span> <span class="type">int</span> getCustomer() {
+        <span class="keyword">return</span> customer;
+    }
+
+    <span class="directive">public</span> <span class="type">int</span> getTotal() {
+        <span class="keyword">return</span> total;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As one can see, the input models simply do not contain the id, since the id is created by the database when creating entities.</p>
+</div>
+<div class="paragraph">
+<p>Now, that the model is defined, the application code needs to ensure tenant-separation. First, it needs to set the current tenant to every customer stored. Assume that a <code>CustomerInput</code> named <code>input</code> is given, and also that a bean of type <code>CurrentTenant</code> was injected to the class-field <code>currentTenant</code> .</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">                <i class="conum" data-value="1"></i><b>(1)</b>
+                TxmCustomerRecord customerRecord = <span class="keyword">new</span> TxmCustomerRecord();
+                customerRecord.setFirstName(input.getFirstName());
+                customerRecord.setLastName(input.getLastName());
+
+                customerRecord.setTenantId( <i class="conum" data-value="2"></i><b>(2)</b>
+                    currentTenant.tenant().ifExistsOrElse(
+                        tenant -&gt; tenant.getId().getValue(), <i class="conum" data-value="3"></i><b>(3)</b>
+                        () -&gt; <span class="predefined-constant">null</span> <i class="conum" data-value="4"></i><b>(4)</b>
+                    )
+                );
+
+                <i class="conum" data-value="5"></i><b>(5)</b>
+                customerRecord = context.insertInto(TxmCustomer.TXM_CUSTOMER).set(customerRecord).returning().fetchOne();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>First, a new instance of the class representing customer table entries created by the <a href="https://www.jooq.org/doc/latest/manual/code-generation/">jooq code generator</a> is created and the values given by <code>input</code> are set.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Then, the tenant id is set: using the utilility method <code>AbstractTenant.ifExistsOrElse()</code> the entries tenant id is set:</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If the current tenant is not the <a href="#_the_fallback_tenant">fallback-tenant</a>, then its id is used.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Otherwise, the tenant id is set to <code>null</code>. Note that this would be an error in most real world scenarios and is done here for testing purposes only.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Last, the entry is stored to the database using <a href="https://www.jooq.org/">jooq</a></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Storing an invoice is straightforward. Since it does not have a tenant id assigned directly, it can simply set the data obtained from the input provided, and then store it to the database:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">                TxmInvoiceRecord invoiceRecord = <span class="keyword">new</span> TxmInvoiceRecord();
+
+                invoiceRecord.setCustomer(invoiceInput.getCustomer());
+                invoiceRecord.setTotal(invoiceInput.getTotal());
+
+                invoiceRecord = context.insertInto(TxmInvoice.TXM_INVOICE).set(invoiceRecord).returning().fetchOne();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Second, the application needs to filter every search, only to return entries, that are assigned to the current tenant. We will use a <code>JooqTenantFilterFactory</code> for that. Assume that an instance is injected to the field <code>tenantFilterFactory</code>. Assume further that we are searching for customers with the first name <code>customerName</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">                <span class="directive">final</span> FilterExtender&lt;<span class="predefined-type">Condition</span>&gt; conditionFilterExtender = tenantFilterFactory.newFilterExtender(TxmCustomer.TXM_CUSTOMER.TENANT_ID); <i class="conum" data-value="1"></i><b>(1)</b>
+
+                <span class="directive">final</span> <span class="predefined-type">Result</span>&lt;TxmCustomerRecord&gt; result = context.selectFrom(TxmCustomer.TXM_CUSTOMER).where(
+                    conditionFilterExtender.apply( <i class="conum" data-value="2"></i><b>(2)</b>
+                        TxmCustomer.TXM_CUSTOMER.FIRST_NAME.eq(customerName) <i class="conum" data-value="3"></i><b>(3)</b>
+                    )
+                ).fetch();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We use <code>tenantFilterFactory</code> to create a new filter-extender that checks the field <code>tenant_id</code> to deduce an entries tenant. Note, that the constant <code>TxmCustomer.TXM_CUSTOMER.TENANT_ID</code> was <a href="https://www.jooq.org/doc/latest/manual/code-generation/">generated by jooq</a>. Note, further that in production code it would be helpful to store the filter-extender.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Then this filter-extender is applied &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>&#8230;&#8203; to the actual filter given: <code>first_name = customerName</code>, which would result in a jooq condition equivalent to <code>first_name = customerName and tenant_id = &lt;current tenant-id&gt;</code> or simply stay <code>first_name = customerName</code> in the <a href="#_the_fallback_tenant">fallback-tenant</a>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Searching for invoices in a tenant separated manner is more complicated, while it was pretty easy storing invoices. Since the invoice table does not have a <code>tenant_id</code> field, the tenant information needs to be accessed differently. One possibility would be to simply search in a join of customer and invoice and use the <code>tenant_id</code> of the customer. Assume we are searching for all invoices of the customer with the id <code>customerId</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">                <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="directive">final</span> TxmCustomer customer = TxmCustomer.TXM_CUSTOMER.as(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>);
+                <span class="directive">final</span> TxmInvoice invoice = TxmInvoice.TXM_INVOICE.as(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>);
+
+                <span class="directive">final</span> FilterExtender&lt;<span class="predefined-type">Condition</span>&gt; filterExtender = tenantFilterFactory.newFilterExtender(customer.TENANT_ID); <i class="conum" data-value="2"></i><b>(2)</b>
+
+                <span class="directive">final</span> <span class="predefined-type">Result</span>&lt;Record&gt; joinedRecords = context.selectFrom(
+                    customer.join(invoice).on(customer.ID.eq(invoice.CUSTOMER)) <i class="conum" data-value="3"></i><b>(3)</b>
+                ).where(
+                    filterExtender.apply( <i class="conum" data-value="4"></i><b>(4)</b>
+                        invoice.CUSTOMER.eq(customerId)
+                    )
+                ).fetch();
+
+                Record record = joinedRecords.get(<span class="integer">0</span>); <i class="conum" data-value="5"></i><b>(5)</b>
+                TxmInvoiceRecord invoiceFound = record.into(invoice);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>First aliases for the tables are defined, so that their id-column can be referenced to clearly.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>As with searches for customers a filter-extender is defined, now using the tenant_id field of the aliased table.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The search is now executed on the join of those aliased tables.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The filter-extender is applied the same way as to the customer-table</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The downside is, that the result is a generic jooq record now, where the correct type needs to be extracted</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Another way to search for invoices would be to use a more complicated filter-extender: a given query <code>A</code> we can extend to <code>A and (customer in (select id from txm_customer where tenant_id = [current tenant-id]))</code>. The <code>JooqTenantFilterFactory</code> has a method creating this filter-extender:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">                <span class="directive">final</span> FilterExtender&lt;<span class="predefined-type">Condition</span>&gt; crossReferenceFilterExtender = tenantFilterFactory.filterByCrossReference() <i class="conum" data-value="1"></i><b>(1)</b>
+                    .withField(TxmInvoice.TXM_INVOICE.CUSTOMER) <i class="conum" data-value="2"></i><b>(2)</b>
+                    .referringToTable(TxmCustomer.TXM_CUSTOMER) <i class="conum" data-value="3"></i><b>(3)</b>
+                    .byField(TxmCustomer.TXM_CUSTOMER.ID) <i class="conum" data-value="4"></i><b>(4)</b>
+                    .withTenantIdField(TxmCustomer.TXM_CUSTOMER.TENANT_ID); <i class="conum" data-value="5"></i><b>(5)</b>
+
+                <i class="conum" data-value="6"></i><b>(6)</b>
+                <span class="directive">final</span> <span class="predefined-type">Result</span>&lt;TxmInvoiceRecord&gt; invoices = context.selectFrom(TxmInvoice.TXM_INVOICE).where(crossReferenceFilterExtender.apply(
+                    TxmInvoice.TXM_INVOICE.CUSTOMER.eq(customerId))).fetch();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A new filter-extender using a cross-reference is created. This will create a sub-select as seen above: <code>A and (? in (select ? from ? where ? = [current tenant-id]))</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The field of the current table that holds the reference to the table containing a tenant_id is defined: <code>A and (customer in (select ? from ? where ? = [current tenant-id]))</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The table referred to is defined: <code>A and (customer in (select ? from txm_customer where ? = [current tenant-id]))</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The field referenced by the first field is defined: <code>A and (customer in (select id from txm_customer where ? = [current tenant-id]))</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>At last, the field containing the tenant id is given: <code>A and (customer in (select id from txm_customer where tenant_id = [current tenant-id]))</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The filter-extender resulting can be used as all the other filter-extenders.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As one can see, the result is still an <code>TxmInvoiceRecord</code>. The downside however, is that the query contains a sub-select now, which - depending on your scenario - might have a performance impact.</p>
+</div>
+<div class="paragraph">
+<p>Should <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.query.language/eql-parent/2.1.10/documentation/index.html">eql</a> be used for searches, this is supported by its search service builder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">                <span class="directive">final</span> FilterExtender&lt;<span class="predefined-type">Condition</span>&gt; tenantFilterExtender = tenantFilterFactory.newFilterExtender(TxmCustomer.TXM_CUSTOMER.TENANT_ID); <i class="conum" data-value="1"></i><b>(1)</b>
+
+                <span class="directive">final</span> JooqSearchService&lt;TxmCustomerRecord, <span class="predefined-type">Object</span>&gt; searchService =
+                    JooqSearchService.buildSearchServiceForTable(TxmCustomer.TXM_CUSTOMER) <i class="conum" data-value="2"></i><b>(2)</b>
+                    .fromDatabaseAccess(databaseAccessJooq)
+                    .defaultEqlTranslation(SQLDialect.POSTGRES)
+                    .addConditionPostprocessor(tenantFilterExtender::apply) <i class="conum" data-value="3"></i><b>(3)</b>
+                    .build(); <i class="conum" data-value="4"></i><b>(4)</b>
+
+                <span class="directive">final</span> <span class="predefined-type">List</span>&lt;TxmCustomerRecord&gt; records = searchService.where()
+                    .contextReference(TxmCustomer.TXM_CUSTOMER.FIRST_NAME.getName()).equalTo().value(customerName).holds()
+                    .unpaged(); <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The filter-extender can be created as before.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A jooq-search-service is created for the customer table.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>By adding the filter-extenders <code>apply()</code> method as condition post processor every search-request given will also filter for the current tenant.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Note, that the search service can be created once and be reused.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>When querying the service adding the tenant filter is not necessary.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_fallback_tenant">The fallback tenant</h3>
+<div class="paragraph">
+<p>There are situations where the current authentication context does not have a tenant claim or is simply not available.
+In these cases the current tenant falls back to the fallback tenant.
+It can be <a href="#_configuration">configured</a> in which cases this is allowed.</p>
+</div>
+<div class="paragraph">
+<p>Conceptually, the fallback tenant is the tenant where no tenants are separated.
+This means that the filter extenders will not add anything to the given conditions and just return them as given.
+However, it does have its own scope instance.
+So in a system where the fallback tenant is used additional to other tenants, the fallback tenant will have its own set of Spring beans - as any other tenant has.
+The fallback tenant will not be listed in any other internal lists, even the <code>CurrentTenant</code> bean sees the fallback tenant as non-existent.
+The purpose of this implementation is to allow easy integration tests of tenant functionality in systems that support single-tenant and multi-tenant scenarios.
+In a productive environment, the fallback tenant might still be required in special circumstances like early initialization
+tasks when the application starts. When actual data is handled, the absence of a tenant context in a multi-tenant application indicates an error.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The core behaviour of the tenant feature is controlled by the <a href="https://spring.io/projects/spring-cloud-config">spring property</a> <code>multi-tenancy.mode</code>.
+The possible values are <code>disabled</code>, <code>test</code> and <code>enforced</code>.
+Changing this property after tenants (other than the fallback-tenant) are defined will lead to undefined behaviour.</p>
+</div>
+<div class="paragraph">
+<p><code>disabled</code>: By default, the tenant feature is disabled.
+This means that only the fallback tenant is available: filter extender will never modify any query and for every tenant scoped bean there will be at most one instance: The one of the fallback-tenant.
+Authentication tokens holding a tenant claim will neither be accepted nor issued.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+In a scenario where tenants are disabled and another service as the commons User management issues authentication tokens, it is imperative that no token holding a tenant claim is issued.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>test</code> will lead to the behaviour described above: Tenants can be defined in the commons User Management Service and will be available side by side with the fallback-tenant.
+With the fallback tenant being a view to the system where tenants are not separated.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The test mode must not be used in a production environment because data separation between tenants is not enforced.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>enfored</code>, however, will lead to a behaviour where the fallback-tenant is not available.
+This means that the commons User Management Service will never issue tokens without a tenant claim and authentication tokens without a tenant claim will not be accepted.
+The scope instance for the fallback tenant might still exist.
+This will happen in cases where beans are requested in a situation where no authentication is available.
+Even strictly separated systems may have code that is tenant-overlapping.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+In a scenario where tenant are enforced and another service as the commons user management issues authentication tokens, it is imperative the every token issued holds a tenant claim.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_initial_tenants">Initial tenants</h4>
+<div class="paragraph">
+<p>The spring property <code>multi-tenancy.initial-tenants</code> holds a list containing the tenants to create when starting the application.
+This will only be read in the commons User Management Service and is only thought for application bootstrapping.
+At runtime tenants can be created and deleted dynamically by api.</p>
+</div>
+<div class="paragraph">
+<p>To add an initial tenant, simply specify its name and its display name.
+If the display name is not given, the name will also be used as display name.</p>
+</div>
+<div class="listingblock">
+<div class="title">Configuration bootstrapping two initial tenants</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">multi-tenancy</span>:
+  <span class="key">initial-tenants</span>:
+    - <span class="string"><span class="content">name: &quot;main&quot;</span></span>
+      <span class="key">display-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Main Tenant</span><span class="delimiter">&quot;</span></span>
+    - <span class="string"><span class="content">name: &quot;additional-tenant&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_migration_from_legacy_tenant_implementation">Migration from legacy tenant implementation</h3>
+<div class="paragraph">
+<p>The legacy tenant implementation separated tenants by database connection.
+This was enforced, so even applications that were not really tenant aware needed to specify at least one tenant that simply was used always.
+This also meant, that database connections were configured differently than in a spring default application.
+Depending on the tenant awareness of the application migrated, migration will be different.</p>
+</div>
+<div class="sect3">
+<h4 id="_migration_of_tenant_unaware_applications">Migration of tenant-unaware applications</h4>
+<div class="paragraph">
+<p>In the case of an application that is totally tenant unaware, the changes are pretty simple.
+There will be some default configuration defining a tenant, which will look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">tenants</span>:
+  - <span class="string"><span class="content">tenant-id: &quot;main-tenant&quot;</span></span>
+    <span class="key">numeric-id</span>: <span class="string"><span class="content">1</span></span>
+    <span class="key">db-url</span>: <span class="string"><span class="content">&lt;jdbc-url&gt;</span></span>
+    <span class="key">db-username</span>: <span class="string"><span class="content">&lt;database-user&gt;</span></span>
+    <span class="key">db-password</span>: <span class="string"><span class="content">&lt;database-password&gt;</span></span>
+    <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">&lt;jdbc-driver&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Simply use the spring default datasource config instead and remove this config:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">datasource</span>:
+    <span class="key">url</span>: <span class="string"><span class="content">&lt;jdbc-url&gt;</span></span>
+    <span class="key">username</span>: <span class="string"><span class="content">&lt;database-user&gt;</span></span>
+    <span class="key">password</span>: <span class="string"><span class="content">&lt;database-password&gt;</span></span>
+    <span class="key">driver-class-name</span>: <span class="string"><span class="content">&lt;jdbc-driver&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You might have instances of code that switches the tenant to your default tenant - you can simply remove code like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">        <span class="keyword">try</span> (<span class="directive">final</span> ScopeSwitch ignored = TenantScope.switchScopeTo(tenantName)) {
+
+
+            &lt;your application code&gt;
+        }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and replace it with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">            &lt;your application code&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+As we did not specify a multi-tenancy.mode, the default <code>disabled</code> will take effect. This means that instead of the formerly enforced "main-tenant" the fallback-tenant will now be used.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Some services did use the tenants numerical id for offsets of id sequences. This will result in service crashes when migrating this way. This is due to generated liquibase scripts differing in its checksum. One workaround would be to delete the changesets checksum on the database. A much simpler way is provided here: set the spring property <code>multi-tenancy.migration.main-migrated-tenant-numerical-id</code> to the numerical id of the old tenant. In the example above this would be 1.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_migration_of_single_tenant_systems">Migration of single tenant systems</h4>
+<div class="paragraph">
+<p>Some applications are tenant-aware by design, but are deployed in a single tenant environment. In most such cases by convention a second tenant named "master" was specified holding authentication client configuration. This second tenant is unnecessary with the new tenant implementation. This means - as with <a href="#_migration_of_tenant_unaware_applications">tenant unaware applications</a> - we can use the database from an existing tenant: The tenant that is not called "master". The old configuration will look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">tenants</span>:
+  - <span class="string"><span class="content">tenant-id: &quot;master&quot;</span></span>
+    <span class="key">numeric-id</span>: <span class="string"><span class="content">1</span></span>
+    <span class="key">db-url</span>: <span class="string"><span class="content">&lt;db-url-master&gt;</span></span>
+    <span class="key">db-username</span>: <span class="comment">#...</span>
+    <span class="comment">#...</span>
+  - <span class="string"><span class="content">tenant-id: &quot;main-tenant&quot;</span></span>
+    <span class="key">numeric-id</span>: <span class="string"><span class="content">2</span></span>
+    <span class="key">db-url</span>: <span class="string"><span class="content">&lt;db-url-tenant&gt;</span></span>
+    <span class="key">db-username</span>: <span class="string"><span class="content">&lt;database-user&gt;</span></span>
+    <span class="key">db-password</span>: <span class="string"><span class="content">&lt;database-password&gt;</span></span>
+    <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">&lt;jdbc-driver&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>First you will need to specify the spring datasource:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">datasource</span>:
+    <span class="key">url</span>: <span class="string"><span class="content">&lt;db-url-tenant&gt;</span></span>
+    <span class="key">username</span>: <span class="string"><span class="content">&lt;database-user&gt;</span></span>
+    <span class="key">password</span>: <span class="string"><span class="content">&lt;database-password&gt;</span></span>
+    <span class="key">driver-class-name</span>: <span class="string"><span class="content">&lt;jdbc-driver&gt;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This way the database used will be the one of your primary tenant. Thus, no authentication clients will be defined. To define these, adapt the configuration of the commons User Management Service as follows:</p>
+</div>
+<div class="paragraph">
+<p>There will be a section that initially defines the authentication clients in the user managements configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user-service</span>:
+  <span class="key">config-data</span>:
+    <span class="key">tenants</span>:
+      - <span class="string"><span class="content">tenant-id: all </span></span><i class="conum" data-value="1"></i><b>(1)</b>
+
+        <span class="key">token</span>:
+          - <span class="string"><span class="content">path: USER_MANAGEMENT_ADMIN</span></span>
+            <span class="key">privilegeGrantedToRoles</span>: <span class="string"><span class="content">user-management-admin</span></span>
+<span class="comment">#...</span>
+
+        <span class="key">roles</span>:
+          - <span class="string"><span class="content">name: user-management-admin</span></span>
+<span class="comment">#...</span>
+        <span class="key">users</span>:
+<span class="comment">#...</span>
+        <span class="key">groups</span>:
+<span class="comment">#...</span>
+      - <span class="string"><span class="content">tenant-id: master </span></span><i class="conum" data-value="2"></i><b>(2)</b>
+
+        <span class="key">oauth2-clients</span>:
+          - <span class="string"><span class="content">clientId: tech-client</span></span>
+            <span class="key">resourceIds</span>:
+              - <span class="string"><span class="content">cmn-user-management-enterprise-service</span></span>
+              - <span class="string"><span class="content">user-management-service</span></span>
+              - <span class="string"><span class="content">ecr-service</span></span>
+              - <span class="string"><span class="content">cmn-user-management-access-control-service</span></span>
+              - <span class="string"><span class="content">cmn-audit-service</span></span>
+              - <span class="string"><span class="content">document-conversion-service</span></span>
+            <span class="key">clientSecret</span>: <span class="string"><span class="content">my-secret</span></span>
+            <span class="key">authorizedGrantTypes</span>:
+              - <span class="string"><span class="content">password</span></span>
+              - <span class="string"><span class="content">client_credentials</span></span>
+              - <span class="string"><span class="content">refresh_token</span></span>
+            <span class="key">authorities</span>:
+              - <span class="string"><span class="content">CMN-USER-MANAGEMENT-ENTERPRISE_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">USER_MANAGEMENT_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">USER_MANAGEMENT_USER</span></span>
+              - <span class="string"><span class="content">ECR_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">CMN-USER-MANAGEMENT-ACCESS-CONTROL_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">CMN-AUDIT_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">AUDIT_ADMIN</span></span>
+              - <span class="string"><span class="content">SOLR_USER</span></span>
+              - <span class="string"><span class="content">DOCUMENT-CONVERSION_SERVICE_USER</span></span>
+            <span class="key">accessTokenValiditySeconds</span>: <span class="string"><span class="content">30000</span></span>
+            <span class="key">refreshTokenValiditySeconds</span>: <span class="string"><span class="content">60000</span></span>
+          - <span class="string"><span class="content">clientId: client2</span></span>
+<span class="comment"># further clients</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Simply</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>change the reference "all" to your tenant name</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>and remove the reference to tenant master</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user-service</span>:
+  <span class="key">config-data</span>:
+    <span class="key">tenants</span>:
+      - <span class="string"><span class="content">tenant-id: main-tenant</span></span>
+
+        <span class="key">token</span>:
+          - <span class="string"><span class="content">path: USER_MANAGEMENT_ADMIN</span></span>
+            <span class="key">privilegeGrantedToRoles</span>: <span class="string"><span class="content">user-management-admin</span></span>
+<span class="comment">#...</span>
+
+        <span class="key">roles</span>:
+          - <span class="string"><span class="content">name: user-management-admin</span></span>
+<span class="comment">#...</span>
+        <span class="key">users</span>:
+<span class="comment">#...</span>
+        <span class="key">groups</span>:
+<span class="comment">#...</span>
+        <span class="key">oauth2-clients</span>:
+          - <span class="string"><span class="content">clientId: tech-client</span></span>
+            <span class="key">resourceIds</span>:
+              - <span class="string"><span class="content">cmn-user-management-enterprise-service</span></span>
+              - <span class="string"><span class="content">user-management-service</span></span>
+              - <span class="string"><span class="content">ecr-service</span></span>
+              - <span class="string"><span class="content">cmn-user-management-access-control-service</span></span>
+              - <span class="string"><span class="content">cmn-audit-service</span></span>
+              - <span class="string"><span class="content">document-conversion-service</span></span>
+            <span class="key">clientSecret</span>: <span class="string"><span class="content">my-secret</span></span>
+            <span class="key">authorizedGrantTypes</span>:
+              - <span class="string"><span class="content">password</span></span>
+              - <span class="string"><span class="content">client_credentials</span></span>
+              - <span class="string"><span class="content">refresh_token</span></span>
+            <span class="key">authorities</span>:
+              - <span class="string"><span class="content">CMN-USER-MANAGEMENT-ENTERPRISE_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">USER_MANAGEMENT_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">USER_MANAGEMENT_USER</span></span>
+              - <span class="string"><span class="content">ECR_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">CMN-USER-MANAGEMENT-ACCESS-CONTROL_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">CMN-AUDIT_SERVICE_USER</span></span>
+              - <span class="string"><span class="content">AUDIT_ADMIN</span></span>
+              - <span class="string"><span class="content">SOLR_USER</span></span>
+              - <span class="string"><span class="content">DOCUMENT-CONVERSION_SERVICE_USER</span></span>
+            <span class="key">accessTokenValiditySeconds</span>: <span class="string"><span class="content">30000</span></span>
+            <span class="key">refreshTokenValiditySeconds</span>: <span class="string"><span class="content">60000</span></span>
+          - <span class="string"><span class="content">clientId: client2</span></span>
+<span class="comment"># further clients</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will make sure these entities will only be created in your single tenant.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+As above, Some services did use the tenants numerical id for offsets of id sequences. This will result in service crashes when migrating this way. This is due to generated liquibase scripts differing in its checksum. One workaround would be to delete the changesets checksum on the database. A much simpler way is provided here: set the spring property <code>multi-tenancy.migration.main-migrated-tenant-numerical-id</code> to the numerical id of your main tenant. In the example above this would be 2.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_migrating_a_real_multi_tenant_application">Migrating a real multi-tenant application</h4>
+<div class="paragraph">
+<p>In this case there is some work to do. The most cumbersome will be merging the databases. Choose one tenant to be your "main tenant". That is: The tenant whose database will be used after the migration. Let&#8217;s assume its name is <code>main-tenant</code>. In your configuration find a section that looks like this, by locating the tenant with the tenant-id <code>main-tenant</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">tenants</span>:
+  - <span class="string"><span class="content">tenant-id: &quot;main-tenant&quot;</span></span>
+    <span class="key">numeric-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">[main-tenant-numerical-id]</span><span class="delimiter">&quot;</span></span>
+    <span class="key">db-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">[jdbc-url]</span><span class="delimiter">&quot;</span></span>
+    <span class="key">db-username</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">[database-user]</span><span class="delimiter">&quot;</span></span>
+    <span class="key">db-password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">[database-password]</span><span class="delimiter">&quot;</span></span>
+    <span class="key">db-driver-class-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">[jdbc-driver]</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Execute the steps described in <a href="#_migration_of_single_tenant_systems">Migration of single tenant systems</a> as if the <code>main-tenant</code> here was the <code>main-tenant</code> used there.</p>
+</div>
+<div class="paragraph">
+<p>After that, you will need to merge all tables from all databases of all tenants that are used by your applications into the corresponding tables into the database of <code>main-tenant</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Do not merge the <a href="https://docs.liquibase.com/concepts/tracking-tables/tracking-tables.html">liquibase tables</a>: <code>DATABASECHANGELOG</code> and <code>DATABASECHANGELOGLOCK</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+As above, some services did use the tenants numerical id for offsets of id sequences. This will result in service crashes when migrating this way. This is due to generated liquibase scripts differing in its checksum. One workaround would be to delete the changesets checksum on the database. A much simpler way is provided here: set the spring property <code>multi-tenancy.migration.main-migrated-tenant-numerical-id</code> to the numerical id of your main tenant.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-02-21 14:18:18 UTC
+</div>
+</div>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+pre.CodeRay{background:#f7f7f8}
+.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
+.CodeRay .line-numbers strong{color:#000}
+table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.CodeRay td{vertical-align:top;line-height:inherit}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.code{padding:0 0 0 .75em}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+</body>
+</html>
