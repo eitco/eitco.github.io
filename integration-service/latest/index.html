@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Enterprise Integration Service 6.0.3</title>
+<title>Enterprise Integration Service 7.0.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -18,7 +18,7 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_enterprise_integration_service_6_0_3">Enterprise Integration Service 6.0.3</a></li>
+<li><a href="#_enterprise_integration_service_7_0_0">Enterprise Integration Service 7.0.0</a></li>
 <li><a href="#_configuration_parameters">Configuration parameters</a></li>
 <li><a href="#_managing_routes">Managing routes</a></li>
 <li><a href="#_supplied_components">Supplied components</a>
@@ -45,7 +45,7 @@
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_enterprise_integration_service_6_0_3">Enterprise Integration Service 6.0.3</h2>
+<h2 id="_enterprise_integration_service_7_0_0">Enterprise Integration Service 7.0.0</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Enterprise Integration Service is a Spring Service based on the Apache Camel framework. Apache Camel is a rule-based flow control engine that implements the Enterprise Integration Pattern. It provides an API for creating rule-based flows and for process communication.</p>
@@ -130,24 +130,24 @@ the "input" directory to "output":</p>
 <div class="listingblock">
 <div class="title">Example of a route</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> scripts.routes
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package scripts.routes
 
-<span class="keyword">import</span> <span class="include">de.eitco.commons.integration.core.ExceptionProcessor</span>
-<span class="keyword">import</span> <span class="include">org.apache.camel.builder.RouteBuilder</span>
+import de.eitco.commons.integration.core.ExceptionProcessor
+import org.apache.camel.builder.RouteBuilder
 
-<span class="keyword">return</span> <span class="keyword">new</span> RouteBuilder() {
+return new RouteBuilder() {
 
-    <span class="annotation">@Override</span>
-    <span class="type">void</span> configure() <span class="directive">throws</span> <span class="exception">Exception</span> {
+    @Override
+    void configure() throws Exception {
 
-        onException(<span class="exception">Exception</span>.class)
-                .process(<span class="keyword">new</span> ExceptionProcessor())
-                .handled(<span class="predefined-constant">true</span>)
-                .maximumRedeliveries(<span class="integer">0</span>)
+        onException(Exception.class)
+                .process(new ExceptionProcessor())
+                .handled(true)
+                .maximumRedeliveries(0)
 
-        from(<span class="string"><span class="delimiter">&quot;</span><span class="content">file://input?noop=true</span><span class="delimiter">&quot;</span></span>)
-                .routeId(<span class="string"><span class="delimiter">&quot;</span><span class="content">file-out-test</span><span class="delimiter">&quot;</span></span>)
-                .to(<span class="string"><span class="delimiter">&quot;</span><span class="content">file://output</span><span class="delimiter">&quot;</span></span>)
+        from("file://input?noop=true")
+                .routeId("file-out-test")
+                .to("file://output")
     }
 }</code></pre>
 </div>
@@ -205,22 +205,22 @@ Jolokia. This requires the following adjustments to the configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">management</span>:
-  <span class="key">endpoints</span>:
-    <span class="key">web</span>:
-      <span class="key">exposure</span>:
-        <span class="key">include</span>: <span class="string"><span class="content">health,info,jolokia</span></span>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,jolokia
 
-<span class="key">security</span>:
-  <span class="key">general</span>:
-    <span class="key">secured-ant-matchers</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/api/**</span><span class="delimiter">&quot;</span></span>
-    <span class="key">open-ant-matchers</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/actuator/**</span><span class="delimiter">&quot;</span></span>
-    <span class="key">role-for-secured-access</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">INTEGRATION_SERVICE_USER</span><span class="delimiter">&quot;</span></span>
-    <span class="key">cors-configuration</span>:
-      <span class="key">allowed-origins</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">*</span><span class="delimiter">&quot;</span></span>
-      <span class="key">allowed-headers</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">*</span><span class="delimiter">&quot;</span></span>
-      <span class="key">allowed-methods</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">GET,POST,PUT,PATCH,DELETE,OPTIONS</span><span class="delimiter">&quot;</span></span>
-      <span class="key">max-age</span>: <span class="string"><span class="content">3600</span></span></code></pre>
+security:
+  general:
+    secured-ant-matchers: "/api/**"
+    open-ant-matchers: "/actuator/**"
+    role-for-secured-access: "INTEGRATION_SERVICE_USER"
+    cors-configuration:
+      allowed-origins: "*"
+      allowed-headers: "*"
+      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      max-age: 3600</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -236,7 +236,7 @@ The Jolokia endpoint is accessible under the path /actuator/jolokia.</p>
 <div class="sect2">
 <h3 id="_windows_service_wrapper">Windows Service Wrapper</h3>
 <div class="paragraph">
-<p>Like all Common Services, the <a href="https://nexus.eitco.de/repository/maven-public/de/eitco/commons/cmn-integration-service/6.0.3/cmn-integration-service-6.0.3-zip.zip">Integration Service is delivered with the WinSW Service Wrapper</a>, with which you can easily
+<p>Like all Common Services, the <a href="https://nexus.eitco.de/repository/maven-public/de/eitco/commons/cmn-integration-service/7.0.0/cmn-integration-service-7.0.0-zip.zip">Integration Service is delivered with the WinSW Service Wrapper</a>, with which you can easily
 create and configure a Windows service. The <a href="https://github.com/winsw/winsw">documentation</a> can be found on GitHub.</p>
 </div>
 </div>
@@ -265,7 +265,7 @@ the integration service with the following command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">helm install eitco/eitco-integration-service --version 6.0.3 --name-template eitco-integration-service</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 7.0.0 --name-template eitco-integration-service</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -276,7 +276,7 @@ For example if your routes are in the configmap <code>routes</code> the command 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">helm install eitco/eitco-integration-service --version 6.0.3 --name-template eitco-integration-service --set routes.configMap=routes</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 7.0.0 --name-template eitco-integration-service --set routes.configMap=routes</code></pre>
 </div>
 </div>
 </div>
@@ -287,7 +287,7 @@ For example if your routes are in the configmap <code>routes</code> the command 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">helm install eitco/eitco-integration-service --version 6.0.3 --name-template eitco-integration-service --set routes.configMap=routes --set includes.configMap=include</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 7.0.0 --name-template eitco-integration-service --set routes.configMap=routes --set includes.configMap=include</code></pre>
 </div>
 </div>
 </div>
@@ -300,7 +300,7 @@ implement a spring component that provides your routes in java or kotlin. In thi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">helm install eitco/eitco-integration-service --version 6.0.3 --name-template eitco-integration-service --set extensions.configMap=extensions</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 7.0.0 --name-template eitco-integration-service --set extensions.configMap=extensions</code></pre>
 </div>
 </div>
 </div>
@@ -397,97 +397,8 @@ using mutual SSL authentication (x.509).</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-18 16:51:51 UTC
+Last updated 2023-02-22 17:23:01 UTC
 </div>
 </div>
-<style>
-/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
-pre.CodeRay{background:#f7f7f8}
-.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
-.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
-.CodeRay .line-numbers strong{color:#000}
-table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
-table.CodeRay td{vertical-align:top;line-height:inherit}
-table.CodeRay td.line-numbers{text-align:right}
-table.CodeRay td.code{padding:0 0 0 .75em}
-.CodeRay .debug{color:#fff !important;background:#000080 !important}
-.CodeRay .annotation{color:#007}
-.CodeRay .attribute-name{color:#000080}
-.CodeRay .attribute-value{color:#700}
-.CodeRay .binary{color:#509}
-.CodeRay .comment{color:#998;font-style:italic}
-.CodeRay .char{color:#04d}
-.CodeRay .char .content{color:#04d}
-.CodeRay .char .delimiter{color:#039}
-.CodeRay .class{color:#458;font-weight:bold}
-.CodeRay .complex{color:#a08}
-.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
-.CodeRay .color{color:#099}
-.CodeRay .class-variable{color:#369}
-.CodeRay .decorator{color:#b0b}
-.CodeRay .definition{color:#099}
-.CodeRay .delimiter{color:#000}
-.CodeRay .doc{color:#970}
-.CodeRay .doctype{color:#34b}
-.CodeRay .doc-string{color:#d42}
-.CodeRay .escape{color:#666}
-.CodeRay .entity{color:#800}
-.CodeRay .error{color:#808}
-.CodeRay .exception{color:inherit}
-.CodeRay .filename{color:#099}
-.CodeRay .function{color:#900;font-weight:bold}
-.CodeRay .global-variable{color:#008080}
-.CodeRay .hex{color:#058}
-.CodeRay .integer,.CodeRay .float{color:#099}
-.CodeRay .include{color:#555}
-.CodeRay .inline{color:#000}
-.CodeRay .inline .inline{background:#ccc}
-.CodeRay .inline .inline .inline{background:#bbb}
-.CodeRay .inline .inline-delimiter{color:#d14}
-.CodeRay .inline-delimiter{color:#d14}
-.CodeRay .important{color:#555;font-weight:bold}
-.CodeRay .interpreted{color:#b2b}
-.CodeRay .instance-variable{color:#008080}
-.CodeRay .label{color:#970}
-.CodeRay .local-variable{color:#963}
-.CodeRay .octal{color:#40e}
-.CodeRay .predefined{color:#369}
-.CodeRay .preprocessor{color:#579}
-.CodeRay .pseudo-class{color:#555}
-.CodeRay .directive{font-weight:bold}
-.CodeRay .type{font-weight:bold}
-.CodeRay .predefined-type{color:inherit}
-.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
-.CodeRay .key{color:#808}
-.CodeRay .key .delimiter{color:#606}
-.CodeRay .key .char{color:#80f}
-.CodeRay .value{color:#088}
-.CodeRay .regexp .delimiter{color:#808}
-.CodeRay .regexp .content{color:#808}
-.CodeRay .regexp .modifier{color:#808}
-.CodeRay .regexp .char{color:#d14}
-.CodeRay .regexp .function{color:#404;font-weight:bold}
-.CodeRay .string{color:#d20}
-.CodeRay .string .string .string{background:#ffd0d0}
-.CodeRay .string .content{color:#d14}
-.CodeRay .string .char{color:#d14}
-.CodeRay .string .delimiter{color:#d14}
-.CodeRay .shell{color:#d14}
-.CodeRay .shell .delimiter{color:#d14}
-.CodeRay .symbol{color:#990073}
-.CodeRay .symbol .content{color:#a60}
-.CodeRay .symbol .delimiter{color:#630}
-.CodeRay .tag{color:#008080}
-.CodeRay .tag-special{color:#d70}
-.CodeRay .variable{color:#036}
-.CodeRay .insert{background:#afa}
-.CodeRay .delete{background:#faa}
-.CodeRay .change{color:#aaf;background:#007}
-.CodeRay .head{color:#f8f;background:#505}
-.CodeRay .insert .insert{color:#080}
-.CodeRay .delete .delete{color:#800}
-.CodeRay .change .change{color:#66f}
-.CodeRay .head .head{color:#f4f}
-</style>
 </body>
 </html>
