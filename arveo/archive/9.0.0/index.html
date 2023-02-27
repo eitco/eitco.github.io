@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 8.0.3</div>
+<div id="toctitle">arveo 9.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -132,8 +132,6 @@ a, a:hover, a:focus {
 <li><a href="#_renditions">Renditions</a></li>
 <li><a href="#_configure_retention_container">Configure Retention Container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
-<li><a href="#_overview">Overview</a></li>
-<li><a href="#_implementation_details_of_aes_encryption">Implementation details of AES encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
 <li><a href="#_configure_authenticationsso_with_keycloak">Configure Authentication/SSO with Keycloak</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure Authentication between Content Services</a></li>
@@ -141,6 +139,7 @@ a, a:hover, a:focus {
 <li><a href="#_configure_audit">Configure Audit</a></li>
 <li><a href="#_solr">SOLR</a></li>
 <li><a href="#_system_jobs">System jobs</a></li>
+<li><a href="#_hashicorp_vault">Using Hashicorp Vault</a></li>
 <li><a href="#_configuration_properties">Configuration Properties</a></li>
 </ul>
 </li>
@@ -184,7 +183,7 @@ a, a:hover, a:focus {
 <li><a href="#_folder_type">Folder Type</a></li>
 <li><a href="#_metadata_type">Metadata Type</a></li>
 <li><a href="#_inheritance">Inheritance</a></li>
-<li><a href="#_retention">Retention</a></li>
+<li><a href="#_retention_3">Retention</a></li>
 <li><a href="#_advanced_database_schema_changes">Advanced database schema changes</a></li>
 </ul>
 </li>
@@ -2795,7 +2794,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 8.0.3.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 9.0.0.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3254,7 +3253,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>8.0.3<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>9.0.0<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3265,7 +3264,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <span class="tag">&lt;dependency&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client-non-web<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>2.0.11<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>3.0.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span>
 <span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.demo<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -3307,7 +3306,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.5<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>6.0.0<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -4891,8 +4890,7 @@ are currently available:</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If <em>arveo</em> has no permissions to create buckets, then the administrator has to create the buckets manually. Buckets
-have to be created for every tenant separately.
+If <em>arveo</em> has no permissions to create buckets, then the administrator has to create the buckets manually.
 </td>
 </tr>
 </table>
@@ -4902,90 +4900,118 @@ have to be created for every tenant separately.
 <colgroup>
 <col style="width: 20%;">
 <col>
+<col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">parameter</th>
 <th class="tableblock halign-left valign-top">meaning</th>
+<th class="tableblock halign-left valign-top">default value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pathStyleAccessEnabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use path-style access for all requests.
-Amazon S3 supports virtual-hosted-style and path-style access in all regions.
-The path-style syntax, however, requires that you use the region-specific endpoint when attempting to access a bucket</p></td>
+  Amazon S3 supports virtual-hosted-style and path-style access in all regions.
+  The path-style syntax, however, requires that you use the region-specific endpoint when attempting to access a bucket</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">serviceEndpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The URL to the S3 endpoint to be used by the plugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">region</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The region for access to AWS</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">accessKey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Access Key</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">secretAccessKey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Secret Access Key</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">bucket</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the S3 bucket to be created by the plugin. The name can only contain lowercase letters.
-The name of the current tenant will be appended to the bucket name, separated by a "-" sign.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the S3 bucket to be created by the plugin. The name can only contain lowercase letters.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">signer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the name of the signature algorithm to use for signing requests made by this client. If not set,
 the default configuration of the Amazon S3 SDK will be used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">proxyhost</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The optional proxy host used by the client when connecting to the S3 storage.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">proxyprotocol</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The protocol (HTTP or HTTPS) used to connect to the proxy.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">proxyport</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The port used by the client to connect to the proxy.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">streambuffersize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the send- and receive-buffers in bytes. The default is 32KB.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the send- and receive-buffers in bytes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32768</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">uploadpresignedurl</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the client will use pre-signed URL requests to communicate with the S3 storage.
-The default is false.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the client will use pre-signed URL requests to communicate with the S3 storage.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">acceleratemode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use S3 accelerate endpoint for all requests. The default is false.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configures the client to use S3 accelerate endpoint for all requests.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">maxconnection</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of allowed open HTTP connections. Not configured by default.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of allowed open HTTP connections.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no limit)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">maxErrorRetries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of retries for failed requests.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no retries)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">baseDelay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The base delay in milliseconds for the retry policy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no delay)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">maxBackoffTime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum backoff time in milliseconds for the retry policy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1 (no maximum backoff time)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">backoffStrategy</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The backoff strategy used by the retry policy.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retentionEnabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the use of S3 object locks for object retention.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retentionMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies the protection level of retention object locks. Can be <code>COMPLIANCE</code> or <code>GOVERNANCE</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GOVERNANCE</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -5016,6 +5042,47 @@ of the different strategies.</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="_retention">Retention</h5>
+<div class="paragraph">
+<p>The S3 plugin supports the usage of S3 object locks to set a retention time and litigation hold status on content
+elements stored in the S3 compatible storage. To enable the feature, set the parameter <code>retentionEnabled</code> to true.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the retention support is enabled, the bucket used by the storage profile must be created manually.
+The S3 Object Locks option must be enabled for the bucket.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The S3 plugin uses the governance retention mode by default, which means, that retention protected objects
+can be deleted by or overwritten by any user of the AWS account with the required privileges. When the compliance
+retention mode is used, no user (not even the root administrator of the S3 account) is able to delete or overwrite
+retention protected objects. To configure this behavior, set the property <code>retentionMode</code> to <code>GOVERNANCE</code> or
+<code>COMPLIANCE</code>. More information about object locks can be found in the
+<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-overview.html">AWS documentation</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the <code>COMPLIANCE</code> retention mode is used, it is impossible to delete objects from the S3 storage account before
+the end of the retention interval is reached.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
 <h5 id="_azure_blob_storage">Azure blob storage</h5>
 <div class="paragraph">
 <p>Class name: <code>de.eitco.ecr.storage.plugin.azureblob.AzureBlobStoragePlugin</code></p>
@@ -5040,8 +5107,7 @@ of the different strategies.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">connectionString</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The connection string used to connect to the storage account. The access string can be obtained
- from the azure portal.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The connection string used to connect to the storage account. The access string can be obtained from the azure portal.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -5054,11 +5120,68 @@ of the different strategies.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The timeout in milliseconds for requests to Azure.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retentionSupport</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables usage of the immutability policy feature of Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">policyMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the protection level of the immutability policies. Can be <code>LOCKED</code> or <code>UNLOCKED</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNLOCKED</code></p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
 <p>Additional parameters contained in the plugin configuration will be passed on to the <code>Configuration</code> used for the
 Azure SDK.</p>
+</div>
+<div class="sect5">
+<h6 id="_retention_2">Retention</h6>
+<div class="paragraph">
+<p>The Azure blob storage plugin supports the immutability policy feature of Azure blob storage. Using this feature
+enables an additional security level for retention protected content elements. If a content element is retention
+protected or in a litigation hold, it will not be possible to delete it using the Azure management interface or the
+Azure SDK.</p>
+</div>
+<div class="paragraph">
+<p>To enable the retention support, the parameter <code>retentionSupport</code> must be set to true.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the retention support is enabled, the container used by the storage profile must be created manually in Azure.
+The setting <em>version-level immutability support</em> must be enabled when the container is created. To be able to
+enable the version-level immutability support, the storage account must support versioning for blobs. More information
+can be found in the <a href="https://docs.microsoft.com/en-us/azure/storage/blobs/immutable-storage-overview">Azure documentation</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The plugin creates unlocked immutability policies by default. Unlocked policies can be altered by Azure users with the
+required privileges. Locked immutability policies can neither be deleted nor can the expiry time be shortened.
+Prolonging the expiry time (and by this, the retention period), is still possible. Note that even the administrator
+of the storage account is not able to delete objects with a locked immutability policy. To configure the policy mode,
+set the parameter <code>policyMode</code> to <code>LOCKED</code> or <code>UNLOCKED</code>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When the <code>policyMode</code> is set to <code>LOCKED</code>, it is not possible to delete retention protected objects from the storage
+account before the end of the retention interval is reached.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -5270,7 +5393,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>8.0.3<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>9.0.0<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -6170,9 +6293,8 @@ If you want to use directories instead of buckets you can configure file system 
 <p><em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
 for each storage profile.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_overview">Overview</h3>
+<div class="sect3">
+<h4 id="_overview">Overview</h4>
 <div class="paragraph">
 <p>Encrypting and decrypting is performed by configurable encryption providers. Each provider is identified by a unique
 name. The available providers are described below.</p>
@@ -6183,9 +6305,9 @@ name. The available providers are described below.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 16. Encryption settings</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col>
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -6232,6 +6354,7 @@ by the bucket selection rules. Configuring the encryption for the BucketOrganize
 </td>
 </tr>
 </table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_commons_aes_provider">Commons AES provider</h4>
@@ -6288,9 +6411,9 @@ The encryption feature is configured as shown in the following example:</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 17. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 30%;">
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -6345,9 +6468,9 @@ decrypt the content data!
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 18. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col>
 </colgroup>
 <thead>
 <tr>
@@ -6393,14 +6516,13 @@ most secure algorithm available will be used</p></td>
 </div>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_implementation_details_of_aes_encryption">Implementation details of AES encryption</h3>
+<div class="sect3">
+<h4 id="_implementation_details_of_aes_encryption">Implementation details of AES encryption</h4>
 <div class="paragraph">
 <p>The following chapter contains information about the implementation details of the AES encryption used by <em>arveo</em>.</p>
 </div>
-<div class="sect3">
-<h4 id="_header">Header</h4>
+<div class="sect4">
+<h5 id="_header">Header</h5>
 <div class="paragraph">
 <p>The encryption library is designed to encrypt data in such a way that it can be stored permanently in encrypted form and
 possibly only decrypted after a long time. In order to guarantee decryption, all data required for this (except the key, of
@@ -6409,8 +6531,8 @@ obtain, for example, the algorithm used and the data for key derivation, and onl
 for decryption.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_aes">AES</h4>
+<div class="sect4">
+<h5 id="_aes">AES</h5>
 <div class="paragraph">
 <p>The library uses AES according to the recommendation of the Federal Office for Information Security of March 2020:</p>
 </div>
@@ -6481,8 +6603,8 @@ To generate the random data for the initialisation vector and the salt, a <em>Se
 (see <a href="#_note_on_linux">Note on Linux</a> below).</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_header_format">Header Format</h4>
+<div class="sect4">
+<h5 id="_header_format">Header Format</h5>
 <div class="paragraph">
 <p>The header begins with a string to identify data encrypted with the library followed by the length of the
 payload data in the header. The header is divided into blocks and can be read serially.</p>
@@ -6495,8 +6617,8 @@ Marker|length|method|header version|key length|checksum length|iteration|storage
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_key">Key</h4>
+<div class="sect4">
+<h5 id="_key">Key</h5>
 <div class="paragraph">
 <p>The keys used for encryption are either generated using random data or derived from any password using the Argon2 hash
 function. Since deriving keys can be very computationally intensive depending on the configuration, a key ID can be
@@ -6509,8 +6631,8 @@ ID of the stored key. When an external system like Vault is used to encrypt gene
 is stored in the header instead.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_usage">Usage</h4>
+<div class="sect4">
+<h5 id="_usage">Usage</h5>
 <div class="paragraph">
 <p>Instantiation of the AesEncryptorAndDecryptor:</p>
 </div>
@@ -6539,8 +6661,8 @@ is stored in the header instead.</p>
 <p>Examples of usage can be found in the test class <em>de.eitco.commons.crypto.AesEncryptionTest</em>.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_note_on_linux">Note on Linux</h4>
+<div class="sect4">
+<h5 id="_note_on_linux">Note on Linux</h5>
 <div class="paragraph">
 <p>On Linux, Java uses the NativePRNG algorithm by default for generating random data with SecureRandom.getInstanceStrong().
 This implementation uses /dev/random and may block if there is not enough data available there. This can lead to very
@@ -6552,6 +6674,7 @@ long waiting times for key derivation and encryption. You can then either use a 
 <pre>apt-get install haveged
 update-rc.d haveged defaults
 service haveged start</pre>
+</div>
 </div>
 </div>
 </div>
@@ -7664,7 +7787,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/0.0.22/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/0.0.23/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit">Access audit</h4>
@@ -7922,7 +8045,7 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.11) from the nexus repository.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 3.0.0) from the nexus repository.</p>
 </li>
 <li>
 <p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
@@ -7935,9 +8058,9 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;queryParser</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">aclright</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.user.management.access.control.solr.AclRightParserPlugin</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUrl</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>jdbc:postgresql://localhost:5432/mydatabase?currentSchema=mytenant<span class="tag">&lt;/str&gt;</span>
-    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcUser</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>myuser<span class="tag">&lt;/str&gt;</span>
-    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbcPassword</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>mypassword<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">solrAclPlugin.jdbcUrl</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>jdbc:postgresql://localhost:5432/mydatabase?currentSchema=mytenant<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">solrAclPlugin.jdbcUser</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>myuser<span class="tag">&lt;/str&gt;</span>
+    <span class="tag">&lt;str</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">solrAclPlugin.jdbcPassword</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>mypassword<span class="tag">&lt;/str&gt;</span>
 <span class="tag">&lt;/queryParser&gt;</span></code></pre>
 </div>
 </div>
@@ -7957,6 +8080,44 @@ The Access Control SOLR Plugin does not yet support multiple tenants!
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Alternatively, the configuration parameters for the ACL filter plugin can be set as Java system properties for the
+Solr server, as environment variables, or they can be stored as secrets in Vault. To use Vault, set the following
+parameters either in the <code>solrconfig.xml</code> file, as Java system properties, or as environment variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>solrAclPlugin.vaultEnabled=true</code></p>
+</li>
+<li>
+<p><code>solrAclPlugin.vaultAddress=https://myvaultserver:port</code> (optional, the default value is "http://127.0.0.1:8200")</p>
+</li>
+<li>
+<p><code>solrAclPlugin.vaultToken=token</code> (optional, can be a token value or the path to a token file. By default, the plugin
+will try to load a token from ~/.vault-token)</p>
+</li>
+<li>
+<p><code>solrAclPlugin.vaultSecretEnginePath=path</code> (optional, the default is "secret")</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The order in which the plugin loads configuration properties is:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Vault</p>
+</li>
+<li>
+<p>System properties</p>
+</li>
+<li>
+<p>Environment variables</p>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect3">
@@ -8457,6 +8618,112 @@ standby mode:</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="_hashicorp_vault">Using Hashicorp Vault</h3>
+<div class="paragraph">
+<p><a href="https://www.vaultproject.io/">Hashicorp Vault</a> can be used to store sensitive configuration parameters like database
+passwords or encryption master keys. Each <em>arveo</em> service tries to load configuration data from a Vault
+instance at startup. To configure the location and access method for Vault, the following application arguments can
+be used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.cloud.vault.host</code>: Defines the host name of the Vault host.</p>
+</li>
+<li>
+<p><code>spring.cloud.vault.port</code>: Sets the port used to connect to Vault.</p>
+</li>
+<li>
+<p><code>spring.cloud.vault.scheme</code>: Either https or http</p>
+</li>
+<li>
+<p><code>spring.cloud.vault.authentication</code>: Sets the authentication mechanism to use.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+These properties cannot be configured using the Configuration Service. Configuration data from the Configuration Service
+is loaded after the connection to Vault has been established. Instead, these properties must be set as application
+parameters. Example: <code>java -jar service.jar --spring.cloud.vault.port=8200</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is possible to disable the Vault integration by setting <code>spring.cloud.vault.enabled=false</code>.</p>
+</div>
+<div class="paragraph">
+<p>Additional information about the configuration parameters, especially the possible authentication mechanisms, can be
+found in the <a href="https://docs.spring.io/spring-cloud-vault/docs/current/reference/html/#client-side-usage">Documentation</a> of
+the Spring Cloud Vault project.</p>
+</div>
+<div class="sect3">
+<h4 id="_defining_secrets">Defining secrets</h4>
+<div class="paragraph">
+<p>Vault features several ways to provide secrets to applications. Configuration properties for the <em>arveo</em>
+services must be stored in the key value secrets engine. Each secret consists of a <em>path</em> and several <em>key-value-pairs</em>.
+The path defines the scope of the property. It can either be set to <code>application</code> to store a secret for all services,
+or to the name of the service just like the name of the configuration files in the Configuration Service. For example,
+to configure the password of the JDBC datasource used by all services, a key-value-pair of <code>spring.datasource.password=password</code>
+would be stored under the path <code>application</code>. A property for the repository service (ecr-service) would be stored
+in a key-value-pair <code>property=value</code> under the path <code>ecr-service</code>. The following table contains the application names
+of the different services.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Service</th>
+<th class="tableblock halign-left valign-top">Application name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Repository Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ecr-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Access Control Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-access-control-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise User Management Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-enterprise-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document-conversion-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administration Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-administration-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-audit-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integration Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-integration-service</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_configuration_properties">Configuration Properties</h3>
 <div class="sect3">
 <h4 id="_ecr_server_caching">ecr.server.caching</h4>
@@ -8661,6 +8928,12 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If set to false, the job will not be scheduled.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tenant-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the tenant of the user used to run the jobs</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
@@ -8885,6 +9158,12 @@ standby mode:</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">collection-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ecr</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">collection-replicas</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default number of replicas for a new collection created by the respository service.</p></td>
@@ -8930,6 +9209,12 @@ standby mode:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The password used for basic authorization to SOLR.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">schema-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -9106,12 +9391,6 @@ standby mode:</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">configuration-tenant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the tenant to use to store job-information in the database.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">standby-only-scheduler</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
@@ -14035,7 +14314,7 @@ you must convert your properties e.g. MyCamelCaseProperty = my_camel_case_proper
 </div>
 </div>
 <div class="sect2">
-<h3 id="_retention">Retention</h3>
+<h3 id="_retention_3">Retention</h3>
 <div class="sect3">
 <h4 id="_annotations_retentionprotected">Annotations_@RetentionProtected_</h4>
 <div class="paragraph">
@@ -15596,7 +15875,7 @@ newDocument.setRetentionDate(now);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent()), TEST_DATA.getBytes());
+<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
 DocumentWithRetention loadedDocument = newClient.getEntity();</pre>
 </div>
 </div>
@@ -15680,7 +15959,7 @@ newDocument.setMimeType(TEST_DATA_MIMETYPE);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent()), TEST_DATA.getBytes());
+<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
 DocumentWithRetention emptyRetentionDocument = newClient.getEntity();</pre>
 </div>
 </div>
@@ -15721,7 +16000,7 @@ assertDateEquals(prolongedRetentionDocument.getRetentionInformation().getRetenti
 <div class="literalblock">
 <div class="content">
 <pre>@Test
-@WithCredentials(username = "ecr-dsgvo-admin", password = "password", tenant = "integrationtest")
+@WithCredentials(username = "ecr-dsgvo-admin", password = "password", tenant = "master")
 public void createDocumentWithRetention() throws IOException {</pre>
 </div>
 </div>
@@ -15765,7 +16044,7 @@ newDocument.setRetentionDate(now);</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent()), TEST_DATA.getBytes());
+<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
 DocumentWithRetention loadedDocument = newClient.getEntity();</pre>
 </div>
 </div>
@@ -16924,7 +17203,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-12 12:07:10 UTC
+Last updated 2022-08-30 19:58:58 UTC
 </div>
 </div>
 <style>

@@ -60,7 +60,7 @@ a, a:hover, a:focus {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 8.0.2</div>
+<div id="toctitle">arveo 8.0.1</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -156,7 +156,9 @@ a, a:hover, a:focus {
 <li><a href="#_access_control"><strong>Access Control</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_access_rights">Access Rights</a></li>
+<li><a href="#_permissions">Permissions</a></li>
 <li><a href="#_access_control_lists">Access Control Lists</a></li>
+<li><a href="#_acl_data_model">ACL Data Model</a></li>
 </ul>
 </li>
 <li><a href="#_attribute_based_access_control_abac">Attribute Based Access Control (ABAC)</a>
@@ -2793,7 +2795,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 8.0.2.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 8.0.1.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3252,7 +3254,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>8.0.2<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>8.0.1<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3305,7 +3307,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>5.0.4<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>5.0.3<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -7846,7 +7848,7 @@ using a custom SOLR plugin, which must be installed manually by following the st
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.10) from the nexus repository.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 2.1.9) from the nexus repository.</p>
 </li>
 <li>
 <p>Install the plugin in SOLR as described in <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">the SOLR documentation</a>.</p>
@@ -7988,50 +7990,6 @@ The following example shows how to use this method to search in a specific field
 <p>When using the <code>getNoSqlSearchService</code> method, the query performed in SOLR will automatically be limited to entities
 belonging to one single type definition. To search for entities in multiple type definitions, the method
 <code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_combined_search">Combined search</h4>
-<div class="paragraph">
-<p><em>arveo</em> creates a special multi-valued field called <code>ecr_attributes</code> in SOLR. When a getter (or an entire
-interface) is annotated with <code>@NOSql(combinedSearch = true)</code>, the attribute of the getter (or all attributes of the interface)
-will be copied in this field. The <code>ecr_attributes</code> field is of type string. The values of the attributes copied into
-this field, will be converted automatically by SOLR.</p>
-</div>
-<div class="paragraph">
-<p>The <code>ecr_attributes</code> field can be used for a combined search of all attribute values. This makes it possible to provide
-a search method where the user does not need to know the name of the attribute to search for:</p>
-</div>
-<div class="listingblock">
-<div class="title">Performing a combined search</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Optional&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; hit =
-    serviceClient1.getNoSqlSearchService().where().noSqlCombinedField().equalTo()
-        .value(invoiceNumber).holds().uniqueResult();
-Optional&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; hit =
-    serviceClient1.getNoSqlSearchService().where().noSqlCombinedField().equalTo()
-        .value(invoiceNumber).and().noSqlCombinedField().equalTo().value(<span class="string"><span class="delimiter">&quot;</span><span class="content">29.99</span><span class="delimiter">&quot;</span></span>).holds().uniqueResult();
-Optional&lt;TypedNOSqlSearchHit&lt;SimpleInvoice&gt;&gt; hit =
-    serviceClient1.getNoSqlSearchService().where().noSqlCombinedField().like()
-        .value(<span class="string"><span class="delimiter">&quot;</span><span class="content">Kasd invidunt stet dolor</span><span class="delimiter">&quot;</span></span>)
-        .and().contextReference(EcrQueryLanguage.COMBINED_SEARCH_FIELD).equalTo().value(invoiceNumber)
-        .holds().uniqueResult();</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is possible to copy the extracted fulltext data of content elements to the combined <code>ecr_attributes</code> field, too. To
-do so, configure the respective content element as shown below:</p>
-</div>
-<div class="listingblock">
-<div class="title">Using combined search for extracted fulltext data</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ContentElement</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">pdf</span><span class="delimiter">&quot;</span></span>, contentType = <span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>, fulltextExtraction = <span class="predefined-constant">true</span>, textCombinedSearch = <span class="predefined-constant">true</span>, textCombinedSearchLimit = <span class="integer">200</span>)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The relevant settings are <code>textCombinedSearch=true</code>, which enables the copying of the extracted fulltext data. The
-<code>textCombinedSearchLimit</code> setting limits the number of characters to copy. This makes it possible to reduce the size of
-the SOLR index. A value of <code>0</code> means no limit.</p>
 </div>
 </div>
 <div class="sect3">
@@ -9266,85 +9224,263 @@ of this authority.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_access_control_lists">Access Control Lists</h3>
+<h3 id="_permissions">Permissions</h3>
 <div class="paragraph">
-<p><em>arveo</em> makes use of access control lists (ACLs) to protect entities. Each entity can be protected by one ACL.
-The handling of ACLs is performed by the Access Control Service. The documentation of the Access Control Service contains
-more information about the general concept of the ACLs used by <em>arveo</em>.</p>
+<p>This page contains an overview of the required permissions in the <em>arveo</em> Repository REST Service.</p>
 </div>
 <div class="sect3">
-<h4 id="_mapping_of_the_access_control_list_values">Mapping of the Access Control List values</h4>
+<h4 id="_endpoints">Endpoints</h4>
 <div class="paragraph">
-<p>Although the module <code>user-management-access-control</code> defines the concepts and functionality of the ACLs, the actual
-mapping of the values is implemented in <em>arveo</em>. The class <code>de.eitco.ecr.acl.AclRight</code> implements the
-following permissions using the numeric values shown below.</p>
+<p>The actuator endpoints <code>/actuator/health</code> and <code>/actuator/info</code> are accessible without authentication.</p>
 </div>
-<div class="listingblock">
+<div class="paragraph">
+<p>All API endpoints (<code>/api/*</code>) can only be used by authenticated users. The
+users need the authorization <strong>ECR_SERVICE_USER</strong> for this.</p>
+</div>
+<div class="paragraph">
+<p>Certain endpoints that offer administrative functions can only be used by users with the
+additional authorization <strong>ECR_ADMIN</strong>. These are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Updating a type definition: <code>PUT /definitions/{id}</code></p>
+</li>
+<li>
+<p>Update a type definition (by name): <code>PUT /definitions/named/{id}</code></p>
+</li>
+<li>
+<p>Create a new type definition: <code>POST /definitions</code></p>
+</li>
+<li>
+<p>Create several new type definitions: 'POST /definitions/multiple</p>
+</li>
+<li>
+<p>Create a new attribute definition: <code>POST /attributes</code></p>
+</li>
+<li>
+<p>Create several new attribute definitions: <code>POST /attributes/multiple</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_permissions_on_type_definitions">Permissions on Type Definitions</h4>
+<div class="paragraph">
+<p>It is possible to restrict the access of users to certain type definitions. For this purpose
+for each type definition two SecTokens can be created in the user administration: One for the read-
+and one for write access. The authorization check on the type definition is done by enabling or disabling the
+property 'accessCheck'. If the property is enabled, the user has to have the authorization <strong>ECR-TYPE_$ID$_READ</strong> for reading
+or <strong>ECR-TYPE_$ID$_WRITE</strong> for writing of data in this type definition. The placeholder $ID$ stands for the ID of
+Type Definition.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, there are two types of authorizations <strong>ECR_ALL_TYPES_READ</strong> and <strong>ECR_ALL_TYPES_WRITE</strong>, which
+give a user read or write access to all definitions types. The check of the permissions on the type definitions can also be disabled completely using
+the switch <code>security.type-definition-access-checks-enabled</code> (<code>true</code>/<code>false</code>) .</p>
+</div>
+<div class="paragraph">
+<p>Within a folder structure, child elements of a parent folder can belong to different type definitions.
+To filter the result, the user&#8217;s permissions on the type definitions are used. This means that a user will only see folders
+and documents from type definitions for which he or she has read permission.</p>
+</div>
+<div class="paragraph">
+<p>Permissions of folders are inherited to the documents. For example, if a document of a type definition to which
+the user has read permission is located in a folder on whose type definition the user does not have read permission,
+the user is not allowed to access the document either.
+The folder permissions are currently only checked for the direct parent folder. There is no inheritance within the folder hierarchy.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_access_control_lists">Access Control Lists</h3>
+<div class="paragraph">
+<p>The Access Control Service extends the Eitco User Management Service with the possibility of access control.
+Access control lists (ACLs) are used for this purpose.</p>
+</div>
+<div class="sect3">
+<h4 id="_the_concept_of_access_control_lists">The Concept of Access Control Lists</h4>
+<div class="paragraph">
+<p>An ACL assigns rights and prohibitions to users and groups. Normally, ACLs are then assigned to objects. How ACLs are
+assigned to objects and what rights exist is not defined in the module <em>user-management-access-control</em>. However, there
+are requirements for the rights concept of the applications that use this component:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Rights and prohibitions share the same value range</strong>. You can only forbid what you can allow and vice versa.</p>
+</li>
+<li>
+<p><strong>The rights are fully ordered and imply their respective subordinate rights</strong>. That is, there is a clear hierarchy of
+rights. If someone has a right, then he also has all the rights that are smaller.</p>
+</li>
+<li>
+<p><strong>Even the smallest right implies access</strong>. Once someone has rights on an object, they will be able to find it in searches.
+With these requirements, the permissions of a user on an ACL can be calculated as described below.</p>
+</li>
+</ul>
+</div>
+<div class="literalblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">/**
- * The user is allowed to see the object's meta data but not the content.
- */</span>
-BROWSE(<span class="integer">4000</span>),
+<pre>Let G be the set of all permissions assigned to a user (directly or indirectly via the groups he is in) in the ACL.
+Let D be the set of all prohibitions assigned to a user (directly or indirectly via the groups he is in) in the ACL.
 
-<span class="comment">/**
- * The user is allowed to see the meta data and content of the object.
- */</span>
-READ(<span class="integer">8000</span>),
-
-<span class="comment">/**
- * The user is allowed to add annotations to the object.
- */</span>
-COMMENT(<span class="integer">12000</span>),
-
-<span class="comment">/**
- * The user is allowed to change meta data and content of the object creating a new version.
- */</span>
-WRITE(<span class="integer">16000</span>),
-
-<span class="comment">/**
- * The user is allowed to overwrite an existing version of the object.
- */</span>
-OVERWRITE(<span class="integer">20000</span>),
-
-<span class="comment">/**
- * The user is allowed to delete the object.
- */</span>
-DELETE(<span class="integer">24000</span>),
-
-<span class="comment">/**
- * The user is allowed to change the ACL of the object.
- */</span>
-CHANGE_ACL((<span class="predefined-type">Short</span>.MAX_VALUE - <span class="integer">1</span>));</code></pre>
+If max(D) &gt; max(G), then the user has the permission max(G); otherwise the user has the permission max(D) - 1.</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>So generally, the greater the value of an ACL, the more rights this group or job position possesses.
+If no ACL is assigned to an object, then it is accessible to everyone.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is possible to prohibit all rights on an object, but then nobody would have access to it making it effectively
+removed.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_substitution">Substitution</h4>
+<div class="paragraph">
+<p>In order to implement concepts such as substitutions or extensions (i.e. group memberships that propagate authorisations
+but not prohibitions),
+the rights determination must be adapted. In addition, an extension of the user service is required.</p>
+</div>
+<div class="paragraph">
+<p><em>Weak group membership</em></p>
+</div>
+<div class="paragraph">
+<p>Group memberships of users require the information whether they are "weak". Weak affiliations only propagate permissions,
+never prohibitions.</p>
+</div>
+<div class="paragraph">
+<p>The permissions of a user on an ACL would then be calculated as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Let S be the set of all groups to which the user is strongly (i.e. not weakly) connected.
+Let S' be the set of all groups to which the user is weakly connected.
+
+Let G be the set of all permissions assigned to the groups in S in the ACL.
+Let D be the set of all prohibitions assigned to groups in S in the ACL.
+
+For all s_i in S', now calculate the permissions g_i as follows:
+
+    Let G' be the set of all permissions assigned to groups in S in the ACL.
+    Let D' be the set of all prohibitions assigned to the groups in S in the ACL.
+
+    If max(D') &gt; max(G'), then g_i = max(G')
+    otherwise g_i = max(0, max(D') - 1)
+
+Let G' be the set of all calculated permissions g_i
+
+If max(D) &gt; max(G + G'), then the user has the permission max(G + G'); otherwise the user has the permission max(D) - 1</pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_mapping_of_the_access_control_list_values">Mapping of the Access Control List values</h5>
+<div class="paragraph">
+<p>Although the module <em>user-management-access-control</em> defines the concepts and functionality of the ACLs, the actual
+mapping of the values
+is implemented in <em>arveo</em>. The class <em>de.eitco.ecr.acl.AclRight</em> implements the following permissions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>BROWSE(5): The user is allowed to see the object&#8217;s metadata but not the content</p>
+</li>
+<li>
+<p>READ(10): The user is allowed to see the metadata and content of the object</p>
+</li>
+<li>
+<p>COMMENT(15): The user is allowed to add annotations to the object</p>
+</li>
+<li>
+<p>WRITE(20): The user is allowed to change metadata and content of the object creating a new version</p>
+</li>
+<li>
+<p>OVERWRITE(25): The user is allowed to overwrite an existing version of the object</p>
+</li>
+<li>
+<p>DELETE(30): The user is allowed to delete the object</p>
+</li>
+<li>
+<p>CHANGE_ACL( (Short.MAX_VALUE - 1).toShort()): The user is allowed to change the ACL of the object.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>To illustrate the information above, here are some examples:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>The permission COMMENT is assigned to a group or a job position. In this case, the assignee is per default granted
+<div class="paragraph">
+<p>1: The permission COMMENT is assigned to a group or a job position. In this case, the assignee is per default granted
 the permissions BROWSE and READ;</p>
-</li>
-<li>
-<p>The prohibition WRITE is assigned to a group or a job position. In this case, the assignee is per default prohibited
+</div>
+<div class="paragraph">
+<p>2: The prohibition WRITE is assigned to a group or a job position. In this case, the assignee is per default prohibited
 all the higher rights, so OVERWRITE, DELETE and CHANGE_ACL;</p>
-</li>
-<li>
-<p>A job position J1 with the permission COMMENT acts as a substitute for a job position J2 with the permission OVERWRITE.
+</div>
+<div class="paragraph">
+<p>3: A job position J1 with the permission COMMENT acts as a substitute for a job position J2 with the permission OVERWRITE.
 So the job position J1 is assigned the permission OVERWRITE for the time of the substitution.</p>
-</li>
-<li>
-<p>A job position J1 with the prohibition WRITE acts as a substitute for a job position J2 with the prohibition READ.
+</div>
+<div class="paragraph">
+<p>4: A job position J1 with the prohibition WRITE acts as a substitute for a job position J2 with the prohibition READ.
 The job position J1 is still assigned the prohibition WRITE for the time of the substitution. This way, it is guaranteed,
 that J1 is still able to perform their tasks (which would become impossible if they were assigned stronger prohibitions,
 that is, the prohibitions of J2).</p>
-</li>
-</ol>
+</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_batch_updates_for_acls">Batch updates for ACLs</h4>
+<h4 id="_user_management_access_control">User Management Access Control</h4>
+<div class="paragraph">
+<p>The <em>arveo</em> uses the functionality of the module <em>user-management-access-control</em> to control access to entities.
+This module includes a client module, containing interface methods to work with it.</p>
+</div>
+<div class="sect4">
+<h5 id="_usage_of_the_module_user_management_access_control_in_an_application">Usage of the module <em>user-management-access-control</em> in an application</h5>
+<div class="paragraph">
+<p>The client application has to be a Spring boot application. It can connect to the server in two ways:</p>
+</div>
+<div class="paragraph">
+<p>1)  by http;</p>
+</div>
+<div class="paragraph">
+<p>In this case, add the maven dependency below to your project:</p>
+</div>
+<div class="listingblock">
+<div class="title">Maven dependency for the http Spring starter</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
+<span class="tag">&lt;artifactId&gt;</span>cmn-user-management-access-control-http-client-spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;version&gt;</span>${project.version}<span class="tag">&lt;/version&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2) embedded by java calls.</p>
+</div>
+<div class="paragraph">
+<p>For this, use the following maven dependency:</p>
+</div>
+<div class="listingblock">
+<div class="title">Maven dependency for the embedded starter</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
+<span class="tag">&lt;artifactId&gt;</span>cmn-user-management-access-control-embedded-spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;version&gt;</span>${project.version}<span class="tag">&lt;/version&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_batch_updates_for_acls">Batch updates for ACLs</h5>
 <div class="paragraph">
 <p>It is possible to change values of multiple ACLs. So lists of ACLs, that satisfy a certain condition, can be processed.
 For every ACL, that fulfills a given condition, the following modifications can be specified:</p>
@@ -9387,6 +9523,7 @@ to every ACL. The method <em>updateAclsWhere()</em> executes the given ACL batch
 <p>There is also a more convenient method with the same name updateAclsWhere(), that returns a <em>ConditionBuilder</em>, that can
 be used in searches (see <a href="#_search_service">Search Service</a>).</p>
 </div>
+</div>
 <div class="sect4">
 <h5 id="_example_of_usage">Example of usage</h5>
 <div class="paragraph">
@@ -9405,6 +9542,22 @@ Pay attention to the method <em>setRightsTo()</em>, which is called to modify th
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_acl_data_model">ACL Data Model</h3>
+<div class="paragraph">
+<p>An Access Control List (ACL) or “Access Control List” is used to restrict access to a data object. ACLs consist of entries,
+called Access Control Entries, each of which describes an access rule in more detail. For example,
+an entry can grant access to a specific object (for example a file in a file system; the respective ACL is
+assigned to this) for a specific user (or a group of users) to an access level (for example "View only" or " Edit ").</p>
+</div>
+<div class="paragraph">
+<p>Attribute Based Access Control provides access based on the evaluation of attributes.
+DAC In the Discretionary Access Control (DAC) model, access to resources is based on user&#8217;s identity. A user is granted
+permissions to a resource by being placed on an access control list (ACL) associated with resource. An entry on a resource&#8217;s
+ACL is known as an Access Control Entry (ACE). When a user (or group) is the owner of an object in the DAC model, the user
+can grant permission to other users and groups. The DAC model is based on resource ownership.</p>
 </div>
 </div>
 </div>
@@ -16596,7 +16749,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-29 10:39:43 UTC
+Last updated 2022-07-15 13:41:01 UTC
 </div>
 </div>
 <style>
