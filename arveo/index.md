@@ -1,13 +1,8 @@
-# arveo versions
- * [10.0.0](10.0.0)
- * [11.0.0](11.0.0)
- * [11.0.1](11.0.1)
- * [11.0.2](11.0.2)
- * [8.0.0](8.0.0)
- * [8.0.1](8.0.1)
- * [8.0.2](8.0.2)
- * [8.0.3](8.0.3)
- * [9.0.0](9.0.0)
- * [9.0.1](9.0.1)
- * [development](development)
- * [latest](latest)
+
+# arveo
+
+Here you can find documentation about arveo.
+
+ * [latest released version](latest)
+ * [development version](development)
+ * [archive (older versions)](archive.html)

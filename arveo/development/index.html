@@ -7,60 +7,16 @@
 <meta name="generator" content="Asciidoctor 2.0.10">
 <title>Introduction</title>
 <style>
-@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
-@import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
+@import "https://eitco.github.io/eitco.css";
 
-body {
-    font-family: Segoe UI, Verdana, Geneva, sans-serif;
-    color: #3a3a3a;
-}
 
-h1,h2 {
-    color: #137080;
-}
-
-h3,h4,h5,h6 {
-    color: #084e58;
-}
-
-.title, #toctitle {
-    color: #137080 !important;
-}
-
-a, a:hover, a:focus {
-    color: #084e58;
-}
-
-#toc.toc2 {
-    background-color: #f9f9f9;
-}
-
-.icon-note::before {
-    color: #99cc33 !important;
-}
-
-.icon-warning::before {
-    color: #ee701e !important;
-}
-
-.icon-caution::before {
-    color: #812313 !important;
-}
-
-.icon-tip::before {
-    color: #3a3a3a !important;
-}
-
-#footer {
-    color: #3a3a3a;
-}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 11.0.2-SNAPSHOT</div>
+<div id="toctitle">arveo CICD-160-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -130,9 +86,10 @@ a, a:hover, a:focus {
 <li><a href="#_configure_database_access">Configure Database access</a></li>
 <li><a href="#_configure_storage_locations">Configure Storage Locations</a></li>
 <li><a href="#_renditions">Renditions</a></li>
-<li><a href="#_configure_retention_container">Configure Retention Container</a></li>
+<li><a href="#_configure_retention_container">Configure retention container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
+<li><a href="#_configure_arveo_user_management_as_authentication_service">Configure <em>arveo</em> user management as Authentication Service</a></li>
 <li><a href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></li>
 <li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure audit</a></li>
@@ -193,11 +150,11 @@ a, a:hover, a:focus {
 <li><a href="#_download_data">Download data</a></li>
 <li><a href="#_document_service_recycle_bin">Delete an object</a></li>
 <li><a href="#_locking">Locking</a></li>
-<li><a href="#_checkin_and_checkout">Checkin and checkout</a></li>
+<li><a href="#_download_links_for_external_users">Download links for external users</a></li>
 <li><a href="#_versioning_v">Versioning</a></li>
 <li><a href="#_search_language">Search language</a></li>
 <li><a href="#_search_endpoints">Search endpoints</a></li>
-<li><a href="#_retention_periods_retention">Retention Periods</a></li>
+<li><a href="#_retention_periods_retention">Retention periods</a></li>
 </ul>
 </li>
 <li><a href="#_rest_api"><strong>REST API</strong></a>
@@ -357,13 +314,9 @@ A customer who implements a complex ECM application for his company often become
 are difficult to calculate when changing providers.</p>
 </div>
 <div class="paragraph">
-<p>Due to the availability of platforms such as Amazon Web Services (AWS) or Microsoft Azure, which make a wide variety of
-services easily usable via web services, we are seeing a change in the behavior of companies who want to
-buy fewer complete solutions and instead are looking for specialized services that can easily be combined and
-thus create targeted added value for the digital company platform.
+<p>Due to the availability of platforms such as Amazon Web Services (AWS) or Microsoft Azure, which make a wide variety of services easily usable via web services, we are seeing a change in the behavior of companies who want to buy fewer complete solutions and instead are looking for specialized services that can easily be combined and thus create targeted added value for the digital company platform.
 Companies choose the best features from different manufacturers and combine them to create
-their own solutions, whereby you control the services used via your own API management or API gateways.
-This creates company platforms that not only access one, but often several repositories.</p>
+their own solutions, whereby you control the services used via your own API management or API gateways. This creates company platforms that not only access one, but often several repositories.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -396,30 +349,21 @@ A blue-green deployment for the risk-free, downtime-free rollout of new software
 <div class="sect2">
 <h3 id="_future_proof">Future proof</h3>
 <div class="paragraph">
-<p>Our services use standards as far as possible, so that services from different providers can be delivered without great
-integration effort and the customer can react quickly to changes in the market. Due to the secure web service interfaces,
-all services including the database can be obtained from the cloud at any time.</p>
+<p>Our services use standards as far as possible, so that services from different providers can be delivered without great integration effort and the customer can react quickly to changes in the market. Due to the secure web service interfaces, all services including the database can be obtained from the cloud at any time.</p>
 </div>
 <div class="paragraph">
-<p>With <em>arveo</em> services, you can build a sustained system architecture.
-By design <em>arveo</em> will you allow to separate your business logic from <em>arveo</em>
+<p>With <em>arveo</em> services, you can build a sustained system architecture. By design <em>arveo</em> will you allow to separate your business logic from <em>arveo</em>
 ECM standard services and all other available cloud services like OCR, AI,
-document conversion (e.g. to PDF), identity management.
-<em>arveo</em> solutions are designed to be manufacturer-independent,
-so that the underlying REST ECM and other services can be exchanged at easily calculable costs.</p>
+document conversion (e.g. to PDF), identity management. <em>arveo</em> solutions are designed to be manufacturer-independent, so that the underlying REST ECM and other services can be exchanged at easily calculable costs.</p>
 </div>
 <div class="paragraph">
-<p>This approach makes it possible to exchange individual services through to the content services of the <em>arveo</em> with
-little and easily calculable effort.
-Even <em>arveo</em> ECM services can be replaced by comparable services and via an open source S3 connector supplied,
-third-party systems can access the content objects migration-free using the S3 standard API.</p>
+<p>This approach makes it possible to exchange individual services through to the content services of the <em>arveo</em> with little and easily calculable effort. Even <em>arveo</em> ECM services can be replaced by comparable services and via an open source S3 connector supplied, third-party systems can access the content objects migration-free using the S3 standard API.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_hybrid_operation">Hybrid operation</h3>
 <div class="paragraph">
-<p><em>arveo</em> is a native cloud platform and is based on Open Source libraries and services.
-Through the consistent microservice architecture and the use of open source cloud technology, you can keep <em>arveo</em>'s operating costs low.</p>
+<p><em>arveo</em> is a native cloud platform and is based on Open Source libraries and services. Through the consistent microservice architecture and the use of open source cloud technology, you can keep <em>arveo</em>'s operating costs low.</p>
 </div>
 <div class="paragraph">
 <p>Advantages of <em>arveo</em> operation</p>
@@ -427,8 +371,7 @@ Through the consistent microservice architecture and the use of open source clou
 <div class="ulist">
 <ul>
 <li>
-<p>All services are horizontally scalable separately and can therefore also be operated on simple hardware.
-<em>arveo</em> runs on all Linux and Windows operating systems.</p>
+<p>All services are horizontally scalable separately and can therefore also be operated on simple hardware. <em>arveo</em> runs on all Linux and Windows operating systems.</p>
 </li>
 <li>
 <p>No additional license costs due to the consistent use of open source technology such as Linux,
@@ -1399,9 +1342,7 @@ transaction support. <em>arveo</em> saves the data on a relational database.</p>
 <div class="sect2">
 <h3 id="_high_availability">High availability</h3>
 <div class="paragraph">
-<p>The high availability (HA) of <em>arveo</em> depends highly on the HA of the storage systems for all kind of data.
-Each of the storage systems and as a result the <em>arveo</em> services follow the CAP (Consistency, Availability and
-Partition Tolerance) theorem saying that the availability and fail safety of a system depend on:</p>
+<p>The high availability (HA) of <em>arveo</em> depends highly on the HA of the storage systems for all kind of data. Each of the storage systems and as a result the <em>arveo</em> services follow the CAP (Consistency, Availability and Partition Tolerance) theorem saying that the availability and fail safety of a system depend on:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1506,9 +1447,7 @@ telling the caller that the data on the storage was most likely manipulated.</p>
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-An administrator only can illegally manipulate content if he can access both database and content storage because
-the control hash value of the content is stored in the database. Take care that none of your administrators has exclusive and
-unattended access to the content storage and the database.
+An administrator only can illegally manipulate content if he can access both database and content storage because the control hash value of the content is stored in the database. Take care that none of your administrators has exclusive and unattended access to the content storage and the database.
 </td>
 </tr>
 </table>
@@ -1530,16 +1469,13 @@ Distributed management roles of the storage systems and the <em>arveo</em> trans
 <div class="sect2">
 <h3 id="_content_storage_2">Content storage</h3>
 <div class="paragraph">
-<p><em>arveo</em> support evidence proof long term storage of your content and metadata by storing the content legally secure to either a S3 object storage or a file system. The storage must be redundant.
-Object storage systems like AWS, NetAPP or EMC Elastic Cloud Storage guarantee the long term availability and integrity of your content.</p>
+<p><em>arveo</em> support evidence proof long term storage of your content and metadata by storing the content legally secure to either a S3 object storage or a file system. The storage must be redundant. Object storage systems like AWS, NetAPP or EMC Elastic Cloud Storage guarantee the long term availability and integrity of your content.</p>
 </div>
 <div class="paragraph">
 <p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="./versioning.html">Versioning</a>) on your storage system
 and an audit entry is written to the audit log table (<a href="#_configure_audit">Audit Log</a>).
-<em>arveo</em> creates a version each time metadata including comments and annotations or content of a document is changed by the API
-<em>arveo</em>} creates a new entry containing the author and the timestamp pf the change in the version management table.
-The Update API allows you to add a comment to each version. The Version Management API provides access to all version information
-and metadata and content of previous versions.</p>
+<em>arveo</em> creates a version each time metadata including comments and annotations or content of a document is changed by the API <em>arveo</em>} creates a new entry containing the author and the timestamp pf the change in the version management table.
+The Update API allows you to add a comment to each version. The Version Management API provides access to all version information and metadata and content of previous versions.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1616,8 +1552,7 @@ The operating team of the platform must ensure that an appropriate replication i
 </td>
 <td class="content">
 You can configure different storage location (Cloud-Storage or on premise) for your content and document types (<a href="#_bucketorganizer">Storage Configuration</a>).<br>
-Reduce costs by storing non compliant and legally relevant data like PDF/A renditions of documents on storage systems
-with lower availability and performance SLAs.
+Reduce costs by storing non compliant and legally relevant data like PDF/A renditions of documents on storage systems with lower availability and performance SLAs.
 </td>
 </tr>
 </table>
@@ -1710,8 +1645,7 @@ setup a redundant cluster.</p>
 <div class="paragraph">
 <p>In case the database cluster is down <em>arveo</em> is still available but free customer searches fail.
 In case one database node is down or the database is read only <em>arveo</em> is still available but searches may return outdated results.
-If the database has a long term outage and the data files are affected the potential data loss is limited by the time
-that has passed since the last replication and the number of objects stored since that time.</p>
+If the database has a long term outage and the data files are affected the potential data loss is limited by the time that has passed since the last replication and the number of objects stored since that time.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -1720,8 +1654,7 @@ that has passed since the last replication and the number of objects stored sinc
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-The provider of the apache solr 8.6 cluster must guarantee that data is replicated between the nodes and that
-the a backup strategy prevents data loss.
+The provider of the apache solr 8.6 cluster must guarantee that data is replicated between the nodes and that the a backup strategy prevents data loss.
 </td>
 </tr>
 </table>
@@ -2470,7 +2403,7 @@ The installation is completely automated and carried out remotely.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_order_of_services">Order Of services</h4>
+<h4 id="_order_of_services">Order of services</h4>
 <div class="paragraph">
 <p>Following you find the order of the service starts. The content services may not work before important services are started.</p>
 </div>
@@ -2572,8 +2505,7 @@ The script is controlled by cron and is always started automatically at 10 p.m.<
 <h2 id="_getting_started"><strong>Getting Started</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this guide you will create a simple application that implements a basic project file scenario. It will consist of
-a document type, that represents documents used in a project.</p>
+<p>In this guide you will create a simple application that implements a basic project file scenario. It will consist of a document type, that represents documents used in a project.</p>
 </div>
 <div class="sect2">
 <h3 id="_prerequisites">Prerequisites</h3>
@@ -2602,9 +2534,7 @@ a document type, that represents documents used in a project.</p>
 <div class="sect3">
 <h4 id="_internal">Internal</h4>
 <div class="paragraph">
-<p>When you are inside the company network or the VPN, you can use the internal Nexus that does not require authentication.
-The following maven settings.xml file shows how to configure the required repositories. The settings.xml file can be
-found in the .m2 directory in your user home directory.</p>
+<p>When you are inside the company network or the VPN, you can use the internal Nexus that does not require authentication. The following maven settings.xml file shows how to configure the required repositories. The settings.xml file can be found in the <em>.m2</em> directory in your user home directory.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2672,13 +2602,10 @@ found in the .m2 directory in your user home directory.</p>
 <div class="sect3">
 <h4 id="_external">External</h4>
 <div class="paragraph">
-<p>When you are outside the company network and the VPN, you need to use the public Nexus repository that requires
-authentication. To do so, maven requires credentials. For security reasons, the credentials should be encrypted.
-Follow the instructions in the <a href="https://maven.apache.org/guides/mini/guide-encryption.html">Maven documentation</a> to
-configure a master password and to create an encrypted password.</p>
+<p>When you are outside the company network and the VPN, you need to use the public Nexus repository that requires authentication. To do so, maven requires credentials. For security reasons, the credentials should be encrypted. Follow the instructions in the <a href="https://maven.apache.org/guides/mini/guide-encryption.html">Maven documentation</a> to configure a master password and to create an encrypted password.</p>
 </div>
 <div class="paragraph">
-<p>You should now have created a settings-security.xml file in the .m2 directory like the one shown below:</p>
+<p>You should now have created a settings-security.xml file in the <em>.m2</em> directory like the one shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2795,7 +2722,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 11.0.2-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is CICD-160-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -2822,8 +2749,7 @@ default values that can be used.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>In the last step, the archetype plugin shows the selected property values and asks for confirmation. After the settings
-are confirmed, the project will be generated in a folder called <em>demo-types</em>.</p>
+<p>In the last step, the archetype plugin shows the selected property values and asks for confirmation. After the settings are confirmed, the project will be generated in a folder called <em>demo-types</em>.</p>
 </div>
 <div class="paragraph">
 <p>The <a href="#_archetype_overview">archetype documentation</a> contains a description of the generated project. For this guide,
@@ -2846,22 +2772,15 @@ Only types that have been registered can be used in your application.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The archetype has generated integration tests for the generated type definition, too. You can find them in the directory
-<em>test/system-test</em>. The file <em>DemoClientIT.java</em> contains some tests that show how to perform basic CRUD operations on
-the generated document type.</p>
+<p>The archetype has generated integration tests for the generated type definition, too. You can find them in the directory <em>test/system-test</em>. The file <em>DemoClientIT.java</em> contains some tests that show how to perform basic CRUD operations on the generated document type.</p>
 </div>
 <div class="paragraph">
-<p>You will notice an additional class called <em>DemoModelId</em>. This class demonstrates how to create a typed ID for a
-specific model class. It is not required for the system to be able to use the <em>DemoModel</em> type. If you do not
-require typed IDs, you can remove the class.</p>
+<p>You will notice an additional class called <em>DemoModelId</em>. This class demonstrates how to create a typed ID for a specific model class. It is not required for the system to be able to use the <em>DemoModel</em> type. If you do not require typed IDs, you can remove the class.</p>
 </div>
 <div class="sect3">
 <h4 id="_running_the_tests">Running the tests</h4>
 <div class="paragraph">
-<p>The tests are run automatically in a full maven build.The system-test module is configured to automatically start a
-complete arveo system including all required services and a database.If you want to run the tests manually
-from the IDE, you can still use maven to start the arveo system.Open a command line in the system-test
-directory and run <code>mvn -Denv</code>.Maven will start the following processes:</p>
+<p>The tests are run automatically in a full maven build. The system-test module is configured to automatically start a complete arveo system including all required services and a database. If you want to run the tests manually from the IDE, you can still use maven to start the <em>arveo</em> system.Open a command line in the system-test directory and run <code>mvn -Denv</code>. Maven will start the following processes:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2875,27 +2794,27 @@ directory and run <code>mvn -Denv</code>.Maven will start the following processe
 <p>A SOLR server</p>
 </li>
 <li>
-<p>The service registry</p>
+<p>The Service Registry</p>
 </li>
 <li>
-<p>The configuration service</p>
+<p>The Configuration Service</p>
 </li>
 <li>
-<p>The user management service</p>
+<p>The User management Service</p>
 </li>
 <li>
-<p>The audit service</p>
+<p>The Audit Service</p>
 </li>
 <li>
-<p>The access control service</p>
+<p>The Access Control Service</p>
 </li>
 <li>
-<p>The arveo service</p>
+<p>The <em>arveo</em> Service</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The services will be kept alive until you press enter in the command line.</p>
+<p>The services will be kept alive until you press <em>enter</em> in the command line.</p>
 </div>
 <div class="paragraph">
 <p>This will only work if a complete build has been performed at least once (which can be done through <code>mvn install</code>).</p>
@@ -2958,9 +2877,7 @@ imported to arveo - see system fields)</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>In addition to these custom fields, the document will contain some system fields like content metadata (filename, size,
-mimetype&#8230;&#8203;) and versioning information like creation- and update-timestamps.
-The two metadata fields name and number that are already contained in DemoModel.java can be removed.</p>
+<p>In addition to these custom fields, the document will contain some system fields like content metadata (filename, size, mimetype&#8230;&#8203;) and versioning information like creation- and update-timestamps. The two metadata fields name and number that are already contained in DemoModel.java can be removed.</p>
 </div>
 <div class="sect4">
 <h5 id="_adding_getters_for_system_fields">Adding getters for system fields</h5>
@@ -2968,9 +2885,7 @@ The two metadata fields name and number that are already contained in DemoModel.
 <p>Complete listings for the steps below can be found at the end of this chapter.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s first add some getters for system fields. Those will provide access to system information that is generated
-automatically when an entity is created or updated. The generated DemoModel class already contains getters for the
-ID- and ACL- system properties. Add the following lines to DemoModel.java:</p>
+<p>Let&#8217;s first add some getters for system fields. Those will provide access to system information that is generated automatically when an entity is created or updated. The generated DemoModel class already contains getters for the ID- and ACL- system properties. Add the following lines to DemoModel.java:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2985,9 +2900,7 @@ ModificationInformation getModificationInformation();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The JavaDoc for the SystemPropertyName enum constants contains information about each field. The data type for the
-contentInformation field is a map because each document can contain multiple content elements. For example, a document
-could contain a TIFF image and a PDF rendition of the TIFF.</p>
+<p>The JavaDoc for the SystemPropertyName enum constants contains information about each field. The data type for the <em>contentInformation</em> field is a map because each document can contain multiple content elements. For example, a document could contain a TIFF image and a PDF rendition of the TIFF.</p>
 </div>
 </div>
 <div class="sect4">
@@ -3027,8 +2940,7 @@ ZonedDateTime getFileSystemCreationDate();
 </div>
 </div>
 <div class="paragraph">
-<p>The annotations <code>@Mandatory</code> and <code>@Optional</code> can be used to control which fields have to be set by the client and which
-can be left empty.</p>
+<p>The annotations <code>@Mandatory</code> and <code>@Optional</code> can be used to control which fields have to be set by the client and which can be left empty.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -3037,15 +2949,13 @@ can be left empty.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The annotations for the arveo type definitions always have to be added to the getters. You can find an
-overview of the supported data types <a href="#">here</a>.
+The annotations for the arveo type definitions always have to be added to the getters. You can find an overview of the supported data types <a href="#">here</a>.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>For the <em>type</em> field we want to limit the possible values that can be set. This can be done by defining an enumeration.
-Create the following enumeration type:</p>
+<p>For the <em>type</em> field we want to limit the possible values that can be set. This can be done by defining an enumeration. Create the following enumeration type:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3062,8 +2972,7 @@ Create the following enumeration type:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This enum class will be mapped to an enumeration type on the database. It needs to be registered in the type registration
-just like the DemoModel type. Adapt the class DemoTypeRegistration as follows:</p>
+<p>This enum class will be mapped to an enumeration type on the database. It needs to be registered in the type registration just like the DemoModel type. Adapt the class DemoTypeRegistration as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3200,9 +3109,7 @@ DemoModelStatus getStatus();
 <div class="sect2">
 <h3 id="_step_2_command_line_tool">Step 2 - Command line tool</h3>
 <div class="paragraph">
-<p>In the second step you will implement a simple command line application that uses the model defined in step 1. We will
-use the Spring Initializer to generate a maven project with the required dependencies for a Spring command line
-application.</p>
+<p>In the second step you will implement a simple command line application that uses the model defined in step 1. We will use the Spring Initializer to generate a maven project with the required dependencies for a Spring command line application.</p>
 </div>
 <div class="sect3">
 <h4 id="_generating_the_project">Generating the project</h4>
@@ -3218,7 +3125,7 @@ application.</p>
 <p>Under "Language", select "Java"</p>
 </li>
 <li>
-<p>Select Spring Boot version 2.7.4. If your required version is not available, select the most compatible one in terms of major.minor.patch.</p>
+<p>Select Spring Boot version 2.7.7. If your required version is not available, select the most compatible one in terms of major.minor.patch.</p>
 </li>
 <li>
 <p>Define project metadata. For example, use Group = de.eitco.demo, Artifact = demo-tool, Name = demo-tool, Package name = de.eitco.demo.tool</p>
@@ -3240,8 +3147,7 @@ application.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Click Generate and download the zip file containing the generated project. Unzip the file to a directory of your choice
-and open the project in your IDE. Delete the 'test' directory.</p>
+<p>Click Generate and download the zip file containing the generated project. Unzip the file to a directory of your choice and open the project in your IDE. Delete the 'test' directory.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3254,7 +3160,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>11.0.2-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>CICD-160-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3265,7 +3171,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <span class="tag">&lt;dependency&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>cmn-spring-security5-oauth2-client-non-web<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>3.0.1<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>4.0.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span>
 <span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.demo<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -3307,7 +3213,7 @@ and open the project in your IDE. Delete the 'test' directory.</p>
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>7.0.1<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>7.0.5<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -3317,13 +3223,10 @@ and open the project in your IDE. Delete the 'test' directory.</p>
 <div class="sect3">
 <h4 id="_implementing_the_tool">Implementing the tool</h4>
 <div class="paragraph">
-<p>The tool will use the picocli library to make it easy to write a command line application with features like usage help
-and simple parameter binding. You can read more about picocli <a href="https://picocli.info">here</a>.</p>
+<p>The tool will use the picocli library to make it easy to write a command line application with features like usage help and simple parameter binding. You can read more about picocli <a href="https://picocli.info">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>Go to the de.eitco.demo.tool package and create a new class called "ArveoCommand". This will contain the business logic
-behind the commands available in the command line application. In picocli, those commands need to implement <em>Runnable</em>,
-so we have to implement this interface:</p>
+<p>Go to the de.eitco.demo.tool package and create a new class called "ArveoCommand". This will contain the business logic behind the commands available in the command line application. In picocli, those commands need to implement <em>Runnable</em>, so we have to implement this interface:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3361,8 +3264,7 @@ so we have to implement this interface:</p>
 </div>
 <div class="paragraph">
 <p>To be able to access arveo, the command line tool will have to authenticate to
-the arveo service. We will use a simple username/password authentication, so the user must be able to enter
-credentials. With picocli, we can implement this with some annotated fields in ArveoCommand:</p>
+the arveo service. We will use a simple username/password authentication, so the user must be able to enter credentials. With picocli, we can implement this with some annotated fields in <em>ArveoCommand</em>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3383,9 +3285,7 @@ credentials. With picocli, we can implement this with some annotated fields in A
 <p>Using the interactive=true option, the user will be prompted to enter username and password when the program is running.</p>
 </div>
 <div class="paragraph">
-<p>The ArveoCommand class will need to know the directory to import from and (optionally) a customer name. To be able to
-access the arveo API, we have to get an instance of the <em>TypeDefinitionServiceClient</em>. This can be done
-using dependency injection:</p>
+<p>The ArveoCommand class will need to know the directory to import from and (optionally) a customer name. To be able to access the arveo API, we have to get an instance of the <em>TypeDefinitionServiceClient</em>. This can be done using dependency injection:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3401,7 +3301,7 @@ using dependency injection:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Now it is time to implement the import. Add the following methods to the ArveoCommand class:</p>
+<p>Now it is time to implement the import. Add the following methods to the <em>ArveoCommand</em> class:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3421,8 +3321,7 @@ using dependency injection:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The importProject method will be used to import a project located in the provided root directory. The scenario does not
-support files located directly in the root of the project, so we will log a warning when we encounter such a file.</p>
+<p>The importProject method will be used to import a project located in the provided root directory. The scenario does not support files located directly in the root of the project, so we will log a warning when we encounter such a file.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3443,8 +3342,7 @@ support files located directly in the root of the project, so we will log a warn
 </div>
 </div>
 <div class="paragraph">
-<p>The importLevel1 method will collect all files and directories located in the first level of the project structure.
-Files will be imported directly, directories will be passed to the next importer method.</p>
+<p>The importLevel1 method will collect all files and directories located in the first level of the project structure. Files will be imported directly, directories will be passed to the next importer method.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3464,8 +3362,7 @@ Files will be imported directly, directories will be passed to the next importer
 </div>
 </div>
 <div class="paragraph">
-<p>This method collects all files located in the second level of the project structure. We do not support deeper structures,
-so we log a warning when we encounter a directory below level 2.</p>
+<p>This method collects all files located in the second level of the project structure. We do not support deeper structures, so we log a warning when we encounter a directory below level 2.</p>
 </div>
 <div class="paragraph">
 <p>The method used to actually import data into arveo is shown below:</p>
@@ -3523,9 +3420,7 @@ so we log a warning when we encounter a directory below level 2.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>AuthenticationHelper</code> takes care of populating spring&#8217;s security context with the required credentials. The OAuth2
-client will use the provided username and password to retrieve an access token from the authentication service to
-authenticate the requests to the arveo service.</td>
+<td>The <code>AuthenticationHelper</code> takes care of populating spring&#8217;s security context with the required credentials. The OAuth2 client will use the provided username and password to retrieve an access token from the authentication service to authenticate the requests to the arveo service.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -3575,8 +3470,7 @@ with the metadata.</td>
 </table>
 </div>
 <div class="paragraph">
-<p>Now we have to adapt the application class that was generated by the spring initializer. Spring provides a
-<em>CommandLineRunner</em> interface for command line applications. Adapt the DemoToolApplication class as shown below:</p>
+<p>Now we have to adapt the application class that was generated by the spring initializer. Spring provides a <em>CommandLineRunner</em> interface for command line applications. Adapt the <em>DemoToolApplication</em> class as shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3614,8 +3508,7 @@ with the metadata.</td>
 </table>
 </div>
 <div class="paragraph">
-<p>In the last step, we have to set some configuration properties for our command line tool. Rename the generated
-application.properties file in src/main/resource to application.yaml and add the following settings:</p>
+<p>In the last step, we have to set some configuration properties for our command line tool. Rename the generated <em>application.properties</em> file in src/main/resource to <em>application.yaml</em> and add the following settings:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3671,11 +3564,7 @@ in the test system provided by the system test module of the project created in 
 <div class="sect3">
 <h4 id="_building_and_running_the_tool">Building and running the tool</h4>
 <div class="paragraph">
-<p>Now we can build and run the command line tool. You can either use the IDE or run <code>mvn clean install</code> in a command line
-for the project containing the demo tool. After the build has finished, you have to start the test system. Open a
-command line in the system-test module of the type definition project and execute the command <code>mvn -Denv</code>
-(see <a href="#_running_the_tests">Running the tests</a>). Now we can use another command line in the target directory of the command line tool
-project to run the tool. Running <code>java -jar .\demo-tool-0.0.1-SNAPSHOT.jar</code> prints out usage help for the tool:</p>
+<p>Now we can build and run the command line tool. You can either use the IDE or run <code>mvn clean install</code> in a command line for the project containing the demo tool. After the build has finished, you have to start the test system. Open a command line in the system-test module of the type definition project and execute the command <code>mvn -Denv</code> (see <a href="#_running_the_tests">Running the tests</a>). Now we can use another command line in the target directory of the command line tool project to run the tool. Running <code>java -jar .\demo-tool-0.0.1-SNAPSHOT.jar</code> prints out usage help for the tool:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4021,9 +3910,7 @@ Imported file Incoming_invoice.png belonging to project Webclient
 <p>Here, the variable {project-technical-version} must be replaced with the actual version, f.e. 5.0.1.</p>
 </div>
 <div class="paragraph">
-<p>Also, you have to remember, that this will generate a project structure into a project folder. So before you type
-this command in your command line, make sure you have prepared a folder where your project structure is going to be and you
-have switched into this folder on your command line.</p>
+<p>Also, you have to remember, that this will generate a project structure into a project folder. So before you type this command in your command line, make sure you have prepared a folder where your project structure is going to be and you have switched into this folder on your command line.</p>
 </div>
 <div class="paragraph">
 <p>This will start a process that will ask for some parameters and then generate a maven project according to the parameters. The following parameters will be asked for:</p>
@@ -5315,7 +5202,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>11.0.2-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>CICD-160-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -5825,7 +5712,7 @@ fly.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_retention_container">Configure Retention Container</h3>
+<h3 id="_configure_retention_container">Configure retention container</h3>
 <div class="sect4">
 <h5 id="_configure_storage_containers_for_yearly_retention_periods">Configure storage containers for yearly retention periods</h5>
 <div class="paragraph">
@@ -6162,7 +6049,7 @@ See content types without retention above arveo:server:content:DocumentTypeA/B</
 </table>
 </div>
 <div class="paragraph">
-<p>For more details on storage profiles and content types see <a href="#_types_of_content_elements">Content Types</a></p>
+<p>For more details on storage profiles and content types see <a href="#_types_of_content_elements">Content types</a></p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -6623,15 +6510,32 @@ by <em>arveo</em>- name-prefix. The <em>arveo</em> uses text messages containing
 components not implemented in Java. The JSON data uses the same serialization mechanism as the REST API.</p>
 </div>
 <div class="paragraph">
-<p>The <em>arveo</em> uses ActiveMQ&#8217;s scheduler support for features like automated deletion of entities in the recycle bin after a
+<p><em>arveo</em> uses ActiveMQ&#8217;s scheduler support for features like automated deletion of entities in the recycle bin after a
 configurable time. Therefore it is required to enable the scheduler in ActiveMQ by setting schedulerSupport="true" in the
 broker tag in <em>activemq.xml</em>.</p>
 </div>
 <div class="paragraph">
-<p>When the automatic rendition creation feature is used, a separate dead letter queue must be configured in ActiveMQ. See
-<a href="#<em>error_handling">renditions</a> for details.
-=== Configure _arveo</em> user management as Authentication Service</p>
+<p>Some features like the automatic creation of renditions or the removal of stored data for data protection compliance
+require dead letter queues in ActiveMQ. See <a href="#<em>error_handling">renditions</a> for details. The queue-specific
+dead letter queues must be activated by adding the following policy entries to _activemq.xml</em>.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;policyEntry</span> <span class="attribute-name">queue</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">ecr-queue-create-renditions</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;deadLetterStrategy&gt;</span>
+        <span class="tag">&lt;individualDeadLetterStrategy</span> <span class="attribute-name">queuePrefix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">DLQ.</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">useQueueForQueueMessages</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/deadLetterStrategy&gt;</span>
+<span class="tag">&lt;/policyEntry&gt;</span>
+<span class="tag">&lt;policyEntry</span> <span class="attribute-name">queue</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">ecr-queue-delete-audit-entries</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;deadLetterStrategy&gt;</span>
+        <span class="tag">&lt;individualDeadLetterStrategy</span> <span class="attribute-name">queuePrefix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">DLQ.</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">useQueueForQueueMessages</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+    <span class="tag">&lt;/deadLetterStrategy&gt;</span>
+<span class="tag">&lt;/policyEntry&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_arveo_user_management_as_authentication_service">Configure <em>arveo</em> user management as Authentication Service</h3>
 <div class="paragraph">
 <p>The User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue JSON web tokens that can be used to log in to services that are also secured with OAuth2.</p>
 </div>
@@ -7700,7 +7604,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/0.0.25/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/1.0.0/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit">Access audit</h4>
@@ -7958,7 +7862,7 @@ using a custom Solr plugin, which must be installed manually by following the st
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 3.0.3) from the nexus repository.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> (version 4.0.0) from the nexus repository.</p>
 </li>
 <li>
 <p>Install the plugin in Solr as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
@@ -8657,10 +8561,22 @@ of the different services.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-acls.expire-seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-access-tokens.expire-after</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time after which an entity in the cache will be expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-access-tokens.size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">default-acls.expire-after</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time after which an entity in the cache will be expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">default-acls.size</p></td>
@@ -8669,10 +8585,10 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enums.expire-seconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enums.expire-after</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time after which an entity in the cache will be expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">enums.size</p></td>
@@ -8681,10 +8597,10 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-access.expire-seconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-access.expire-after</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time after which an entity in the cache will be expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-access.size</p></td>
@@ -8693,16 +8609,73 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.expire-seconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">900</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.expire-after</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time after which an entity in the cache will be expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_ecr_server_content-access-tokens">ecr.server.content-access-tokens</h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">alias</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The alias of the certificate used to sign the tokens.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the alias.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the keystore.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The absolute path to the keystore that contains the certificate used to sign the tokens.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the keystore (e.g. PKCS12, JKS&#8230;&#8203;)</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">max-token-lifetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum allowed lifetime of the generated tokens.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1d</p></td>
 </tr>
 </tbody>
 </table>
@@ -8795,6 +8768,12 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jms-statistics.jms-receive-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the time the job will wait for a reply from the message broker.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1s</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no-sql-queue.batch-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the number of entries to load from the queue table in one batch.</p></td>
@@ -8825,6 +8804,30 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retention-cleanup.global-settings.batch-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the size of a single batch of entities processed by the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retention-cleanup.global-settings.max-message-queue-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum acceptable size of the message queues used by the job. Checked when the job is started. If the size of one of the queues exceeds the limit, the job is cancelled.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retention-cleanup.global-settings.max-runtime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum acceptable runtime for the job. When the time is exceeded, the job is cancelled.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retention-cleanup.global-settings.purge-content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, all content elements of a document and all it&#8217;s versions will be deleted.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry-renditions.batch-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the number of document versions to select in one run of the job.</p></td>
@@ -8843,16 +8846,55 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tenant-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the tenant of the user used to run the jobs</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the user used to run the jobs.</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_ecr_server_jobs_retention-cleanup">ecr.server.jobs.retention-cleanup</h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">global-settings.batch-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the size of a single batch of entities processed by the job.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">global-settings.max-message-queue-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum acceptable size of the message queues used by the job. Checked when the job is started. If the size of one of the queues exceeds the limit, the job is cancelled.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">global-settings.max-runtime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum acceptable runtime for the job. When the time is exceeded, the job is cancelled.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">global-settings.purge-content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, all content elements of a document and all it&#8217;s versions will be deleted.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 </tbody>
 </table>
@@ -9233,6 +9275,12 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fetch-jms-statistics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables the regular fetching of JMS statistics from the ecr_jms_statistics table.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">initialize-empty-database</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the system will create the schema even if not in maintenance mode should the table ecr_types be empty.</p></td>
@@ -9350,7 +9398,7 @@ of the different services.</p>
 <h2 id="_monitoring"><strong>Monitoring</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/2.7.4/reference/html/actuator.html">Spring Boot Actuator</a>
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/2.7.7/reference/html/actuator.html">Spring Boot Actuator</a>
 to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/">Prometheus</a> or
 the Administration Service. The Actuator documentation linked above contains information about the available monitoring
 data, how to enable or disable specific endpoints and how to configure security.</p>
@@ -9903,7 +9951,7 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <h3 id="_other_monitoring_systems">Other monitoring systems</h3>
 <div class="paragraph">
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
-The <a href="https://docs.spring.io/spring-boot/docs/2.7.4/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
+The <a href="https://docs.spring.io/spring-boot/docs/2.7.7/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
@@ -13404,8 +13452,7 @@ document type.
 <div class="sect2">
 <h3 id="_metadata_type">Metadata type</h3>
 <div class="paragraph">
-<p><code>Metadata</code> types are used for example to connect external tables. They do not contain any specific system fields and no typed ID
-as a primary key. The database table can be created by the <em>arveo</em> or an existing table can be used.</p>
+<p><code>Metadata</code> types are used for example to connect external tables. They do not contain any specific system fields and no typed ID as a primary key. The database table can be created by the <em>arveo</em> or an existing table can be used.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -13414,8 +13461,7 @@ as a primary key. The database table can be created by the <em>arveo</em> or an 
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Use the <em>@View</em> annotation to mark a metadata type as a view for which the system should not create a table and use the
-<em>@TableName</em> annotation to define the name of the table of the external system.
+Use the <em>@View</em> annotation to mark a metadata type as a view for which the system should not create a table and use the <em>@TableName</em> annotation to define the name of the table of the external system.
 </td>
 </tr>
 </table>
@@ -14657,7 +14703,7 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect2">
 <h3 id="_tenant_separation">Tenant separation</h3>
 <div class="paragraph">
-<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/{commons-tenant-version}/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/{commons-tenant-version}/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
 </div>
 <div class="paragraph">
 <p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
@@ -14665,14 +14711,14 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect3">
 <h4 id="_fallback_tenant">Fallback-tenant</h4>
 <div class="paragraph">
-<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
-Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
+<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/{commons-tenant-version}/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
+Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/{commons-tenant-version}/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_usage_2">Usage</h4>
 <div class="paragraph">
-<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/{commons-tenant-version}/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
 </div>
 <div class="paragraph">
 <p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
@@ -14692,16 +14738,13 @@ Should a querying user reside in the fallback-tenant, the query will not be filt
 <p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
 </div>
 <div class="paragraph">
-<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/1.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
+<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/{commons-tenant-version}/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
 </div>
 <div class="paragraph">
 <p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
 </div>
 <div class="paragraph">
 <p>If it is <em>disabled</em>, types are not separated by tenant by default. Any type specified to be separated by tenant will cause arveo to fail at startup.</p>
-</div>
-<div class="paragraph">
-<p>If it is <em>allowed</em>, types are not separated by tenant by default.</p>
 </div>
 </div>
 </div>
@@ -14949,11 +14992,7 @@ In a case where an index prefixed with <code>ecr_mnl_</code> is used it will be 
 <div class="sect2">
 <h3 id="_upload_data">Upload data</h3>
 <div class="paragraph">
-<p>Content, annotations (see below) and metadata can be uploaded as a coherent document. 0-n content elements of different
-content types are possible. Each content element is named. As a result, you get a globally unique ID (DocumentID),
-which can be used to reference content, annotations and / or just metadata of the latest version of the document.
-It is possible to clone content elements from one document to another, creating a copy of the content on the storage.
-For that, a ContentReference can be supplied when the document is created.</p>
+<p>Content, annotations (see below) and metadata can be uploaded as a coherent document. 0-n content elements of different content types are possible. Each content element is named. As a result, you get a globally unique ID (DocumentID), which can be used to reference content, annotations and / or just metadata of the latest version of the document. It is possible to clone content elements from one document to another, creating a copy of the content on the storage. For that, a ContentReference can be supplied when the document is created.</p>
 </div>
 <div class="listingblock">
 <div class="title">Example: Upload a document with new content</div>
@@ -15011,19 +15050,40 @@ TypedDocumentClient&lt;TypedTargetDocument&gt; client =
 </tr>
 </table>
 </div>
+<div class="listingblock">
+<div class="title">Example: Upload a document with Base64 encoded data</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Base64EncodedData data = <span class="keyword">new</span> Base64EncodedData(base64Data);<i class="conum" data-value="1"></i><b>(1)</b>
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentUpload&gt; contentElements = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> ContentUpload(data));<i class="conum" data-value="2"></i><b>(2)</b>
+
+serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(contentElements, document));<i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Wrap the Base64 encoded data in a new <code>Base64EncodedData</code> instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Create a content upload with the created <code>Base64EncodedData</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Upload the document</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
 <h4 id="_validating_uploaded_content">Validating uploaded content</h4>
 <div class="paragraph">
-<p>There are several different ways to validate the content of an uploaded document. The method to use depends on the
-requirements of the client application. Some applications might already have computed a hash of the content while others
-might offload this to the server.</p>
+<p>There are several different ways to validate the content of an uploaded document. The method to use depends on the requirements of the client application. Some applications might already have computed a hash of the content while others might offload this to the server.</p>
 </div>
 <div class="sect4">
 <h5 id="_validating_content_on_the_client_side">Validating content on the client side</h5>
 <div class="paragraph">
-<p>When content is uploaded to a type definition that supports content metadata, the server computes an SHA-256 hash for
-the received data and returns it in the result of the upload request. The client can use this hash value to compare the
-data received by the server with the original data. The following example shows how to compare the hash values:</p>
+<p>When content is uploaded to a type definition that supports content metadata, the server computes an SHA-256 hash for the received data and returns it in the result of the upload request. The client can use this hash value to compare the data received by the server with the original data. The following example shows how to compare the hash values:</p>
 </div>
 <div class="listingblock">
 <div class="title">Example: Checking hash values on the client side</div>
@@ -15052,9 +15112,7 @@ Assert.assertEquals(expectedHash, hash);</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>The <code>TypedDocumentServiceClient</code> offers an additional method to validate uploaded content. The <code>createAndValidate</code>
-method automatically computes a hash of the uploaded data and compares it with the hash value returned from the server.
-If the two hashes do not match, a <code>HashValidationException</code> is thrown and the created document will be purged.</p>
+<p>The <code>TypedDocumentServiceClient</code> offers an additional method to validate uploaded content. The <code>createAndValidate</code> method automatically computes a hash of the uploaded data and compares it with the hash value returned from the server. If the two hashes do not match, a <code>HashValidationException</code> is thrown and the created document will be purged.</p>
 </div>
 <div class="listingblock">
 <div class="title">Example: Using the createAndValidate method</div>
@@ -15076,9 +15134,7 @@ client.createAndValidate(input);</code></pre>
 <div class="sect4">
 <h5 id="_validating_content_on_the_server_side">Validating content on the server side</h5>
 <div class="paragraph">
-<p>It is also possible to pass a hex representation of an SHA-256 hash code of the uploaded content to the server. If
-such a hash is present, the server will compare the computed hash value with the one specified by the client. If the
-values do not match, the upload fails and the uploaded file will not be stored.</p>
+<p>It is also possible to pass a hex representation of an SHA-256 hash code of the uploaded content to the server. If such a hash is present, the server will compare the computed hash value with the one specified by the client. If the values do not match, the upload fails and the uploaded file will not be stored.</p>
 </div>
 <div class="listingblock">
 <div class="title">Example: Checking hash values on the server side</div>
@@ -15125,11 +15181,7 @@ client.create(input);</code></pre>
 <div class="sect4">
 <h5 id="_validating_the_content_of_an_existing_document">Validating the content of an existing document</h5>
 <div class="paragraph">
-<p>The <code>TypedDocumentServiceClient</code> provides a method called <code>hashMatches</code> that can be used to check if the content of an
-existing document is valid. The client has to provide the expected hash, the document&#8217;s ID and the name of the content
-element to check. An additional parameter called <code>loadContent</code> defines if the server should use the hash value stored
-in the database or if it should load the content from the storage and compute a new hash value to compare.
-It is possible to check the content of a specific version of a document, too.</p>
+<p>The <code>TypedDocumentServiceClient</code> provides a method called <code>hashMatches</code> that can be used to check if the content of an existing document is valid. The client has to provide the expected hash, the document&#8217;s ID and the name of the content element to check. An additional parameter called <code>loadContent</code> defines if the server should use the hash value stored in the database or if it should load the content from the storage and compute a new hash value to compare. It is possible to check the content of a specific version of a document, too.</p>
 </div>
 <div class="listingblock">
 <div class="title">Example: Checking hash values of an existing document</div>
@@ -15144,17 +15196,13 @@ It is possible to check the content of a specific version of a document, too.</p
 <div class="sect2">
 <h3 id="_download_data">Download data</h3>
 <div class="paragraph">
-<p>Content, annotations and metadata of a document can be downloaded via API. It is possible to load the entire document as
-a multipart or a structure of the document that includes all metadata, annotations and a list of content elements with
-their IDs, types and identifiers. Each content element can then be loaded using the document ID / content ID or the
-document ID / content type. Access to individual content elements without a document ID is not possible for reasons of
-access control. Access control based on the document ID is ensured with every access.</p>
+<p>Content, annotations and metadata of a document can be downloaded via API. It is possible to load the entire document as a multipart or a structure of the document that includes all metadata, annotations and a list of content elements with their IDs, types and identifiers. Each content element can then be loaded using the document ID / content ID or the
+document ID / content type. Access to individual content elements without a document ID is not possible for reasons of access control. Access control based on the document ID is ensured with every access.</p>
 </div>
 <div class="sect3">
 <h4 id="_update_metadata_without_a_version">Update metadata without a version</h4>
 <div class="paragraph">
-<p>The meta information of a document can be changed. The changes can be persisted in the database without creating a version. It is possible, to maintain frequently changing information on the document quickly without creating the
-overhead of a version. However, in the event of an audit, the changes are not traceable.</p>
+<p>The meta information of a document can be changed. The changes can be persisted in the database without creating a version. It is possible, to maintain frequently changing information on the document quickly without creating the overhead of a version. However, in the event of an audit, the changes are not traceable.</p>
 </div>
 </div>
 </div>
@@ -15208,9 +15256,7 @@ If an object has relations to other objects is related by other objects the dele
 </div>
 </div>
 <div class="paragraph">
-<p>Note that the deleted system field can contain <em>null</em> values, which have the same meaning as <em>false</em>.
-When a client uses one of the <em>delete</em> calls to delete one or more entities, all database entries for those entities will
-be deleted (including all versions).</p>
+<p>Note that the deleted system field can contain <em>null</em> values, which have the same meaning as <em>false</em>. When a client uses one of the <em>delete</em> calls to delete one or more entities, all database entries for those entities will be deleted (including all versions).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -15225,8 +15271,7 @@ There is no option to restore entities once they have been deleted.
 </table>
 </div>
 <div class="paragraph">
-<p>If there are relations between entities that are to be deleted, the relations are not deleted. Instead, a
-<em>ForeignKeyException</em> is thrown - and has to be handled by the caller.</p>
+<p>If there are relations between entities that are to be deleted, the relations are not deleted. Instead, a <em>ForeignKeyException</em> is thrown - and has to be handled by the caller.</p>
 </div>
 </div>
 <div class="sect3">
@@ -15240,8 +15285,7 @@ There is no option to restore entities once they have been deleted.
 </div>
 </div>
 <div class="paragraph">
-<p>You can also delete all relations that point to a specific entity. For this, there is the method
-<em>removeAllIncomingRelations()</em>. This also returns the deleted relations:</p>
+<p>You can also delete all relations that point to a specific entity. For this, there is the method <em>removeAllIncomingRelations()</em>. This also returns the deleted relations:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -15263,21 +15307,86 @@ e.g. two processes A and B load the same object including content and versions a
 </div>
 </div>
 <div class="sect2">
-<h3 id="_checkin_and_checkout">Checkin and checkout</h3>
+<h3 id="_download_links_for_external_users">Download links for external users</h3>
 <div class="paragraph">
-<p>You can check out a document via the API and blocking it for other users. You can optionally specify a timeout after which the lock is automatically reset. Otherwise, the document is locked endlessly or until the global lock timeout takes effect.</p>
+<p>You can create download links for content elements that can be used by external users who do not exist in the user management service. Such a link has an expiration date and can be used to download a single content element. The links are digitally signed using a configurable certificate, so that the receiver cannot alter the
+referenced content element or the expiration date of the link. The <em>arveo</em> service provides a special HTTP endpoint to process download links. This endpoint does not require authentication. Instead, the download link contains credentials that allow the user to access the referenced content element.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This feature must be activated by configuring a keystore containing an RSA keypair that will be used to sign the links.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>You can check in a checked-out document via the API and save the changes (stream) as a new version in the repository or overwrite the existing version (traceable via the audit). You can optionally specify whether the lock (checkout) will be retained. Optional parameters as when creating a new version.</p>
+<p>The configuration options are listed <a href="#_ecr_server_content-access-tokens">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>You can discard a checked-out document via the API and thus reset the checkout lock.</p>
+<p>Download links (or content access tokens), can be created using the Java SDK as shown in the following exaple:</p>
+</div>
+<div class="listingblock">
+<div class="title">Injecting and instance of the ContentAccessTokenResourceClient</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<span class="directive">private</span> ContentAccessTokenResourceClient contentAccessTokenResourceClient;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Creating a new content access token</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">ContentAccessTokenInput input = <span class="keyword">new</span> ContentAccessTokenInput(
+    documentId,<i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="2"></i><b>(2)</b>
+    ZonedDateTime.now().plusHours(<span class="integer">3</span>)<i class="conum" data-value="3"></i><b>(3)</b>
+);
+
+<span class="predefined-type">String</span> token = contentAccessTokenResourceClient.createToken(input);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The ID of the document containing the content element to download</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the content element</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The expiration date of the link (can be omitted)</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>You can use the API to query the information for each document as to whether/since when and by whom it has been checked out. This information is also available for lists.</p>
+<p>The returned token can then be used to download the content by performing a GET request to the following endpoint:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>GET http://my-arveo-instance/api/streaming/&lt;token&gt;</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>As a system administrator, you can set a global timeout after the lock has been automatically activated. An INFO message is written in the central log, that contains the name of the blocking user and the document ID.</p>
+<p>Download links can only be created for content elements that are accessible to the user creating the link. When the client does not define an expiration date when the content access token is created, the configured maximum lifetime is used.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The creation of new tokens will fail when the client specifies an expiration date that would exceed the configured maximum lifetime.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -15631,6 +15740,7 @@ Queries like this can be executed using the aggregated search. As opposed to the
     <span class="predefined-type">String</span> getName();
 
     <span class="type">void</span> setName(<span class="predefined-type">String</span> name);
+
 }
 
 <span class="annotation">@Type</span>(ObjectType.DOCUMENT)
@@ -15730,27 +15840,27 @@ Apache Solr is a search server and is used as an independent full-text search se
 </div>
 </div>
 <div class="sect2">
-<h3 id="_retention_periods_retention">Retention Periods</h3>
+<h3 id="_retention_periods_retention">Retention periods</h3>
 <div class="paragraph">
 <p><em>arveo</em> supports a range of retention management features:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Full support of document life cycle</p>
+<p>Full support of document life cycle;</p>
 </li>
 <li>
-<p>Supports prolongation and litigation hold for data retention managers</p>
+<p>Supports prolongation and litigation hold for data retention managers;</p>
 </li>
 <li>
-<p>Privileged delete before retention expires</p>
+<p>Privileged delete before retention expires;</p>
 </li>
 <li>
-<p>Privileges for data protection officers (delete) and data protection managers (litigation)</p>
+<p>Privileges for data protection officers (delete) and data protection managers (litigation);</p>
 </li>
 <li>
 <p>Flexible storage container definition (e.g. months, years) for documents with identical retention period
-(S3 buckets or file system folders)</p>
+(S3 buckets or file system folders);</p>
 </li>
 <li>
 <p>Fast erasure of storage container by asynchronous delete jobs.</p>
@@ -15809,7 +15919,7 @@ write (INSERT,UPDTAE; DELETE) permissions for the database and the content repos
 </div>
 </div>
 <div class="sect3">
-<h4 id="_storage_container_and_document_life_cycle">storage container and document life cycle</h4>
+<h4 id="_storage_container_and_document_life_cycle">Storage container and document life cycle</h4>
 <div class="paragraph">
 <p>Since deleting large amounts of documents is a performance critical task, the <em>arveo</em> repository service provides special
 support for mass deletion of documents whose retention period has expired.</p>
@@ -15836,6 +15946,9 @@ When the litigation hold ends, the document is deleted the next time a delete jo
 hold is typically small and does not affect the overall erasure performance.</p>
 </div>
 <div class="paragraph">
+<p>When a litigation hold is removed, the objects are moved to other storage container which do not have a litigationHold on them.</p>
+</div>
+<div class="paragraph">
 <p>The following diagram shows the life cycle of a document with a fixed retention period set on upload, a legal dispute and automatic erasure at the end of the document&#8217;s life cycle:</p>
 </div>
 <div class="imageblock">
@@ -15844,9 +15957,14 @@ hold is typically small and does not affect the overall erasure performance.</p>
 </div>
 <div class="title">Figure 8. Retention in buckets</div>
 </div>
+<div class="paragraph">
+<p>Each storage container in fact corresponds to a separate storage profile that is used to store the contents of that storage container.
+The rules that are used to map the retention requirements of documents to storage container are defined as rules for the
+Bucket Organizer Plugin, see <a href="#_bucketorganizer">Bucketorganizer</a>.</p>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_litigation_hold">Litigation Hold</h4>
+<h4 id="_litigation_hold">Litigation hold</h4>
 <div class="paragraph">
 <p><em>arveo</em> provides a system property <em>LITIGATION_HOLD</em> that allows you to prolong the retention
 until you remove the litigation hold property.</p>
@@ -15970,7 +16088,7 @@ in charge of this task and you must set the option <em>delete rows only</em>.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_privileges_roles">Privileges &amp; Roles</h4>
+<h4 id="_privileges_roles">Privileges &amp; roles</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -16018,340 +16136,218 @@ in charge of this task and you must set the option <em>delete rows only</em>.
 <h4 id="_examples_3">Examples</h4>
 <div class="sect4">
 <h5 id="_create_document_with_retention_and_set_litigation_hold">Create document with retention and set litigation hold</h5>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>public void createDocumentWithRetention() throws IOException {</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>final String TEST_IDENTIFIER = "SetLitigationHold test timestamp in ms=";
-final String TEST_DATA = "abcde";
-final String TEST_DATA_MIMETYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>TypedDocumentServiceClient&lt;DocumentWithRetention&gt; serviceClient =
-        typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
-ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>DocumentWithRetention newDocument = serviceClient.createTypeInstance();
-newDocument.setName(TEST_IDENTIFIER + System.currentTimeMillis());
-newDocument.setReceiptDate(now );
-newDocument.setMimeType(TEST_DATA_MIMETYPE);
-newDocument.setRetentionDate(now);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ByteArrayInputStream data = new ByteArrayInputStream(TEST_DATA.getBytes());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Map&lt;String, ContentUpload&gt; content = Map.of("content", new ContentUpload(data));</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>TypedDocumentClient&lt;DocumentWithRetention&gt; newClient = serviceClient.create(new TypedDocumentInput&lt;&gt;(content, newDocument));</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
-DocumentWithRetention loadedDocument = newClient.getEntity();</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Assert.assertNotNull(loadedDocument);
-Assert.assertTrue(loadedDocument.getName().startsWith(TEST_IDENTIFIER));
-Assert.assertEquals(loadedDocument.getMimeType(), TEST_DATA_MIMETYPE);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>assertDateEquals( loadedDocument.getReceiptDate(), now);
-assertDateEquals(loadedDocument.getRetentionInformation().getRetentionDate(), now);
-Assert.assertFalse(loadedDocument.getRetentionInformation().isLitigationHold());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>// set LitigationHold = true
-newClient.updateLitigationHold(true);
-newClient = newClient.reload();
-DocumentWithRetention litigationOnDocument = newClient.getEntity();
-Assert.assertTrue(litigationOnDocument.getRetentionInformation().isLitigationHold());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>// set LitigationHold = false)
-newClient.updateLitigationHold(false);
-newClient = newClient.reload();
-DocumentWithRetention litigationOffDocument = newClient.getEntity();
-Assert.assertFalse(litigationOffDocument.getRetentionInformation().isLitigationHold());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>}</pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> createDocumentWithRetention() <span class="directive">throws</span> <span class="exception">IOException</span> {
+
+    <span class="directive">final</span> <span class="predefined-type">String</span> TEST_IDENTIFIER = <span class="string"><span class="delimiter">&quot;</span><span class="content">SetLitigationHold test timestamp in ms=</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">final</span> <span class="predefined-type">String</span> TEST_DATA = <span class="string"><span class="delimiter">&quot;</span><span class="content">abcde</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">final</span> <span class="predefined-type">String</span> TEST_DATA_MIMETYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+
+    TypedDocumentServiceClient&lt;DocumentWithRetention&gt; serviceClient =
+            typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
+    ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+
+    DocumentWithRetention newDocument = serviceClient.createTypeInstance();
+    newDocument.setName(TEST_IDENTIFIER + <span class="predefined-type">System</span>.currentTimeMillis());
+    newDocument.setReceiptDate(now );
+    newDocument.setMimeType(TEST_DATA_MIMETYPE);
+    newDocument.setRetentionDate(now);
+
+    <span class="predefined-type">ByteArrayInputStream</span> data = <span class="keyword">new</span> <span class="predefined-type">ByteArrayInputStream</span>(TEST_DATA.getBytes());
+
+    <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentUpload&gt; content = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> ContentUpload(data));
+
+    TypedDocumentClient&lt;DocumentWithRetention&gt; newClient = serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(content, newDocument));
+
+    Assert.assertEquals(IOUtils.toByteArray(newClient.readContent(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>)), TEST_DATA.getBytes());
+    DocumentWithRetention loadedDocument = newClient.getEntity();
+
+    Assert.assertNotNull(loadedDocument);
+    Assert.assertTrue(loadedDocument.getName().startsWith(TEST_IDENTIFIER));
+    Assert.assertEquals(loadedDocument.getMimeType(), TEST_DATA_MIMETYPE);
+
+    assertDateEquals( loadedDocument.getReceiptDate(), now);
+    assertDateEquals(loadedDocument.getRetentionInformation().getRetentionDate(), now);
+    Assert.assertFalse(loadedDocument.getRetentionInformation().isLitigationHold());
+
+    <span class="comment">// set LitigationHold = true</span>
+    newClient.updateLitigationHold(<span class="predefined-constant">true</span>);
+    newClient = newClient.reload();
+    DocumentWithRetention litigationOnDocument = newClient.getEntity();
+    Assert.assertTrue(litigationOnDocument.getRetentionInformation().isLitigationHold());
+
+    <span class="comment">// set LitigationHold = false)</span>
+    newClient.updateLitigationHold(<span class="predefined-constant">false</span>);
+    newClient = newClient.reload();
+    DocumentWithRetention litigationOffDocument = newClient.getEntity();
+    Assert.assertFalse(litigationOffDocument.getRetentionInformation().isLitigationHold());
+
+}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_set_retention_prolong_retention">Set retention / prolong retention</h5>
-<div class="literalblock">
-<div class="content">
-<pre>public void createDocumentWithoutRetention() throws IOException {</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>final String TEST_IDENTIFIER = "SetRetention test timestamp in ms=";
-final String TEST_DATA = "abcde";
-final String TEST_DATA_MIMETYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>TypedDocumentServiceClient&lt;DocumentWithRetention&gt; serviceClient =
-        typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
-// store document without retention
-DocumentWithRetention newDocument = serviceClient.createTypeInstance();
-newDocument.setName(TEST_IDENTIFIER + System.currentTimeMillis());
-newDocument.setReceiptDate(ZonedDateTime.now());
-newDocument.setMimeType(TEST_DATA_MIMETYPE);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ByteArrayInputStream data = new ByteArrayInputStream(TEST_DATA.getBytes());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Map&lt;String, ContentUpload&gt; content = Map.of("content", new ContentUpload(data));</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>TypedDocumentClient&lt;DocumentWithRetention&gt; newClient = serviceClient.create(new TypedDocumentInput&lt;&gt;(content, newDocument));</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
-DocumentWithRetention emptyRetentionDocument = newClient.getEntity();</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>RetentionInformation retentionInformation = emptyRetentionDocument.getRetentionInformation();
-Assert.assertNotNull(retentionInformation);
-Assert.assertNull(retentionInformation.getRetentionDate());
-Assert.assertFalse(retentionInformation.isLitigationHold());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>// set initial retention
-ZonedDateTime initialRetentionDate = ZonedDateTime.now();
-emptyRetentionDocument.setRetentionDate(initialRetentionDate);
-TypedDocumentClient&lt;DocumentWithRetention&gt; initialRetentionClient = newClient.updateAttributes(emptyRetentionDocument);
-DocumentWithRetention initialRetentionDocument = initialRetentionClient.getEntity();
-assertDateEquals(initialRetentionDocument.getRetentionInformation().getRetentionDate(), initialRetentionDate);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>// prolong retention
-ZonedDateTime prolongedRetentionDate = ZonedDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneId.of("Europe/Berlin"));
-initialRetentionDocument.setRetentionDate(prolongedRetentionDate);
-TypedDocumentClient&lt;DocumentWithRetention&gt; prolongedRetentionClient = initialRetentionClient.updateAttributes(initialRetentionDocument);
-DocumentWithRetention prolongedRetentionDocument = prolongedRetentionClient.getEntity();
-assertDateEquals(prolongedRetentionDocument.getRetentionInformation().getRetentionDate(), prolongedRetentionDate);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>}
-// endg::prolongRetention[]</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>@Test
-@WithCredentials(username = "ecr-dsgvo-admin", password = "password", tenant = "master")
-public void createDocumentWithRetention() throws IOException {</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>final String TEST_IDENTIFIER = "SetLitigationHold test timestamp in ms=";
-final String TEST_DATA = "abcde";
-final String TEST_DATA_MIMETYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>TypedDocumentServiceClient&lt;DocumentWithRetention&gt; serviceClient =
-        typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
-ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>DocumentWithRetention newDocument = serviceClient.createTypeInstance();
-newDocument.setName(TEST_IDENTIFIER + System.currentTimeMillis());
-newDocument.setReceiptDate(now );
-newDocument.setMimeType(TEST_DATA_MIMETYPE);
-newDocument.setRetentionDate(now);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ByteArrayInputStream data = new ByteArrayInputStream(TEST_DATA.getBytes());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Map&lt;String, ContentUpload&gt; content = Map.of("content", new ContentUpload(data));</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>TypedDocumentClient&lt;DocumentWithRetention&gt; newClient = serviceClient.create(new TypedDocumentInput&lt;&gt;(content, newDocument));</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Assert.assertEquals(IOUtils.toByteArray(newClient.readContent("content")), TEST_DATA.getBytes());
-DocumentWithRetention loadedDocument = newClient.getEntity();</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Assert.assertNotNull(loadedDocument);
-Assert.assertTrue(loadedDocument.getName().startsWith(TEST_IDENTIFIER));
-Assert.assertEquals(loadedDocument.getMimeType(), TEST_DATA_MIMETYPE);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>assertDateEquals( loadedDocument.getReceiptDate(), now);
-assertDateEquals(loadedDocument.getRetentionInformation().getRetentionDate(), now);
-Assert.assertFalse(loadedDocument.getRetentionInformation().isLitigationHold());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>// set LitigationHold = true
-newClient.updateLitigationHold(true);
-newClient = newClient.reload();
-DocumentWithRetention litigationOnDocument = newClient.getEntity();
-Assert.assertTrue(litigationOnDocument.getRetentionInformation().isLitigationHold());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>// set LitigationHold = false)
-newClient.updateLitigationHold(false);
-newClient = newClient.reload();
-DocumentWithRetention litigationOffDocument = newClient.getEntity();
-Assert.assertFalse(litigationOffDocument.getRetentionInformation().isLitigationHold());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>}</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>@Test(expectedExceptions = MissingBucketSelectionRuleException.class)
-public void testForcedRetention() {</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>TypedDocumentServiceClient&lt;MultiProfileDocumentWithRetention&gt; serviceClient =
-    typeDefinitionServiceClient.getDocumentServiceClient().byClass(MultiProfileDocumentWithRetention.class);</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>MultiProfileDocumentWithRetention document = serviceClient.createTypeInstance();
-document.setName(UUID.randomUUID().toString());</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ContentUpload contentUpload = new ContentUpload("Just some random content.".getBytes(StandardCharsets.UTF_8));</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>        serviceClient.create(new TypedDocumentInput&lt;&gt;(Map.of("content_forced_retention", contentUpload), document));
-    }
-}</pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_automated_erase_job_template">Automated erase job template</h5>
-<div class="paragraph">
-<p>With the StorageContainer API you can erase a storage profile which is used in a retention management storage profile.
-See the example in <a href="#_retention_container">Retention Rules</a>.</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>EraseStorageContainer (<span class="string"><span class="delimiter">&quot;</span><span class="content">storageProfileRetention2032</span><span class="delimiter">&quot;</span></span>, DocumentWithRetention)</pre></td>
-</tr></table></code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> createDocumentWithoutRetention() <span class="directive">throws</span> <span class="exception">IOException</span> {
+
+    <span class="directive">final</span> <span class="predefined-type">String</span> TEST_IDENTIFIER = <span class="string"><span class="delimiter">&quot;</span><span class="content">SetRetention test timestamp in ms=</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">final</span> <span class="predefined-type">String</span> TEST_DATA = <span class="string"><span class="delimiter">&quot;</span><span class="content">abcde</span><span class="delimiter">&quot;</span></span>;
+    <span class="directive">final</span> <span class="predefined-type">String</span> TEST_DATA_MIMETYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+
+    TypedDocumentServiceClient&lt;DocumentWithRetention&gt; serviceClient =
+            typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
+    <span class="comment">// store document without retention</span>
+    DocumentWithRetention newDocument = serviceClient.createTypeInstance();
+    newDocument.setName(TEST_IDENTIFIER + <span class="predefined-type">System</span>.currentTimeMillis());
+    newDocument.setReceiptDate(ZonedDateTime.now());
+    newDocument.setMimeType(TEST_DATA_MIMETYPE);
+
+    <span class="predefined-type">ByteArrayInputStream</span> data = <span class="keyword">new</span> <span class="predefined-type">ByteArrayInputStream</span>(TEST_DATA.getBytes());
+
+    <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentUpload&gt; content = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> ContentUpload(data));
+
+    TypedDocumentClient&lt;DocumentWithRetention&gt; newClient = serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(content, newDocument));
+
+    Assert.assertEquals(IOUtils.toByteArray(newClient.readContent(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>)), TEST_DATA.getBytes());
+    DocumentWithRetention emptyRetentionDocument = newClient.getEntity();
+
+    RetentionInformation retentionInformation = emptyRetentionDocument.getRetentionInformation();
+    Assert.assertNotNull(retentionInformation);
+    Assert.assertNull(retentionInformation.getRetentionDate());
+    Assert.assertFalse(retentionInformation.isLitigationHold());
+
+    <span class="comment">// set initial retention</span>
+    ZonedDateTime initialRetentionDate = ZonedDateTime.now();
+    emptyRetentionDocument.setRetentionDate(initialRetentionDate);
+    TypedDocumentClient&lt;DocumentWithRetention&gt; initialRetentionClient = newClient.updateAttributes(emptyRetentionDocument);
+    DocumentWithRetention initialRetentionDocument = initialRetentionClient.getEntity();
+    assertDateEquals(initialRetentionDocument.getRetentionInformation().getRetentionDate(), initialRetentionDate);
+
+    <span class="comment">// prolong retention</span>
+    ZonedDateTime prolongedRetentionDate = ZonedDateTime.of(<span class="integer">2050</span>, <span class="integer">1</span>, <span class="integer">1</span>, <span class="integer">0</span>, <span class="integer">0</span>, <span class="integer">0</span>, <span class="integer">0</span>, ZoneId.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">Europe/Berlin</span><span class="delimiter">&quot;</span></span>));
+    initialRetentionDocument.setRetentionDate(prolongedRetentionDate);
+    TypedDocumentClient&lt;DocumentWithRetention&gt; prolongedRetentionClient = initialRetentionClient.updateAttributes(initialRetentionDocument);
+    DocumentWithRetention prolongedRetentionDocument = prolongedRetentionClient.getEntity();
+    assertDateEquals(prolongedRetentionDocument.getRetentionInformation().getRetentionDate(), prolongedRetentionDate);
+
+}</code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_retention_cleanup_job">Retention cleanup job</h4>
 <div class="paragraph">
-<p>Parameter</p>
+<p>The retention cleanup job can be used to remove entities with an expired retention period that are not currently in
+litigation hold status. The job can be triggered to run in the internal job scheduler of the repository service or in
+a separate instance of the job service. It expects two configuration parameters to be present in the job context of the
+triggered execution:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>String storageProfile</p>
+<p><code>type-definition-name</code>: The name of the type definition that contains the entities to remove.</p>
 </li>
 <li>
-<p>String Array documentTypes</p>
+<p><code>retention-cleanup-retention-end-time</code>: The time at which the rentention period has expired. All entities with a
+retention period that has expired before the specified time will be removed. The specified time must be in the past.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>The StorageContainer API erases the bucket assigned to the storage profile and deletes all rows in the document types
-If <em>arveo</em> cannot find the passed storage profile or the profile is not used in a retention management rule
-the erasure API fails with an invalid argument exception.
-If the retention configured in the retention rule has not expired the API returns an error.</p>
-</div>
-<div class="admonitionblock warning">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The operating team must ensure that storage profiles contain only documents with the same retention period.
-Please do not use the same bucket in different storage profiles or assign a storage profile containing
-content with retention to different document types.
+On systems supporting multiple tenants, the tenant to run the job for must be configured using the property <code>tenant</code>.
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>The following optional properties can be set in the context of the triggered execution:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>retention-cleanup-batch-size</code>: The size of a single batch of entities to process. The default is 100.</p>
+</li>
+<li>
+<p><code>retention-cleanup-purge-content</code>: If true, all content elements of removed documents will be deleted. The default is true.</p>
+</li>
+<li>
+<p><code>retention-cleanup-filter</code>: An optional filter in form of an EQL <code>Expression&lt;Boolean&gt;</code> to apply to the query used to find
+entities with expired retention period.</p>
+</li>
+<li>
+<p><code>retention-cleanup-maximum-queue-size</code>: The maximum acceptable size of the message queues used by the job. If the queue
+sizes exceed the configured maximum, the job will stop. The job will check the queue sizes once a minute.</p>
+</li>
+<li>
+<p><code>retention-cleanup-duration</code>: An optional maximum duration of the job&#8217;s runtime. If the duration is exceeded, the job
+will stop. The default is null (no limit). The value must be a <code>java.time.Duration</code>.</p>
+</li>
+<li>
+<p><code>retention-cleanup-max-entity-count</code>: The maximum number of entities to process. If this number is reached, the job
+will stop. The default is -1 (no limit).</p>
+</li>
+<li>
+<p><code>retention-cleanup-protocol-file</code>: Optional property that can contain a fully qualified path to a file that will
+contain a list of all deleted entity IDs.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The <code>retention-cleanup-maximum-queue-size</code> limitation mechanism relies on statistics data for the JMS queues that is
+collected by a separate system job. This job is not enabled by default and must be enabled using the property
+<code>ecr.server.jobs.jms-statistics.enabled=true</code> to use this feature.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>All properties except the type definition name, the retention end time and the protocol file can be configured in the
+configuration file of the service either globally or for each type definition.
+See <a href="#_ecr_server_jobs_retention-cleanup">configuration reference</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>Both the repository service and the job service offer an API that provides methods to create triggers for the job. The
+following example shows how to use this API to create a simple trigger that will fire once at a specified time. The API
+requires administrator privileges.</p>
+</div>
+<div class="listingblock">
+<div class="title">Triggering the retention cleanup job</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">EcrSchedulerResourceClient schedulerClient = systemManagementClient.getSchedulerClient();
+
+JobKeyModel jobKey = <span class="keyword">new</span> JobKeyModel(SystemJobIdentities.ECR_JOBS_GROUP, SystemJobIdentities.RETENTION_CLEANUP);
+TriggerKeyModel triggerKey = <span class="keyword">new</span> TriggerKeyModel(SystemJobIdentities.ECR_JOBS_GROUP, <span class="string"><span class="delimiter">&quot;</span><span class="content">test-trigger-retention-cleanup</span><span class="delimiter">&quot;</span></span>);
+
+SimpleTriggerModel trigger = <span class="keyword">new</span> SimpleTriggerModel(triggerKey, jobKey);
+trigger.setNextFireTime(ZonedDateTime.now());
+trigger.setJobDataMap(<span class="predefined-type">Map</span>.of(
+    SystemJobDataKeys.TYPE_DEFINITION_NAME, SimpleInvoiceNames.getTypeDefinitionName(),
+    SystemJobDataKeys.RETENTION_CLEANUP_RETENTION_END_TIME, ZonedDateTime.now(),
+    SystemJobDataKeys.TENANT, <span class="string"><span class="delimiter">&quot;</span><span class="content">master</span><span class="delimiter">&quot;</span></span>,
+    SystemJobDataKeys.RETENTION_CLEANUP_PROTOCOL_FILE, getTargetDir() + <span class="predefined-type">File</span>.separator + <span class="string"><span class="delimiter">&quot;</span><span class="content">retention-cleanup-job.log</span><span class="delimiter">&quot;</span></span>
+));
+
+schedulerClient.scheduleSimpleTrigger(trigger);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The API provides additional methods to create cron expression based triggers and to unschedule a job.</p>
 </div>
 </div>
 </div>
@@ -16652,8 +16648,7 @@ web functionality by using the <code>SpringApplicationBuilder</code> class as sh
 <div class="sect4">
 <h5 id="_create_update_or_delete_multiple_objects_of_the_same_type">Create, update or delete multiple objects of the same type</h5>
 <div class="paragraph">
-<p>All service clients provide methods for creating, updating and deleting multiple objects. Since a service client is bound
-to a specific type definition, only objects of the same type can be created, updated or deleted in this way.
+<p>All service clients provide methods for creating, updating and deleting multiple objects. Since a service client is bound to a specific type definition, only objects of the same type can be created, updated or deleted in this way.
 The objects to be updated or deleted are identified by any selector. When updating, methods are available that return
 the updated objects and methods that return only the number of updated objects. Especially if a large number of objects
 are updated at once, only the latter methods should be used. With these methods, the objects can only be updated in the
@@ -16678,18 +16673,13 @@ has to be created with the virtual IDs of source and target.</p>
 <div class="paragraph">
 <p>If the relation between the objects consists not only of the ID, but also of a foreign key to any attribute, a reference
 to the corresponding attribute of the referenced object must be given to the dependent object. For this purpose, the
-class <em>BatchAttributeReference</em> is available, which bundles the name of the foreign key attribute, the referenced attribute
-and the virtual ID of the other object in the batch operation.
-Code examples can be found in the class <em>de.eitco.ecr.system.test.BatchCreationIT</em>.</p>
+class <em>BatchAttributeReference</em> is available, which bundles the name of the foreign key attribute, the referenced attribute and the virtual ID of the other object in the batch operation. Code examples can be found in the class <em>de.eitco.ecr.system.test.BatchCreationIT</em>.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_update_multiple_objects_of_different_types">Update multiple objects of different types</h5>
 <div class="paragraph">
-<p>The <em>BatchOperationServiceClient</em> also provides methods to update several different objects of different types in a batch
-operation. A separate input object is passed for each object to be updated, which contains the ID of the object and the
-properties to be updated. This means that individual changes can also be made to each object with these methods. The
-BatchUpdateUtility class provides auxiliary methods with which the respective input objects can be created.
+<p>The <em>BatchOperationServiceClient</em> also provides methods to update several different objects of different types in a batch operation. A separate input object is passed for each object to be updated, which contains the ID of the object and the properties to be updated. This means that individual changes can also be made to each object with these methods. The BatchUpdateUtility class provides auxiliary methods with which the respective input objects can be created.
 Code examples can be found in the class <em>de.eitco.ecr.system.test.BatchUpdateIT</em>.</p>
 </div>
 </div>
@@ -16720,13 +16710,13 @@ containerBatchCreateInput.setCollisionCheckAttribute(<span class="string"><span 
 <h4 id="_create_or_update_upsert_operations">Create or update (upsert) operations</h4>
 <div class="paragraph">
 <p>The SDK provides methods to perform create or update (upsert) operations on entities.The entity to update, if it
-should exist, is identified by an EQL selector.If a matching entity is found, it is updated using the provided data.
-If no matching entity is found, the provided data is used to create a new entity.The selector must match exactly one or
-zero existing entities.If it matches more than one entity, an exception is thrown.The following example shows how
+should exist, is identified by an EQL selector. If a matching entity is found, it is updated using the provided data.
+If no matching entity is found, the provided data is used to create a new entity. The selector must match exactly one or
+zero existing entities. If it matches more than one entity, an exception is thrown. The following example shows how
 to perform an upsert operation.</p>
 </div>
 <div class="listingblock">
-<div class="title">performing an upsert operation</div>
+<div class="title">Performing an upsert operation</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">TypedContainerServiceClient&lt;Person&gt; serviceClient =
     typeDefinitionServiceClient.getContainerServiceClient().byClass(Person.class);
@@ -16763,7 +16753,7 @@ transaction. The batch operations use the same input types as the other batch fu
 it possible to use the result of one operation in another following operation. The following operation types are available:</p>
 </div>
 <div class="sect4">
-<h5 id="_read_operations">Read operations:</h5>
+<h5 id="_read_operations">Read operations</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -16812,8 +16802,7 @@ When the entity cannot be read, the entire batch of operations fails and the tra
 </div>
 <div class="paragraph">
 <p>Delete operations are used to delete a single entity. Unlike the other operations, it is not possible to reference
-a delete operation. When the entity cannot be deleted, the entire batch of operations fails and the transaction is rolled
-back.</p>
+a delete operation. When the entity cannot be deleted, the entire batch of operations fails and the transaction is rolled back.</p>
 </div>
 </div>
 <div class="sect4">
@@ -16901,7 +16890,7 @@ fails and the transaction is rolled back.</p>
 invalid customer. The customer must be replaced with a new customer and the reference in the invoice must be updated.</p>
 </div>
 <div class="listingblock">
-<div class="title">using the generic batch api for crud operations</div>
+<div class="title">Using the generic batch api for crud operations</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">Customer customer = customerServiceClient.createTypeInstance();
 customer.setName(<span class="predefined-type">UUID</span>.randomUUID().toString());
@@ -16957,7 +16946,7 @@ TypedDocumentBatchDeleteOperation deleteCustomerOperation = <span class="keyword
 <p>The second example shows how to use a read operation.</p>
 </div>
 <div class="listingblock">
-<div class="title">using a read operation</div>
+<div class="title">Using a read operation</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">TypedDocumentBatchReadOperation readCustomerOperation = <span class="keyword">new</span> TypedDocumentBatchReadOperation(customerId);
 
@@ -17573,7 +17562,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-21 20:37:00 UTC
+Last updated 2023-02-27 09:55:05 UTC
 </div>
 </div>
 <style>
