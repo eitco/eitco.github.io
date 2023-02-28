@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>EITCO User Management Service 6.1.0-SNAPSHOT</title>
+<title>EITCO User Management Service</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -167,21 +167,21 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">EITCO User Management Service 6.1.0-SNAPSHOT</div>
 <ul class="sectlevel1">
-<li><a href="#_eitco_user_management_service_6_1_0_snapshot">EITCO User Management Service 6.1.0-SNAPSHOT</a></li>
-<li><a href="#_basic_functions_of_the_user_administration">Basic functions of the user administration</a></li>
-<li><a href="#_data_model">Data model</a>
+<li><a href="#_eitco_user_management_service"><strong>EITCO User Management Service</strong></a></li>
+<li><a href="#_basic_functions"><strong>Basic functions</strong></a></li>
+<li><a href="#_data_model"><strong>Data model</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_overview_of_the_database_tables">Overview of the database tables</a></li>
 <li><a href="#_integration_of_the_user_service_artifacts">Integration of the user service artifacts</a></li>
 <li><a href="#_user_service_configurations">User service configurations</a></li>
 </ul>
 </li>
-<li><a href="#_auditing">Auditing</a></li>
-<li><a href="#_api_overview">API Overview</a>
+<li><a href="#_auditing"><strong>Auditing</strong></a></li>
+<li><a href="#_api_overview"><strong>API Overview</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_create_modify_and_delete_a_user">Create, modify and delete a user</a></li>
 <li><a href="#_create_modify_and_delete_a_role_group_token_privilege">Create, modify and delete a role, group, token, privilege</a></li>
-<li><a href="#_assignment_management_of_user_to_group_etc">Assignment management of user to group etc.</a></li>
+<li><a href="#_assignment_management">Assignment management</a></li>
 <li><a href="#_create_and_modify_group_hierarchies">Create and modify group hierarchies</a></li>
 <li><a href="#_roleprivilege_inheritance_through_the_group_hierarchy">Role/privilege inheritance through the group hierarchy</a></li>
 <li><a href="#_queries_using_service_query">Queries using service query</a></li>
@@ -191,9 +191,9 @@ window.onload = function() {
 <li><a href="#_alternative_cache_implementation">Alternative cache implementation</a></li>
 </ul>
 </li>
-<li><a href="#_securing_rest_endpoints">Securing REST endpoints</a></li>
-<li><a href="#_client_management">Client management</a></li>
-<li><a href="#_ldap_synchronisation">LDAP synchronisation</a>
+<li><a href="#_securing_rest_endpoints"><strong>Securing REST Endpoints</strong></a></li>
+<li><a href="#_client_management"><strong>Client Management</strong></a></li>
+<li><a href="#_ldap_synchronization"><strong>LDAP Synchronization</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_unit_testing">Unit testing</a></li>
 <li><a href="#_setup_import">Setup import</a></li>
@@ -204,11 +204,12 @@ window.onload = function() {
 </div>
 </div>
 <div id="content">
+<div style="page-break-after: always;"></div>
 <div class="sect1">
-<h2 id="_eitco_user_management_service_6_1_0_snapshot">EITCO User Management Service 6.1.0-SNAPSHOT</h2>
+<h2 id="_eitco_user_management_service"><strong>EITCO User Management Service</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The user service provides a user administration designed for different applications and systems. It is a database-based user administration.</p>
+<p>The User Service provides a user administration designed for different applications and systems. It is a database-based user administration.</p>
 </div>
 <div class="paragraph">
 <p>User directories can also be connected via the Lightweight Directory Access Protocol (LDAP). Such a connection supports
@@ -231,7 +232,7 @@ by the user service nor by Spring Security. This would require further solutions
 </div>
 </div>
 <div class="sect1">
-<h2 id="_basic_functions_of_the_user_administration">Basic functions of the user administration</h2>
+<h2 id="_basic_functions"><strong>Basic functions</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The user administration supports the creation, modification and deletion of:</p>
@@ -262,7 +263,7 @@ privilege. By means of a token-to-role assignment, a privilege can in turn also 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_data_model">Data model</h2>
+<h2 id="_data_model"><strong>Data model</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following figure outlines the relationship between users, roles, etc. based on the database tables of the user service.</p>
@@ -389,17 +390,17 @@ side.</p>
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>cmn-user-management-client-spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>6.1.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
-<span class="tag">&lt;/dependency&gt;</span></code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+  &lt;artifactId&gt;cmn-user-management-client-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;6.1.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">'</span><span class="content">de.eitco.commons:cmn-user-management-client-spring-boot-starter:6.1.0-SNAPSHOT</span><span class="delimiter">'</span></span></code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-client-spring-boot-starter:6.1.0-SNAPSHOT'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -408,17 +409,17 @@ side.</p>
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>cmn-user-management-embedded-spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>6.1.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
-<span class="tag">&lt;/dependency&gt;</span></code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+  &lt;artifactId&gt;cmn-user-management-embedded-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;6.1.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">'</span><span class="content">de.eitco.commons:cmn-user-management-embedded-spring-boot-starter:6.1.0-SNAPSHOT</span><span class="delimiter">'</span></span></code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-embedded-spring-boot-starter:6.1.0-SNAPSHOT'</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -436,79 +437,76 @@ side.</p>
 <div class="listingblock">
 <div class="title">User service configuration</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
- <span class="comment"># The configuration of a datasource is not user service specific; it should only be pointed out that</span>
- <span class="comment"># that the user service requires a datasource.</span>
- <span class="key">datasource</span>:
-    <span class="key">url</span>: <span class="string"><span class="content">jdbc:postgresql://localhost:5432/postgres?currentSchema=foo</span></span>
-    <span class="key">username</span>: <span class="string"><span class="content">foouser</span></span>
-    <span class="key">password</span>: <span class="string"><span class="content">foopassword</span></span>
-    <span class="key">driver-class-name</span>: <span class="string"><span class="content">org.postgresql.Driver</span></span>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+ # The configuration of a datasource is not user service specific; it should only be pointed out that
+ # that the user service requires a datasource.
+ datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=foo
+    username: foouser
+    password: foopassword
+    driver-class-name: org.postgresql.Driver
 
-<span class="key">user-service</span>:
+user-service:
 
-  <span class="key">group</span>:
-    <span class="comment"># a user group is to be typified; possible types can be</span>
-    <span class="comment"># deposited comma-separated at this point</span>
-    <span class="comment">#</span>
-    <span class="comment"># If the type &quot;Standard&quot; is specified, no type must be specified when saving a user group record.</span>
-    <span class="comment"># In such a case the type &quot;Standard&quot; will be set automatically.</span>
-    <span class="comment">#</span>
-    <span class="key">types</span>: <span class="string"><span class="content">Standard, OU, Job</span></span>
-    <span class="comment">#</span>
-    <span class="comment"># A user group can have freely definable attributes assigned to it; such</span>
-    <span class="comment"># definitions can be made here in a semicolon-separated way.</span>
-    <span class="comment"># The values of a definition are comma-separated.</span>
-    <span class="comment"># The first value specifies the attribute name, the second the type and</span>
-    <span class="comment"># the third, whether the attribute value is a mandatory value.</span>
-    <span class="comment"># Possible types are: boolean, decimal, long, datetime, string, blob;</span>
-    <span class="comment">#</span>
-    <span class="key">extra-fields</span>: <span class="string"><span class="content">selectable,boolean,false;fooDate,datetime,false;</span></span>
+  group:
+    # a user group is to be typified; possible types can be
+    # deposited comma-separated at this point
+    #
+    # If the type "Standard" is specified, no type must be specified when saving a user group record.
+    # In such a case the type "Standard" will be set automatically.
+    #
+    types: Standard, OU, Job
+    #
+    # A user group can have freely definable attributes assigned to it; such
+    # definitions can be made here in a semicolon-separated way.
+    # The values of a definition are comma-separated.
+    # The first value specifies the attribute name, the second the type and
+    # the third, whether the attribute value is a mandatory value.
+    # Possible types are: boolean, decimal, long, datetime, string, blob;
+    #
+    extra-fields: selectable,boolean,false;fooDate,datetime,false;
 
-  <span class="key">user</span>:
-    <span class="comment"># Specify the superuser based on a comma-separated list of user names; if the value -dbFlag- is entered here,</span>
-    <span class="comment"># then the superuser will be determined by a flag in the</span>
-    <span class="comment"># user database table</span>
-    <span class="comment">#</span>
-    <span class="key">superuser</span>: <span class="string"><span class="content">-dbFlag-</span></span>
-    <span class="comment">#</span>
-    <span class="comment"># A user can be assigned freely definable attributes.</span>
-    <span class="comment"># further description see above under user-service.group.extra-fields</span>
-    <span class="key">extra-fields</span>: <span class="string"><span class="content">fooDecimal,decimal,false;fooString1,string,false;fooString2,string,false</span></span>
+  user:
+    # Specify the superuser based on a comma-separated list of user names; if the value -dbFlag- is entered here,
+    # then the superuser will be determined by a flag in the
+    # user database table
+    #
+    superuser: -dbFlag-
+    #
+    # A user can be assigned freely definable attributes.
+    # further description see above under user-service.group.extra-fields
+    extra-fields: fooDecimal,decimal,false;fooString1,string,false;fooString2,string,false
 
-  <span class="key">auth</span>:
-    <span class="comment"># The user service supports the integration of Spring security. With the following</span>
-    <span class="comment"># configuration you can specify the implementation of the Spring Spring-Security-Userdetail-Interfaces.</span>
-    <span class="comment"># (Default is de.eitco.commons.user.management.common.auth.UserDetailsDB)</span>
-    <span class="comment">#</span>
-    <span class="key">user-details-path</span>: <span class="string"><span class="content">de.eitco.commons.user.management.common.auth.UserDetailsDB</span></span>
-    <span class="comment">#</span>
-    <span class="comment"># The following configuration specifies which key is used to identify the user</span>
-    <span class="comment"># to whom the request is assigned via request token is to be</span>
-    <span class="comment"># determined by the user service. The request token can contain the user name or the external</span>
-    <span class="comment"># user ID. Possible configuration values are NAME or EXTERNAL_ID (default is NAME).</span>
-    <span class="comment">#</span>
-    <span class="key">user-identification-field</span>: <span class="string"><span class="content">NAME</span></span></code></pre>
+  auth:
+    # The user service supports the integration of Spring security. With the following
+    # configuration you can specify the implementation of the Spring Spring-Security-Userdetail-Interfaces.
+    # (Default is de.eitco.commons.user.management.common.auth.UserDetailsDB)
+    #
+    user-details-path: de.eitco.commons.user.management.common.auth.UserDetailsDB
+    #
+    # The following configuration specifies which key is used to identify the user
+    # to whom the request is assigned via request token is to be
+    # determined by the user service. The request token can contain the user name or the external
+    # user ID. Possible configuration values are NAME or EXTERNAL_ID (default is NAME).
+    #
+    user-identification-field: NAME</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_auditing">Auditing</h2>
+<h2 id="_auditing"><strong>Auditing</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The user management service supports auditing of changes made to the user management data. The auditing support must be
-activated by setting <code>user-service.audit-support-enabled=true</code> in the service&#8217;s configuration. Auditing can then be
-enabled by creating audit rules for the tables to be audited. For example, to audit changes made to users an audit rule
-with <code>tableName=usrv_user</code> must be created. The rule&#8217;s settings for <code>deleteUserIdField</code>, <code>deleteUserIdSetting</code>,
-<code>updateUserIdField</code> and <code>updateUserIdSetting</code> can be left empty to use the default values. <a href="https://eitco.github.io/audit-service">The documentation of the
+<p>The User Management Service supports auditing of changes made to the user management data. The auditing support must be
+activated by setting <code>user-service.audit-support-enabled=true</code> in the service&#8217;s configuration. Auditing can then be enabled by creating audit rules for the tables to be audited. For example, to audit changes made to users an audit rule with <code>tableName=usrv_user</code> must be created. The rule&#8217;s settings for <code>deleteUserIdField</code>, <code>deleteUserIdSetting</code>, <code>updateUserIdField</code> and <code>updateUserIdSetting</code> can be left empty to use the default values. <a href="https://eitco.github.io/audit-service">The documentation of the
 audit service</a> contains more information on how to create audit rules.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_api_overview">API Overview</h2>
+<h2 id="_api_overview"><strong>API Overview</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The user service contains so-called managers in the form of interfaces and their implementations for user administration.
@@ -568,31 +566,31 @@ group. There is also the AuthManager which is described in the API Security chap
 <div class="listingblock">
 <div class="title">Create a user</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserManager userMgr;
-User user = <span class="keyword">new</span> User();
-user.setUsername(<span class="string"><span class="delimiter">&quot;</span><span class="content">user@foo.foo</span><span class="delimiter">&quot;</span></span>);
+User user = new User();
+user.setUsername("user@foo.foo");
 user = userMgr.saveEntity(user);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Modify a user</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserManager userMgr;
-<span class="comment">// Read user record by means of e.g. getEntityByUsername()</span>
-User user = userMgr.getEntityByUsername(<span class="string"><span class="delimiter">&quot;</span><span class="content">user@foo.foo</span><span class="delimiter">&quot;</span></span>);
-<span class="comment">// change email address</span>
-user.setEmail(<span class="string"><span class="delimiter">&quot;</span><span class="content">user@foo.foo</span><span class="delimiter">&quot;</span></span>);
+// Read user record by means of e.g. getEntityByUsername()
+User user = userMgr.getEntityByUsername("user@foo.foo");
+// change email address
+user.setEmail("user@foo.foo");
 user = userMgr.saveEntity(user);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Delete a user</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserManager userMgr;
-<span class="comment">// Delete existing user by system ID</span>
+// Delete existing user by system ID
 userMgr.deleteEntity(user.getId());</code></pre>
 </div>
 </div>
@@ -606,7 +604,7 @@ UserRole POJO.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_assignment_management_of_user_to_group_etc">Assignment management of user to group etc.</h3>
+<h3 id="_assignment_management">Assignment management</h3>
 <div class="paragraph">
 <p>For assignment management, the assignment managers are used. These are:</p>
 </div>
@@ -636,37 +634,37 @@ UserRole POJO.</p>
 <div class="listingblock">
 <div class="title">Add user to group</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserToUserGroupManager userToGroupMgr;
-<span class="comment">// such assignment is done by user id and group id</span>
+// such assignment is done by user id and group id
 userToGroupMgr.addUserToGroup(userId, groupId);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Remove user from group</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserToUserGroupManager userToGroupMgr;
-<span class="comment">// remove user from group is done using user id and group id</span>
+// remove user from group is done using user id and group id
 userToGroupMgr.removeUserFromGroup(userId, groupId);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">List user of a group</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserToUserGroupManager userToGroupMgr;
-<span class="comment">// Note: method accesses the database directly; so no cache usage.</span>
-<span class="predefined-type">List</span>&lt;User&gt; userToGroupMgr.listUsersOfGroup(<span class="predefined-type">Long</span> groupId);</code></pre>
+// Note: method accesses the database directly; so no cache usage.
+List&lt;User&gt; userToGroupMgr.listUsersOfGroup(Long groupId);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">List groups of a user</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserToUserGroupManager userToGroupMgr;
-<span class="comment">// Note: method accesses the database directly; so no cache usage</span>
-<span class="predefined-type">List</span>&lt;UserGroup&gt; userToGroupMgr.listGroupsOfUser(<span class="predefined-type">Long</span> userId);</code></pre>
+// Note: method accesses the database directly; so no cache usage
+List&lt;UserGroup&gt; userToGroupMgr.listGroupsOfUser(Long userId);</code></pre>
 </div>
 </div>
 </div>
@@ -679,31 +677,31 @@ are code examples for this.</p>
 <div class="listingblock">
 <div class="title">Add a subgroup to a group</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserGroupToGroupManager userGroupToGroupMgr;
-<span class="comment">// add a subgroup to a group</span>
+// add a subgroup to a group
 groupToGroupMgr.addSubGroup(groupId, subGroupId);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Remove a subgroup from a group</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserGroupToGroupManager userGroupToGroupMgr;
-<span class="comment">// remove a subgroup from a group</span>
+// remove a subgroup from a group
 groupToGroupMgr.removeSubGroup(groupId, subGroupId);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">List subgroups/supergroups of a group</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserGroupToGroupManager userGroupToGroupMgr;
-<span class="comment">// list the direct subgroups of a group</span>
-<span class="predefined-type">List</span>&lt;UserGroup&gt; directSubGroupList = groupToGroupMgr.getDirectSubGroups(<span class="predefined-type">Long</span> groupId);
+// list the direct subgroups of a group
+List&lt;UserGroup&gt; directSubGroupList = groupToGroupMgr.getDirectSubGroups(Long groupId);
 
-<span class="comment">// list the direct subgroups of a group</span>
-<span class="predefined-type">List</span>&lt;UserGroup&gt; directSuperGroupList = groupToGroupMgr.getDirectSuperGroups(<span class="predefined-type">Long</span> groupId);</code></pre>
+// list the direct subgroups of a group
+List&lt;UserGroup&gt; directSuperGroupList = groupToGroupMgr.getDirectSuperGroups(Long groupId);</code></pre>
 </div>
 </div>
 </div>
@@ -769,45 +767,45 @@ entity prefix (see also examples below). The following prefixes are defined:</p>
 <div class="listingblock">
 <div class="title">Query user</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 UserManager userMgr;
-<span class="comment">// Create ServiceQuery instance</span>
+// Create ServiceQuery instance
 ServiceQuery serviceQuery = userMgr.newQuery();
 
-<span class="comment">// RETRIEVE ALL USERS WITH ALL DIRECT AND FREELY DEFINABLE ATTRIBUTES</span>
+// RETRIEVE ALL USERS WITH ALL DIRECT AND FREELY DEFINABLE ATTRIBUTES
 
-<span class="comment">// call the listEntities method based on the created ServiceQuery instance;</span>
-<span class="comment">// in the simple case, i.e. without specifying any select, filter or sort attributes</span>
-<span class="comment">// all users with all direct and freely definable attributes are returned; in</span>
-<span class="comment">// such a case, null could also be passed instead of the ServiceQuery instance</span>
+// call the listEntities method based on the created ServiceQuery instance;
+// in the simple case, i.e. without specifying any select, filter or sort attributes
+// all users with all direct and freely definable attributes are returned; in
+// such a case, null could also be passed instead of the ServiceQuery instance
 QueryResult&lt;User&gt; userResult = userMgr.listEntities(serviceQuery);
 
-<span class="comment">// The QueryResult instance contains the result list.</span>
-<span class="predefined-type">List</span>&lt;User&gt; userList = userResult.getList();
+// The QueryResult instance contains the result list.
+List&lt;User&gt; userList = userResult.getList();
 
-<span class="comment">// SELECT SPECIFIC ATTRIBUTES</span>
-serviceQuery .addSelect(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.username</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">ue.foo</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">r.name</span><span class="delimiter">&quot;</span></span>);
+// SELECT SPECIFIC ATTRIBUTES
+serviceQuery .addSelect("u.username", "ue.foo", "r.name");
 
-<span class="comment">// FILTER BY SPECIFIC ATTRIBUTES</span>
-serviceQuery.addFilterEq(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.username</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">mustermann</span><span class="delimiter">&quot;</span></span>); <span class="comment">// exact match filter</span>
-serviceQuery.addFilterEq(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.username</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">mus</span><span class="delimiter">&quot;</span></span>, ServiceQuery.TXT_MATCH_STYLE_STARTS_WITH) <span class="comment">// starts with match filter</span>
-serviceQuery.addFilterEq(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.username</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">uster</span><span class="delimiter">&quot;</span></span>, ServiceQuery.TXT_MATCH_STYLE_SUBSTRING) <span class="comment">// substring match filter</span>
-serviceQuery.addFilterEq(<span class="string"><span class="delimiter">&quot;</span><span class="content">ue.fooDate</span><span class="delimiter">&quot;</span></span>, myDate); <span class="comment">// equals filter</span>
-serviceQuery.addFilterEq(<span class="string"><span class="delimiter">&quot;</span><span class="content">ue.fooLong</span><span class="delimiter">&quot;</span></span>, <span class="integer">1L</span>); <span class="comment">// equals filter</span>
-serviceQuery.addToOrFilterEq(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.firstname</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Erika</span><span class="delimiter">&quot;</span></span>);
-serviceQuery.addToOrFilterEq(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.firstname</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Max</span><span class="delimiter">&quot;</span></span>) <span class="comment">// exact match Erika or Max</span>
-serviceQuery.addFilterIn(<span class="string"><span class="delimiter">&quot;</span><span class="content">ue.fooLong</span><span class="delimiter">&quot;</span></span>, myLongCollection); <span class="comment">// in condition</span>
+// FILTER BY SPECIFIC ATTRIBUTES
+serviceQuery.addFilterEq("u.username", "mustermann"); // exact match filter
+serviceQuery.addFilterEq("u.username", "mus", ServiceQuery.TXT_MATCH_STYLE_STARTS_WITH) // starts with match filter
+serviceQuery.addFilterEq("u.username", "uster", ServiceQuery.TXT_MATCH_STYLE_SUBSTRING) // substring match filter
+serviceQuery.addFilterEq("ue.fooDate", myDate); // equals filter
+serviceQuery.addFilterEq("ue.fooLong", 1L); // equals filter
+serviceQuery.addToOrFilterEq("u.firstname", "Erika");
+serviceQuery.addToOrFilterEq("u.firstname", "Max") // exact match Erika or Max
+serviceQuery.addFilterIn("ue.fooLong", myLongCollection); // in condition
 etc.
 
-<span class="comment">// SORT BY SPECIFIC ATTRIBUTES</span>
-serviceQuery.addOrderBy(<span class="string"><span class="delimiter">&quot;</span><span class="content">u.username</span><span class="delimiter">&quot;</span></span>, ServiceQuery.SORT_DESC); <span class="comment">// sort in descending order</span>
+// SORT BY SPECIFIC ATTRIBUTES
+serviceQuery.addOrderBy("u.username", ServiceQuery.SORT_DESC); // sort in descending order
 etc.
 
-<span class="comment">// START-ROW, END-ROW and COUNT</span>
-serviceQuery.setStartRow(<span class="integer">0</span>); <span class="comment">// &quot;start row&quot; included</span>
-serviceQuery.setEndRow(<span class="integer">10</span>); <span class="comment">// &quot;end row&quot; not included (compare Java substring method)</span>
-serviceQuery.withCount(); <span class="comment">// in addition to the partial hit list &quot;start/end&quot; the actual total hit count</span>
-                             <span class="comment">// of the formulated query, which is then supplied in the result when calling withCount</span></code></pre>
+// START-ROW, END-ROW and COUNT
+serviceQuery.setStartRow(0); // "start row" included
+serviceQuery.setEndRow(10); // "end row" not included (compare Java substring method)
+serviceQuery.withCount(); // in addition to the partial hit list "start/end" the actual total hit count
+                             // of the formulated query, which is then supplied in the result when calling withCount</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -836,10 +834,10 @@ of events have been defined for this purpose:</p>
 <div class="listingblock">
 <div class="title">Example of of an event call</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Async</span>
-<span class="annotation">@EventListener</span>
-<span class="directive">public</span> <span class="type">void</span> handleEvent(BeforeGroupCreateEvent event) {
-<span class="comment">// do something</span>
+<pre class="highlight"><code class="language-java" data-lang="java">@Async
+@EventListener
+public void handleEvent(BeforeGroupCreateEvent event) {
+// do something
 }</code></pre>
 </div>
 </div>
@@ -867,61 +865,61 @@ the database directly, the queries via lookup implementation are based on a cach
 <div class="listingblock">
 <div class="title">API methods of AuthLookup implementation</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">//---------------------------------------------------------------------</span>
-<span class="comment">// Subsequent queries whether a user is superuser, is in role x, etc.</span>
-<span class="comment">//---------------------------------------------------------------------</span>
+<pre class="highlight"><code class="language-java" data-lang="java">//---------------------------------------------------------------------
+// Subsequent queries whether a user is superuser, is in role x, etc.
+//---------------------------------------------------------------------
 AuthLookup.isSuperuser();
-AuthLookup.isSuperuser(<span class="predefined-type">String</span> username);
+AuthLookup.isSuperuser(String username);
 
-AuthLookup.isInRole(<span class="predefined-type">String</span> roleName);
-AuthLookup.isInRole(<span class="predefined-type">String</span> username, <span class="predefined-type">String</span> roleName);
+AuthLookup.isInRole(String roleName);
+AuthLookup.isInRole(String username, String roleName);
 
-AuthLookup.isInGroup(<span class="predefined-type">String</span> groupShortname);
-AuthLookup.isInGroup(<span class="predefined-type">String</span> username, <span class="predefined-type">String</span> groupShortname);
+AuthLookup.isInGroup(String groupShortname);
+AuthLookup.isInGroup(String username, String groupShortname);
 
-AuthLookup.isPrivilegeGranted(<span class="predefined-type">String</span> tokenName);
-AuthLookup.isPrivilegeGranted(<span class="predefined-type">String</span> username, <span class="predefined-type">String</span> tokenName);
+AuthLookup.isPrivilegeGranted(String tokenName);
+AuthLookup.isPrivilegeGranted(String username, String tokenName);
 
-AuthLookup.areAllPrivilegesGranted(<span class="predefined-type">String</span>... tokenNameList);
-AuthLookup.areAllPrivilegesGranted(<span class="predefined-type">String</span> username, <span class="predefined-type">String</span>... tokenNameList);
+AuthLookup.areAllPrivilegesGranted(String... tokenNameList);
+AuthLookup.areAllPrivilegesGranted(String username, String... tokenNameList);
 
-AuthLookup.isOnePrivilegesGranted(<span class="predefined-type">String</span>...tokenNameList),
-AuthLookup.isOnePrivilegeGranted(<span class="predefined-type">String</span> username, <span class="predefined-type">String</span>...tokenNameList),
+AuthLookup.isOnePrivilegesGranted(String...tokenNameList),
+AuthLookup.isOnePrivilegeGranted(String username, String...tokenNameList),
 
-AuthLookup.isPrivilegeGrantedGroup(<span class="predefined-type">String</span> tokenName, <span class="predefined-type">String</span> groupShortname);
-AuthLookup.isPrivilegeGrantedGroup(<span class="predefined-type">String</span> username, <span class="predefined-type">String</span> tokenName, <span class="predefined-type">String</span> groupShortname);
+AuthLookup.isPrivilegeGrantedGroup(String tokenName, String groupShortname);
+AuthLookup.isPrivilegeGrantedGroup(String username, String tokenName, String groupShortname);
 
  ....
 
-<span class="comment">//-----------------------------------------------------------------------------------------------</span>
-<span class="comment">// Following lookup queries for a user's group, role, etc. listings.</span>
-<span class="comment">//</span>
-<span class="comment">// The following lookup methods are not intended for user management. For this purpose the</span>
-<span class="comment">// managers should be used for that. The lookup methods are intended to support the formulation of corresponding queries</span>
-<span class="comment">// such as e.g., the formulation of ACL queries, to support e.g., joins</span>
-<span class="comment">// related to e.g. group hierarchies.</span>
-<span class="comment">//</span>
-<span class="comment">// If the user is a superuser, then the following methods return null; otherwise</span>
-<span class="comment">// always return a collection, i.e., also an empty collection.</span>
-<span class="comment">//-----------------------------------------------------------------------------------------------</span>
+//-----------------------------------------------------------------------------------------------
+// Following lookup queries for a user's group, role, etc. listings.
+//
+// The following lookup methods are not intended for user management. For this purpose the
+// managers should be used for that. The lookup methods are intended to support the formulation of corresponding queries
+// such as e.g., the formulation of ACL queries, to support e.g., joins
+// related to e.g. group hierarchies.
+//
+// If the user is a superuser, then the following methods return null; otherwise
+// always return a collection, i.e., also an empty collection.
+//-----------------------------------------------------------------------------------------------
 
-Collection&lt;<span class="predefined-type">String</span>&gt; roleNameList = AuthLookup.listRoles();
-<span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt; roleNameList = AuthLookup.listRoles(<span class="predefined-type">String</span> username);
+Collection&lt;String&gt; roleNameList = AuthLookup.listRoles();
+Collection&lt;String&gt; roleNameList = AuthLookup.listRoles(String username);
 
-<span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt; groupShortnameList = AuthLookup.listGroups();
-<span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt; groupShortnameList = AuthLookup.listGroups(<span class="predefined-type">String</span> username);
+Collection&lt;String&gt; groupShortnameList = AuthLookup.listGroups();
+Collection&lt;String&gt; groupShortnameList = AuthLookup.listGroups(String username);
 
-<span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt; tokeNameList = AuthLookup.listPrivilegesGranted();
-<span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt; tokeNameList = AuthLookup.listPrivilegesGranted(<span class="predefined-type">String</span> username);
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGranted();
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGranted(String username);
 
-<span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt; tokeNameList = AuthLookup.listPrivilegesGrantedGroup(<span class="predefined-type">String</span> groupShortname);
-<span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt; tokeNameList = AuthLookup.listPrivilegesGrantedGroup(<span class="predefined-type">String</span> username, <span class="predefined-type">String</span> groupShortname);</code></pre>
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGrantedGroup(String groupShortname);
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGrantedGroup(String username, String groupShortname);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Find current user</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// the current user can be retrieved via UserContext</span>
+<pre class="highlight"><code class="language-java" data-lang="java">// the current user can be retrieved via UserContext
 User user = UserContext.getCurrentUser();</code></pre>
 </div>
 </div>
@@ -942,33 +940,33 @@ determine the current user.
 <div class="listingblock">
 <div class="title">Implementation of the user service to determine the current user</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="directive">static</span> User getCurrentUser() {
+<pre class="highlight"><code class="language-java" data-lang="java">public static User getCurrentUser() {
     SecurityContext secCtx = SecurityContextHolder.getContext();
-    <span class="keyword">if</span> (secCtx == <span class="predefined-constant">null</span>) {
-        <span class="comment">// using the user context of the user service a user can also be set independently of the</span>
-        <span class="comment">// security context; e.g. to set backend job executions // within a user context.</span>
-        <span class="comment">// within a user context; this context is returned with getUser()</span>
-        <span class="keyword">return</span> getUser();
+    if (secCtx == null) {
+        // using the user context of the user service a user can also be set independently of the
+        // security context; e.g. to set backend job executions // within a user context.
+        // within a user context; this context is returned with getUser()
+        return getUser();
     }
 
     Authentication auth = secCtx.getAuthentication();
-    <span class="keyword">if</span> (auth == <span class="predefined-constant">null</span>) {
-        <span class="keyword">return</span> getUser();
+    if (auth == null) {
+        return getUser();
     }
 
-    <span class="keyword">if</span> (auth <span class="keyword">instanceof</span> CommonAuthentication) {
-        <span class="predefined-type">UUID</span> userIdentifier = ((CommonAuthentication) auth).getUserIdentifier();
+    if (auth instanceof CommonAuthentication) {
+        UUID userIdentifier = ((CommonAuthentication) auth).getUserIdentifier();
         UserManager userManager = BeanLookup.getBean(UserManager.class);
-        <span class="keyword">return</span> userManager.getEntityByUuid(userIdentifier.toString());
+        return userManager.getEntityByUuid(userIdentifier.toString());
     }
 
-    <span class="predefined-type">Object</span> principal = auth.getPrincipal();
-    <span class="keyword">if</span> (principal <span class="keyword">instanceof</span> UserDetails) {
-        <span class="comment">// Note: The user service provides a user-details implementation that can be used</span>
-        <span class="comment">// can be used to create an authentication instance.</span>
-        <span class="keyword">return</span> ((UserDetails) principal).getUser();
+    Object principal = auth.getPrincipal();
+    if (principal instanceof UserDetails) {
+        // Note: The user service provides a user-details implementation that can be used
+        // can be used to create an authentication instance.
+        return ((UserDetails) principal).getUser();
     }
-    <span class="keyword">return</span> UserContext.getUser();
+    return UserContext.getUser();
 }</code></pre>
 </div>
 </div>
@@ -983,14 +981,14 @@ be specified with respect to the user service.</p>
 <div class="listingblock">
 <div class="title">Infinispan-Spring-Configuration</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="comment"># Spring configuration: reference to the actual infinispan configuration file.</span>
-<span class="comment"># This reference can be a direct reference to the file system or an indirect one</span>
-<span class="comment"># via classpath.</span>
-<span class="comment"># See also: 'https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-caching-provider-infinispan'</span>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"># Spring configuration: reference to the actual infinispan configuration file.
+# This reference can be a direct reference to the file system or an indirect one
+# via classpath.
+# See also: 'https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-caching-provider-infinispan'
 
-<span class="key">infinispan</span>:
-   <span class="key">embedded</span>:
-     <span class="key">configXml</span>: <span class="string"><span class="content">infinispan.xml</span></span></code></pre>
+infinispan:
+   embedded:
+     configXml: infinispan.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1001,40 +999,40 @@ an invalidation cache (see also <a href="https://infinispan.org/docs/stable/user
 <div class="listingblock">
 <div class="title">Actual infinispan configuration (form: XML document)</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-<span class="tag">&lt;infinispan</span>
-<span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
-<span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:infinispan:config:9.4 http://www.infinispan.org/schemas/infinispan-config-9.4.xsd</span><span class="delimiter">&quot;</span></span>
-<span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">urn:infinispan:config:9.4</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;infinispan
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="urn:infinispan:config:9.4 http://www.infinispan.org/schemas/infinispan-config-9.4.xsd"
+xmlns="urn:infinispan:config:9.4"&gt;
 
-    <span class="comment">&lt;!--
+    &lt;!--
          Notes for the following expiration configuration:
          lifespan, interval and max-idle in millis
          lifespan: the time that an entity is kept in the cache before it is evicted
          max-idle: the idle time of an entity before it is evicted; -1 means ignoring max-idle
          interval: the check period for eviction
-     --&gt;</span>
+     --&gt;
 
-     <span class="tag">&lt;cache-container&gt;</span>
+     &lt;cache-container&gt;
 
-         <span class="comment">&lt;!-- - - - - - - - - - - - - - - - - - - - --&gt;</span>
-         <span class="comment">&lt;!-- simple cache for single node systems  --&gt;</span>
-         <span class="comment">&lt;!-- - - - - - - - - - - - - - - - - - - - --&gt;</span>
-         <span class="tag">&lt;local-cache-configuration</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">user-cache-local</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">simple-cache</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-            <span class="tag">&lt;expiration</span> <span class="attribute-name">lifespan</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">43200000</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">interval</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">300000</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">max-idle</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">-1</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
-         <span class="tag">&lt;/local-cache-configuration&gt;</span>
+         &lt;!-- - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;!-- simple cache for single node systems  --&gt;
+         &lt;!-- - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;local-cache-configuration name="user-cache-local" simple-cache="true"&gt;
+            &lt;expiration lifespan="43200000" interval="300000" max-idle="-1"/&gt;
+         &lt;/local-cache-configuration&gt;
 
 
-         <span class="comment">&lt;!-- - - - - - - - - - - - - - - - - - - - - --&gt;</span>
-         <span class="comment">&lt;!-- invalidation cache for cluster systems  --&gt;</span>
-         <span class="comment">&lt;!-- - - - - - - - - - - - - - - - - - - - - --&gt;</span>
-         <span class="comment">&lt;!--        &lt;transport cluster=&quot;cmn-cache-cluster&quot;/&gt;                                   --&gt;</span>
-         <span class="comment">&lt;!--        &lt;invalidation-cache-configuration name=&quot;user-cache-cluster&quot; mode=&quot;ASYNC&quot;&gt;  --&gt;</span>
-         <span class="comment">&lt;!--            &lt;expiration lifespan=&quot;43200000&quot; interval=&quot;300000&quot; max-idle=&quot;-1&quot;/&gt;      --&gt;</span>
-         <span class="comment">&lt;!--        &lt;/invalidation-cache-configuration&gt;--&gt;</span>
+         &lt;!-- - - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;!-- invalidation cache for cluster systems  --&gt;
+         &lt;!-- - - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;!--        &lt;transport cluster="cmn-cache-cluster"/&gt;                                   --&gt;
+         &lt;!--        &lt;invalidation-cache-configuration name="user-cache-cluster" mode="ASYNC"&gt;  --&gt;
+         &lt;!--            &lt;expiration lifespan="43200000" interval="300000" max-idle="-1"/&gt;      --&gt;
+         &lt;!--        &lt;/invalidation-cache-configuration&gt;--&gt;
 
-     <span class="tag">&lt;/cache-container&gt;</span>
-<span class="tag">&lt;/infinispan&gt;</span></code></pre>
+     &lt;/cache-container&gt;
+&lt;/infinispan&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -1045,9 +1043,9 @@ an invalidation cache (see also <a href="https://infinispan.org/docs/stable/user
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
-   <span class="key">cache</span>:
-      <span class="key">type</span>: <span class="string"><span class="content">CUSTOM</span></span></code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+   cache:
+      type: CUSTOM</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1056,9 +1054,9 @@ an invalidation cache (see also <a href="https://infinispan.org/docs/stable/user
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
-   <span class="key">cache</span>:
-      <span class="key">type</span>: <span class="string"><span class="content">INFINISPAN</span></span></code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+   cache:
+      type: INFINISPAN</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1068,10 +1066,10 @@ is expected in the Spring application context, defined as follows:</p>
 <div class="listingblock">
 <div class="title">Example of a bean definition when configuring a custom cache type</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Bean</span>
-    <span class="annotation">@Conditional</span>(CustomCacheManagerChecker.class)
-    <span class="directive">public</span> CustomCacheManager customCacheManager() {
-        <span class="keyword">return</span> <span class="keyword">new</span> MyCacheManager();
+<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
+    @Conditional(CustomCacheManagerChecker.class)
+    public CustomCacheManager customCacheManager() {
+        return new MyCacheManager();
     }</code></pre>
 </div>
 </div>
@@ -1093,9 +1091,9 @@ create the bean.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">CustomCacheManager</span> {
-    Cache getCache(<span class="predefined-type">String</span> cacheName);
-    Cache getCache(<span class="predefined-type">String</span> cacheName, <span class="annotation">@Nullable</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; cacheConfiguration);
+<pre class="highlight"><code class="language-java" data-lang="java">public interface CustomCacheManager {
+    Cache getCache(String cacheName);
+    Cache getCache(String cacheName, @Nullable Map&lt;String, Object&gt; cacheConfiguration);
 }</code></pre>
 </div>
 </div>
@@ -1109,7 +1107,7 @@ create the bean.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_securing_rest_endpoints">Securing REST endpoints</h2>
+<h2 id="_securing_rest_endpoints"><strong>Securing REST Endpoints</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring security should be used to secure the REST endpoints. Below is a brief description of such a protection. Of course,
@@ -1124,9 +1122,9 @@ Security class <em>WebSecurityConfigurerAdapter</em>, as shown in the following 
 <div class="listingblock">
 <div class="title">Activate Spring-Security</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Configuration</span>
-<span class="annotation">@EnableWebSecurity</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">WebSecurityConfigurer</span> <span class="directive">extends</span> WebSecurityConfigurerAdapter {
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 }</code></pre>
 </div>
 </div>
@@ -1136,10 +1134,10 @@ Security class <em>WebSecurityConfigurerAdapter</em>, as shown in the following 
 <div class="listingblock">
 <div class="title">Artefact integration using Maven</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-   <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
-   <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter-security<span class="tag">&lt;/artifactId&gt;</span>
- <span class="tag">&lt;/dependency&gt;</span></code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+ &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1149,18 +1147,18 @@ the configuration bean (see following example).</p>
 <div class="listingblock">
 <div class="title">Securing endpoints via configure</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Configuration</span>
-<span class="annotation">@EnableWebSecurity</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">WebSecurityConfigurer</span> <span class="directive">extends</span> WebSecurityConfigurerAdapter {
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    <span class="directive">protected</span> <span class="type">void</span> configure(HttpSecurity http) <span class="directive">throws</span> <span class="exception">Exception</span> {
+    protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, <span class="string"><span class="delimiter">&quot;</span><span class="content">/**</span><span class="delimiter">&quot;</span></span>).permitAll()
-            .antMatchers(<span class="string"><span class="delimiter">&quot;</span><span class="content">/public/**</span><span class="delimiter">&quot;</span></span>).permitAll()
-            .antMatchers(<span class="string"><span class="delimiter">&quot;</span><span class="content">/foo2/**</span><span class="delimiter">&quot;</span></span>).hasRole(<span class="string"><span class="delimiter">&quot;</span><span class="content">ADMIN</span><span class="delimiter">&quot;</span></span>)
-            .antMatchers(<span class="string"><span class="delimiter">&quot;</span><span class="content">/foo3</span><span class="delimiter">&quot;</span></span>).hasAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">ERSTELLEN</span><span class="delimiter">&quot;</span></span>)
-            .antMatchers(<span class="string"><span class="delimiter">&quot;</span><span class="content">/foo4/**</span><span class="delimiter">&quot;</span></span>).hasAnyRole(<span class="string"><span class="delimiter">&quot;</span><span class="content">ADMIN</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">FOO</span><span class="delimiter">&quot;</span></span>)
-            .antMatchers(<span class="string"><span class="delimiter">&quot;</span><span class="content">/foo/foo5</span><span class="delimiter">&quot;</span></span>).hasAnyAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">ERSTELLEN</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">LOESCHEN</span><span class="delimiter">&quot;</span></span>)
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .antMatchers("/public/**").permitAll()
+            .antMatchers("/foo2/**").hasRole("ADMIN")
+            .antMatchers("/foo3").hasAuthority("ERSTELLEN")
+            .antMatchers("/foo4/**").hasAnyRole("ADMIN", "FOO")
+            .antMatchers("/foo/foo5").hasAnyAuthority("ERSTELLEN","LOESCHEN")
             .and()...;
      }
 }</code></pre>
@@ -1192,10 +1190,10 @@ must also be provided with the annotation <em>@EnableGlobalMethodSecurity</em>.<
 <div class="listingblock">
 <div class="title">Security by means of method annotation</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Configuration</span>
-<span class="annotation">@EnableWebSecurity</span>
-<span class="annotation">@EnableGlobalMethodSecurity</span>(prePostEnabled = <span class="predefined-constant">true</span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">WebSecurityConfigurer</span> <span class="directive">extends</span> WebSecurityConfigurerAdapter {
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 }</code></pre>
 </div>
 </div>
@@ -1207,10 +1205,10 @@ are basically all methods. So not only methods of the REST endpoints. In the exa
 <div class="listingblock">
 <div class="title">Method annotation PreAuthorize</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@RequestMapping</span>(value = <span class="string"><span class="delimiter">&quot;</span><span class="content">/forms</span><span class="delimiter">&quot;</span></span>, method = RequestMethod.POST,. . .
-<span class="annotation">@PreAuthorize</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">@authService.isPrivilegeGranted('UPLOAD')</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@ResponseBody</span>
-<span class="directive">public</span> ResponseEntity&lt;ServiceReply&gt; uploadForm(<span class="annotation">@RequestBody</span> <span class="directive">final</span> FormRequest request) {
+<pre class="highlight"><code class="language-java" data-lang="java">@RequestMapping(value = "/forms", method = RequestMethod.POST,. . .
+@PreAuthorize("@authService.isPrivilegeGranted('UPLOAD')")
+@ResponseBody
+public ResponseEntity&lt;ServiceReply&gt; uploadForm(@RequestBody final FormRequest request) {
 
 }</code></pre>
 </div>
@@ -1225,74 +1223,74 @@ For more information, refer to the API documentation for <em>de.eitco.commons.us
 </div>
 </div>
 <div class="sect1">
-<h2 id="_client_management">Client management</h2>
+<h2 id="_client_management"><strong>Client Management</strong></h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">Configuration of the client management</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">tenant</span>:
-  <span class="comment"># The following configurations are used to define three clients as examples. To configure a client,</span>
-  <span class="comment"># the access parameter values of the respective client database are to be specified.</span>
-  <span class="comment">#</span>
-  <span class="comment"># Note: In the absence of a client configuration, the database access parameters specified under spring.datasource apply.</span>
-  <span class="comment"># In such a case, the user service is started under the quasi-client &quot;master&quot;.</span>
-  <span class="key">tenants</span>:
-    - <span class="string"><span class="content">tenant-id: TenantFoo1</span></span>
-      <span class="key">db-url</span>: <span class="string"><span class="content">jdbc:postgresql://localhost:5432/?currentSchema=usersrv</span></span>
-      <span class="key">db-username</span>: <span class="string"><span class="content">postgres</span></span>
-      <span class="key">db-password</span>: <span class="string"><span class="content">manage</span></span>
-      <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">org.postgresql.Driver</span></span>
-    - <span class="string"><span class="content">tenant-id: TenantFooDemo1</span></span>
-      <span class="key">db-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:h2:mem:test;MODE=PostgreSQL;MVCC=true;LOCK_TIMEOUT=15000;DB_CLOSE_DELAY=-1</span><span class="delimiter">&quot;</span></span>
-      <span class="key">db-username</span>: <span class="string"><span class="content">sa</span></span>
-      <span class="key">db-password</span>:
-      <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">org.h2.Driver</span></span>
-    - <span class="string"><span class="content">tenant-id: TenantFooDemo2</span></span>
-      <span class="key">db-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:h2:file:~/.h2/user;AUTO_SERVER=TRUE;MODE=PostgreSQL</span><span class="delimiter">&quot;</span></span>
-      <span class="key">db-username</span>: <span class="string"><span class="content">foo</span></span>
-      <span class="key">db-password</span>: <span class="string"><span class="content">bar</span></span>
-      <span class="key">db-driver-class-name</span>: <span class="string"><span class="content">org.h2.Driver</span></span></code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">tenant:
+  # The following configurations are used to define three clients as examples. To configure a client,
+  # the access parameter values of the respective client database are to be specified.
+  #
+  # Note: In the absence of a client configuration, the database access parameters specified under spring.datasource apply.
+  # In such a case, the user service is started under the quasi-client "master".
+  tenants:
+    - tenant-id: TenantFoo1
+      db-url: jdbc:postgresql://localhost:5432/?currentSchema=usersrv
+      db-username: postgres
+      db-password: manage
+      db-driver-class-name: org.postgresql.Driver
+    - tenant-id: TenantFooDemo1
+      db-url: "jdbc:h2:mem:test;MODE=PostgreSQL;MVCC=true;LOCK_TIMEOUT=15000;DB_CLOSE_DELAY=-1"
+      db-username: sa
+      db-password:
+      db-driver-class-name: org.h2.Driver
+    - tenant-id: TenantFooDemo2
+      db-url: "jdbc:h2:file:~/.h2/user;AUTO_SERVER=TRUE;MODE=PostgreSQL"
+      db-username: foo
+      db-password: bar
+      db-driver-class-name: org.h2.Driver</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_ldap_synchronisation">LDAP synchronisation</h2>
+<h2 id="_ldap_synchronization"><strong>LDAP Synchronization</strong></h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">LDAP synchronisation configuration</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user-service</span>:
-  <span class="key">ldap</span>:
-    <span class="key">tenants</span>:
-      - <span class="string"><span class="content">tenant-id: master</span></span>
-        <span class="key">server-urls</span>:
-          - <span class="string"><span class="content">ldap://eit-bln-svdom1.eitco.de:389</span></span>
-        <span class="key">auth-user-name</span>: <span class="string"><span class="content">tpruefen@eitco.de</span></span>
-        <span class="key">auth-user-password</span>: <span class="string"><span class="content">changeit</span></span>
-        <span class="key">date-format</span>: <span class="string"><span class="content">yyyyMMddHHmmss</span></span>
-        <span class="key">user-search-bases</span>:
-          - <span class="string"><span class="content">ou=mitarbeiter,ou=bremen,ou=eitco,dc=eitco,dc=de</span></span>
-          - <span class="string"><span class="content">ou=mitarbeiter,ou=bonn,ou=eitco,dc=eitco,dc=de</span></span>
-          - <span class="string"><span class="content">ou=mitarbeiter,ou=berlin,ou=eitco,dc=eitco,dc=de</span></span>
-        <span class="key">user-filter</span>: <span class="string"><span class="content">objectclass=person</span></span>
-        <span class="key">user-mappings</span>:
-          - <span class="string"><span class="content">username, sAMAccountName</span></span>
-          - <span class="string"><span class="content">externalId, objectGUID;binary</span></span>
-          - <span class="string"><span class="content">email, mail</span></span>
-          - <span class="string"><span class="content">firstname, givenName</span></span>
-          - <span class="string"><span class="content">lastname, sn</span></span>
-          - <span class="string"><span class="content">tmpList-memberOf, memberOf</span></span>
-        <span class="key">group-search-bases</span>:
-          - <span class="string"><span class="content">cn=Builtin,dc=eitco,dc=de</span></span>
-          - <span class="string"><span class="content">cn=Users,dc=eitco,dc=de</span></span>
-          - <span class="string"><span class="content">ou=gruppen,ou=eitco,dc=eitco,dc=de</span></span>
-        <span class="key">group-filter</span>: <span class="string"><span class="content">objectclass=group</span></span>
-        <span class="key">group-mappings</span>:
-          - <span class="string"><span class="content">shortname, sAMAccountName</span></span>
-          - <span class="string"><span class="content">externalId, objectGUID;binary</span></span>
-          - <span class="string"><span class="content">longname, cn</span></span>
-          - <span class="string"><span class="content">tmpList-memberOf, memberOf</span></span></code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+  ldap:
+    tenants:
+      - tenant-id: master
+        server-urls:
+          - ldap://eit-bln-svdom1.eitco.de:389
+        auth-user-name: tpruefen@eitco.de
+        auth-user-password: changeit
+        date-format: yyyyMMddHHmmss
+        user-search-bases:
+          - ou=mitarbeiter,ou=bremen,ou=eitco,dc=eitco,dc=de
+          - ou=mitarbeiter,ou=bonn,ou=eitco,dc=eitco,dc=de
+          - ou=mitarbeiter,ou=berlin,ou=eitco,dc=eitco,dc=de
+        user-filter: objectclass=person
+        user-mappings:
+          - username, sAMAccountName
+          - externalId, objectGUID;binary
+          - email, mail
+          - firstname, givenName
+          - lastname, sn
+          - tmpList-memberOf, memberOf
+        group-search-bases:
+          - cn=Builtin,dc=eitco,dc=de
+          - cn=Users,dc=eitco,dc=de
+          - ou=gruppen,ou=eitco,dc=eitco,dc=de
+        group-filter: objectclass=group
+        group-mappings:
+          - shortname, sAMAccountName
+          - externalId, objectGUID;binary
+          - longname, cn
+          - tmpList-memberOf, memberOf</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -1310,19 +1308,19 @@ specified for Maven and Gradle:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
-     <span class="tag">&lt;artifactId&gt;</span>cmn-user-management-test-with-user<span class="tag">&lt;/artifactId&gt;</span>
-     <span class="tag">&lt;version&gt;</span>entsprechende Version<span class="tag">&lt;/version&gt;</span>
-     <span class="tag">&lt;scope&gt;</span>test<span class="tag">&lt;/scope&gt;</span>
- <span class="tag">&lt;/dependency&gt;</span></code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+     &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+     &lt;artifactId&gt;cmn-user-management-test-with-user&lt;/artifactId&gt;
+     &lt;version&gt;entsprechende Version&lt;/version&gt;
+     &lt;scope&gt;test&lt;/scope&gt;
+ &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Gradle-Dependency:
-.Integration of user service and test users</p>
+<p>Gradle-Dependency:</p>
 </div>
 <div class="literalblock">
+<div class="title">Integration of user service and test users</div>
 <div class="content">
 <pre>test 'de.eitco.commons: cmn-user-management-test-with-user:&lt;yourVersion&gt;'</pre>
 </div>
@@ -1428,33 +1426,33 @@ To set a token value, the name of the SecToken pojo attribute is to be used in t
 <div class="listingblock">
 <div class="title">Token import</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user-service</span>:
-  <span class="key">config-data</span>:
-    <span class="key">tenants</span>:
-      <span class="comment"># Setup imports are configured on a client-by-client basis. The client ID &quot;all&quot; means that the</span>
-      <span class="comment"># configuration applies to all clients. The client ID &quot;all&quot; must also be specified if</span>
-      <span class="comment"># no client has been explicitly configured. This is because the application then starts under the so-called</span>
-      <span class="comment"># default client.</span>
-      - <span class="string"><span class="content">tenant-id: all</span></span>
-        <span class="key">token</span>:
-          - <span class="string"><span class="content">type: function</span></span>
-            <span class="key">path</span>: <span class="string"><span class="content">fooToken1</span></span>
-            <span class="key">description</span>: <span class="string"><span class="content">This is...</span></span>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+  config-data:
+    tenants:
+      # Setup imports are configured on a client-by-client basis. The client ID "all" means that the
+      # configuration applies to all clients. The client ID "all" must also be specified if
+      # no client has been explicitly configured. This is because the application then starts under the so-called
+      # default client.
+      - tenant-id: all
+        token:
+          - type: function
+            path: fooToken1
+            description: This is...
 
-            <span class="comment"># the token is assigned to the role fooRole1 as guaranteed</span>
-            <span class="key">privilegeGrantedToRoles</span>: <span class="string"><span class="content">fooRole1</span></span>
+            # the token is assigned to the role fooRole1 as guaranteed
+            privilegeGrantedToRoles: fooRole1
 
-            <span class="comment"># the token is assigned to the role fooRole2 as not guaranteed;</span>
-            <span class="comment"># such an assignment is relevant in relation to group hierarchies,</span>
-            <span class="comment"># to revoke a token (privilege) granted by the hierarchy.</span>
-            <span class="key">privilegeNotGrantedToRoles</span>: <span class="string"><span class="content">fooRole2</span></span>
+            # the token is assigned to the role fooRole2 as not guaranteed;
+            # such an assignment is relevant in relation to group hierarchies,
+            # to revoke a token (privilege) granted by the hierarchy.
+            privilegeNotGrantedToRoles: fooRole2
 
-          - <span class="string"><span class="content">type: function</span></span>
-            <span class="key">path</span>: <span class="string"><span class="content">fooToken2</span></span>
-            <span class="key">description</span>: <span class="string"><span class="content">This is...</span></span>
+          - type: function
+            path: fooToken2
+            description: This is...
 
-            <span class="comment"># the token is assigned to the two roles fooRole1 and fooRole</span>
-            <span class="key">privilegeGrantedToRoles</span>: <span class="string"><span class="content">fooRole1,fooRole2</span></span></code></pre>
+            # the token is assigned to the two roles fooRole1 and fooRole
+            privilegeGrantedToRoles: fooRole1,fooRole2</code></pre>
 </div>
 </div>
 </div>
@@ -1479,17 +1477,17 @@ To set a role value, the name of the UserRole pojo attribute must be used in the
 <div class="listingblock">
 <div class="title">Role import</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user-service</span>:
-   <span class="key">config-data</span>:
-     <span class="key">tenants</span>:
-      <span class="comment"># see explanation of tenant-id for token import</span>
-      - <span class="string"><span class="content">tenant-id: all</span></span>
-        <span class="key">roles</span>:
-          - <span class="string"><span class="content">name: fooRole1</span></span>
-            <span class="key">description</span>: <span class="string"><span class="content">This is…</span></span>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+   config-data:
+     tenants:
+      # see explanation of tenant-id for token import
+      - tenant-id: all
+        roles:
+          - name: fooRole1
+            description: This is…
 
-          - <span class="string"><span class="content">name: fooRole2</span></span>
-            <span class="key">description</span>: <span class="string"><span class="content">This is…</span></span></code></pre>
+          - name: fooRole2
+            description: This is…</code></pre>
 </div>
 </div>
 </div>
@@ -1515,42 +1513,42 @@ To set a group value, the name of the UserGroup pojo attribute must be used in t
 <div class="listingblock">
 <div class="title">Group import</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user-service</span>:
-   <span class="key">config-data</span>:
-     <span class="key">tenants</span>:
-      <span class="comment"># see explanation of tenant-id for token import</span>
-      - <span class="string"><span class="content">tenant-id: all</span></span>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+   config-data:
+     tenants:
+      # see explanation of tenant-id for token import
+      - tenant-id: all
 
-      <span class="key">groups</span>:
-          <span class="comment"># z.B. GUID from Active Directory</span>
-        - <span class="string"><span class="content">externalId: C7FE1854-9428-44B6-9A77-3FADE10C1BCF</span></span>
-          <span class="comment"># z.B. DN from Active Directory</span>
-          <span class="key">externalPath</span>: <span class="string"><span class="content">groups.employee</span></span>
-          <span class="key">type</span>: <span class="string"><span class="content">Standard</span></span>
-          <span class="key">shortname</span>: <span class="string"><span class="content">fooGroup1</span></span>
-          <span class="key">longname</span>: <span class="string"><span class="content">fooGroup1Longname</span></span>
-          <span class="key">division</span>: <span class="string"><span class="content">fooGroup1Division</span></span>
-          <span class="key">area</span>: <span class="string"><span class="content">fooGroup1Area</span></span>
-          <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
-          <span class="key">escription</span>: <span class="string"><span class="content">This is...</span></span>
-          <span class="comment"># the role fooRole1 is assigned to the group</span>
-          <span class="key">memberOfRoles</span>: <span class="string"><span class="content">fooRole1</span></span>
+      groups:
+          # z.B. GUID from Active Directory
+        - externalId: C7FE1854-9428-44B6-9A77-3FADE10C1BCF
+          # z.B. DN from Active Directory
+          externalPath: groups.employee
+          type: Standard
+          shortname: fooGroup1
+          longname: fooGroup1Longname
+          division: fooGroup1Division
+          area: fooGroup1Area
+          enabled: true
+          escription: This is...
+          # the role fooRole1 is assigned to the group
+          memberOfRoles: fooRole1
 
-        - <span class="string"><span class="content">externalId: D7FE1854-9428-44B6-9A77-3FADE10C1BCF</span></span>
-          <span class="key">externalPath</span>: <span class="string"><span class="content">groups.developer</span></span>
-          <span class="key">type</span>: <span class="string"><span class="content">Standard</span></span>
-          <span class="key">shortname</span>: <span class="string"><span class="content">fooGroup2</span></span>
-          <span class="key">longname</span>: <span class="string"><span class="content">fooGroup2Longname</span></span>
-          <span class="key">division</span>: <span class="string"><span class="content">fooGroup2Division</span></span>
-          <span class="key">area</span>: <span class="string"><span class="content">fooGroup2Area</span></span>
-          <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
-          <span class="key">description</span>: <span class="string"><span class="content">This is...</span></span>
+        - externalId: D7FE1854-9428-44B6-9A77-3FADE10C1BCF
+          externalPath: groups.developer
+          type: Standard
+          shortname: fooGroup2
+          longname: fooGroup2Longname
+          division: fooGroup2Division
+          area: fooGroup2Area
+          enabled: true
+          description: This is...
 
-          <span class="comment"># the group is assigned to the roles fooRole1 and fooRole2</span>
-          <span class="key">memberOfRoles</span>: <span class="string"><span class="content">fooRole1,fooRole2</span></span>
+          # the group is assigned to the roles fooRole1 and fooRole2
+          memberOfRoles: fooRole1,fooRole2
 
-          <span class="comment"># the group is classified as a subgroup of the group fooGroup1</span>
-          <span class="key">subGroupOfGroups</span>: <span class="string"><span class="content">fooGroup1</span></span></code></pre>
+          # the group is classified as a subgroup of the group fooGroup1
+          subGroupOfGroups: fooGroup1</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -1574,33 +1572,33 @@ To set a user value, the name of the user pojo attribute must be used in the con
 <div class="listingblock">
 <div class="title">User import</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">user-service</span>:
-   <span class="key">config-data</span>:
-     <span class="key">tenants</span>:
-      <span class="comment"># see explanation of tenant-id for token import</span>
-      - <span class="string"><span class="content">tenant-id: all</span></span>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+   config-data:
+     tenants:
+      # see explanation of tenant-id for token import
+      - tenant-id: all
 
-        <span class="key">users</span>:
-          - <span class="string"><span class="content">uuid: 822bd19a-6104-4cae-a7ef-8380c1e8e6c5</span></span>
-            <span class="key">externalId</span>: <span class="string"><span class="content">B7FE1854-9428-44B6-9A77-3FADE10C1BCF</span></span>
-            <span class="key">username</span>: <span class="string"><span class="content">fooUser1</span></span>
-            <span class="key">password</span>: <span class="string"><span class="content">fooPassword</span></span>
-            <span class="key">title</span>: <span class="string"><span class="content">Dr.</span></span>
-            <span class="key">salutation</span>: <span class="string"><span class="content">Mrs.</span></span>
-            <span class="key">lastname</span>: <span class="string"><span class="content">Mustermann</span></span>
-            <span class="key">firstname</span>: <span class="string"><span class="content">Erika</span></span>
-            <span class="key">email</span>: <span class="string"><span class="content">emustermann@foo.foo</span></span>
-            <span class="key">superuser</span>: <span class="string"><span class="content">false</span></span>
-            <span class="key">validFrom</span>: <span class="string"><span class="content">2000-01-01T00:00:00Z</span></span>
-            <span class="key">validUntil</span>: <span class="string"><span class="content">2050-12-31T00:00:00Z</span></span>
-            <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
-            <span class="key">description</span>: <span class="string"><span class="content">This is…</span></span>
+        users:
+          - uuid: 822bd19a-6104-4cae-a7ef-8380c1e8e6c5
+            externalId: B7FE1854-9428-44B6-9A77-3FADE10C1BCF
+            username: fooUser1
+            password: fooPassword
+            title: Dr.
+            salutation: Mrs.
+            lastname: Mustermann
+            firstname: Erika
+            email: emustermann@foo.foo
+            superuser: false
+            validFrom: 2000-01-01T00:00:00Z
+            validUntil: 2050-12-31T00:00:00Z
+            enabled: true
+            description: This is…
 
-            <span class="comment"># the user is assigned to the groups fooGroup1 and fooGroup2</span>
-            <span class="key">memberOfGroups</span>: <span class="string"><span class="content">fooGroup1,fooGroup2</span></span>
+            # the user is assigned to the groups fooGroup1 and fooGroup2
+            memberOfGroups: fooGroup1,fooGroup2
 
-            <span class="comment"># the user is assigned to the roles fooRole1 and fooRole2</span>
-            <span class="key">memberOfRoles</span>: <span class="string"><span class="content">fooRole1,fooRole2</span></span></code></pre>
+            # the user is assigned to the roles fooRole1 and fooRole2
+            memberOfRoles: fooRole1,fooRole2</code></pre>
 </div>
 </div>
 </div>
@@ -1610,97 +1608,8 @@ To set a user value, the name of the user pojo attribute must be used in the con
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-22 15:30:44 UTC
+Last updated 2023-02-28 11:13:02 UTC
 </div>
 </div>
-<style>
-/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
-pre.CodeRay{background:#f7f7f8}
-.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
-.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
-.CodeRay .line-numbers strong{color:#000}
-table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
-table.CodeRay td{vertical-align:top;line-height:inherit}
-table.CodeRay td.line-numbers{text-align:right}
-table.CodeRay td.code{padding:0 0 0 .75em}
-.CodeRay .debug{color:#fff !important;background:#000080 !important}
-.CodeRay .annotation{color:#007}
-.CodeRay .attribute-name{color:#000080}
-.CodeRay .attribute-value{color:#700}
-.CodeRay .binary{color:#509}
-.CodeRay .comment{color:#998;font-style:italic}
-.CodeRay .char{color:#04d}
-.CodeRay .char .content{color:#04d}
-.CodeRay .char .delimiter{color:#039}
-.CodeRay .class{color:#458;font-weight:bold}
-.CodeRay .complex{color:#a08}
-.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
-.CodeRay .color{color:#099}
-.CodeRay .class-variable{color:#369}
-.CodeRay .decorator{color:#b0b}
-.CodeRay .definition{color:#099}
-.CodeRay .delimiter{color:#000}
-.CodeRay .doc{color:#970}
-.CodeRay .doctype{color:#34b}
-.CodeRay .doc-string{color:#d42}
-.CodeRay .escape{color:#666}
-.CodeRay .entity{color:#800}
-.CodeRay .error{color:#808}
-.CodeRay .exception{color:inherit}
-.CodeRay .filename{color:#099}
-.CodeRay .function{color:#900;font-weight:bold}
-.CodeRay .global-variable{color:#008080}
-.CodeRay .hex{color:#058}
-.CodeRay .integer,.CodeRay .float{color:#099}
-.CodeRay .include{color:#555}
-.CodeRay .inline{color:#000}
-.CodeRay .inline .inline{background:#ccc}
-.CodeRay .inline .inline .inline{background:#bbb}
-.CodeRay .inline .inline-delimiter{color:#d14}
-.CodeRay .inline-delimiter{color:#d14}
-.CodeRay .important{color:#555;font-weight:bold}
-.CodeRay .interpreted{color:#b2b}
-.CodeRay .instance-variable{color:#008080}
-.CodeRay .label{color:#970}
-.CodeRay .local-variable{color:#963}
-.CodeRay .octal{color:#40e}
-.CodeRay .predefined{color:#369}
-.CodeRay .preprocessor{color:#579}
-.CodeRay .pseudo-class{color:#555}
-.CodeRay .directive{font-weight:bold}
-.CodeRay .type{font-weight:bold}
-.CodeRay .predefined-type{color:inherit}
-.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
-.CodeRay .key{color:#808}
-.CodeRay .key .delimiter{color:#606}
-.CodeRay .key .char{color:#80f}
-.CodeRay .value{color:#088}
-.CodeRay .regexp .delimiter{color:#808}
-.CodeRay .regexp .content{color:#808}
-.CodeRay .regexp .modifier{color:#808}
-.CodeRay .regexp .char{color:#d14}
-.CodeRay .regexp .function{color:#404;font-weight:bold}
-.CodeRay .string{color:#d20}
-.CodeRay .string .string .string{background:#ffd0d0}
-.CodeRay .string .content{color:#d14}
-.CodeRay .string .char{color:#d14}
-.CodeRay .string .delimiter{color:#d14}
-.CodeRay .shell{color:#d14}
-.CodeRay .shell .delimiter{color:#d14}
-.CodeRay .symbol{color:#990073}
-.CodeRay .symbol .content{color:#a60}
-.CodeRay .symbol .delimiter{color:#630}
-.CodeRay .tag{color:#008080}
-.CodeRay .tag-special{color:#d70}
-.CodeRay .variable{color:#036}
-.CodeRay .insert{background:#afa}
-.CodeRay .delete{background:#faa}
-.CodeRay .change{color:#aaf;background:#007}
-.CodeRay .head{color:#f8f;background:#505}
-.CodeRay .insert .insert{color:#080}
-.CodeRay .delete .delete{color:#800}
-.CodeRay .change .change{color:#66f}
-.CodeRay .head .head{color:#f4f}
-</style>
 </body>
 </html>
