@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo CICD-160-SNAPSHOT</div>
+<div id="toctitle">arveo 12.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -1247,7 +1247,7 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 </div>
 <div class="paragraph">
 <p>All revisions of content or metadata are stored as a traceable and immutable version
-(<a href="#_versioning">Versioning</a>) to the storage systems.
+(<a href="#_versioning_v">Versioning</a>) to the storage systems.
 The content service checks the integrity of uploaded content by computing SHA-256 hashes on client and server side.
 Additionally, an audit entry is written to the audit log table (<a href="#_configure_audit">Audit Log</a>).
 <em>arveo</em> provides a role based access control on object level and allows you to prevent unauthorized access
@@ -2722,7 +2722,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is CICD-160-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 12.0.0-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3160,7 +3160,7 @@ DemoModelStatus getStatus();
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>CICD-160-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -5202,7 +5202,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>CICD-160-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -8804,10 +8804,16 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retention-cleanup.global-settings.asynchronous</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, content of documents will be removed from the storage asynchronously using a message queue. The database entries will not be removed but marked as deleted using the COMPLIANCE_DELETED field.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retention-cleanup.global-settings.batch-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the size of a single batch of entities processed by the job.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retention-cleanup.global-settings.max-message-queue-size</p></td>
@@ -8873,10 +8879,16 @@ of the different services.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">global-settings.asynchronous</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, content of documents will be removed from the storage asynchronously using a message queue. The database entries will not be removed but marked as deleted using the COMPLIANCE_DELETED field.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">global-settings.batch-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the size of a single batch of entities processed by the job.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1000</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">global-settings.max-message-queue-size</p></td>
@@ -9146,7 +9158,7 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">host</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the host for the connection of the Solr Client.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://localhost:38983/solr" class="bare">http://localhost:38983/solr</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">http-client-connection-timeout</p></td>
@@ -16275,18 +16287,18 @@ On systems supporting multiple tenants, the tenant to run the job for must be co
 <div class="ulist">
 <ul>
 <li>
-<p><code>retention-cleanup-batch-size</code>: The size of a single batch of entities to process. The default is 100.</p>
+<p><code>retention-cleanup-asynchronous</code>: Enables the asynchronous mode of the job. The asynchronous mode is described below.</p>
 </li>
 <li>
-<p><code>retention-cleanup-purge-content</code>: If true, all content elements of removed documents will be deleted. The default is true.</p>
+<p><code>retention-cleanup-batch-size</code>: The size of a single batch of entities to process. The default is 1000 and the maximum is 10000.</p>
 </li>
 <li>
 <p><code>retention-cleanup-filter</code>: An optional filter in form of an EQL <code>Expression&lt;Boolean&gt;</code> to apply to the query used to find
 entities with expired retention period.</p>
 </li>
 <li>
-<p><code>retention-cleanup-maximum-queue-size</code>: The maximum acceptable size of the message queues used by the job. If the queue
-sizes exceed the configured maximum, the job will stop. The job will check the queue sizes once a minute.</p>
+<p><code>retention-cleanup-maximum-queue-size</code>: The maximum acceptable size of the message queue used by the job in asynchronous mode. If the queue
+size exceeds the configured maximum, the job will stop. The job will check the queue size once a minute.</p>
 </li>
 <li>
 <p><code>retention-cleanup-duration</code>: An optional maximum duration of the job&#8217;s runtime. If the duration is exceeded, the job
@@ -16321,6 +16333,41 @@ collected by a separate system job. This job is not enabled by default and must 
 configuration file of the service either globally or for each type definition.
 See <a href="#_ecr_server_jobs_retention-cleanup">configuration reference</a> for details.</p>
 </div>
+<div class="sect4">
+<h5 id="_asynchronous_mode">Asynchronous mode</h5>
+<div class="paragraph">
+<p>In the asynchronous mode, content is not deleted from the storage immediately. Instead, a message queue is used to delete
+the content asynchronously. The database entries for the documents are not removed but marked as deleted using the
+<code>COMPLIANCE_DELETED</code> field.</p>
+</div>
+<div class="paragraph">
+<p>The entries that were marked as deleted are automatically excluded from query results. It is not possible to read those
+entries using the <em>arveo</em> client API.</p>
+</div>
+<div class="paragraph">
+<p>The <em>arveo</em> client API can be used to delete all entities that were marked as deleted as shown in the
+following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Deleting marked entities</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">Expression</span>&lt;<span class="predefined-type">Boolean</span>&gt; expression = EcrQueryLanguage.condition()
+    .entity().systemField(SystemFieldList.GeneralSystemField.ComplianceDeleted.INSTANCE)
+    .equalTo().value(<span class="predefined-constant">true</span>).holds();
+serviceClient.delete(expression, <span class="integer">1000</span>); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Set a limit to reduce database load</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_triggering_the_job">Triggering the job</h5>
 <div class="paragraph">
 <p>Both the repository service and the job service offer an API that provides methods to create triggers for the job. The
 following example shows how to use this API to create a simple trigger that will fire once at a specified time. The API
@@ -16348,6 +16395,7 @@ schedulerClient.scheduleSimpleTrigger(trigger);</code></pre>
 </div>
 <div class="paragraph">
 <p>The API provides additional methods to create cron expression based triggers and to unschedule a job.</p>
+</div>
 </div>
 </div>
 </div>
@@ -17562,7 +17610,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-27 11:00:56 UTC
+Last updated 2023-03-01 12:32:17 UTC
 </div>
 </div>
 <style>
