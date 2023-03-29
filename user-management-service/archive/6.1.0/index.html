@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>EITCO User Management Service</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">EITCO User Management Service 6.1.0</div>
+<ul class="sectlevel1">
+<li><a href="#_eitco_user_management_service"><strong>EITCO User Management Service</strong></a></li>
+<li><a href="#_basic_functions"><strong>Basic functions</strong></a></li>
+<li><a href="#_data_model"><strong>Data model</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_overview_of_the_database_tables">Overview of the database tables</a></li>
+<li><a href="#_integration_of_the_user_service_artifacts">Integration of the user service artifacts</a></li>
+<li><a href="#_user_service_configurations">User service configurations</a></li>
+</ul>
+</li>
+<li><a href="#_auditing"><strong>Auditing</strong></a></li>
+<li><a href="#_api_overview"><strong>API Overview</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_create_modify_and_delete_a_user">Create, modify and delete a user</a></li>
+<li><a href="#_create_modify_and_delete_a_role_group_token_privilege">Create, modify and delete a role, group, token, privilege</a></li>
+<li><a href="#_assignment_management">Assignment management</a></li>
+<li><a href="#_create_and_modify_group_hierarchies">Create and modify group hierarchies</a></li>
+<li><a href="#_roleprivilege_inheritance_through_the_group_hierarchy">Role/privilege inheritance through the group hierarchy</a></li>
+<li><a href="#_queries_using_service_query">Queries using service query</a></li>
+<li><a href="#_create_assign_and_modify_events">Create, assign and modify events</a></li>
+<li><a href="#_api_lookup_cache">API Lookup / Cache</a></li>
+<li><a href="#_cache_implementation">Cache implementation</a></li>
+<li><a href="#_alternative_cache_implementation">Alternative cache implementation</a></li>
+</ul>
+</li>
+<li><a href="#_securing_rest_endpoints"><strong>Securing REST Endpoints</strong></a></li>
+<li><a href="#_client_management"><strong>Client Management</strong></a></li>
+<li><a href="#_ldap_synchronization"><strong>LDAP Synchronization</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_unit_testing">Unit testing</a></li>
+<li><a href="#_setup_import">Setup import</a></li>
+<li><a href="#_group_import">Group import</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div style="page-break-after: always;"></div>
+<div class="sect1">
+<h2 id="_eitco_user_management_service"><strong>EITCO User Management Service</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The User Service provides a user administration designed for different applications and systems. It is a database-based user administration.</p>
+</div>
+<div class="paragraph">
+<p>User directories can also be connected via the Lightweight Directory Access Protocol (LDAP). Such a connection supports
+read synchronization regarding the user data of the user directory. Reading means that the user service reads the
+user data from the user directory and creates or modifies the corresponding user service user data for this purpose, but
+conversely does not write any data to the user directory.</p>
+</div>
+<div class="paragraph">
+<p>Closely related to user administration is the issue of authentication and authorization. In this respect, the user service
+is a supporting service that offers functionalities such as storing the password in encrypted form or managing roles and
+rights.</p>
+</div>
+<div class="paragraph">
+<p>For authentication and authorization, the Spring security framework would have to be used in addition to the user service,
+if necessary in conjunction with an authentication component. The concrete authentication and authorization scenario depends
+on the respective system context. Custom developments can also be integrated for authentication. As a note, it should be
+mentioned here that an adequate ACL implementation for access protection of concrete application objects is offered neither
+by the user service nor by Spring Security. This would require further solutions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_basic_functions"><strong>Basic functions</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The user administration supports the creation, modification and deletion of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>users</p>
+</li>
+<li>
+<p>user groups</p>
+</li>
+<li>
+<p>roles</p>
+</li>
+<li>
+<p>tokens</p>
+</li>
+<li>
+<p>privileges</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A token (or authority) is a loose definition of a right. By assigning such a loose definition of a right to a role, the role is granted a
+privilege. By means of a token-to-role assignment, a privilege can in turn also be withdrawn from the corresponding users.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_data_model"><strong>Data model</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following figure outlines the relationship between users, roles, etc. based on the database tables of the user service.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/user-service-data-model.png" alt="diagram">
+</div>
+<div class="title">Figure 1. Data model of the User service</div>
+</div>
+<div class="sect2">
+<h3 id="_overview_of_the_database_tables">Overview of the database tables</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Database tables</caption>
+<colgroup>
+<col>
+<col>
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">table</th>
+<th class="tableblock halign-left valign-top">purpose</th>
+<th class="tableblock halign-left valign-top">sample data set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the user records</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_user_extra_meta</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the metadata of freely definable user data fields that supplement the fields of the usrv_user table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">additional field date of birth: (1, DATE OF BIRTH, DATETIME, 0, "This is the&#8230;&#8203;")</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_user_extra</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the values of the freely definable user data fields</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String value record: (1, 1, 5, 1, NULL, NULL, NULL, "foo value")</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains the user group records</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_group_extra_meta</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the metadata of user-definable group data fields that complement the fields of the usrv_group table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_group_extra</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the values of the freely definable user group data fields</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_group_to_group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the records of the user group hierarchy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_user_to_group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the user group mapping records</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_role</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the role records. The fields of such a record are listed in the following table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_user_to_role</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the user role assignment records</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usrv_group_to_role</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the user group role mapping records</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sec_token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the token or rights data records</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sec_privilege</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains the role token mapping records</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_integration_of_the_user_service_artifacts">Integration of the user service artifacts</h3>
+<div class="paragraph">
+<p>The user service can be used as a standalone component in the sense of a microservice, or it can be integrated directly
+into the context of the actual application.</p>
+</div>
+<div class="paragraph">
+<p>Direct integration into the context of the actual application requires that the integration takes place within a Spring
+Boot context.</p>
+</div>
+<div class="paragraph">
+<p>Deployment as a microservice, on the other hand, is done in a distributed microservice environment using the components
+recommended by Spring Cloud. The microservice itself is a Spring boot application (server). To use the microservice
+within a Spring Cloud infrastructure, the user service provides a Java-based microservice client component to be used by
+the clients of the microservice. By using this client component, load balancing etc. are automatically provided. Like
+the direct integration, the integration of the client component requires that the integration takes place within a Spring
+boot context.</p>
+</div>
+<div class="paragraph">
+<p>Both direct integration and integration as a microservice client provide the same application programming interface (API).
+It should be noted, however, that microservice calls cannot be included in a transaction context that is open on the caller&#8217;s
+side.</p>
+</div>
+<div class="sect3">
+<h4 id="_dependencies">Dependencies</h4>
+<div class="paragraph">
+<p>Integration of the Microservice client</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+  &lt;artifactId&gt;cmn-user-management-client-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;6.1.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-client-spring-boot-starter:6.1.0'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Direct integration (embedded)</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+  &lt;artifactId&gt;cmn-user-management-embedded-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;6.1.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-embedded-spring-boot-starter:6.1.0'</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_gradle_dependency">Gradle-Dependency</h5>
+
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_user_service_configurations">User service configurations</h3>
+<div class="paragraph">
+<div class="title">Integration of the Microservice client</div>
+<p>The following is an example of the user service configuration using a Spring YAML configuration file.</p>
+</div>
+<div class="listingblock">
+<div class="title">User service configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+ # The configuration of a datasource is not user service specific; it should only be pointed out that
+ # that the user service requires a datasource.
+ datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=foo
+    username: foouser
+    password: foopassword
+    driver-class-name: org.postgresql.Driver
+
+user-service:
+
+  group:
+    # a user group is to be typified; possible types can be
+    # deposited comma-separated at this point
+    #
+    # If the type "Standard" is specified, no type must be specified when saving a user group record.
+    # In such a case the type "Standard" will be set automatically.
+    #
+    types: Standard, OU, Job
+    #
+    # A user group can have freely definable attributes assigned to it; such
+    # definitions can be made here in a semicolon-separated way.
+    # The values of a definition are comma-separated.
+    # The first value specifies the attribute name, the second the type and
+    # the third, whether the attribute value is a mandatory value.
+    # Possible types are: boolean, decimal, long, datetime, string, blob;
+    #
+    extra-fields: selectable,boolean,false;fooDate,datetime,false;
+
+  user:
+    # Specify the superuser based on a comma-separated list of user names; if the value -dbFlag- is entered here,
+    # then the superuser will be determined by a flag in the
+    # user database table
+    #
+    superuser: -dbFlag-
+    #
+    # A user can be assigned freely definable attributes.
+    # further description see above under user-service.group.extra-fields
+    extra-fields: fooDecimal,decimal,false;fooString1,string,false;fooString2,string,false
+
+  auth:
+    # The user service supports the integration of Spring security. With the following
+    # configuration you can specify the implementation of the Spring Spring-Security-Userdetail-Interfaces.
+    # (Default is de.eitco.commons.user.management.common.auth.UserDetailsDB)
+    #
+    user-details-path: de.eitco.commons.user.management.common.auth.UserDetailsDB
+    #
+    # The following configuration specifies which key is used to identify the user
+    # to whom the request is assigned via request token is to be
+    # determined by the user service. The request token can contain the user name or the external
+    # user ID. Possible configuration values are NAME or EXTERNAL_ID (default is NAME).
+    #
+    user-identification-field: NAME</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_auditing"><strong>Auditing</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The User Management Service supports auditing of changes made to the user management data. The auditing support must be
+activated by setting <code>user-service.audit-support-enabled=true</code> in the service&#8217;s configuration. Auditing can then be enabled by creating audit rules for the tables to be audited. For example, to audit changes made to users an audit rule with <code>tableName=usrv_user</code> must be created. The rule&#8217;s settings for <code>deleteUserIdField</code>, <code>deleteUserIdSetting</code>, <code>updateUserIdField</code> and <code>updateUserIdSetting</code> can be left empty to use the default values. <a href="https://eitco.github.io/audit-service">The documentation of the
+audit service</a> contains more information on how to create audit rules.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_api_overview"><strong>API Overview</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The user service contains so-called managers in the form of interfaces and their implementations for user administration.
+The central manager class or interface is <em>de.eitco.commons.user.management.common.manager.CrudManager</em>.
+By means of this interface the methods for creating, reading, changing and deleting records are declared (CRUD = Create,
+Read, Update, Delete). The following CRUD methods are declared in it:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>T <strong>getEntity</strong>(Long entityId) - read a record based on the unique record ID.</p>
+</li>
+<li>
+<p>QueryResult&lt;T&gt; <strong>listEntities</strong>(ServiceQuery query) - read records based on filtering, if any, by means of a query</p>
+</li>
+<li>
+<p>T <strong>saveEntity</strong>(T entity) - create and modify a record</p>
+</li>
+<li>
+<p>void <strong>deleteEntity</strong>(Long entityId) - delete a record based on the unique record ID</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other managers are assignment managers to assign the corresponding entities. For example, assigning a user to a user
+group. There is also the AuthManager which is described in the API Security chapter.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/user-service-crud-manager.png" alt="diagram">
+</div>
+</div>
+<div class="paragraph">
+<p>To manage the data using the CRUD Manager, model classes are declared in the form of POJOs in each case. These are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>de.eitco.commons.user.management.common.model.UserGroup</p>
+</li>
+<li>
+<p>de.eitco.commons.user.management.common.model.UserRole</p>
+</li>
+<li>
+<p>de.eitco.commons.user.management.common.model.SecToken</p>
+</li>
+<li>
+<p>de.eitco.commons.user.management.common.model.SecPrivilege</p>
+</li>
+<li>
+<p>de.eitco.commons.user.management.common.model.User</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_create_modify_and_delete_a_user">Create, modify and delete a user</h3>
+<div class="listingblock">
+<div class="title">Create a user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserManager userMgr;
+User user = new User();
+user.setUsername("user@foo.foo");
+user = userMgr.saveEntity(user);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Modify a user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserManager userMgr;
+// Read user record by means of e.g. getEntityByUsername()
+User user = userMgr.getEntityByUsername("user@foo.foo");
+// change email address
+user.setEmail("user@foo.foo");
+user = userMgr.saveEntity(user);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Delete a user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserManager userMgr;
+// Delete existing user by system ID
+userMgr.deleteEntity(user.getId());</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_modify_and_delete_a_role_group_token_privilege">Create, modify and delete a role, group, token, privilege</h3>
+<div class="paragraph">
+<p>Creating, changing and deleting roles, groups, tokens and privileges is done in the same way as described in the previous section for users. For this,
+of course, the respective manager and the corresponding POJO must be used. In the case of roles, for example, this would be the UserRole manager and the
+UserRole POJO.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_assignment_management">Assignment management</h3>
+<div class="paragraph">
+<p>For assignment management, the assignment managers are used. These are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>UserToUserGroupManager - manager to assign users to groups.</p>
+</li>
+<li>
+<p>UserRoleToUserManager - manager to assign roles to users.</p>
+</li>
+<li>
+<p>UserRoleToGroupManager - manager to assign roles to groups.</p>
+</li>
+<li>
+<p>UserGroupTreeManager - manager to assign groups to groups (in the sense of a tree or hierarchy).</p>
+</li>
+<li>
+<p>(SecPrivilegeManager - The SecPrivilegeManager is to be used for the assignment of tokens to roles).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following code examples show the four essential methods (add, remove, list a and list b) of the <em>UserToUserGroupManager</em>,
+<em>UserRoleToUserManager</em> and <em>UserRoleToGroupManager</em> based on the <em>UserToUserGroupManager</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Add user to group</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserToUserGroupManager userToGroupMgr;
+// such assignment is done by user id and group id
+userToGroupMgr.addUserToGroup(userId, groupId);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Remove user from group</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserToUserGroupManager userToGroupMgr;
+// remove user from group is done using user id and group id
+userToGroupMgr.removeUserFromGroup(userId, groupId);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">List user of a group</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserToUserGroupManager userToGroupMgr;
+// Note: method accesses the database directly; so no cache usage.
+List&lt;User&gt; userToGroupMgr.listUsersOfGroup(Long groupId);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">List groups of a user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserToUserGroupManager userToGroupMgr;
+// Note: method accesses the database directly; so no cache usage
+List&lt;UserGroup&gt; userToGroupMgr.listGroupsOfUser(Long userId);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_and_modify_group_hierarchies">Create and modify group hierarchies</h3>
+<div class="paragraph">
+<p>The creation and modification of group hierarchies are supported by the methods of the UserGroupToGroupManager. Following
+are code examples for this.</p>
+</div>
+<div class="listingblock">
+<div class="title">Add a subgroup to a group</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserGroupToGroupManager userGroupToGroupMgr;
+// add a subgroup to a group
+groupToGroupMgr.addSubGroup(groupId, subGroupId);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Remove a subgroup from a group</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserGroupToGroupManager userGroupToGroupMgr;
+// remove a subgroup from a group
+groupToGroupMgr.removeSubGroup(groupId, subGroupId);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">List subgroups/supergroups of a group</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserGroupToGroupManager userGroupToGroupMgr;
+// list the direct subgroups of a group
+List&lt;UserGroup&gt; directSubGroupList = groupToGroupMgr.getDirectSubGroups(Long groupId);
+
+// list the direct subgroups of a group
+List&lt;UserGroup&gt; directSuperGroupList = groupToGroupMgr.getDirectSuperGroups(Long groupId);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_roleprivilege_inheritance_through_the_group_hierarchy">Role/privilege inheritance through the group hierarchy</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_queries_using_service_query">Queries using service query</h3>
+<div class="paragraph">
+<p>Using a service query implementation, simple database queries can be created and executed, which are usually sufficient
+for entity management. A service query is based on a root entity (user, group, role, privilege or token).</p>
+</div>
+<div class="paragraph">
+<p>In a concrete query formulation, the occurring select, filter and sort attributes are to be marked with the corresponding
+entity prefix (see also examples below). The following prefixes are defined:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 85%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Entity</th>
+<th class="tableblock halign-left valign-top">Prefix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GroupExtra (Extension of the Group entity - freely definable attributes)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ge</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Privilege</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">p</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Role</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">r</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">t</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserExtra (Extension of the User entity - freely definable attributes)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ue</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In the following example the u.username identifies the username attribute of the User entity.</p>
+</div>
+<div class="listingblock">
+<div class="title">Query user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+UserManager userMgr;
+// Create ServiceQuery instance
+ServiceQuery serviceQuery = userMgr.newQuery();
+
+// RETRIEVE ALL USERS WITH ALL DIRECT AND FREELY DEFINABLE ATTRIBUTES
+
+// call the listEntities method based on the created ServiceQuery instance;
+// in the simple case, i.e. without specifying any select, filter or sort attributes
+// all users with all direct and freely definable attributes are returned; in
+// such a case, null could also be passed instead of the ServiceQuery instance
+QueryResult&lt;User&gt; userResult = userMgr.listEntities(serviceQuery);
+
+// The QueryResult instance contains the result list.
+List&lt;User&gt; userList = userResult.getList();
+
+// SELECT SPECIFIC ATTRIBUTES
+serviceQuery .addSelect("u.username", "ue.foo", "r.name");
+
+// FILTER BY SPECIFIC ATTRIBUTES
+serviceQuery.addFilterEq("u.username", "mustermann"); // exact match filter
+serviceQuery.addFilterEq("u.username", "mus", ServiceQuery.TXT_MATCH_STYLE_STARTS_WITH) // starts with match filter
+serviceQuery.addFilterEq("u.username", "uster", ServiceQuery.TXT_MATCH_STYLE_SUBSTRING) // substring match filter
+serviceQuery.addFilterEq("ue.fooDate", myDate); // equals filter
+serviceQuery.addFilterEq("ue.fooLong", 1L); // equals filter
+serviceQuery.addToOrFilterEq("u.firstname", "Erika");
+serviceQuery.addToOrFilterEq("u.firstname", "Max") // exact match Erika or Max
+serviceQuery.addFilterIn("ue.fooLong", myLongCollection); // in condition
+etc.
+
+// SORT BY SPECIFIC ATTRIBUTES
+serviceQuery.addOrderBy("u.username", ServiceQuery.SORT_DESC); // sort in descending order
+etc.
+
+// START-ROW, END-ROW and COUNT
+serviceQuery.setStartRow(0); // "start row" included
+serviceQuery.setEndRow(10); // "end row" not included (compare Java substring method)
+serviceQuery.withCount(); // in addition to the partial hit list "start/end" the actual total hit count
+                             // of the formulated query, which is then supplied in the result when calling withCount</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above examples for querying users also apply accordingly to Role, Group, Privilege and Token.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_assign_and_modify_events">Create, assign and modify events</h3>
+<div class="paragraph">
+<p>User Service Events serve to implement their own logic before, during or after actions of the User Service. Three types
+of events have been defined for this purpose:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Before - Before an action of the user service</p>
+</li>
+<li>
+<p>On - During an action of the User Service</p>
+</li>
+<li>
+<p>After - After an action of the User Service.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Example of of an event call</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Async
+@EventListener
+public void handleEvent(BeforeGroupCreateEvent event) {
+// do something
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the help of the Async annotation, the method Asynchronous is called. By default, the methods are called synchronously.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p>At this stage, all contexts are lost when the method is called using the Async annotation (e.g. tenant context etc.).
+To be able to call an event, the annotation EventListener must always be specified above the method. The desired logic
+can then be implemented within the method.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_api_lookup_cache">API Lookup / Cache</h3>
+<div class="paragraph">
+<p>The user service provides a lookup implementation. It can be used for queries whether a user is a member of a certain
+group, or whether a user is assigned a certain role, etc. In contrast to the queries of the manager classes, which access
+the database directly, the queries via lookup implementation are based on a cache implementation.</p>
+</div>
+<div class="listingblock">
+<div class="title">API methods of AuthLookup implementation</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">//---------------------------------------------------------------------
+// Subsequent queries whether a user is superuser, is in role x, etc.
+//---------------------------------------------------------------------
+AuthLookup.isSuperuser();
+AuthLookup.isSuperuser(String username);
+
+AuthLookup.isInRole(String roleName);
+AuthLookup.isInRole(String username, String roleName);
+
+AuthLookup.isInGroup(String groupShortname);
+AuthLookup.isInGroup(String username, String groupShortname);
+
+AuthLookup.isPrivilegeGranted(String tokenName);
+AuthLookup.isPrivilegeGranted(String username, String tokenName);
+
+AuthLookup.areAllPrivilegesGranted(String... tokenNameList);
+AuthLookup.areAllPrivilegesGranted(String username, String... tokenNameList);
+
+AuthLookup.isOnePrivilegesGranted(String...tokenNameList),
+AuthLookup.isOnePrivilegeGranted(String username, String...tokenNameList),
+
+AuthLookup.isPrivilegeGrantedGroup(String tokenName, String groupShortname);
+AuthLookup.isPrivilegeGrantedGroup(String username, String tokenName, String groupShortname);
+
+ ....
+
+//-----------------------------------------------------------------------------------------------
+// Following lookup queries for a user's group, role, etc. listings.
+//
+// The following lookup methods are not intended for user management. For this purpose the
+// managers should be used for that. The lookup methods are intended to support the formulation of corresponding queries
+// such as e.g., the formulation of ACL queries, to support e.g., joins
+// related to e.g. group hierarchies.
+//
+// If the user is a superuser, then the following methods return null; otherwise
+// always return a collection, i.e., also an empty collection.
+//-----------------------------------------------------------------------------------------------
+
+Collection&lt;String&gt; roleNameList = AuthLookup.listRoles();
+Collection&lt;String&gt; roleNameList = AuthLookup.listRoles(String username);
+
+Collection&lt;String&gt; groupShortnameList = AuthLookup.listGroups();
+Collection&lt;String&gt; groupShortnameList = AuthLookup.listGroups(String username);
+
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGranted();
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGranted(String username);
+
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGrantedGroup(String groupShortname);
+Collection&lt;String&gt; tokeNameList = AuthLookup.listPrivilegesGrantedGroup(String username, String groupShortname);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Find current user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// the current user can be retrieved via UserContext
+User user = UserContext.getCurrentUser();</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For authentication/authorization: The current user is determined using the Spring Security context. so this must
+be set accordingly by means of e.g. servlet filters. The following is the current implementation of the user service to
+determine the current user.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Implementation of the user service to determine the current user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public static User getCurrentUser() {
+    SecurityContext secCtx = SecurityContextHolder.getContext();
+    if (secCtx == null) {
+        // using the user context of the user service a user can also be set independently of the
+        // security context; e.g. to set backend job executions // within a user context.
+        // within a user context; this context is returned with getUser()
+        return getUser();
+    }
+
+    Authentication auth = secCtx.getAuthentication();
+    if (auth == null) {
+        return getUser();
+    }
+
+    if (auth instanceof CommonAuthentication) {
+        UUID userIdentifier = ((CommonAuthentication) auth).getUserIdentifier();
+        UserManager userManager = BeanLookup.getBean(UserManager.class);
+        return userManager.getEntityByUuid(userIdentifier.toString());
+    }
+
+    Object principal = auth.getPrincipal();
+    if (principal instanceof UserDetails) {
+        // Note: The user service provides a user-details implementation that can be used
+        // can be used to create an authentication instance.
+        return ((UserDetails) principal).getUser();
+    }
+    return UserContext.getUser();
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cache_implementation">Cache implementation</h3>
+<div class="paragraph">
+<p>This document is based on the user service version 1.2. The cache implementation used for the above lookup methods is
+Infinispan. To use the Infinispan cache, the following Spring configuration and the Infinispan configuration itself must
+be specified with respect to the user service.</p>
+</div>
+<div class="listingblock">
+<div class="title">Infinispan-Spring-Configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"># Spring configuration: reference to the actual infinispan configuration file.
+# This reference can be a direct reference to the file system or an indirect one
+# via classpath.
+# See also: 'https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-caching-provider-infinispan'
+
+infinispan:
+   embedded:
+     configXml: infinispan.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The minimum infinispan configuration for the user service is listed below. Either a configuration for a local so-called
+simple cache (name: 'user-cache-local') or a configuration for a distributed cache ('user-cache-cluster') in the form of
+an invalidation cache (see also <a href="https://infinispan.org/docs/stable/user_guide/user_guide.html" class="bare">https://infinispan.org/docs/stable/user_guide/user_guide.html</a>) must be specified.</p>
+</div>
+<div class="listingblock">
+<div class="title">Actual infinispan configuration (form: XML document)</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;infinispan
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="urn:infinispan:config:9.4 http://www.infinispan.org/schemas/infinispan-config-9.4.xsd"
+xmlns="urn:infinispan:config:9.4"&gt;
+
+    &lt;!--
+         Notes for the following expiration configuration:
+         lifespan, interval and max-idle in millis
+         lifespan: the time that an entity is kept in the cache before it is evicted
+         max-idle: the idle time of an entity before it is evicted; -1 means ignoring max-idle
+         interval: the check period for eviction
+     --&gt;
+
+     &lt;cache-container&gt;
+
+         &lt;!-- - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;!-- simple cache for single node systems  --&gt;
+         &lt;!-- - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;local-cache-configuration name="user-cache-local" simple-cache="true"&gt;
+            &lt;expiration lifespan="43200000" interval="300000" max-idle="-1"/&gt;
+         &lt;/local-cache-configuration&gt;
+
+
+         &lt;!-- - - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;!-- invalidation cache for cluster systems  --&gt;
+         &lt;!-- - - - - - - - - - - - - - - - - - - - - --&gt;
+         &lt;!--        &lt;transport cluster="cmn-cache-cluster"/&gt;                                   --&gt;
+         &lt;!--        &lt;invalidation-cache-configuration name="user-cache-cluster" mode="ASYNC"&gt;  --&gt;
+         &lt;!--            &lt;expiration lifespan="43200000" interval="300000" max-idle="-1"/&gt;      --&gt;
+         &lt;!--        &lt;/invalidation-cache-configuration&gt;--&gt;
+
+     &lt;/cache-container&gt;
+&lt;/infinispan&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_alternative_cache_implementation">Alternative cache implementation</h3>
+<div class="paragraph">
+<p>In order to use a different cache implementation than Infinispan, the following entry must be made in the <em>yaml</em> configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+   cache:
+      type: CUSTOM</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the cache configuration is missing, then Infinispan is used; Infinispan can also be configured explicitly as follows
+(however, this is optional):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+   cache:
+      type: INFINISPAN</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the cache type CUSTOM is configured, a bean of the type <em>de.eitco.commons.user.management.common.cache.CustomCacheManager</em>
+is expected in the Spring application context, defined as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of a bean definition when configuring a custom cache type</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
+    @Conditional(CustomCacheManagerChecker.class)
+    public CustomCacheManager customCacheManager() {
+        return new MyCacheManager();
+    }</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The conditional annotation is not necessary; however, if the cache type is not CUSTOM, then the annotation will not
+create the bean.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following is the <em>CustomCacheManager</em> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface CustomCacheManager {
+    Cache getCache(String cacheName);
+    Cache getCache(String cacheName, @Nullable Map&lt;String, Object&gt; cacheConfiguration);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So a bean that implements the <em>CustomCacheManager</em> is to be provided in the application context.</p>
+</div>
+<div class="paragraph">
+<p>The return value Cache in the interface methods is <em>org.springframework.cache.Cache</em>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_securing_rest_endpoints"><strong>Securing REST Endpoints</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring security should be used to secure the REST endpoints. Below is a brief description of such a protection. Of course,
+it is recommended to look at the numerous documentations about Spring-Security on the Internet to get more detailed
+information about this topic.</p>
+</div>
+<div class="paragraph">
+<p>In order to use Spring-Security, it has to be activated. The activation can be done in a Spring boot application by a
+configuration bean that is annotated with the annotation <em>@EnableWebSecurity</em>. Such a configuration bean extends the Spring
+Security class <em>WebSecurityConfigurerAdapter</em>, as shown in the following example.</p>
+</div>
+<div class="listingblock">
+<div class="title">Activate Spring-Security</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As an artefact, 'spring-boot-starter-security' is to be included (see the Maven dependency below).</p>
+</div>
+<div class="listingblock">
+<div class="title">Artefact integration using Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+ &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To secure the endpoints, the configure method of the WebSecurityConfigurerAdapter class must now be overwritten using
+the configuration bean (see following example).</p>
+</div>
+<div class="listingblock">
+<div class="title">Securing endpoints via configure</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableWebSecurity
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .antMatchers("/public/**").permitAll()
+            .antMatchers("/foo2/**").hasRole("ADMIN")
+            .antMatchers("/foo3").hasAuthority("ERSTELLEN")
+            .antMatchers("/foo4/**").hasAnyRole("ADMIN", "FOO")
+            .antMatchers("/foo/foo5").hasAnyAuthority("ERSTELLEN","LOESCHEN")
+            .and()...;
+     }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By means of the method authorizeRequests, the specification of Apache-Ant-Patterns is initiated, i.e. the specification
+of the URL path patterns to be secured or not to be secured. If nothing is specified, authentication is required for each
+URL path or endpoint. Otherwise, in case of ambiguous specification, the order is decisive. The first specification is
+valid.</p>
+</div>
+<div class="paragraph">
+<p>A possible context part of the URL path is not to be specified. For example, at <a href="http://host:port/fooContext/foo2" class="bare">http://host:port/fooContext/foo2</a>, only
+/foo2 would have to be specified.</p>
+</div>
+<div class="paragraph">
+<p>Note on <em>hasRole</em> and <em>hasAuthority</em>: Spring internally only knows a list of authorities. A role is now determined by the
+fact that the authority name begins with ROLE_. The user service automatically prefixes the authorities with ROLE_ when
+compiling them to pass them to Spring-Security.</p>
+</div>
+<div class="paragraph">
+<p>Note: What else is or can be configured by means of the HttpSecurity instance can be found at
+<a href="https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html" class="bare">https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html</a>, for example.</p>
+</div>
+<div class="paragraph">
+<p>Endpoints can also be secured with an endpoint method by means of a method annotation. To do this, the configuration bean
+must also be provided with the annotation <em>@EnableGlobalMethodSecurity</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Security by means of method annotation</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The annotation <em>@EnableGlobalMethodSecurity</em> activates, as the name says, globally corresponding method annotations. These
+are basically all methods. So not only methods of the REST endpoints. In the example above, this activates the
+<em>PreAuthorize</em> annotation, among others, which is supported by the user service, see as follows.</p>
+</div>
+<div class="listingblock">
+<div class="title">Method annotation PreAuthorize</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@RequestMapping(value = "/forms", method = RequestMethod.POST,. . .
+@PreAuthorize("@authService.isPrivilegeGranted('UPLOAD')")
+@ResponseBody
+public ResponseEntity&lt;ServiceReply&gt; uploadForm(@RequestBody final FormRequest request) {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By means of the method annotation <em>@PreAuthorize</em>, the methods specified above under API Lookup/Cache can be used in relation
+to the current user. Listed again are the following methods: isSuperuser(), isInRole(String), isInGroup(String),
+isPrivilegeGranted(String), areAllPrivilegesGranted(String&#8230;&#8203;), isOnePrivilegeGranted(String&#8230;&#8203;),
+isPrivilegeGrantedGroup(String, String).
+For more information, refer to the API documentation for <em>de.eitco.commons.user.management.common.auth.AuthService</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_client_management"><strong>Client Management</strong></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">Configuration of the client management</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">tenant:
+  # The following configurations are used to define three clients as examples. To configure a client,
+  # the access parameter values of the respective client database are to be specified.
+  #
+  # Note: In the absence of a client configuration, the database access parameters specified under spring.datasource apply.
+  # In such a case, the user service is started under the quasi-client "master".
+  tenants:
+    - tenant-id: TenantFoo1
+      db-url: jdbc:postgresql://localhost:5432/?currentSchema=usersrv
+      db-username: postgres
+      db-password: manage
+      db-driver-class-name: org.postgresql.Driver
+    - tenant-id: TenantFooDemo1
+      db-url: "jdbc:h2:mem:test;MODE=PostgreSQL;MVCC=true;LOCK_TIMEOUT=15000;DB_CLOSE_DELAY=-1"
+      db-username: sa
+      db-password:
+      db-driver-class-name: org.h2.Driver
+    - tenant-id: TenantFooDemo2
+      db-url: "jdbc:h2:file:~/.h2/user;AUTO_SERVER=TRUE;MODE=PostgreSQL"
+      db-username: foo
+      db-password: bar
+      db-driver-class-name: org.h2.Driver</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ldap_synchronization"><strong>LDAP Synchronization</strong></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">LDAP synchronisation configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+  ldap:
+    tenants:
+      - tenant-id: master
+        server-urls:
+          - ldap://eit-bln-svdom1.eitco.de:389
+        auth-user-name: tpruefen@eitco.de
+        auth-user-password: changeit
+        date-format: yyyyMMddHHmmss
+        user-search-bases:
+          - ou=mitarbeiter,ou=bremen,ou=eitco,dc=eitco,dc=de
+          - ou=mitarbeiter,ou=bonn,ou=eitco,dc=eitco,dc=de
+          - ou=mitarbeiter,ou=berlin,ou=eitco,dc=eitco,dc=de
+        user-filter: objectclass=person
+        user-mappings:
+          - username, sAMAccountName
+          - externalId, objectGUID;binary
+          - email, mail
+          - firstname, givenName
+          - lastname, sn
+          - tmpList-memberOf, memberOf
+        group-search-bases:
+          - cn=Builtin,dc=eitco,dc=de
+          - cn=Users,dc=eitco,dc=de
+          - ou=gruppen,ou=eitco,dc=eitco,dc=de
+        group-filter: objectclass=group
+        group-mappings:
+          - shortname, sAMAccountName
+          - externalId, objectGUID;binary
+          - longname, cn
+          - tmpList-memberOf, memberOf</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_unit_testing">Unit testing</h3>
+<div class="paragraph">
+<p>The User Service can be used to set a user context for unit tests. It is also possible to use the Spring Security on-board
+tools, such as the WithMockUser annotation. However, the full range of functions of the User Service is not available with
+the on-board tools and, in addition, they cannot be used in part in connection with a Spring boot test. Therefore, it is
+recommended to use the user service itself to set a user context. For this purpose, the following dependency must be
+specified for Maven and Gradle:</p>
+</div>
+<div class="paragraph">
+<p>Maven-Dependency:
+.Integration of user service and test users</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+     &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+     &lt;artifactId&gt;cmn-user-management-test-with-user&lt;/artifactId&gt;
+     &lt;version&gt;entsprechende Version&lt;/version&gt;
+     &lt;scope&gt;test&lt;/scope&gt;
+ &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gradle-Dependency:</p>
+</div>
+<div class="literalblock">
+<div class="title">Integration of user service and test users</div>
+<div class="content">
+<pre>test 'de.eitco.commons: cmn-user-management-test-with-user:&lt;yourVersion&gt;'</pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_withtestuser_annotation">WithTestUser annotation</h4>
+<div class="paragraph">
+<p>The <em>@WithTestUser</em> annotation has two parameters. These are the value parameter and the resetData parameter. The <em>value</em>
+parameter is used to define the user context and the <em>resetData</em> parameter is used to indicate whether all user, group,
+role and privilege data should be deleted before setting up the corresponding user context.</p>
+</div>
+<div class="paragraph">
+<p>The <em>value</em> parameter contains the user context definitions in comma-separated form. The values of a user definition always
+contain a prefix. The following table lists the possible definitions.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 15%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">prefix</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">g</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specification of a group to be assigned to the user (e.g. g.fooGroup.oe, i.e. the group fooGroup of type oe; note:
+each group is to be typed OU, job, team etc.).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gfg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indication of a group which can be indirectly assigned to the user; indirectly via group hierarchy (e.g. gfg.
+fooGroupParent.oe, i.e. the group fooGroupParent of type oe; assignment see next line via prefix sg)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">p</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assignment of a privilege to a role (e.g. p.AKTE_ERSTELLEN.fooRole, i.e. the privilege AKTE_ERSTELLEN, which is
+assigned to the role fooRole). Using the prefix, an explicit non-granting of a privilege can also be defined. For this
+purpose, a notGranted must be appended to the definition (e.g. p.ACTE_ERSTELLEN.fooRole.notGranted).
+rg Specification of a role that is assigned to a group (e.g. rg.fooRoleGroup.fooGroupParent, i.e. the role fooRoleGroup
+assigned to the group fooGroupParent)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ru</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specification of a role that is assigned to the user (e.g. ru.fooRole, i.e. the role fooRole)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assignment of a subgroup to a group (e.g. sg.fooGroup.fooGroupParent, i.e. the group fooGroup is assigned to the group
+fooGroupParent as a subgroup)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">u</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specification of the user (e.g. u.fooUser defines the user fooUser). Exactly one user definition must be specified.
+By means of the postfix superuser, the user becomes the superuser (e.g. u.fooUser.superuser).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_client_context">Client context</h4>
+<div class="paragraph">
+<p>The client context of a test class or a test method can be set with the <em>@WithTenant</em> annotation. If no annotation is set,
+the master tenant is automatically used. For this purpose, the <em>FullTestExecutionListener</em> must be set as <em>TestExecutionListener</em>
+by means of the class annotation <em>TestExecutionListeners</em> (even if the annotation is not to be used).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_setup_import">Setup import</h3>
+<div class="paragraph">
+<p>The setup import is used to import configured tokens, roles, groups, users and their assignments. In the same way, OAuth
+client configurations can be imported via setup import.</p>
+</div>
+<div class="paragraph">
+<p>The configurations to be imported are to be stored as Spring Boot configurations.</p>
+</div>
+<div class="paragraph">
+<p>The import takes place during the start of a standalone user service instance or during the start of an application
+instance in which the user service is embedded.</p>
+</div>
+<div class="sect3">
+<h4 id="_token_import">Token import</h4>
+<div class="paragraph">
+<p>The following exemplary YAML configuration shows the structure of a configuration for the token import. The two tokens
+fooToken1 and fooToken2 are defined.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To set a token value, the name of the SecToken pojo attribute is to be used in the configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Token import</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+  config-data:
+    tenants:
+      # Setup imports are configured on a client-by-client basis. The client ID "all" means that the
+      # configuration applies to all clients. The client ID "all" must also be specified if
+      # no client has been explicitly configured. This is because the application then starts under the so-called
+      # default client.
+      - tenant-id: all
+        token:
+          - type: function
+            path: fooToken1
+            description: This is...
+
+            # the token is assigned to the role fooRole1 as guaranteed
+            privilegeGrantedToRoles: fooRole1
+
+            # the token is assigned to the role fooRole2 as not guaranteed;
+            # such an assignment is relevant in relation to group hierarchies,
+            # to revoke a token (privilege) granted by the hierarchy.
+            privilegeNotGrantedToRoles: fooRole2
+
+          - type: function
+            path: fooToken2
+            description: This is...
+
+            # the token is assigned to the two roles fooRole1 and fooRole
+            privilegeGrantedToRoles: fooRole1,fooRole2</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_role_import">Role Import</h4>
+<div class="paragraph">
+<p>The following exemplary YAML configuration shows the structure of a configuration for role import. The two roles fooRole1
+and fooRole2 are defined.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To set a role value, the name of the UserRole pojo attribute must be used in the configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Role import</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+   config-data:
+     tenants:
+      # see explanation of tenant-id for token import
+      - tenant-id: all
+        roles:
+          - name: fooRole1
+            description: This is…
+
+          - name: fooRole2
+            description: This is…</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_group_import">Group import</h3>
+<div class="paragraph">
+<p>The following exemplary YAML configuration shows the structure of a configuration for the group import. The two groups fooGroup1
+and fooGroup2 are defined.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To set a group value, the name of the UserGroup pojo attribute must be used in the configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Group import</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+   config-data:
+     tenants:
+      # see explanation of tenant-id for token import
+      - tenant-id: all
+
+      groups:
+          # z.B. GUID from Active Directory
+        - externalId: C7FE1854-9428-44B6-9A77-3FADE10C1BCF
+          # z.B. DN from Active Directory
+          externalPath: groups.employee
+          type: Standard
+          shortname: fooGroup1
+          longname: fooGroup1Longname
+          division: fooGroup1Division
+          area: fooGroup1Area
+          enabled: true
+          escription: This is...
+          # the role fooRole1 is assigned to the group
+          memberOfRoles: fooRole1
+
+        - externalId: D7FE1854-9428-44B6-9A77-3FADE10C1BCF
+          externalPath: groups.developer
+          type: Standard
+          shortname: fooGroup2
+          longname: fooGroup2Longname
+          division: fooGroup2Division
+          area: fooGroup2Area
+          enabled: true
+          description: This is...
+
+          # the group is assigned to the roles fooRole1 and fooRole2
+          memberOfRoles: fooRole1,fooRole2
+
+          # the group is classified as a subgroup of the group fooGroup1
+          subGroupOfGroups: fooGroup1</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_user_import">User Import</h4>
+<div class="paragraph">
+<p>The following exemplary <em>yaml</em> configuration shows the structure of a configuration for the user import. The user fooUser1
+is defined.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To set a user value, the name of the user pojo attribute must be used in the configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">User import</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
+   config-data:
+     tenants:
+      # see explanation of tenant-id for token import
+      - tenant-id: all
+
+        users:
+          - uuid: 822bd19a-6104-4cae-a7ef-8380c1e8e6c5
+            externalId: B7FE1854-9428-44B6-9A77-3FADE10C1BCF
+            username: fooUser1
+            password: fooPassword
+            title: Dr.
+            salutation: Mrs.
+            lastname: Mustermann
+            firstname: Erika
+            email: emustermann@foo.foo
+            superuser: false
+            validFrom: 2000-01-01T00:00:00Z
+            validUntil: 2050-12-31T00:00:00Z
+            enabled: true
+            description: This is…
+
+            # the user is assigned to the groups fooGroup1 and fooGroup2
+            memberOfGroups: fooGroup1,fooGroup2
+
+            # the user is assigned to the roles fooRole1 and fooRole2
+            memberOfRoles: fooRole1,fooRole2</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-03-29 11:49:10 UTC
+</div>
+</div>
+</body>
+</html>
