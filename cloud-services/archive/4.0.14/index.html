@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>EITCO Spring Cloud Services 4.0.14</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>EITCO Spring Cloud Services 4.0.14</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_gateway_service">1. Gateway Service</a>
+<ul class="sectlevel2">
+<li><a href="#_route_configuration">1.1. Route configuration</a></li>
+<li><a href="#_extension_points">1.2. Extension points</a></li>
+</ul>
+</li>
+<li><a href="#_registry_service">2. Registry Service</a></li>
+<li><a href="#_configuration_service">3. Configuration Service</a>
+<ul class="sectlevel3">
+<li><a href="#_external_configuration_in_spring_boot">3.1. External configuration in Spring Boot</a></li>
+<li><a href="#_typed_configuration_classes">3.2. Typed configuration classes</a></li>
+<li><a href="#_backends">3.3. Backends</a></li>
+<li><a href="#_securing_parameters_in_the_configuration_service">3.4. Securing parameters in the Configuration Service</a></li>
+<li><a href="#_encrypting_parameters_in_the_yaml_files">3.5. Encrypting parameters in the yaml files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_gateway_service">1. Gateway Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The gateway service provides a central API gateway that hides the various microservices from an application. It is based
+on Spring Cloud Gateway.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Unlike the other services, Spring Cloud Gateway uses the Reactive Stack. This stack requires a Netty
+runtime environment. For this reason, the Gateway Service cannot be used in a traditional servlet container like Apache Tomcat.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_route_configuration">1.1. Route configuration</h3>
+<div class="paragraph">
+<p>Routes can be configured in the configuration file of the service. There are many options to match requests against
+configured routes. The
+<a href="https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#configuring-route-predicate-factories-and-gateway-filter-factories">official documentation</a>
+contains details about those options.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows a simple configuration with two routes for a system containing two services: A service called
+<em>repository</em> and a service called <em>userservice</em>. The route uses the path predicate to match requests, so an application
+can simply prefix requests to the different services by adding the service&#8217;s name to the path.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing of the Gateway Service configuration file</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">cloud</span>:
+    <span class="key">gateway</span>:
+      <span class="key">routes</span>:
+      - <span class="string"><span class="content">id: repository</span></span>
+        <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">lb://ecr-service</span><span class="delimiter">&quot;</span></span>
+        <span class="key">predicates</span>:
+        - <span class="string"><span class="content">Path=/repository/**</span></span>
+        <span class="key">filters</span>:
+        - <span class="string"><span class="content">RewritePath=/repository/(?&lt;path&gt;.*), /$\{path}</span></span>
+      - <span class="string"><span class="content">id: userservice</span></span>
+        <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">lb://cmn-user-management-service</span><span class="delimiter">&quot;</span></span>
+        <span class="key">predicates</span>:
+        - <span class="string"><span class="content">Path=/userservice/**</span></span>
+        <span class="key">filters</span>:
+        - <span class="string"><span class="content">RewritePath=/userservice/(?&lt;path&gt;.*), /$\{path}</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following table contains some of the properties of the Gateway Service and their description. The rest of the properties
+can be found in the official Spring documentation.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the route</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI to forward to. The uri <code>lb://ecr-service</code> tells the gateway to use the loadbalancer to retrieve an actual uri for the ecr-service from the service registry.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">predicates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of predicates to match. The example uses tha path predicate and matches all paths containing /repository/.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filters</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of loadbalancer filters. Here, the rewrite filter is used to cut off the /repository/ prefix from the URI.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Using this configuration, a request like <code><a href="http://&lt;gateway&gt;/repository/api/definitions" class="bare">http://&lt;gateway&gt;/repository/api/definitions</a></code> would be forwarded to an
+instance of the repository service to the path <code><a href="http://&lt;repository&gt;/api/definitions" class="bare">http://&lt;repository&gt;/api/definitions</a></code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extension_points">1.2. Extension points</h3>
+<div class="paragraph">
+<p>There are two global filters, that are active by default in all routes: The <code>ResponseFilter</code> and the <code>X509Filter</code>. Both
+filters serve as extension points for project specific logic.</p>
+</div>
+<div class="sect3">
+<h4 id="_responsefilter">1.2.1. ResponseFilter</h4>
+<div class="paragraph">
+<p>The <code>ResponseFilter</code> is executed <em>after</em> a request was handled by the filter chain. It calls all beans of type
+<code>RequestContextConsumer</code>, passing the current <code>ServerWebExchange</code>. To hook into that filter, just implement the interface
+<code>RequestContextConsumer</code> and add a custom spring boot starter, which registers a bean for your consumer, to the classpath.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_x509filter">1.2.2. X509Filter</h4>
+<div class="paragraph">
+<p>The <code>X509Filter</code> is executed <em>before</em> a request is handled by the filter chain. It can be used to check the client&#8217;s
+certificates. It calls all beans of type <code>X509CertificateConsumer</code>, passing the current client&#8217;s certificates.
+To hook into that filter, you have to implement the interface <code>X509CertificateConsumer</code> and add a custom spring boot
+starter, which registers a bean for your consumer, to the classpath.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_registry_service">2. Registry Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The registry service provides the central registration for service instances. The services can register with the registry
+service and a client can use the registry to query the available instances. In this way it can be checked whether all
+services are running properly. The service is based on the Spring Cloud Netflix stack.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_service">3. Configuration Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <em>{product-name}</em> configuration service provides the configuration parameters for the other services centrally. It runs on the Spring Cloud Config Service and has its own endpoint for distributing the configuration files for the type system.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Config can read configuration parameters from various sources and in various formats. The source can e.g. be
+the file system, a Git repository, or a database. The service includes the features of the personal configuration of
+Spring Boot such as different profile (e.g. test and production).</p>
+</div>
+<div class="paragraph">
+<p>There are certain points to be mentioned in this context:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>At present, the service can only deliver data, not write it.</p>
+</li>
+<li>
+<p>There is still no GUI for viewing or changing configuration data.</p>
+</li>
+<li>
+<p>Secure storage of confidential data (e.g. database passwords): Spring Cloud Config offers the option of encrypting data.
+In addition to that, Vault can be used as a secure repository. The best option has yet to be determined.</p>
+</li>
+<li>
+<p>The concept of separation of functional (scenario, usually the same via test, integration and prod, e.g. scheme, status
+values, etc.) and technical configurations (often different in the deployment stages, e.g. storage location, database,
+passwords, etc.) will be implemented in future releases.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Configuration Service provides a central configuration service that is based on the Spring Cloud Config project and
+can thus be integrated very easily into Spring Boot-based applications.</p>
+</div>
+<div class="sect3">
+<h4 id="_external_configuration_in_spring_boot">3.1. External configuration in Spring Boot</h4>
+<div class="paragraph">
+<p>Spring Boot itself provides a mechanism for externalised configuration parameters: <a href="https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config" class="bare">https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config</a>.</p>
+</div>
+<div class="paragraph">
+<p>Configuration parameters can be injected via annotation <em>@Value</em> into a bean managed by Spring. The configuration data
+is read from different locations in a defined order of priority:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Devtools global settings properties on your home directory (~/.spring-boot-devtools.properties when devtools is active)</p>
+</li>
+<li>
+<p>@TestPropertySource annotations on your tests</p>
+</li>
+<li>
+<p>@SpringBootTest#properties annotation attribute on your tests</p>
+</li>
+<li>
+<p>Command line arguments</p>
+</li>
+<li>
+<p>Properties from SPRING_APPLICATION_JSON (inline JSON embedded in an environment variable or system property)</p>
+</li>
+<li>
+<p>ServletConfig init parameters</p>
+</li>
+<li>
+<p>ServletContext init parameters</p>
+</li>
+<li>
+<p>JNDI attributes from java:comp/env</p>
+</li>
+<li>
+<p>Java system properties (System.getProperties())</p>
+</li>
+<li>
+<p>OS environment variables</p>
+</li>
+<li>
+<p>A RandomValuePropertySource that has properties only in random.*</p>
+</li>
+<li>
+<p>Profile-specific application properties outside of your packaged jar (application-{profile}.properties and YAML variants)</p>
+</li>
+<li>
+<p>Profile-specific application properties packaged inside your jar (application-{profile}.properties and YAML variants)</p>
+</li>
+<li>
+<p>Application properties outside of your packaged jar (application.properties and YAML variants)</p>
+</li>
+<li>
+<p>Application properties packaged inside your jar (application.properties and YAML variants)</p>
+</li>
+<li>
+<p>@PropertySource annotations on your @Configuration classes</p>
+</li>
+<li>
+<p>Default properties (specified by setting SpringApplication.setDefaultProperties)</p>
+</li>
+<li>
+<p>Spring Cloud Config service.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The data read from the configuration service thus overwrites all other configuration sources. Spring also offers the
+possibility to define profiles, e.g. to easily separate different configurations for a local development environment and
+the production environment.</p>
+</div>
+<div class="paragraph">
+<p>Spring automatically loads the data from the configuration service if the following dependency has been defined:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.cloud<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-cloud-starter-config<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_typed_configuration_classes">3.2. Typed configuration classes</h3>
+<div class="paragraph">
+<p>Spring configuration can also be used to create typed structured configuration classes:
+<a href="https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-typesafe-configuration-properties" class="bare">https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-typesafe-configuration-properties</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_backends">3.3. Backends</h3>
+<div class="paragraph">
+<p>The Spring Cloud Config Service inherently offers various options for storing configuration parameters
+<a href="https://cloud.spring.io/spring-cloud-static/spring-cloud-config/2.0.0.RC2/single/spring-cloud-config.html#_environment_repository" class="bare">https://cloud.spring.io/spring-cloud-static/spring-cloud-config/2.0.0.RC2/single/spring-cloud-config.html#_environment_repository</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Git repository (local or remote, default).</p>
+</li>
+<li>
+<p>File system</p>
+</li>
+<li>
+<p>Vault</p>
+</li>
+<li>
+<p>Database.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_file_format">3.3.1. File format</h4>
+<div class="paragraph">
+<p>In the file-based backends (Git, file system), the configuration parameters can be stored either as a normal .properties file or in YAML.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_securing_parameters_in_the_configuration_service">3.4. Securing parameters in the Configuration Service</h3>
+<div class="paragraph">
+<p>Some parameters like database passwords, or the master password for the data encryption should not be accessible for
+everyone. The configuration service is based on the Spring Cloud Configuration Service, so all security measures described
+in the Spring documentation apply.</p>
+</div>
+<div class="sect3">
+<h4 id="_ssl_transport_encryption_and_x509_access">3.4.1. SSL transport encryption and x509 access</h4>
+<div class="paragraph">
+<p>The configuration service can serve SSL encrypted data and it can enforce client certificate checks to limit access. Both
+features can be enabled in the <em>bootstrap.yaml</em> file for the configuration service. Access to this file must be protected by
+operating system measures like file system access restrictions.</p>
+</div>
+<div class="listingblock">
+<div class="title">Server configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">server</span>:
+  <span class="key">ssl</span>:
+    <span class="key">key-store-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">PKCS12</span><span class="delimiter">&quot;</span></span>
+    <span class="key">key-store</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/path/keyStore.p12</span><span class="delimiter">&quot;</span></span>
+    <span class="key">key-store-password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
+    <span class="key">trust-store-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">JKS</span><span class="delimiter">&quot;</span></span>
+    <span class="key">trust-store</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/path/trustStore.jks</span><span class="delimiter">&quot;</span></span>
+    <span class="key">trust-store-password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
+    <span class="key">client-auth</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">need</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Database parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-auth</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enforces client certificate checks when set to "need"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The path to the keystore file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the keystore</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of keystore used for the server&#8217;s certificate, JKS or PKCS12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trust-store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The path to the keystore file for the client certificates</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trust-store-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the keystore</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trust-store-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of keystore used for the accepted client certificates, JKS or PKCS12</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>To enable the services to use SSL encrypted connections to the configuration service and to authenticate with a certificate,
+the following changes have to be made in the <em>bootstrap.yaml</em> file for each service. Access to this file must be protected
+by operating system measures like file system access restrictions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">cloud</span>:
+    <span class="key">config</span>:
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://&lt;host&gt;:&lt;port&gt;</span><span class="delimiter">&quot;</span></span>
+      <span class="key">client</span>:
+        <span class="key">ssl</span>:
+          <span class="key">client-auth</span>: <span class="string"><span class="content">true</span></span>
+          <span class="key">key-store</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/path/keyStore.p12</span><span class="delimiter">&quot;</span></span>
+          <span class="key">key-store-password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
+          <span class="key">key-store-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">PKCS12</span><span class="delimiter">&quot;</span></span> <span class="comment"># this is the default - can be omitted</span>
+          <span class="key">protocol</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">TLSv1</span><span class="delimiter">&quot;</span></span> <span class="comment"># this is the default - can be omitted</span></code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Database parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-auth</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables authentication with certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The path to the keystore file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key-store-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password for the keystore</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trust-store-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of keystore used for the accepted client certificates, JKS or PKCS12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">protocol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The encryption protocol to use</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The certificate the client uses to authenticate must be signed by a certificate that is contained in the server&#8217;s trust-store.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_encrypting_parameters_in_the_yaml_files">3.5. Encrypting parameters in the yaml files</h3>
+<div class="paragraph">
+<p>The configuration properties for the different services are stored in yaml files or in a database. It is possible to
+encrypt values in those files to secure sensitive data like passwords. The configuration service can automatically decrypt
+those values when they are requested by a service. So the encryption feature should be used in combination with transport
+encryption and access restrictions to the configuration service.
+To enable encryption, an encryption key must be defined in the bootstrap.yaml file of the configuration service. Access
+to this file must be protected by operating system measures like file system access restrictions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">encrypt</span>:
+  <span class="key">key</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">secret_password</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Encrypted properties can then be stored in the <em>yaml</em> files like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">password</span>: <span class="string"><span class="content">'{cipher}FKSAJDFGYOS8F7GLHAKERGFHLSAJ'</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration service provides a special endpoint that can be used to encrypt properties as is described in the Spring
+documentation.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-04-04 11:11:57 UTC
+</div>
+</div>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+pre.CodeRay{background:#f7f7f8}
+.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
+.CodeRay .line-numbers strong{color:#000}
+table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.CodeRay td{vertical-align:top;line-height:inherit}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.code{padding:0 0 0 .75em}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+</body>
+</html>
