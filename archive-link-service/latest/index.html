@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>EITCO ArchiveLink 3.0.4</title>
+<title>EITCO ArchiveLink 4.0.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -16,9 +16,9 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO ArchiveLink 3.0.4</div>
+<div id="toctitle">EITCO ArchiveLink 4.0.0</div>
 <ul class="sectlevel1">
-<li><a href="#_eitco_archivelink_3_0_4">EITCO ArchiveLink 3.0.4</a>
+<li><a href="#_eitco_archivelink_4_0_0">EITCO ArchiveLink 4.0.0</a>
 <ul class="sectlevel2">
 <li><a href="#_arveo_repository"><em>arveo</em> repository</a></li>
 <li><a href="#_vault_certificate_storage">Vault certificate storage</a></li>
@@ -32,7 +32,7 @@
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_eitco_archivelink_3_0_4">EITCO ArchiveLink 3.0.4</h2>
+<h2 id="_eitco_archivelink_4_0_0">EITCO ArchiveLink 4.0.0</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The EITCO ArchiveLink Service is a plugin-based implementation of the SAP ArchiveLink interface. The actual repository
@@ -54,25 +54,89 @@ implementations are provided by plugins. The following repository plugins are av
 <div class="sect2">
 <h3 id="_arveo_repository"><em>arveo</em> repository</h3>
 <div class="paragraph">
-<p>The <em>arveo</em> ECR repository connects arveo repositories to SAP using the ArchiveLink interface. The implementation uses
-<em>arveo</em> version 11.0.3.</p>
+<p>The <em>arveo</em> ECR repository connects arveo repositories to SAP using the ArchiveLink interface.</p>
 </div>
 <div class="sect3">
 <h4 id="_data_model">Data model</h4>
 <div class="paragraph">
-<p>This section describes the data model used to persist ArchiveLink documents and components in <em>arveo</em>.</p>
+<p>The data model contains two type definitions that are connected using a foreign key relation. The first type definition
+(<code>Document</code>) will contain the header data of SAP documents. The second definition (<code>Component</code>) will contain the binary
+content of the components. Each component is related to exactly one document by a foreign key.
+Because the type definition used for the components will store binary data, it must use the object type <code>DOCUMENT</code>. The
+type definition used for the document headers should use the object type <code>CONTAINER</code>.</p>
+</div>
+<div class="paragraph">
+<p>To ensure consistency, a unique constraint using the <code>doc_id</code> and <code>repository_id</code> columns must be present on the
+document type definition and the component type definition. Additionally, a foreign key constraint using these two
+columns must be used to link a component to a single document. The type definitions must contain at least the attributes
+shown in the diagram below.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="relation-type-model.png" alt="relation type model" width="750" height="140">
+<img src="relation-type-model.png" alt="relation type model" width="1210" height="196">
 </div>
 <div class="title">Figure 1. The data model</div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>doc_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID used by SAP to identify a document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>doc_prot</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SAP-style access right string (c,r,u,d)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>repository_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the content repository</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>component_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the component used by SAP</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>component_count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal field used to keep track of the number of components</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>The data model consists of two entities. The <em>ArchiveLinkDocument</em> represents the document header, containing the
-SAP document ID (<em>doc_id</em>) and the access settings (<em>doc_prot</em>). It is a not-versioned container type definition.
-The <em>ArchiveLinkComponent</em> represents a single component holding binary data, because of which it is a document type
-definition. It is linked to a document by a foreign key on the <em>doc_id</em> column.</p>
+<p>The <em>arveo</em> repository implementation can use different type definition pairs for individual content repositories.
+The configuration for the <em>arveo</em> repository contains two properties to define which type definitions to use:
+<code>documentDefinitionName</code> must define the name of the type definition used for the document headers, and
+<code>componentDefinitionName</code> the name of the type definition used for the components. In general, every type definition
+can be used as long as it matches the requirements listed above. Example type definitions are contained in the
+<code>archive-link-ecr-type-def</code> module.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration">Configuration</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">arveo-repository</span>:
+  <span class="key">repositories</span>:
+    - <span class="string"><span class="content">contRepId:                &quot;AB&quot;</span></span>
+      <span class="key">contRepDescription</span>:       <span class="string"><span class="delimiter">&quot;</span><span class="content">ECR repository AB</span><span class="delimiter">&quot;</span></span>
+      <span class="key">defaultDocProt</span>:           <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>
+      <span class="key">documentDefinitionName</span>:   <span class="string"><span class="delimiter">&quot;</span><span class="content">archive_link_document</span><span class="delimiter">&quot;</span></span>
+      <span class="key">componentDefinitionName</span>:  <span class="string"><span class="delimiter">&quot;</span><span class="content">archive_link_component</span><span class="delimiter">&quot;</span></span>
+    - <span class="string"><span class="content">contRepId:                &quot;AC&quot;</span></span>
+      <span class="key">contRepDescription</span>:       <span class="string"><span class="delimiter">&quot;</span><span class="content">ECR repository AC</span><span class="delimiter">&quot;</span></span>
+      <span class="key">defaultDocProt</span>:           <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>
+      <span class="key">documentDefinitionName</span>:   <span class="string"><span class="delimiter">&quot;</span><span class="content">archive_link_document</span><span class="delimiter">&quot;</span></span>
+      <span class="key">componentDefinitionName</span>:  <span class="string"><span class="delimiter">&quot;</span><span class="content">archive_link_component</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -82,7 +146,7 @@ definition. It is linked to a document by a foreign key on the <em>doc_id</em> c
 <p>The Vault certificate storage provides a secure storage for certificates used to authorize requests in Hashicorp Vault.</p>
 </div>
 <div class="sect3">
-<h4 id="_configuration">Configuration</h4>
+<h4 id="_configuration_2">Configuration</h4>
 <div class="paragraph">
 <p>Access to a Vault instance is configured using command line arguments:</p>
 </div>
@@ -361,7 +425,7 @@ The approval process and everything else take place without further use of the {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-21 09:55:35 UTC
+Last updated 2023-04-04 12:23:19 UTC
 </div>
 </div>
 <style>
