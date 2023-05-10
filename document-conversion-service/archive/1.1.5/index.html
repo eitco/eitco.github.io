@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>About Document Conversion Service</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Document Conversion Service {service-version}</div>
+<ul class="sectlevel1">
+<li><a href="#_about_document_conversion_service"><strong>About Document Conversion Service</strong></a></li>
+<li><a href="#_configuration"><strong>Configuration</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_use_cases_for_render_plugins">Use cases for render plugins</a></li>
+<li><a href="#_use_cases_for_extraction_plugins">Use cases for extraction plugins</a></li>
+<li><a href="#_general_configuration_settings">General configuration settings</a></li>
+</ul>
+</li>
+<li><a href="#_plugins_overview"><strong>Plugins Overview</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_open_source_plugins">Open source plugins</a></li>
+<li><a href="#_microsoft_graph_plugins">Microsoft Graph plugins</a></li>
+<li><a href="#_microsoft_azure_plugins">Microsoft Azure Plugins</a></li>
+<li><a href="#_e_iceblue_plugins">e-iceblue plugins</a></li>
+<li><a href="#_itext_plugins">iText Plugins</a></li>
+</ul>
+</li>
+<li><a href="#_usage"><strong>Usage</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_converting_an_image_to_pdf">Converting an image to PDF</a></li>
+<li><a href="#_extracting_text_from_a_pdf_file">Extracting text from a PDF file</a></li>
+<li><a href="#_combining_multiple_images_to_one_pdf">Combining multiple images to one PDF</a></li>
+</ul>
+</li>
+<li><a href="#_monitoring"><strong>Monitoring</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_metrics">Metrics</a></li>
+<li><a href="#_open_telemetry">Open Telemetry</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div style="page-break-after: always;"></div>
+<div class="sect1">
+<h2 id="_about_document_conversion_service"><strong>About Document Conversion Service</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Document Conversion Service provides a REST API to convert binary data from one format to another. For example,
+a JPEG image could be converted to a PDF file. Another use case is text extraction from different document types.
+The actual content conversion is not implemented by the Conversion Service. The service offers an interface
+for plugins that perform the actual conversion.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration"><strong>Configuration</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There might exist several plugins that may fulfill a given request, so you can configure which plugin to
+use for a given request. By default, the service just selects the first available plugin that claims to support the
+requested source and target mimetypes.</p>
+</div>
+<div class="paragraph">
+<p>In order to configure this, specify a list of use cases in your <code>application.yaml</code> in the key
+<code>rendering</code> (for render plugins) or in the key <code>extraction</code> (for fulltext plugins).</p>
+</div>
+<div class="sect2">
+<h3 id="_use_cases_for_render_plugins">Use cases for render plugins</h3>
+<div class="paragraph">
+<p>Each use case consists of</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sourceType</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>a regular expression matching the mimetype to be converted</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>targetType</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>a regular expression matching the mimetype to be converted to</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>plugin</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>the name of the plugin to use (by default the fully qualified class name, but can be specified by each plugin)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For a given request the service will search the list in the given order and use the first plugin whose configured
+sourceType and targetType match the requests.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of a rendering configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">rendering:
+  - sourceType: application/pdf
+    targetType: image/jpe?g
+    plugin: my-pdf-to-image-plugin
+  - sourceType: .*
+    targetType: .*
+    plugin: my-fallback-plugin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration above will instruct the service to use the plugin with the name <code>my-pdf-to-image-plugin</code> for requests
+to render PDFs to JPG or JPEG files. In any other case it uses the plugin <code>my-fallback-plugin</code>. Note that if
+<code>my-fallback-plugin</code> would be listed before the other one every request would be handled by <code>my-fallback-plugin</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_cases_for_extraction_plugins">Use cases for extraction plugins</h3>
+<div class="paragraph">
+<p>Each use case consists of</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sourceType</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>a regular expression matching the mimetype to be converted</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>plugin</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>the name of the plugin to use (by default the fully qualified class name, but can be specified by each plugin)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For a given request the service will search the list in the given order and use the first plugin whose configured
+sourceType matches the requests.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of an extraction configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">extraction:
+  useCases:
+    - sourceType: application/pdf
+      plugin: de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration above will instruct the service to use the plugin with the name <code>my-extraction-plugin</code> for requests
+to extract text from pdf files.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_general_configuration_settings">General configuration settings</h3>
+<div class="sect3">
+<h4 id="_limiting_the_size_of_uploaded_data">Limiting the size of uploaded data</h4>
+<div class="paragraph">
+<p>To limit the size of the uploaded data to be rendered, the following configuration properties can be used:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">server:
+  undertow:
+    max-http-post-size: 30MB
+spring:
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_plugins_overview"><strong>Plugins Overview</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The service provides two plugin interfaces: <code>RenderPlugin</code> and <code>FulltextPlugin</code>. A RenderPlugin converts from one
+document type to another. It defines a list of supported source mimetypes and a list of supported target mimetypes.
+A FulltextPlugin can extract text from a document. It defines a list of supported source mimetypes. The target mimetype
+is always <em>text/plain</em>.</p>
+</div>
+<div class="sect2">
+<h3 id="_open_source_plugins">Open source plugins</h3>
+<div class="paragraph">
+<p>The <code>document-conversion-plugins-oss</code> library provides several
+plugins based on open source libraries. To use the plugins, the jar file of the library must be added to the classpath
+of the service. The plugins will be registered automatically.</p>
+</div>
+<div class="paragraph">
+<p>A ZIP containing the library and additional dependencies can be downloaded from nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;document-conversion-plugins-oss&lt;/artifactId&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+    &lt;classifier&gt;zip&lt;/classifier&gt;
+    &lt;version&gt;1.1.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins_contained_in_document_conversion_plugins_oss">Plugins contained in document-conversion-plugins-oss</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text by using Apache Tika.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_imagestopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from JPG,PNG,GIF to PDF by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders TIF to Pdf using IText.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<div class="paragraph">
+<p>Merges pdf files.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders txt to pdf with openpdf.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftomultipagetiffrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToMultiPageTiffRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The OpenHtmlRenderPlugin has a problem with xml-structures who doesn&#8217;t close the tags. This will give you an exception.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fulltext_plugins">Fulltext plugins</h4>
+<div class="paragraph">
+<p>The following fulltext extraction plugins exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>extracts text from pdf, doc(x), xls(x), epub, html, msg, odp, ods, odt, pptx, rtf and xml files using open source
+java solutions (namely apache tika)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>extracts text with ocr from pdf, doc(x), xls(x), epub, html, msg, odp, ods, odt, pptx, rtf and xml files using open source
+java solutions (namely apache tika and tesseract for ocr)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_enable_tesseract_ocr">Enable tesseract ocr:</h5>
+<div class="paragraph">
+<p>If you want to use the <code>TikaFulltextOcrExtractionPlugin</code> to extract text from images, you need to install tesseract.
+In the following steps the installation will be explained.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download and install tesseract from this page <a href="https://github.com/tesseract-ocr/tessdoc/blob/main/Downloads.md" class="bare">https://github.com/tesseract-ocr/tessdoc/blob/main/Downloads.md</a>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>For Ubuntu for example:
+sudo apt install tesseract-ocr</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Add tesseract to the path enviroment variables. For example in Windows you must add the following lines in the path:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>{path to tesseract}\Tesseract-OCR</p>
+</li>
+<li>
+<p>{path to tesseract}\Tesseract-OCR\tessdata</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Add new language packages to tesseract tessdata directory. Download the packages from the following site <a href="https://ocrmypdf.readthedocs.io/en/latest/languages.html" class="bare">https://ocrmypdf.readthedocs.io/en/latest/languages.html</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The default language is english (tesseract shortname = eng)</p>
+</li>
+<li>
+<p>If you add a new language you must add they also in the yaml</p>
+</li>
+<li>
+<p>Also you can change the dpi for tessearct image extraction</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="title">Example of adding english and germany to tesseract and change the dpi</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">extraction:
+  tikaOcrLanguage: "eng+deu"
+  tikaOcrDpi: 300</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_levigo_jadice_plugins">Levigo Jadice plugins</h4>
+<div class="paragraph">
+<p>The <code>document-conversion-plugins-jadice</code> library provides several
+plugins based on Microsoft Graph libraries. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
+of the service. The plugins will be registered automatically.</p>
+</div>
+<div class="paragraph">
+<p>A ZIP containing the library and additional dependencies can be downloaded from Nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;document-conversion-plugins-jadice&lt;/artifactId&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+    &lt;classifier&gt;zip&lt;/classifier&gt;
+    &lt;version&gt;1.1.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins_contained_in_document_conversion_plugins_jadice">Plugins contained in document-conversion-plugins-jadice</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_jadice_jadicetopdfplugin">de.eitco.commons.conversion.plugins.jadice.JadiceToPdfPlugin</h5>
+<div class="paragraph">
+<p>Renders various formats to PDF using Jadice.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+<li>
+<p>message/rfc822</p>
+</li>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Please note that Microsoft Office documents (Powerpoint and Word) are here not confronted with any formatting related issues.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_considerations_of_levigo_jadice_usage">Configuration considerations of Levigo Jadice usage</h4>
+<div class="paragraph">
+<p>A RenditionUseCase describes the source- and target-mimetype of a conversion supported by a specific plugin. The configuration file below shows how the source-mimetype 'application/msword' to the target-mimetype 'application/pdf' is configured using the JadiceToPdfPlugin.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">rendering:
+  useCases:
+    - plugin: de.eitco.commons.conversion.plugins.jadice.JadiceToPdfPlugin
+      sourceType: "application/msword"
+      targetType: "application/pdf"
+  containerUseCases:
+    - targetType: "application/pdf"
+    - plugin: de.eitco.commons.conversion.plugins.jadice.JadiceToPdfPlugin</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_microsoft_graph_plugins">Microsoft Graph plugins</h3>
+<div class="paragraph">
+<p>The <code>document-conversion-plugins-msgraph</code> library provides several
+plugins based on Microsoft graph libraries. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
+of the service. The plugins will be registered automatically.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to use this plugin you need a Microsoft 365 account which can use sharepoint and azure.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A ZIP containing the library and additional dependencies can be downloaded from nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;document-conversion-plugins-ms-graph&lt;/artifactId&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+    &lt;classifier&gt;zip&lt;/classifier&gt;
+    &lt;version&gt;1.1.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins_contained_in_document_conversion_plugins_ms_graph">Plugins contained in document-conversion-plugins-ms-graph</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_msgraph_graphrenderplugin">de.eitco.commons.conversion.plugins.msgraph.GraphRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders Microsoft Office Documents and some other formats to PDF using the Microsoft Graph API</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
+<p>message/rfc822</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_setup_microsoft_graph_render_plugins">Setup microsoft graph render plugins</h4>
+<div class="paragraph">
+<p>If you want to use the graph render plugins you will need a technical user and a sharepoint drive. A technical user in azure is named "app registration". In the following we will explain how to get an azure app registration and the sharepoint drive id.</p>
+</div>
+<div class="sect4">
+<h5 id="_app_registration">App Registration</h5>
+<div class="paragraph">
+<p>Login into <a href="https://portal.azure.com/" class="bare">https://portal.azure.com/</a>. And search for the App Registration now you will see the following windows and you can create a new app registration:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/app-registration-01.PNG" alt="app-registration-01">
+</div>
+<div class="title">Figure 1. Azure - App-Registration</div>
+</div>
+<div class="paragraph">
+<p>If you go into your new app registration you will find in the overview the client-id and the tenant-id.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/app-registration-02.PNG" alt="app-registration-02">
+</div>
+<div class="title">Figure 2. App-Registration details</div>
+</div>
+<div class="paragraph">
+<p>Now you can go to the api-authorization. The minimum you will need for the microsoft graph render plugin is the authorization named "Files.ReadWrite.All".</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/app-registration-03.PNG" alt="app-registration-03">
+</div>
+<div class="title">Figure 3. App-Registration api authorization</div>
+</div>
+<div class="paragraph">
+<p>Now you can also set the authentication security for the app-registration. You can allow the app-registration to work in every tenant in azure or only in the tenant of yourself.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/app-registration-04.PNG" alt="app-registration-04">
+</div>
+<div class="title">Figure 4. App-Registration authentication</div>
+</div>
+<div class="paragraph">
+<p>The last we will need is a secret this can generate in the following window.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/app-registration-05.PNG" alt="app-registration-05">
+</div>
+<div class="title">Figure 5. App-Registration secrets</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_sharepoint">SharePoint</h5>
+<div class="paragraph">
+<p>At first you need to create a sharepoint site and a drive. If you have create this you will need the SharePoint drive id. In the following we will explain how to get the drive id.</p>
+</div>
+<div class="paragraph">
+<p>First you will need a SharePoint Teamwebsite. After you create the website, you can create a new document library [Optional].</p>
+</div>
+<div class="paragraph">
+<p>A helper for the following request is the following <a href="https://developer.microsoft.com/en-us/graph/graph-explorer">Graph Explorer</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you use this tool you musst be login with a user and you will set the permissions in "Modify permissions".</p>
+</div>
+<div class="paragraph">
+<p>Get sharepoint site id<br>
+GET <a href="https://graph.microsoft.com/v1.0/sites/root:/sites/{site_url_name}" class="bare">https://graph.microsoft.com/v1.0/sites/root:/sites/{site_url_name}</a><br>
+Example <a href="https://graph.microsoft.com/v1.0/sites/root:/sites/xxxxxxx" class="bare">https://graph.microsoft.com/v1.0/sites/root:/sites/xxxxxxx</a><br></p>
+</div>
+<div class="paragraph">
+<p>Response:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#sites/$entity",
+    "id": "xxxxxxxx.sharepoint.com,0bbbfad6-xxxx-xxxx-xxxx-xxxxxxxxxxxx,3c5f2d82-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "name": "xxxxxxxx",
+    "displayName": "arveo"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Get sharepoint drive id<br>
+GET <a href="https://graph.microsoft.com/v1.0/sites/{site_id}/drives" class="bare">https://graph.microsoft.com/v1.0/sites/{site_id}/drives</a><br>
+Example <a href="https://graph.microsoft.com/v1.0/sites/xxxxxxxx.sharepoint.com,0bbbfad6-xxxx-xxxx-xxxx-xxxxxxxxxxxx,3c5f2d82-xxxx-xxxx-xxxx-xxxxxxxxxxxx/drives" class="bare">https://graph.microsoft.com/v1.0/sites/xxxxxxxx.sharepoint.com,0bbbfad6-xxxx-xxxx-xxxx-xxxxxxxxxxxx,3c5f2d82-xxxx-xxxx-xxxx-xxxxxxxxxxxx/drives</a><br></p>
+</div>
+<div class="paragraph">
+<p>Response:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives",
+    "value": [
+        {
+            "id": "b!XXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "name": "Conversion"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_yaml_configuration">YAML configuration</h5>
+<div class="paragraph">
+<p>In the <em>yaml</em> of the document conversion service you must set the following to use the graph render plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">graph:
+    clientId: {app_registration_client_id}
+    clientSecret: {app_registration_client_secret}
+    tenantGuid: {app_registration_tenant_id}
+    driveId: {sharepoint_drive_id}
+    timeout: 120s # Default: 60s</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_microsoft_azure_plugins">Microsoft Azure Plugins</h3>
+<div class="paragraph">
+<p>The <code>document-conversion-plugins-ms-azure</code> library provides several
+plugins based on microsoft azure libraries. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
+of the service. The plugins will be registered automatically.</p>
+</div>
+<div class="paragraph">
+<p>A ZIP containing the library and additional dependencies can be downloaded from nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;document-conversion-plugins-ms-azure&lt;/artifactId&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+    &lt;classifier&gt;zip&lt;/classifier&gt;
+    &lt;version&gt;1.1.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins_contained_in_document_conversion_plugins_ms_azure">Plugins contained in document-conversion-plugins-ms-azure</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_msazure_azurecognitiveocrextractionplugin">de.eitco.commons.conversion.plugins.msazure.AzureCognitiveOcrExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text from images and pdfs by using azure cognitive services.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_setup_microsoft_azure_fulltext_plugin">Setup microsoft azure fulltext plugin</h4>
+<div class="paragraph">
+<p>If you want to use the azure fulltext plugins you will need a cognitive service in your azure portal.</p>
+</div>
+<div class="sect4">
+<h5 id="_setup_cognitive_service">Setup cognitive service</h5>
+<div class="paragraph">
+<p>Login into <a href="https://portal.azure.com/" class="bare">https://portal.azure.com/</a>. And search for the Cognitive Services (Computer Vision) now you will see the following window and you can create a new computer vision service:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/computer-vision-01.png" alt="computer-vision-01">
+</div>
+<div class="title">Figure 6. Azure - Create computer vision service</div>
+</div>
+<div class="paragraph">
+<p>After creating a computer vision service, you need the endpoint. The endpoint can you find in the overview of the service.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/computer-vision-02.png" alt="computer-vision-02">
+</div>
+<div class="title">Figure 7. Computer vision service overview</div>
+</div>
+<div class="paragraph">
+<p>Now you need an access key of your computer vision service.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/computer-vision-03.png" alt="computer-vision-03">
+</div>
+<div class="title">Figure 8. App-Registration api authorization</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_yaml_configuration_2">YAML configuration</h5>
+<div class="paragraph">
+<p>In the <em>yaml</em> of the document conversion service you must set the following to use the azure fulltext plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">azure:
+  cognitive:
+    key: "XXX"
+    endpoint: "XXX"
+    ocrDetectionLanguage: "de"
+    modelVersion: "latest"</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The default value for the "ocrDetectionLanguage" value is de (german). The other language you can choose is english. If you want to use english, you can write in your yaml "en".
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Azure computer version models can you find <a href="https://docs.microsoft.com/de-de/azure/cognitive-services/computer-vision/how-to/call-read-api#determine-how-to-process-the-data-optional">here</a>.
+=== Amazon AWS plugins</p>
+</div>
+<div class="paragraph">
+<p>The <code>document-conversion-plugins-amazon-aws</code> library provides several
+plugins based on amazon aws. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
+of the service. The plugins will be registered automatically.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to use this plugin you need an Amazon AWS account (also named <strong>IAM</strong> account).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A ZIP containing the library and additional dependencies can be downloaded from nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;document-conversion-plugins-amazon-aws&lt;/artifactId&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+    &lt;classifier&gt;zip&lt;/classifier&gt;
+    &lt;version&gt;1.1.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins_contained_in_document_conversion_plugins_amazon_aws">Plugins contained in document-conversion-plugins-amazon-aws</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_aws_awstextractpdftosearchablepdfplugin">de.eitco.commons.conversion.plugins.aws.AwsTextractPdfToSearchablePdfPlugin</h5>
+<div class="paragraph">
+<p>Generates a searchable pdf from a scanned pdf with aws textract</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The AwsTextractPdfToSearchablePdfPlugin has a dependency on the PdfToImagesRenderPlugin (de.eitco.commons.conversion.plugins.oss)
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_setup_iam_account_and_credentials">Setup IAM account and credentials</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you don&#8217;t want to use a technical user for this plugin you can continue with <em>add permission</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">1 Create User</dt>
+<dd>
+<p>Login into <a href="https://signin.aws.amazon.com">AWS Console</a> and search for AWS IAM. Here you can create a new user with the <em>Add users</em> button.</p>
+</dd>
+</dl>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/aws-iam-1.png" alt="aws-iam-1">
+</div>
+<div class="title">Figure 9. AWS IAM create user</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">2 Add Permission</dt>
+<dd>
+<p>After you create a new user you must add permissions. To do that,  go to the newly created user account.</p>
+</dd>
+</dl>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/aws-iam-2.png" alt="aws-iam-2">
+</div>
+<div class="title">Figure 10. AWS IAM add permissions</div>
+</div>
+<div class="paragraph">
+<p>Click on <em>Add permission</em>, then on <em>Attach existing policies</em> and add the <em>AmazonTextractFullAccess</em> permission to the user.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/aws-iam-3.png" alt="aws-iam-3">
+</div>
+<div class="title">Figure 11. AWS IAM add permissions for textract</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">3 Create Access Key</dt>
+<dd>
+<p>Now you need to create an access key. Switch to the tab <em>Security credentials</em>.</p>
+</dd>
+</dl>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/aws-iam-4.png" alt="aws-iam-4">
+</div>
+<div class="title">Figure 12. AWS IAM security credentials</div>
+</div>
+<div class="paragraph">
+<p>Here you can find acces keys. Create a new access key.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/aws-iam-5.png" alt="aws-iam-5">
+</div>
+<div class="title">Figure 13. AWS IAM add create access key</div>
+</div>
+<div class="sect4">
+<h5 id="_yaml_configuration_3">YAML configuration</h5>
+<div class="paragraph">
+<p>In the <em>yaml</em> of the Document Conversion Service you must set the following to use the aws textract render plugin:</p>
+</div>
+<div class="paragraph">
+<p>Here you can find the <a href="https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/regions/Regions.html">aws region list</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">aws:
+    accessKey: "XXXXXXXXXXXXXXXXXXXX"
+    secretKey: "X1XX2XXXXXXXXXXX3XXXXXXXX4XXXXXXX567XXX8"
+    region: "EU_WEST_1"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_e_iceblue_plugins">e-iceblue plugins</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If you want to use the e-iceblue Plugins, you must have an iText license.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>document-conversion-plugins-e-iceblue</code> library provides several
+plugins based on e-iceblue libraries. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
+of the service. The plugins will be registered automatically.</p>
+</div>
+<div class="paragraph">
+<p>A ZIP containing the library and additional dependencies can be downloaded from Nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;document-conversion-plugins-e-iceblue&lt;/artifactId&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+    &lt;classifier&gt;zip&lt;/classifier&gt;
+    &lt;version&gt;1.1.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins_contained_in_document_conversion_plugins_e_iceblue">Plugins contained in document-conversion-plugins-e-iceblue</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_eiceblue_eicebluepdftopdfaplugin">de.eitco.commons.conversion.plugins.eiceblue.EIcebluePdfToPdfAPlugin</h5>
+<div class="paragraph">
+<p>Generates a subtype of pdfa from a pdf with e-iceblue.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_yaml_configuration_4">YAML configuration</h4>
+<div class="paragraph">
+<p>In the <em>yaml</em> of the document conversion service you must set the following to use the aws textract render plugin:</p>
+</div>
+<div class="paragraph">
+<p>Here you can find the <a href="https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/regions/Regions.html">aws region list</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">e-iceblue:
+  pdfType: "PdfA1A"
+  license: ""</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_itext_plugins">iText Plugins</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If you want to use the iText Plugins, you must have an iText license.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>document-conversion-plugins-itext</code> library provides several
+plugins based on iText libraries. To use the plugins, the jar file of the library must be added to the classpath
+of the service. The plugins will be registered automatically.</p>
+</div>
+<div class="paragraph">
+<p>A ZIP containing the library and additional dependencies can be downloaded from Nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;document-conversion-plugins-itext&lt;/artifactId&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+    &lt;classifier&gt;zip&lt;/classifier&gt;
+    &lt;version&gt;1.1.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins_contained_in_document_conversion_plugins_itext">Plugins contained in document-conversion-plugins-itext</h4>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_itext_itextpdftosearchablepdfaplugin">de.eitco.commons.conversion.plugins.itext.ITextPdfToSearchablePdfaPlugin</h5>
+<div class="paragraph">
+<p>Generates a searchable pdfa out of a scanned pdf with itext.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The ITextPdfToSearchablePdfaPlugin has a dependency to the PdfToImagesRenderPlugin (de.eitco.commons.conversion.plugins.oss)
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_installing_tesseract">Installing Tesseract</h4>
+<div class="paragraph">
+<p>If you want to use the <em>ITextPdfToSearchablePdfaPlugin</em> you need to install tesseract on you operating system.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download and install tesseract from this page <a href="https://github.com/tesseract-ocr/tessdoc/blob/main/Downloads.md" class="bare">https://github.com/tesseract-ocr/tessdoc/blob/main/Downloads.md</a>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>For Ubuntu for example:
+sudo apt install tesseract-ocr</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Add tesseract to the path enviroment variables. For example in Windows you must add the following lines in the path:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>{path to tesseract}\Tesseract-OCR\tessdata</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_yaml_configuration_5">YAML configuration</h4>
+<div class="paragraph">
+<p>In the <em>yaml</em> of the document conversion service you must set the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">itext:
+  pathToTessData: "{path to tesseract}/Tesseract-OCR/tessdata"
+  pdfLang: "de"
+  iTextLicensePath: "{path to itext license}/itextkey.json"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage"><strong>Usage</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following examples show how to perform different conversions using the client API of the conversion service. The
+following dependency is required to get access to the http client API:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+  &lt;artifactId&gt;document-conversion-http-client-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The client API instances can be obtained using injectable factory classes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+private FulltextResourceClientFactory fulltextClientFactory;
+@Autowired
+private DocumentConversionResourceClientFactory conversionClientFactory;</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The utility class <code>de.eitco.commons.io.ContentAnalyzer</code> contained in cmn-commons-io can be used to determine the mime
+type of a file.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_converting_an_image_to_pdf">Converting an image to PDF</h3>
+<div class="paragraph">
+<p>This example shows how to convert an image of type JPEG to PDF.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">DocumentConversionResourceClient client = conversionClientFactory.newClient(); <i class="conum" data-value="1"></i><b>(1)</b>
+File jpeg = new File("src/test/data/source/source_inputstreamlist_images/jpgSample.jpg");
+
+try (FileInputStream inputStream = new FileInputStream(jpeg)) {
+    InputStream rendition = client.render(MediaType.IMAGE_JPEG_VALUE, MediaType.APPLICATION_PDF_VALUE, inputStream); <i class="conum" data-value="2"></i><b>(2)</b>
+    try (FileOutputStream out = new FileOutputStream("target/rendition.pdf")) {
+        IOUtils.copy(rendition, out); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Creates a new client instance using the DocumentConversionResourceClientFactory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Sends a request for the rendition to the service. The source- and target-mimetypes are strings and can be obtained from any
+utility class containing standard mime type strings.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Saves the rendition to a file using Apache Commons IO IOUtils</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extracting_text_from_a_pdf_file">Extracting text from a PDF file</h3>
+<div class="paragraph">
+<p>This example shows how the API can be used to extract text content from a PDF file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">FulltextResourceClient client = fulltextClientFactory.newClient(); <i class="conum" data-value="1"></i><b>(1)</b>
+File pdf = new File("src/test/fulltext-data/source/test.pdf");
+
+try (FileInputStream inputStream = new FileInputStream(pdf)) {
+
+    String text = client.extractText(MediaType.APPLICATION_PDF_VALUE, inputStream); <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Creates a new client instance using the FulltextResourceClientFactory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Sends a request for the extraction to the service. The source-mimetype is a string and can be obtained from any
+utility class containing standard mime type strings.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_combining_multiple_images_to_one_pdf">Combining multiple images to one PDF</h3>
+<div class="paragraph">
+<p>This exmaple shows how to combine multiple images to a single PDF file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">DocumentConversionResourceClient client = conversionClientFactory.newClient(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+File image1 = new File("src/test/data/source/source_inputstreamlist_images/jpgSample.jpg");
+File image2 = new File("src/test/data/source/source_inputstreamlist_images/pngSample2.png");
+
+List&lt;ConversionMultipartBodyElement&gt; inputStreamAndMediaTypeList = new ArrayList&lt;&gt;();
+
+FileInputStream fileInputStream1 = null;
+FileInputStream fileInputStream2 = null;
+
+try {
+    fileInputStream1 = new FileInputStream(image1);
+    fileInputStream2 = new FileInputStream(image2);
+
+    inputStreamAndMediaTypeList.add(new ConversionMultipartBodyElement(MediaType.IMAGE_JPEG_VALUE, fileInputStream1)); <i class="conum" data-value="2"></i><b>(2)</b>
+    inputStreamAndMediaTypeList.add(new ConversionMultipartBodyElement(MediaType.IMAGE_PNG_VALUE, fileInputStream2));
+
+    InputStream combinedPdf = client.combineToPdf(inputStreamAndMediaTypeList); <i class="conum" data-value="3"></i><b>(3)</b>
+
+} finally {
+    fileInputStream1.close();
+    fileInputStream2.close();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Creates a new client instance using the DocumentConversionResourceClientFactory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Create the body elements for the multipart request that will be sent to the service</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Sends the request to the service</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_monitoring"><strong>Monitoring</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_metrics">Metrics</h3>
+<div class="paragraph">
+<p>The Document Conversion Service provides metrics that can be used to monitor the performance. The following metrics
+are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>dcs.render.time</code>: Records the time it took to perform one rendering request as well as a counter for the number of
+performed requests.</p>
+</li>
+<li>
+<p><code>dcs.render.errors</code>: A counter for errors that occurred while rendering.</p>
+</li>
+<li>
+<p><code>dcs.extract.time</code>: Records the time it took to perform one fulltext extraction request as well as a counter for the
+number of performed requests.</p>
+</li>
+<li>
+<p><code>dcs.extract.errors</code>: A counter for errors that occurred while performing fulltext extractions.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each of these metrics contains tags for the source and (if applicable) the target mime type in standard string
+representation (for example: image/jpeg) and for the size of the original content. The size metric uses size ranges:
+0-1MB, 1-10MB, 10-100MB, 100-1000MB and &gt;1000MB.</p>
+</div>
+<div class="paragraph">
+<p>The recording of those metrics can be disabled by setting the parameters <code>management.metrics.enable.dcs.render</code> or
+<code>management.metrics.enable.dcs.extract</code> to false.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_open_telemetry">Open Telemetry</h3>
+<div class="paragraph">
+<p>The Document Conversion Service supports the usage of
+<a href="https://opentelemetry.io/docs/instrumentation/java/automatic/">Open Telemetry</a>. Spans are created for the methods of each
+render plugin. The outermost span will contain the ID and the tenant (if available) of the user who performed the
+request.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-05-10 13:58:52 UTC
+</div>
+</div>
+</body>
+</html>
