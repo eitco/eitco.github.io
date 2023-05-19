@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>User Management Access Control Service 4.1.2</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">User Management Access Control Service {acl-service-version}</div>
+<ul class="sectlevel1">
+<li><a href="#_user_management_access_control_service_4_1_2"><strong>User Management Access Control Service 4.1.2</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_the_concept_of_access_control_lists">The Concept of Access Control Lists</a></li>
+<li><a href="#_substitution">Substitution</a></li>
+<li><a href="#_usage_of_the_access_control_service_in_an_application">Usage of the Access Control Service in an application</a></li>
+</ul>
+</li>
+<li><a href="#_acl_data_model"><strong>ACL Data Model</strong></a></li>
+<li><a href="#_solr_acl_filter"><strong>Solr ACL Filter</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_caching">Caching</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_user_management_access_control_service_4_1_2"><strong>User Management Access Control Service 4.1.2</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The eitco access control service extends the <a href="https://eitco.github.io/user-management/archive/">eitco user management service</a> with the possibility to specify access control.
+Access control lists (ACLs) are used for this purpose.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_concept_of_access_control_lists">The Concept of Access Control Lists</h3>
+<div class="paragraph">
+<p>An ACL assigns rights and prohibitions to users and groups. Normally, ACLs are then assigned to objects. How ACLs are
+assigned to objects and what rights exist is not defined in the module <em>user-management-access-control</em>. However, there
+are requirements for the rights concept of the applications that use this component:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Rights and prohibitions share the same value range</strong>. You can only forbid what you can allow and vice versa.</p>
+</li>
+<li>
+<p><strong>The rights are fully ordered and imply their respective subordinate rights</strong>. That is, there is a clear hierarchy of
+rights. If someone has a right, then he also has all the rights that are smaller.</p>
+</li>
+<li>
+<p><strong>Even the smallest right implies access</strong>. Once someone has rights on an object, they will be able to find it in searches.
+With these requirements, the permissions of a user on an ACL can be calculated as described below.</p>
+</li>
+</ul>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Let G be the set of all permissions assigned to a user (directly or indirectly via the groups he is in) in the ACL.
+Let D be the set of all prohibitions assigned to a user (directly or indirectly via the groups he is in) in the ACL.
+
+If max(D) &gt; max(G), then the user has the permission max(G); otherwise the user has the permission max(D) - 1.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So generally, the greater the value of an ACL, the more rights this group or job position possesses.
+If no ACL is assigned to an object, then it is accessible to everyone.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is possible to prohibit all rights on an object, but then nobody would have access to it making it effectively
+removed.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_substitution">Substitution</h3>
+<div class="paragraph">
+<p>In order to implement concepts such as substitutions or extensions (i.e. group memberships that propagate authorisations
+but not prohibitions),
+the rights determination must be adapted. In addition, an extension of the user service is required.</p>
+</div>
+<div class="paragraph">
+<p><em>Weak group membership</em></p>
+</div>
+<div class="paragraph">
+<p>Group memberships of users require the information whether they are "weak". Weak affiliations only propagate permissions,
+never prohibitions.</p>
+</div>
+<div class="paragraph">
+<p>The permissions of a user on an ACL would then be calculated as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Let S be the set of all groups to which the user is strongly (i.e. not weakly) connected.
+Let S' be the set of all groups to which the user is weakly connected.
+
+Let G be the set of all permissions assigned to the groups in S in the ACL.
+Let D be the set of all prohibitions assigned to groups in S in the ACL.
+
+For all s_i in S', now calculate the permissions g_i as follows:
+
+    Let G' be the set of all permissions assigned to groups in S in the ACL.
+    Let D' be the set of all prohibitions assigned to the groups in S in the ACL.
+
+    If max(D') &gt; max(G'), then g_i = max(G')
+    otherwise g_i = max(0, max(D') - 1)
+
+Let G' be the set of all calculated permissions g_i
+
+If max(D) &gt; max(G + G'), then the user has the permission max(G + G'); otherwise the user has the permission max(D) - 1</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage_of_the_access_control_service_in_an_application">Usage of the Access Control Service in an application</h3>
+<div class="paragraph">
+<p>The client application has to be a Spring boot application. It can connect to the service in two ways:</p>
+</div>
+<div class="sect3">
+<h4 id="_by_http">By http</h4>
+<div class="paragraph">
+<p>In this case, add the maven dependency below to your project:</p>
+</div>
+<div class="listingblock">
+<div class="title">Maven dependency for the http Spring starter</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;cmn-user-management-access-control-http-client-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;4.1.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_embedded">Embedded</h4>
+<div class="paragraph">
+<p>For this, use the following maven dependency:</p>
+</div>
+<div class="listingblock">
+<div class="title">Maven dependency for the embedded starter</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;cmn-user-management-access-control-embedded-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;4.1.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_acl_data_model"><strong>ACL Data Model</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An Access Control List (ACL) or “Access Control List” is used to restrict access to a data object. ACLs consist of entries,
+called Access Control Entries, each of which describes an access rule in more detail. For example,
+an entry can grant access to a specific object (for example a file in a file system; the respective ACL is
+assigned to this) for a specific user (or a group of users) to an access level (for example "View only" or " Edit ").</p>
+</div>
+<div class="paragraph">
+<p>Attribute Based Access Control provides access based on the evaluation of attributes.
+DAC In the Discretionary Access Control (DAC) model, access to resources is based on user&#8217;s identity. A user is granted
+permissions to a resource by being placed on an access control list (ACL) associated with resource. An entry on a resource&#8217;s
+ACL is known as an Access Control Entry (ACE). When a user (or group) is the owner of an object in the DAC model, the user
+can grant permission to other users and groups. The DAC model is based on resource ownership.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_solr_acl_filter"><strong>Solr ACL Filter</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SOLR ACL Plugin extends SOLR with ACL checking functionality. The goal of the extension is that all documents that
+are invisible to a user based on their ACLs will be filtered from the search results from SOLR. An EQL extension is
+used to specify the required parameters for the filter. The parameters are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The ID of the user</p>
+</li>
+<li>
+<p>The ACL assignment ID of the user</p>
+</li>
+<li>
+<p>The numeric value of the required ACL right</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The extension uses the resolved ACL rights managed by the Access Control Service.
+The SOLR EQL implementation will add a filter query to the SOLR search request as shown below. More information about
+the query extension and usage examples can be found in the EQL documentation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{!aclright userId=111 aclAssignmentId=222 granted=3}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">Configuration</h3>
+<div class="paragraph">
+<p>To enable the plugin in SOLR, add the following lines to <code>solrconfig.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;queryParser name="aclright" class="de.eitco.commons.user.management.access.control.solr.AclRightParserPlugin"&gt;
+    &lt;str name="jdbcUrl"&gt;jdbc-url&lt;/str&gt;
+    &lt;str name="jdbcUser"&gt;user&lt;/str&gt;
+    &lt;str name="jdbcPassword"&gt;password&lt;/str&gt;
+&lt;/queryParser&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The plugin requires a database connection to access the tables of the Access Control Service. For this purpose, a JDBC
+connection has to be configured.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_caching">Caching</h3>
+<div class="paragraph">
+<p>The plugin caches the resolved rights on a per-user-and-document level. It is assumed that this cache can get very big,
+because of which the ACL assignment ID of the user is used to check if the cache entry is up to date. If not, is is
+evicted immediately and the current value is loaded from the database.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-05-19 12:00:33 UTC
+</div>
+</div>
+</body>
+</html>

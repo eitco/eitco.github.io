@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Access Control Service deployed so far.
 
+ * [4.1.2](archive/4.1.2)
  * [4.1.1](archive/4.1.1)
  * [4.1.0](archive/4.1.0)
  * [4.0.1](archive/4.0.1)
