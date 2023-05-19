@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 13.0.5</div>
+<div id="toctitle">arveo 13.0.6</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -2722,7 +2722,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 13.0.5.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 13.0.6.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3160,7 +3160,7 @@ DemoModelStatus getStatus();
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>13.0.5<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>13.0.6<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -5202,7 +5202,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>13.0.5<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>13.0.6<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -7604,7 +7604,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/1.1.1/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/1.1.2/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit">Access audit</h4>
@@ -7692,7 +7692,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <h5 id="_solr_configurations">Solr Configurations</h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/13.0.5/ecr-environment-configuration-13.0.5-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/13.0.6/ecr-environment-configuration-13.0.6-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -7864,7 +7864,7 @@ contains a ZIP file with the plugin and all required libraries.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 4.1.1) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/4.1.1/cmn-user-management-access-control-solr-plugin-4.1.1-zip.zip">nexus repository</a>.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 4.1.2) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/4.1.2/cmn-user-management-access-control-solr-plugin-4.1.2-zip.zip">nexus repository</a>.</p>
 </li>
 <li>
 <p>Install the plugin in Solr by extracting the content of the downloaded ZIP file as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
@@ -14729,7 +14729,7 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect2">
 <h3 id="_tenant_separation">Tenant separation</h3>
 <div class="paragraph">
-<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.3/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.3/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
 </div>
 <div class="paragraph">
 <p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
@@ -14737,14 +14737,14 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect3">
 <h4 id="_fallback_tenant">Fallback-tenant</h4>
 <div class="paragraph">
-<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.3/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
-Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.3/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
+<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
+Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_usage_2">Usage</h4>
 <div class="paragraph">
-<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.3/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
 </div>
 <div class="paragraph">
 <p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
@@ -14764,7 +14764,7 @@ Should a querying user reside in the fallback-tenant, the query will not be filt
 <p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
 </div>
 <div class="paragraph">
-<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.3/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
+<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
 </div>
 <div class="paragraph">
 <p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
@@ -17624,7 +17624,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-11 11:06:17 UTC
+Last updated 2023-05-19 13:55:48 UTC
 </div>
 </div>
 <style>
