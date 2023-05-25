@@ -7658,7 +7658,7 @@ entries in the queue table.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Collections will be created automatically from <em>arveo</em>. Every tenant gets his own collection.
+Collections will be created automatically from <em>arveo</em>.
 </td>
 </tr>
 </table>
@@ -7716,7 +7716,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <div class="sect5">
 <h6 id="_type_definitions">Type definitions</h6>
 <div class="paragraph">
-<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the Solr manged-schema.xml. If you want to deactivate an attribute of an type definition for Solr you can do the following:</p>
+<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the Solr schema. If you want to deactivate an attribute of a type definition for Solr you can do the following:</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -7725,7 +7725,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If you have a type definition which is using the annotation @NOSql you must be setup a Solr. Otherwise, <em>arveo</em> will be not starting!
+If you have a type definition which is using the annotation @NOSql you must setup a Solr instance. Otherwise, <em>arveo</em> will not start!
 </td>
 </tr>
 </table>
@@ -7744,24 +7744,24 @@ If you have a type definition which is using the annotation @NOSql you must be s
 </div>
 </div>
 <div class="paragraph">
-<p>In this example only the firstname will be automatically created in the managed-schema.xml of Solr.</p>
+<p>In this example only the firstname will be automatically created in the schema of Solr.</p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="_fulltext_extraction">Fulltext Extraction</h6>
 <div class="paragraph">
-<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with @Type(ObjectType.DOCUMENT) and @NOSql. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of Solr:</p>
+<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with <code>@Type(ObjectType.DOCUMENT)</code> and <code>@NOSql</code>. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of Solr:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Arveo saves the documents who are annotated with @NOSql in a queue table named <em>type_definition_name + _ng</em>;</p>
+<p>Arveo saves the documents who are annotated with <code>@NOSql</code> in a queue table named <em>type_definition_name + _ng</em>;</p>
 </li>
 <li>
 <p>Now a job will fetch all entry in the queue table;</p>
 </li>
 <li>
-<p>For each entry which are annotated with @Type(ObjectType.DOCUMENT) arveo will call the document conversion service to extract the fulltext from the content;</p>
+<p>For each entry which are annotated with <code>@Type(ObjectType.DOCUMENT)</code> arveo will call the document conversion service to extract the fulltext from the content;</p>
 </li>
 <li>
 <p>At the end all information will be saved to Solr.</p>
@@ -8042,8 +8042,9 @@ The following example shows how to use this method to search in a specific field
 </div>
 <div class="paragraph">
 <p>When using the <code>getNoSqlSearchService</code> method, the query performed in Solr will automatically be limited to entities
-belonging to one single type definition. To search for entities in multiple type definitions, the method
-<code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.</p>
+belonging to one single type definition. In this case, it is not necessary to use the helper method from the generated
+name constant class to compute the name. The service is able to automatically compute the corret name. To search for
+entities in multiple type definitions, the method <code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.</p>
 </div>
 </div>
 <div class="sect3">
@@ -17624,7 +17625,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-25 11:53:37 UTC
+Last updated 2023-05-25 16:41:17 UTC
 </div>
 </div>
 <style>
