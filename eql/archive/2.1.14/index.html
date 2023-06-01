@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>EITCO Query Language</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">eql - eitco query language 2.1.14</div>
+<ul class="sectlevel1">
+<li><a href="#_eitco_query_language"><strong>EITCO Query Language</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_what_is_eql">What is <em>EQL</em>?</a></li>
+</ul>
+</li>
+<li><a href="#_fluent_api"><strong>Fluent API</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_conditions">Conditions</a></li>
+<li><a href="#_paging">Paging</a></li>
+<li><a href="#_finishing_a_query">Finishing a Query</a></li>
+</ul>
+</li>
+<li><a href="#_low_level_api"><strong>Low-level API</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_page_definition">Page Definition</a></li>
+<li><a href="#_filtering">Filtering</a></li>
+</ul>
+</li>
+<li><a href="#_solr_eql"><strong>Solr EQL</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_solr_eql_usage">Solr EQL Usage</a></li>
+<li><a href="#_solr_eql_expressions">Solr EQL Expressions</a></li>
+<li><a href="#_solr_hit_score">Solr Hit Score</a></li>
+<li><a href="#_solr_highlighting">Solr Highlighting</a></li>
+<li><a href="#_acl_filter_extension">ACL filter extension</a></li>
+</ul>
+</li>
+<li><a href="#_jooq"><strong>JOOQ</strong></a></li>
+<li><a href="#_string_api"><strong>String API</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_summary">Summary</a></li>
+<li><a href="#_order_language">Order language</a></li>
+<li><a href="#_how_to_use">How to use</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_eitco_query_language"><strong>EITCO Query Language</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_what_is_eql">What is <em>EQL</em>?</h3>
+<div class="paragraph">
+<p>The EITCO query language provides a unified interface for searches. Hence, this documentation addresses developers, mainly those who use java (or any JVM compatible language). However, there is also a port for Typescript.</p>
+</div>
+<div class="paragraph">
+<p>EQL is agnostic of the actual implementation of the search. While still a lot of searches are made on classical relational databases, more and more are executed on NoSQL databases. The language EQL is independent of the actual search implementation, however, there are some specifics that will only work for specific search implementations. Currently, there are implementations for SQL, in-memory searches and Solr.</p>
+</div>
+<div class="paragraph">
+<p>There are several ways to search using EQL. All have a common entry point: <code>de.eitco.commons.query.language.api.SearchService</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fluent_api"><strong>Fluent API</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The interface <code>SearchService</code> contains three entry points using a Fluent API:</p>
+</div>
+<div class="listingblock">
+<div class="title">Fluent API entry points</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @NotNull
+    PageDefinitionStep&lt;EntityType&gt; all();
+
+    @NotNull
+    ConditionBuilder&lt;PageDefinitionStep&lt;EntityType&gt;, ?, ?, ?, ?, ?, ?, ?&gt; where();
+
+    @NotNull
+    ConditionBuilder&lt;Boolean, ?, ?, ?, ?, ?, ?, ?&gt; existsWhere();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first method <code>all()</code> simply returns all elements - <a href="#_paging">paging</a> still needs to be defined.</p>
+</div>
+<div class="paragraph">
+<p>The second method <code>where()</code> begins the fluent api for creating a condition by returning a <code>ConditionBuilder</code>. The resulting search will return only elements that meet the given condition. <a href="#_paging">Paging</a> will be need to be defined.</p>
+</div>
+<div class="paragraph">
+<p>The third method <code>existsWhere()</code> also starts the fluent api for creating a condition. As opposed to <code>where()</code>, it will create a query that determines whether at least one element that meets the condition exists.</p>
+</div>
+<div class="sect2">
+<h3 id="_conditions">Conditions</h3>
+<div class="paragraph">
+<p>The simplest conditions are boolean literals. Whenever you have a <code>ConditionBuilder</code> at hand you can simply call <code>alwaysTrue()</code> or <code>alwaysFalse()</code> to create a condition that always respectively never holds. Thus, the following code would be equivalent to simply calling <code>all()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Simple fluent API call</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().alwaysTrue()</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_comparisons_and_values">Comparisons and Values</h4>
+<div class="paragraph">
+<p>The first less simple conditions are comparison. EQL allows values to be compared with the operators <code>=</code>, <code>≠</code>, <code>&lt;</code>, <code>≤</code>, <code>&gt;</code> and <code>≥</code>. These can be created using the methods <code>equalTo()</code>, <code>notEqual()</code>, <code>lessThan()</code>, <code>lessEqual()</code>, <code>greaterThan()</code> and <code>greaterEqual()</code>. These are found in the class <code>PredicateInfixBuilder</code> for reference. There are some more specific comparison operators, but we will keep it simple for now.</p>
+</div>
+<div class="paragraph">
+<p>Values can be defined using the method <code>value(Object)</code>. The following code would still be equivalent to simply calling <code>all()</code></p>
+</div>
+<div class="listingblock">
+<div class="title">Simple comparison</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().value(1).equalTo().value(1)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_context_references">Context References</h4>
+<div class="paragraph">
+<p>In order for conditions to actually do something we need to reference properties of the objects we search for. What a property is and which properties exist depends on the search implementation. When using the in-memory search on a list of java objects for example, every field of the class of the objects searched for would be able to be referenced. In a sql search on a table the fields of the table could be referenced.</p>
+</div>
+<div class="paragraph">
+<p>A context reference is a list of strings defining a path to the property referenced. For in-memory searches this allows to evaluate properties by reflection and even reference properties of objects that are a field of the objects searched for themselves. For sql searches this allows to specify alias prefixes and the like.</p>
+</div>
+<div class="listingblock">
+<div class="title">Condition using a context reference</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().contextReference("my", "property").lessThan().value(400)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example above would result - in case of a sql search - in a sql <code>WHERE my.property &lt; 400</code>.
+In case of an in-memory search it would assume a class like the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">A simple class that can be searched with the statement above</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class Outer {
+
+    private Inner my;
+
+    public static class Inner {
+
+        private int property;
+
+        // ...
+        // other properties, getters, setters, etc
+    }
+    // ...
+    // other properties, getters, setters, etc
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The statement given defines a condition that holds for any instance of <code>Outer</code> whose field <code>my</code> holds an instance of <code>Inner</code> whose field <code>property</code> is less than 400.</p>
+</div>
+<div class="sect4">
+<h5 id="_ending_a_condition_with_holds">Ending a condition with <code>holds()</code></h5>
+<div class="paragraph">
+<p>After you specify the condition call <code>holds()</code> to specify <a href="#_paging">paging</a>:</p>
+</div>
+<div class="listingblock">
+<div class="title">A simple complete condition ready for paging</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().contextReference("my", "property").lessThan().value(400).holds()</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_boolean_operators">Boolean Operators</h5>
+<div class="paragraph">
+<p>Comparisons can be linked to other comparisons with boolean operators. After a comparison one can call <code>and()</code> or <code>or()</code> and then specify another condition in order to create a condition that holds if and only if both conditions (respectively at least one of the conditions) hold(s).</p>
+</div>
+<div class="listingblock">
+<div class="title">Conditions linked with <code>and()</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().contextReference("my", "property").lessThan().value(400).and()
+                .value("my-value").notEqual().contextReference("other-property")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This way you can specify very complex queries:</p>
+</div>
+<div class="listingblock">
+<div class="title">Complex query using many <code>and()</code> and <code>or()</code> calls</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().contextReference("my", "property").lessThan().value(400).and()
+                .value("my-value").notEqual().contextReference("other-property").or()
+                .contextReference("field").notEqual().value("value").or()
+                .contextReference("my", "property").greaterEqual().value(600).and()
+                .contextReference("field").equalTo().value("more")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This rises the question, in which order the <code>and</code>/<code>or</code> links are evaluated. It is done as most conventions specify: <code>and()</code> links are evaluated before <code>or()</code> links. Thus, the condition above would result in a sql clause equivalent to the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">An SQL <code>WHERE</code> clause with explicit braces</div>
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">WHERE
+    ("my"."property" &lt; 400 AND 'my-value' != "other-property") OR
+    ("field" != 'value') OR
+    ("my"."property" &gt;= 600 AND "field" = 'more')</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Should one need to set braces explicitly one can use the <code>and(Expression&lt;Boolean&gt;)</code> and <code>or(Expression&lt;Boolean&gt;)</code> methods.</p>
+</div>
+<div class="listingblock">
+<div class="title">Setting braces with <code>and(Expression&lt;Boolean&gt;)</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().contextReference("my", "property").lessThan().value(400).and(
+                Eql.condition()
+                    .contextReference("field").equalTo().value("value-1").or()
+                    .contextReference("field").equalTo().value("value-2").or()
+                    .contextReference("field").equalTo().value("value-3").holds()
+            )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example above would create in the following sql clause</p>
+</div>
+<div class="listingblock">
+<div class="title">An SQL <code>WHERE</code> clause with explicit braces</div>
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">WHERE
+    "my"."property" &lt; 400 AND (
+        ("field" != 'value-1') OR
+        ("field" != 'value-2') OR
+        ("field" != 'value-3')
+    )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course EQL also supports boolean <code>not</code>. Before any EQL statements that result in a condition you can simply call <code>not()</code> to negate the given condition:</p>
+</div>
+<div class="listingblock">
+<div class="title">Negating a condition with <code>not()</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().not().contextReference("my", "property").lessThan().value(400)</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_paging">Paging</h3>
+<div class="paragraph">
+<p>As soon as you finish a condition with <a href="#_ending_a_condition_with_holds"><code>holds()</code></a> or if you just called <code>SearchService.all()</code> you will need to specify paging. The results of searches on huge amount of data can be huge as well, so <code>SearchService</code> supports paging that is returning only a part of the result.</p>
+</div>
+<div class="paragraph">
+<p>Of course, if you know that the result is that huge, you can simply skip paging by calling <code>unpaged()</code> which will simply return all elements that satisfy the given condition.</p>
+</div>
+<div class="listingblock">
+<div class="title">An unpaged query</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where()
+                .contextReference("my", "property").lessThan().value(400)
+                .and().contextReference("field").notEqual().value("value-4").holds()
+                .unpaged()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Otherwise, you will need to page the result. Paging is underspecified without ordering, so at first you will need to define an order with <code>order()</code>. You can rely on the implicit order of the search implementation, by just skipping to the next step. Otherwise, you can give fields to order by ascendingly and descendingly by calling <code>ascendingBy(String&#8230;&#8203;)</code> and <code>descendingBy(String&#8230;&#8203;)</code>. The strings given to these methods hold the names of the properties that should be ordered by just like <a href="#_context_references">context references</a>. Both methods can be called several times.</p>
+</div>
+<div class="paragraph">
+<p>After the order is specified the page can be defined. It consists of its position in the complete result and its size. The position is given with the method <code>from(int)</code>. After that the size can either be specified by <code>pageSize(int)</code> or by <code>to(int)</code>. While the first method directly sets the size of the page, the second specifies the index of the last element. Thus calling <code>from(n).pageSize(m)</code> would be equivalent to <code>from(n).to(n + m)</code>. Specifying the page can also be omitted, resulting in an unpaged but ordered result.</p>
+</div>
+<div class="listingblock">
+<div class="title">A completely specified paging</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where()
+                .contextReference("my", "property").lessThan().value(400)
+                .and().contextReference("field").notEqual().value("value-4").holds()
+                .order() <i class="conum" data-value="1"></i><b>(1)</b>
+                .ascendingBy("my", "property") <i class="conum" data-value="2"></i><b>(2)</b>
+                .descendingBy("field") <i class="conum" data-value="3"></i><b>(3)</b>
+                .from(10). <i class="conum" data-value="4"></i><b>(4)</b>
+                pageSize(400) <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The result should be ordered &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>&#8230;&#8203; primarily ascending by the property "my.property" &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>&#8230;&#8203; if my.property equals for two elements, those should be ordered descending by the property "field"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The result should not contain the first 10 elements &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>&#8230;&#8203; and only the 400 that follow (or less if the result does not contain that many elements)</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_finishing_a_query">Finishing a Query</h3>
+<div class="paragraph">
+<p>There are several ways to finish a query. The completely specified paged example is one. That call results in an instance of <code>Page&lt;T&gt;</code>, which contains a member <code>result</code> of Type <code>List&lt;T&gt;</code> that contains the elements queried for, in the order specified. The page also contains a page definition, which is the one that was given so that the result also contains its 'context'. Additionally, the complete count is returned. This is not necessarily the size of the result, but it is what its size would be if the query was unpaged.</p>
+</div>
+<div class="paragraph">
+<p>Above we saw a call to <code>unpaged()</code> which completely omitted paging. In this case the query is executed with this call and a list with the result is returned. There is no need to return a page in this case, since the call is unpaged.</p>
+</div>
+<div class="paragraph">
+<p>A common use case are queries whose condition identifies a unique feature of the elements so that the query has at most one result element. Searches for a given id are an example. In this case the method <code>uniqueResult()</code> can be called, where <code>unpaged()</code> could be called:</p>
+</div>
+<div class="listingblock">
+<div class="title">A query by id</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().not().contextReference("id").equalTo().value(554898L).holds()
+                .uniqueResult()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method returns an <code>Optional&lt;Type&gt;</code> which is empty if no element matches the given condition, and the unique element that matches the condition otherwise. If several elements match the condition, an exception is thrown. In this case no paging can be specified.</p>
+</div>
+<div class="paragraph">
+<p>Another way to finish a query is to call <code>count()</code>. This also omits paging. However, it does not return a result list only the number of elements that match the given condition.</p>
+</div>
+<div class="listingblock">
+<div class="title">A query that only counts the matching elements</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where()
+                .contextReference("my", "property").lessThan().value(400)
+                .and().contextReference("field").notEqual().value("value-4").holds()
+                .count()</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_iterating_the_result_set">Iterating the Result Set</h4>
+<div class="paragraph">
+<p>Using the method <code>iterable(int)</code> one can create an iterable of the result set. The given integer sets the page size. The resulting iterable will iterate over the complete result set, but obtain the results in pages of the given size.</p>
+</div>
+<div class="listingblock">
+<div class="title">The result as iterable</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            for (var element : service.where()
+                .contextReference("field").notEqual().value("value-4").holds()
+                .order().descendingBy("field")
+                .iterable(500)) {
+
+                System.out.println(element.toString());
+            }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code above will iterate over every element that does not have the value <code>"value-4"</code> in its field <code>field</code> in descending order by that field and prints its string representation to stdout. Every 500 result elements it will retrieve the next 500 elements and go on iterating, until none else are left.</p>
+</div>
+<div class="paragraph">
+<p>The API can also be used to create a stream:</p>
+</div>
+<div class="listingblock">
+<div class="title">The result as stream</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().contextReference("field")
+                .notEqual().value("value-4").holds()
+                .order().descendingBy("field")
+                .stream(500)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will create a stream of all the elements, that do not have the value <code>"value-4"</code> in its field <code>field</code> (in descending order by that field). When items of this stream are actually retrieved, they will be in chunks of the size 500.</p>
+</div>
+<div class="paragraph">
+<p>Thus, the code below is equivalent to the iterating example, above.</p>
+</div>
+<div class="listingblock">
+<div class="title">Iterating over a retrieved stream</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            service.where().contextReference("field")
+                .notEqual().value("value-4").holds()
+                .order().descendingBy("field")
+                .stream(500)
+                .map(Object::toString).forEach(System.out::println);</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_low_level_api"><strong>Low-level API</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As one can see, the interface <code>SearchService</code> has a lot of default methods but only on abstract method:</p>
+</div>
+<div class="listingblock">
+<div class="title">The method <code>search()</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @NotNull
+    Page&lt;EntityType&gt; search(@NotNull SearchRequest searchRequest);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The method is given a <code>SearchRequest</code> and retrieves a <code>Page&lt;&gt;</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">The parts of a search request</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    private final PageDefinition pageDefinition;
+    private final Expression&lt;Boolean&gt; filter;
+    private final SearchOptions options;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>searchOptions</code> can be used to specify detailed behaviour.</p>
+</div>
+<div class="sect2">
+<h3 id="_page_definition">Page Definition</h3>
+<div class="paragraph">
+<p>The page definition contains information about the page of the result to retrieve. It can be created using its constructor and specifying, <code>offset</code>, <code>size</code> and <code>order</code> directly - but analogously to the fluent approach above:</p>
+</div>
+<div class="listingblock">
+<div class="title">Two ways to specify a page</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            new PageDefinition(200, 400, List.of(
+                new Order(OrderDirection.DESCENDING, new ContextReference&lt;String&gt;(List.of("field"))))); <i class="conum" data-value="1"></i><b>(1)</b>
+
+            service.all()
+                .order().descendingBy("field").from(200).pageSize(400) <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>creating a page definition directly by calling the constructor</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>defining the same page definition using the fluent api</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_filtering">Filtering</h3>
+<div class="paragraph">
+<p>Using the <code>filter</code> property one can specify a condition that every element of the result must meet.</p>
+</div>
+<div class="paragraph">
+<p>The simplest condition is a boolean literal:</p>
+</div>
+<div class="listingblock">
+<div class="title">Boolean literal</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            new BooleanLiteral(true)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will create the condition that always holds.</p>
+</div>
+<div class="sect3">
+<h4 id="_comparisons_and_values_2">comparisons and values</h4>
+<div class="paragraph">
+<p>In order to create more complex conditions the classes <code>ContextReference&lt;&gt;</code>, <code>Value&lt;&gt;</code> and <code>Equality&lt;&gt;</code> can be used:</p>
+</div>
+<div class="listingblock">
+<div class="title">Boolean literal</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            new Equality&lt;&gt;(new ContextReference&lt;&gt;(List.of("my", "property")), new Value&lt;&gt;(400))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This would create the following sql <code>WHERE</code>-clause</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">WHERE "my"."property" = 400</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For other comparison operators the classes <code>GreaterThan</code>, <code>LessThan</code>, <code>LikeExpression</code>, <code>StartsWithExpression</code> and <code>Contains</code> are available.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_boolean_operators_2">boolean operators</h4>
+<div class="paragraph">
+<p>Conditions can be linked by the boolean operators "and" and "or" using the classes <code>AndExpression</code> and <code>OrExpression</code>. The negation is provided by <code>NotExpression</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">A complex query using the low level api</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            new OrExpression(
+                new AndExpression(
+                    new LessThan&lt;&gt;(
+                        new ContextReference&lt;&gt;(List.of("my", "property")),
+                        new Value&lt;&gt;(400)
+                    ),
+                    new NotExpression(
+                        new Equality&lt;&gt;(
+                            new Value&lt;&gt;("my-value"),
+                            new ContextReference&lt;&gt;(List.of("other-property"))
+                        )
+                    )
+                ),
+                new OrExpression(
+                    new NotExpression(
+                        new Equality&lt;&gt;(new ContextReference&lt;&gt;(List.of("field")), new Value&lt;&gt;("value"))
+                    ),
+                    new AndExpression(
+                        new GreaterThan&lt;&gt;(new ContextReference&lt;&gt;(List.of("my", "property")), new Value&lt;&gt;(600)),
+                        new Equality&lt;&gt;(new ContextReference&lt;&gt;(List.of("field")), new Value&lt;&gt;("more"))
+                    )
+                )
+            )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This would result in the following <code>WHERE</code>-clause</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">WHERE
+    ("my"."property" &lt; 400 AND NOT 'my-value' = "other-property") OR
+    (NOT "field" = 'value') OR
+    ("my"."property" &gt; 600 AND "field" = 'more')</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, given a <code>SearchService</code> one can use the low level api to query a result page as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">Complete low level search example</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            Page&lt;?&gt; result = service.search(new SearchRequest(
+                new PageDefinition(
+                    200,
+                    400, List.of(new Order(OrderDirection.DESCENDING, new ContextReference&lt;String&gt;(List.of("field"))))
+                ),
+                new NotExpression(new Equality&lt;&gt;(new ContextReference&lt;&gt;(List.of("my", "property")), new Value&lt;&gt;(400))),
+                SearchOptions.DEFAULT
+            ));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will retrieve elements whose property <code>my.property</code> does not have the value <code>400</code>, ordered by the field <code>field</code>. The first 200 elements will not be returned and only the 400 following will (should they exist).</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_solr_eql"><strong>Solr EQL</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_solr_eql_usage">Solr EQL Usage</h3>
+<div class="paragraph">
+<p>If you want to use the Solr EQL visitor, there are two ways to do this. If you want to search in an existing Solr you can use 1). If you want to get a Solr query string you can use 2).</p>
+</div>
+<div class="paragraph">
+<p>1) With <em>SolrSearchService</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">        try (SolrSearchService searchService = new SolrSearchService(solrClient, Map.of())) {
+            Expression&lt;Boolean&gt; expression = Eql.condition().contextReference("id").equalTo().value(47).holds();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first thing you will need is a <em>SolrClient</em> (from SolrJ). You also need a <em>SolrSearchService</em>. The <em>SolrSearchService</em> needs two parameters. The first parameter is the previously created <em>SolrClient</em> and the second parameter is an optional <em>map</em> of information about the current schema in the solr collection for the query. Finally, you will need an EQL Expression. In chapter <a href="#_solr_eql_expressions">Solr EQL Expressions</a> the individual Solr Expressions are presented. Whenever you create the queries above, you can create a <em>SearchRequest</em> and put the variables in the instantiation. Moreover, you can add a <em>PageDefinition</em>. In this example we used <em>PageDefinition.oneElement()</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            SearchRequest searchRequest = new SearchRequest(PageDefinition.oneElement(), expression, queryExtension);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2) With <em>&lt;Expression&gt;.get.accept</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    eqlElement.get().accept(new ToSolrEqlElementVisitor(schema), null)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this way you get the search string out of the EQL Expression. You can add the Visitor to the <em>accept</em> method. This will return the result search string.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_solr_eql_expressions">Solr EQL Expressions</h3>
+<div class="paragraph">
+<div class="title">Calling <strong>equal to</strong>:</div>
+<p>The input value must be matched exactly in the search result.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("text").equalTo().value("value")
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "text:\"value\"",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>like</strong>:</div>
+<p>You can add a wildcard to the input value. In the EQL you can use two different wildcards for example <em>?</em> for a single character or <em>*</em> for multiple characters. The result is based on the wildcard you are defined in the input value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("text").like().value("test*")
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "text:test*",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>contains</strong>:</div>
+<p>The input value must be somewhere in the search result. Also, you can find a string in an array list.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("text").contains().value("test")
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "text:test",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>in</strong>:</div>
+<p>The input value can contain multiply entries (array). The result gets the results out of the input array based on the field.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("text").in().values("A", "B", "C")
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "text:(A || B || C)",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>and</strong> or <strong>or</strong>:</div>
+<p>Connect two Expression with <em>and</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("text").contains().value("test")
+                    .and(Eql.condition().contextReference("other").equalTo().value("value").holds())
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "text:test &amp;&amp; other:\"value\"",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>greater than</strong>:</div>
+<p>The result is bigger than the input value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("field").greaterThan().value("value1")
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "field:[value1 TO *]",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>less than</strong>:</div>
+<p>The result is smaller than the input value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("field").lessThan().value("value1")
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "field:[* TO value1]",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>between</strong>:</div>
+<p>The result is between two input values without the left outermost and right outermost result.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("column1")
+                    .between().value(1).value(10)
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "column1:{1 TO 10}",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>between inclusive</strong>:</div>
+<p>The result is between two input values with the left outermost and right outermost result.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("column2")
+                    .betweenInclusive().value(200).value(500)
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "column2:[200 TO 500]",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>between right inclusive</strong>:</div>
+<p>The result is between two input values with the right outermost and without the left outermost result.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("column3")
+                    .betweenRightInclusive().value(111).value(999)
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "column3:{111 TO 999]",</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Calling <strong>between left inclusive</strong>:</div>
+<p>The result is between two input values with the left outermost and without the right outermost result.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
+                    .contextReference("column4")
+                    .betweenLeftInclusive().value("A").value("Z")
+                    .holds(),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                "column4:[A TO Z}",</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_solr_hit_score">Solr Hit Score</h3>
+<div class="paragraph">
+<p>In Solr you can create a filter query with a hit score. The hit score is calculated from the number of requests linked with <strong>and</strong> or <strong>or</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>You have three entries in your Solr collection in the field "testfeld"</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Entry</th>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">testfeld</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arveo EQL Test</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">testfeld</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arveo EQL 1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">testfeld</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arveo EQL 2</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If you now use the following query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Eql.condition()
+.contextReference("testfeld").contains().value("Arveo")
+.or(Eql.condition().contextReference("testfeld").contains().value("EQL").holds())
+.or(Eql.condition().contextReference("testfeld").contains().value("Test").holds())
+.holds()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All three entries would be returned as a result. Entry 2 and 3 would have a hit score of <strong>2.0</strong> and the 1st entry would have a hit score of <strong>3.0</strong>.</p>
+</div>
+<div class="paragraph">
+<p>If you are using the EQL QueryExtensions, a hit score can be specified that must be met for the result. In the example we defined a hit-score of 1.0 for the minimum.</p>
+</div>
+<div class="listingblock">
+<div class="title">Set hit score:</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">            SolrHitScoreQueryExtension queryExtension = new SolrHitScoreQueryExtension(1.0);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{!frange l=1.0}query($q)</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_solr_highlighting">Solr Highlighting</h3>
+<div class="paragraph">
+<p>In Solr you can create a highlighting query extension. The highlighting will be added at the end of the query string.</p>
+</div>
+<div class="listingblock">
+<div class="title">Set acl as solr filter:</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;QueryExtension&gt; queryExtensions = new ArrayList&lt;&gt;();
+queryExtensions.add(new SolrHighlightingQueryExtension(500));
+SearchRequest searchRequest = new SearchRequest(PageDefinition.oneElement(), expression, solrSearchOptions, queryExtensions);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-url-parameter" data-lang="url-parameter">&amp;hl=true&amp;hl.method=unified&amp;hl.fragsize=500&amp;hl.tag.pre=&lt;em&gt;&amp;hl.tag.post=&lt;/em&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More detail information about the highlighting you can find at the following at this url <a href="https://solr.apache.org/guide/8_11/highlighting.html" class="bare">https://solr.apache.org/guide/8_11/highlighting.html</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_acl_filter_extension">ACL filter extension</h3>
+<div class="paragraph">
+<p>The ACL filter extension uses a plugin that extends Solr with ACL checking functionality. The plugin&#8217;s
+documentation can be found in the Access Control Service documentation.</p>
+</div>
+<div class="paragraph">
+<p>The extension makes it possible to define a filter query based on a minimum ACL right the user must have to be able to
+find the documents.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example filter query</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{!aclright userId=111 aclAssignmentId=222 granted=3}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The extension is used as shown in the example below:</p>
+</div>
+<div class="listingblock">
+<div class="title">Usage of the ACL filter extension</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    Expression&lt;Boolean&gt; expression = Eql.condition().contextReference("id").equalTo().value(47).holds();
+    SolrAclQueryExtension aclQueryExtension = new SolrAclQueryExtension(111L, 222L, (short) 3);
+
+    SearchRequest searchRequest = new SearchRequest(PageDefinition.oneElement(), expression, aclQueryExtension);
+    searchService.search(searchRequest);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_jooq"><strong>JOOQ</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>eql-jooq</code> module provides an EQL based <code>SearchService</code> that can be used with <a href="https://www.jooq.org/">JOOQ</a>.
+Basically, the SearchServices uses a JOOQ <code>DSLContext</code> to provide query results containing <code>Record</code> items.</p>
+</div>
+<div class="paragraph">
+<p>The <code>JooqSearchService</code> can be instantiated using a builder pattern as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Instantiation of a JooqSearchService</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">JooqSearchService&lt;Record, Object&gt; searchService = JooqSearchService.buildRecordSearchService()
+    .select()
+    .fields(DSL.asterisk()) <i class="conum" data-value="1"></i><b>(1)</b>
+    .fromTable(DSL.table(DSL.name("patients")))<i class="conum" data-value="2"></i><b>(2)</b>
+    .withContext(dslContext)<i class="conum" data-value="3"></i><b>(3)</b>
+    .defaultEqlTranslation()
+    .build();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The list of fields to select or the asterisk.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The table to use for the queries. Could be a single table or a join.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A configured DSLContext instance</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The second type parameter (<code>Object</code>) of the search service results from the input type of the visitor implementation
+used to transform an EQL quer to a JOOQ query and is not significant for the usage of the SearchService. Instead of
+a generic table (as used in the example), a table generated by the JOOQ code generator can be used, too.</p>
+</div>
+<div class="paragraph">
+<p>Once the service was instantiated, it can be used to perform queries as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">Usage of the search service</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Optional&lt;Record&gt; patient_id = searchService.where()
+    .contextReference("patient_id")
+    .equalTo()
+    .value(738)
+    .holds()
+    .uniqueResult();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The search service provides the same fluent API as any EQL SearchService. The EQL expression formulated using the API
+will be translated to a JOOQ query.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_string_api"><strong>String API</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_summary">Summary</h3>
+<div class="paragraph">
+<p>The EQL String API is created with usage in web APIs in mind and is compatible to OpenAPI.
+That means it can be used in path parameters and, of course, in body parameters as json string.</p>
+</div>
+<div class="paragraph">
+<p>The language provides two grammars:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Query grammar for the description of search queries,</p>
+</li>
+<li>
+<p>Order grammar for the description of order statements.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_overall_syntax">Overall syntax</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Predicate</dt>
+<dd>
+<p>The predicate is the smallest query construct. There are two ways a predicate can be built:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Parameter operation value</strong>, for example:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name = Andreas</p>
+</li>
+<li>
+<p>name starts-with An</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Parameter valueOperation</strong>, for example:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>+name is-null*</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</dd>
+<dt class="hdlist1">Logic Expressions</dt>
+<dd>
+<p>The logic operations <strong>and</strong>, <strong>or</strong> and <strong>not</strong> can be used to chain or invert your query expressions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name = Andreas <strong>and</strong> age &gt; 24</p>
+</li>
+<li>
+<p><strong>not</strong> age &gt; 24</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Parentheses</dt>
+<dd>
+<p>The parentheses (round brackets) <strong>(</strong> and <strong>)</strong> can be used to structure the query expressions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name = Andreas and (age &lt; 12 or age &gt; 24)</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_query_parameter">Parameter</h4>
+<div class="paragraph">
+<p>Following letters are allowed in parameter names:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Alphanumerical: A to Z and a to z</p>
+</li>
+<li>
+<p>Numbers from 0 to 9</p>
+</li>
+<li>
+<p>Underline '_', Minus '-', Dot '.'</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>name</strong> = Andreas</p>
+</li>
+<li>
+<p><strong>Age</strong> &lt; 24</p>
+</li>
+<li>
+<p><strong>preferredColor2</strong> = Red</p>
+</li>
+<li>
+<p><strong>name.forename</strong> = Andreas</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Parameters are parsed in a <em>ContextReference of <strong>String</strong></em>. There is an option to tell the parser, that dot-separated parameters should be parsed in a <em>ContextReference of <strong>List of Strings</strong></em>!
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_values">Values</h4>
+<div class="paragraph">
+<p>Values allow two syntaxes, a short one with some limitations and a long one that allows mostly all combinations of letters.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Short syntax</dt>
+<dd>
+<p>The short syntax for values is only allowed if parameter contains only lower or uppercase letters, numbers or an ISO 8601 date:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name = <strong>Andreas</strong></p>
+</li>
+<li>
+<p>height &gt; <strong>1.86</strong></p>
+</li>
+<li>
+<p>birthdate = <strong>2000-10-31T01:30:00Z</strong></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Long syntax</dt>
+<dd>
+<p>The long syntax is necessary when the parameter contains spaces, signs, dots or everything else. In this case, the value is marked with simple or doubled quotation marks, <strong>'</strong> or <strong>"</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name = <strong>'Andreas Mueller'</strong></p>
+</li>
+<li>
+<p>name = <strong>"Andreas 'SpeedPainter' Mueller"</strong></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_operations">Operations</h4>
+<div class="paragraph">
+<p>Following operations are supported in combination with a value:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+=
+</td>
+<td class="hdlist2">
+<p>equals</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+&lt;
+</td>
+<td class="hdlist2">
+<p>less than</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+&lt;=
+</td>
+<td class="hdlist2">
+<p>less than or equals</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+&gt;
+</td>
+<td class="hdlist2">
+<p>greater than</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+&gt;=
+</td>
+<td class="hdlist2">
+<p>greater than or equals</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+&lt;&gt; <em>or</em> !=
+</td>
+<td class="hdlist2">
+<p>not equals</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+starts-with
+</td>
+<td class="hdlist2">
+<p>.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+ends-with
+</td>
+<td class="hdlist2">
+<p>.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+contains
+</td>
+<td class="hdlist2">
+<p>.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Use Ends-With and Contains with care! In some databases they can end in very long execution times!
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_valueoperations">ValueOperations</h4>
+<div class="paragraph">
+<p>Following operations can be used without a value:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>is-null</strong></p>
+</li>
+<li>
+<p><strong>not-null</strong></p>
+</li>
+<li>
+<p><strong>is-true</strong></p>
+</li>
+<li>
+<p><strong>is-false</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>name <strong>is-null</strong></p>
+</li>
+<li>
+<p>isEmpty <strong>is-true</strong></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_order_language">Order language</h3>
+<div class="sect3">
+<h4 id="_overall_syntax_2">Overall syntax</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Predicate</dt>
+<dd>
+<p>The predicate is the smallest query construct and be written in two ways:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Parameter Order</strong>, for example:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name asc</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Parameter</strong>, for example:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name</p>
+</li>
+<li>
+<p>In that way, the default order of the application is used as order.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</dd>
+<dt class="hdlist1">Comma-separated</dt>
+<dd>
+<p>Multiple orders can be given comma separated:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name asc<strong>,</strong> age desc</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parameter">Parameter</h4>
+<div class="paragraph">
+<p>The parameter syntax is the same as described query languages <a href="#_query_parameter">Parameter</a> section.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_order">Order</h4>
+<div class="paragraph">
+<p>Only two values are allowed for orders. Long or short spelling is possible:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ascending</strong> or <strong>asc</strong></p>
+</li>
+<li>
+<p><strong>descending</strong> or <strong>desc</strong></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_to_use">How to use</h3>
+<div class="paragraph">
+<p>Instantiate <strong>EqlQueryParser</strong> or <strong>EqlOrderParser</strong> and call the .parse() method with the String you want to parse into Eql.</p>
+</div>
+<div class="listingblock">
+<div class="title">How to create a parser and parse a string.</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">        var parser = new EqlQueryParser();
+
+        Expression&lt;Boolean&gt; result = parser.parse("name = 'Hello World'");
+        Expression&lt;Boolean&gt; expected = new Equality&lt;&gt;(new ContextReference&lt;&gt;(List.of("name")), new Value&lt;&gt;("Hello World"));
+
+        assertEqualsEql(expected, result);</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parser_options">Parser Options</h4>
+<div class="paragraph">
+<p>Both, query and order parser, support a set of options.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Separate Parameters by Dot
+</td>
+<td class="hdlist2">
+<p>Parameters are separated by dot into a List of Strings instead of a single string. (<em>default:</em> <strong>false</strong>)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Lexer Error Listener <em>and</em> Parser Error Listener
+</td>
+<td class="hdlist2">
+<p>Overwrite the default error listeners, that just throws an EqlParseException, with custom ones.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Default Order (only <em>Order Parser</em>)
+</td>
+<td class="hdlist2">
+<p>Sets the default order (asc or desc) if no order is given. (<em>default:</em> ascending)</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-06-01 07:51:19 UTC
+</div>
+</div>
+</body>
+</html>
