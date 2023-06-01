@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 13.0.6</div>
+<div id="toctitle">arveo 13.0.7</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -2722,7 +2722,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 13.0.6.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 13.0.7.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3160,7 +3160,7 @@ DemoModelStatus getStatus();
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>13.0.6<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>13.0.7<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -5202,7 +5202,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>13.0.6<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>13.0.7<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -7658,7 +7658,7 @@ entries in the queue table.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Collections will be created automatically from <em>arveo</em>. Every tenant gets his own collection.
+Collections will be created automatically from <em>arveo</em>.
 </td>
 </tr>
 </table>
@@ -7692,7 +7692,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <h5 id="_solr_configurations">Solr Configurations</h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/13.0.6/ecr-environment-configuration-13.0.6-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/13.0.7/ecr-environment-configuration-13.0.7-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -7716,7 +7716,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <div class="sect5">
 <h6 id="_type_definitions">Type definitions</h6>
 <div class="paragraph">
-<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the Solr manged-schema.xml. If you want to deactivate an attribute of an type definition for Solr you can do the following:</p>
+<p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the Solr schema. If you want to deactivate an attribute of a type definition for Solr you can do the following:</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -7725,7 +7725,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If you have a type definition which is using the annotation @NOSql you must be setup a Solr. Otherwise, <em>arveo</em> will be not starting!
+If you have a type definition which is using the annotation @NOSql you must setup a Solr instance. Otherwise, <em>arveo</em> will not start!
 </td>
 </tr>
 </table>
@@ -7744,24 +7744,24 @@ If you have a type definition which is using the annotation @NOSql you must be s
 </div>
 </div>
 <div class="paragraph">
-<p>In this example only the firstname will be automatically created in the managed-schema.xml of Solr.</p>
+<p>In this example only the firstname will be automatically created in the schema of Solr.</p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="_fulltext_extraction">Fulltext Extraction</h6>
 <div class="paragraph">
-<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with @Type(ObjectType.DOCUMENT) and @NOSql. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of Solr:</p>
+<p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with <code>@Type(ObjectType.DOCUMENT)</code> and <code>@NOSql</code>. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of Solr:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Arveo saves the documents who are annotated with @NOSql in a queue table named <em>type_definition_name + _ng</em>;</p>
+<p>Arveo saves the documents who are annotated with <code>@NOSql</code> in a queue table named <em>type_definition_name + _ng</em>;</p>
 </li>
 <li>
 <p>Now a job will fetch all entry in the queue table;</p>
 </li>
 <li>
-<p>For each entry which are annotated with @Type(ObjectType.DOCUMENT) arveo will call the document conversion service to extract the fulltext from the content;</p>
+<p>For each entry which are annotated with <code>@Type(ObjectType.DOCUMENT)</code> arveo will call the document conversion service to extract the fulltext from the content;</p>
 </li>
 <li>
 <p>At the end all information will be saved to Solr.</p>
@@ -8042,8 +8042,9 @@ The following example shows how to use this method to search in a specific field
 </div>
 <div class="paragraph">
 <p>When using the <code>getNoSqlSearchService</code> method, the query performed in Solr will automatically be limited to entities
-belonging to one single type definition. To search for entities in multiple type definitions, the method
-<code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.</p>
+belonging to one single type definition. In this case, it is not necessary to use the helper method from the generated
+name constant class to compute the name. The service is able to automatically compute the corret name. To search for
+entities in multiple type definitions, the method <code>de.eitco.ecr.sdk.SearchClient.searchServiceForNoSql</code> can be used.</p>
 </div>
 </div>
 <div class="sect3">
@@ -8508,19 +8509,19 @@ of the different services.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Repository Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ecr-service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository-service</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user-management-service</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User Management Access Control Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-access-control-service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user-management-access-control-service</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise User Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-user-management-enterprise-service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user-management-enterprise-service</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service</p></td>
@@ -8528,15 +8529,15 @@ of the different services.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-administration-service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">administration-service</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-audit-service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">audit-service</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cmn-integration-service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integration-service</p></td>
 </tr>
 </tbody>
 </table>
@@ -17624,7 +17625,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-19 13:55:48 UTC
+Last updated 2023-06-01 09:33:47 UTC
 </div>
 </div>
 <style>
