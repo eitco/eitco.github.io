@@ -165,7 +165,7 @@ window.onload = function() {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO User Management Service 6.1.4-SNAPSHOT</div>
+<div id="toctitle">EITCO User Management Service 7.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_eitco_user_management_service"><strong>EITCO User Management Service</strong></a></li>
 <li><a href="#_basic_functions"><strong>Basic functions</strong></a></li>
@@ -191,8 +191,6 @@ window.onload = function() {
 <li><a href="#_alternative_cache_implementation">Alternative cache implementation</a></li>
 </ul>
 </li>
-<li><a href="#_securing_rest_endpoints"><strong>Securing REST Endpoints</strong></a></li>
-<li><a href="#_client_management"><strong>Client Management</strong></a></li>
 <li><a href="#_ldap_synchronization"><strong>LDAP Synchronization</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_unit_testing">Unit testing</a></li>
@@ -393,14 +391,14 @@ side.</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
   &lt;artifactId&gt;cmn-user-management-client-spring-boot-starter&lt;/artifactId&gt;
-  &lt;version&gt;6.1.4-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;7.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-client-spring-boot-starter:6.1.4-SNAPSHOT'</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-client-spring-boot-starter:7.0.0-SNAPSHOT'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -412,14 +410,14 @@ side.</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
   &lt;artifactId&gt;cmn-user-management-embedded-spring-boot-starter&lt;/artifactId&gt;
-  &lt;version&gt;6.1.4-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;7.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-embedded-spring-boot-starter:6.1.4-SNAPSHOT'</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-embedded-spring-boot-starter:7.0.0-SNAPSHOT'</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -1107,154 +1105,6 @@ create the bean.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_securing_rest_endpoints"><strong>Securing REST Endpoints</strong></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Spring security should be used to secure the REST endpoints. Below is a brief description of such a protection. Of course,
-it is recommended to look at the numerous documentations about Spring-Security on the Internet to get more detailed
-information about this topic.</p>
-</div>
-<div class="paragraph">
-<p>In order to use Spring-Security, it has to be activated. The activation can be done in a Spring boot application by a
-configuration bean that is annotated with the annotation <em>@EnableWebSecurity</em>. Such a configuration bean extends the Spring
-Security class <em>WebSecurityConfigurerAdapter</em>, as shown in the following example.</p>
-</div>
-<div class="listingblock">
-<div class="title">Activate Spring-Security</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-@EnableWebSecurity
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As an artefact, 'spring-boot-starter-security' is to be included (see the Maven dependency below).</p>
-</div>
-<div class="listingblock">
-<div class="title">Artefact integration using Maven</div>
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
-   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-   &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
- &lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To secure the endpoints, the configure method of the WebSecurityConfigurerAdapter class must now be overwritten using
-the configuration bean (see following example).</p>
-</div>
-<div class="listingblock">
-<div class="title">Securing endpoints via configure</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-@EnableWebSecurity
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/public/**").permitAll()
-            .antMatchers("/foo2/**").hasRole("ADMIN")
-            .antMatchers("/foo3").hasAuthority("ERSTELLEN")
-            .antMatchers("/foo4/**").hasAnyRole("ADMIN", "FOO")
-            .antMatchers("/foo/foo5").hasAnyAuthority("ERSTELLEN","LOESCHEN")
-            .and()...;
-     }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>By means of the method authorizeRequests, the specification of Apache-Ant-Patterns is initiated, i.e. the specification
-of the URL path patterns to be secured or not to be secured. If nothing is specified, authentication is required for each
-URL path or endpoint. Otherwise, in case of ambiguous specification, the order is decisive. The first specification is
-valid.</p>
-</div>
-<div class="paragraph">
-<p>A possible context part of the URL path is not to be specified. For example, at <a href="http://host:port/fooContext/foo2" class="bare">http://host:port/fooContext/foo2</a>, only
-/foo2 would have to be specified.</p>
-</div>
-<div class="paragraph">
-<p>Note on <em>hasRole</em> and <em>hasAuthority</em>: Spring internally only knows a list of authorities. A role is now determined by the
-fact that the authority name begins with ROLE_. The user service automatically prefixes the authorities with ROLE_ when
-compiling them to pass them to Spring-Security.</p>
-</div>
-<div class="paragraph">
-<p>Note: What else is or can be configured by means of the HttpSecurity instance can be found at
-<a href="https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html" class="bare">https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html</a>, for example.</p>
-</div>
-<div class="paragraph">
-<p>Endpoints can also be secured with an endpoint method by means of a method annotation. To do this, the configuration bean
-must also be provided with the annotation <em>@EnableGlobalMethodSecurity</em>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Security by means of method annotation</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The annotation <em>@EnableGlobalMethodSecurity</em> activates, as the name says, globally corresponding method annotations. These
-are basically all methods. So not only methods of the REST endpoints. In the example above, this activates the
-<em>PreAuthorize</em> annotation, among others, which is supported by the user service, see as follows.</p>
-</div>
-<div class="listingblock">
-<div class="title">Method annotation PreAuthorize</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@RequestMapping(value = "/forms", method = RequestMethod.POST,. . .
-@PreAuthorize("@authService.isPrivilegeGranted('UPLOAD')")
-@ResponseBody
-public ResponseEntity&lt;ServiceReply&gt; uploadForm(@RequestBody final FormRequest request) {
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>By means of the method annotation <em>@PreAuthorize</em>, the methods specified above under API Lookup/Cache can be used in relation
-to the current user. Listed again are the following methods: isSuperuser(), isInRole(String), isInGroup(String),
-isPrivilegeGranted(String), areAllPrivilegesGranted(String&#8230;&#8203;), isOnePrivilegeGranted(String&#8230;&#8203;),
-isPrivilegeGrantedGroup(String, String).
-For more information, refer to the API documentation for <em>de.eitco.commons.user.management.common.auth.AuthService</em>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_client_management"><strong>Client Management</strong></h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="title">Configuration of the client management</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">tenant:
-  # The following configurations are used to define three clients as examples. To configure a client,
-  # the access parameter values of the respective client database are to be specified.
-  #
-  # Note: In the absence of a client configuration, the database access parameters specified under spring.datasource apply.
-  # In such a case, the user service is started under the quasi-client "master".
-  tenants:
-    - tenant-id: TenantFoo1
-      db-url: jdbc:postgresql://localhost:5432/?currentSchema=usersrv
-      db-username: postgres
-      db-password: manage
-      db-driver-class-name: org.postgresql.Driver
-    - tenant-id: TenantFooDemo1
-      db-url: "jdbc:h2:mem:test;MODE=PostgreSQL;MVCC=true;LOCK_TIMEOUT=15000;DB_CLOSE_DELAY=-1"
-      db-username: sa
-      db-password:
-      db-driver-class-name: org.h2.Driver
-    - tenant-id: TenantFooDemo2
-      db-url: "jdbc:h2:file:~/.h2/user;AUTO_SERVER=TRUE;MODE=PostgreSQL"
-      db-username: foo
-      db-password: bar
-      db-driver-class-name: org.h2.Driver</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_ldap_synchronization"><strong>LDAP Synchronization</strong></h2>
 <div class="sectionbody">
 <div class="listingblock">
@@ -1608,7 +1458,7 @@ To set a user value, the name of the user pojo attribute must be used in the con
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-06-22 02:50:12 UTC
+Last updated 2023-06-22 11:45:13 UTC
 </div>
 </div>
 </body>
