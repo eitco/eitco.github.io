@@ -9338,6 +9338,18 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tus-upload-service-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The application name of the tus upload service.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tus-upload-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tus-upload-service-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URL path at which the upload service&#8217;s endpoints are available.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/files</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">update-schema</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether to update the database schema at startup or not.</p></td>
@@ -15180,6 +15192,99 @@ client.create(input);</code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_resumable_uploads">Resumable uploads</h4>
+<div class="paragraph">
+<p>In some situations uploading large files might fail because of timeouts or an unstable network connection. For these
+situations, arveo supports resumable uploads using the <a href="http://tus.io">tus</a> protocol. On the server side, an
+additional service is used that provides the tus API and stores uploaded files in the filesystem. The Content Repository
+Service retrieves uploaded files from the upload service and stores them just as any regular content. When the content
+was stored successfully, the uploaded file is deleted from the upload service&#8217;s storage automatically. In case storing
+the content in the Content Repository Service has failed, the uploaded file is not removed, giving the client the
+opportunity to re-try storing the content without having to upload the entire file again.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows how to use the official tus Java client in combination with the arveo SDK to use
+resumable uploads.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example: Resumable uploads</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">TusClient client = <span class="keyword">new</span> TusClient();
+client.setUploadCreationURL(<span class="keyword">new</span> <span class="predefined-type">URL</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:</span><span class="delimiter">&quot;</span></span> + tusUploadServicePort + <span class="string"><span class="delimiter">&quot;</span><span class="content">/files</span><span class="delimiter">&quot;</span></span>)); <i class="conum" data-value="1"></i><b>(1)</b>
+client.enableResuming(<span class="keyword">new</span> TusURLMemoryStore());
+
+<span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; headers = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+headers.put(HttpHeaders.AUTHORIZATION, <span class="string"><span class="delimiter">&quot;</span><span class="content">Bearer </span><span class="delimiter">&quot;</span></span> + oAuth2TokenManager.getAccessToken()); <i class="conum" data-value="2"></i><b>(2)</b>
+client.setHeaders(headers);
+
+<span class="predefined-type">File</span> file = <span class="keyword">new</span> <span class="predefined-type">File</span>(baseDirectory + <span class="string"><span class="delimiter">&quot;</span><span class="content">/src/test/resources/documents/lorem_ipsum.txt</span><span class="delimiter">&quot;</span></span>);
+TusUpload upload = <span class="keyword">new</span> TusUpload(file);
+
+<span class="directive">final</span> <span class="predefined-type">String</span><span class="type">[]</span> uploadId = <span class="keyword">new</span> <span class="predefined-type">String</span>[<span class="integer">1</span>];
+
+TusExecutor executor = <span class="keyword">new</span> TusExecutor() {
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> makeAttempt() <span class="directive">throws</span> <span class="exception">ProtocolException</span>, <span class="exception">IOException</span> {
+
+        TusUploader uploader = client.resumeOrCreateUpload(upload);
+        uploader.setChunkSize(<span class="integer">102400</span>);
+
+        <span class="keyword">do</span> {
+            <span class="type">long</span> totalBytes = upload.getSize();
+            <span class="type">long</span> bytesUploaded = uploader.getOffset();
+            <span class="type">double</span> progress = (<span class="type">double</span>) bytesUploaded / totalBytes * <span class="integer">100</span>;
+
+            <span class="predefined-type">System</span>.out.printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">Upload at %06.2f%%.</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, progress); <i class="conum" data-value="3"></i><b>(3)</b>
+        } <span class="keyword">while</span> (uploader.uploadChunk() &gt; -<span class="integer">1</span>);
+
+        uploader.finish();
+
+        <span class="predefined-type">String</span> filePart = uploader.getUploadURL().getFile();
+        uploadId[<span class="integer">0</span>] = filePart.substring(filePart.lastIndexOf(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>) + <span class="integer">1</span>); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+};
+
+executor.makeAttempts();
+
+TypedDocumentServiceClient&lt;Files&gt; serviceClient =
+    typeDefinitionServiceClient.getDocumentServiceClient().byClass(Files.class);
+
+Files document = serviceClient.createTypeInstance();
+document.setFilename(<span class="string"><span class="delimiter">&quot;</span><span class="content">lorem_ipsum.txt</span><span class="delimiter">&quot;</span></span>);
+
+AsyncUploadReference uploadReference = <span class="keyword">new</span> AsyncUploadReference(uploadId[<span class="integer">0</span>], <span class="string"><span class="delimiter">&quot;</span><span class="content">lorem_ipsum.txt</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="5"></i><b>(5)</b>
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentReference&gt; contentReferences = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, uploadReference);
+
+TypedDocumentClient&lt;Files&gt; typedDocumentClient =
+    serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(document, contentReferences));</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create a new TusClient using the URL of the upload service.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Authentication is done using OAuth2. The Oauth2TokenManager is provided by the OAuth2 client library from eitco commons and can be injected.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An example that shows how to display the progress of the upload.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Determine the unique ID of the upload. It is the last part of the upload URL returned by the TusUploader.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Reference the uploaded file using its ID for the document creation call for the Content Repository Service.</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_download_data">Download data</h3>
@@ -17586,7 +17691,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-06 02:48:27 UTC
+Last updated 2023-07-06 09:22:19 UTC
 </div>
 </div>
 <style>
