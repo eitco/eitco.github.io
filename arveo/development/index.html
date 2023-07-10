@@ -8338,9 +8338,11 @@ repository service will create the jobs (if required), but it will not execute t
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-It is required to configure the user and the password to be used for the jobs. The user has to own the required
-authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code> and the autority configured in <em>security.general.role-for-secured-access</em>
-(by default <code>ECR_SERVICE_USER</code>).
+When the jobs are executed in the external Job Service, it is required to configure the user and the password
+to be used for the jobs. The user has to own the required authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code>
+and the authority configured in <em>security.general.role-for-secured-access</em> (by default <code>ECR_SERVICE_USER</code>). When the
+jobs are executed in the scheduler embedded in the repository service, an internal authentication mechanism is used and
+no additional configuration is required.
 </td>
 </tr>
 </table>
@@ -8401,25 +8403,38 @@ how to configure two client registrations for the service:</p>
     <span class="key">oauth2</span>:
       <span class="key">resourceserver</span>:
         <span class="key">jwt</span>:
-          <span class="key">public-key-location</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/public_key</span><span class="delimiter">&quot;</span></span>
+          <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004</span><span class="delimiter">&quot;</span></span>
       <span class="key">client</span>:
         <span class="key">registration</span>:
-          <span class="key">cmn-user-service-client-credentials</span>:
-            <span class="key">provider</span>: <span class="string"><span class="content">user-service</span></span>
-            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">tech-client</span><span class="delimiter">&quot;</span></span>
-            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">tech-secret</span><span class="delimiter">&quot;</span></span>
+          <span class="key">autorization-service-client-credentials</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">authorization-service</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
             <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">client_credentials</span><span class="delimiter">&quot;</span></span>
-            <span class="key">scope</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">oauth2</span><span class="delimiter">&quot;</span></span>
-          <span class="key">cmn-user-service-password</span>:
-            <span class="key">provider</span>: <span class="string"><span class="content">user-service</span></span>
-            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">test-client</span><span class="delimiter">&quot;</span></span>
-            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">my-secret</span><span class="delimiter">&quot;</span></span>
+          <span class="key">authorization-service-password</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">authorization-service</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
             <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>
-            <span class="key">scope</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">oauth2</span><span class="delimiter">&quot;</span></span>
         <span class="key">provider</span>:
-          <span class="key">user-service</span>:
-            <span class="key">authorization-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/auth</span><span class="delimiter">&quot;</span></span>
-            <span class="key">token-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/token</span><span class="delimiter">&quot;</span></span></code></pre>
+          <span class="key">authorization-service</span>:
+            <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The username and password to use for the jobs can be configured using the following parameters. Note that these parameters
+are added to the job configuration data stored for the triggers in the database used by the scheduler. Because these triggers
+are created by the scheduler running in the Repository Service (even if this scheduler is set to standby mode), the job
+authentication parameters must be configured for the Repository Service.</p>
+</div>
+<div class="listingblock">
+<div class="title">Job user authentication</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">jobs</span>:
+      <span class="key">username</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>
+      <span class="key">password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -17691,7 +17706,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-10 01:27:11 UTC
+Last updated 2023-07-10 14:41:03 UTC
 </div>
 </div>
 <style>
