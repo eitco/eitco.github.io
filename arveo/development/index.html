@@ -9984,11 +9984,17 @@ to make it easier to analyze the system&#8217;s behavior:</p>
 <li>
 <p><code>ecr.tenant</code>: The tenant for which the current request is executed.</p>
 </li>
+<li>
+<p><code>ecr.trace-id</code>: The ID of the current trace, if available. The trace-id is set by Open Telemetry (see below).</p>
+</li>
+<li>
+<p><code>ecr.span-id</code>: The ID of the current span, if available. The span-id is set by Open Telemetry (see below).</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
-<p>These attributes are added using a <code>HandlerInterceptor</code> for the REST endpoints using Spring WebMVC.Note that these
-attributes will not be added when <em>arveo</em> is used embedded.In this case, the application using the embedded
+<p>These attributes are added using a <code>HandlerInterceptor</code> for the REST endpoints using Spring WebMVC. Note that these
+attributes will not be added when <em>arveo</em> is used embedded. In this case, the application using the embedded
 <em>arveo</em> instance is responsible for adding required information to the MDC.</p>
 </div>
 <div class="paragraph">
@@ -17706,7 +17712,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-21 12:59:36 UTC
+Last updated 2023-07-21 16:46:06 UTC
 </div>
 </div>
 <style>
