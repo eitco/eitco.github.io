@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Concepts</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">User Management Enterprise Service 5.0.0</div>
+<ul class="sectlevel1">
+<li><a href="#_concepts"><strong>Concepts</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_enterprise_user_management_enhancement">Enterprise User Management Enhancement</a></li>
+</ul>
+</li>
+<li><a href="#_definitions"><strong>Definitions</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_organisational_units">Organisational units</a></li>
+<li><a href="#_job_positions">Job Positions</a></li>
+<li><a href="#_substitutes">Substitutes</a></li>
+</ul>
+</li>
+<li><a href="#_api"><strong>API</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_overview">Overview</a></li>
+<li><a href="#_usage_of_the_module_user_management_enterprise_in_an_application">Usage of the module <em>user-management-enterprise</em> in an application</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div style="page-break-after: always;"></div>
+<div class="sect1">
+<h2 id="_concepts"><strong>Concepts</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_enterprise_user_management_enhancement">Enterprise User Management Enhancement</h3>
+<div class="paragraph">
+<p>The User Management Enterprise project extends the EITCO User Management Service with entities and concepts that are
+typically found in enterprises and define the general entities of the user management service (user and group). These are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Organisational units;</p>
+</li>
+<li>
+<p>Job positions;</p>
+</li>
+<li>
+<p>Substitutes.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_definitions"><strong>Definitions</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_organisational_units">Organisational units</h3>
+<div class="paragraph">
+<p>Organisational units form the core of an organisation&#8217;s hierarchy. They are represented as groups. If only organisational
+units and their connections are followed, the result is a tree. Organisational units can contain other user management
+entities, but they can be contained in no more than one other group and that group must be an organisational unit.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_job_positions">Job Positions</h3>
+<div class="paragraph">
+<p>Positions within an organisational unit are mapped as groups. Positions can only contain users. Positions can be contained
+in at most one other group and that group must be an organisational unit.</p>
+</div>
+<div class="paragraph">
+<p><em>Main job positions</em></p>
+</div>
+<div class="paragraph">
+<p>A user&#8217;s main job position is his or her actual job position. A user is in a maximum of one main job position.</p>
+</div>
+<div class="paragraph">
+<p><em>Additional job positions</em></p>
+</div>
+<div class="paragraph">
+<p>A user can have several additional job positions, but also none.</p>
+</div>
+<div class="paragraph">
+<p>If access control lists are used, users are only granted the rights of the access control lists assigned to their
+additional job positions, but not the prohibitions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_substitutes">Substitutes</h3>
+<div class="paragraph">
+<p>Substitutes of a job position define, which users substitute for the members of a job position. Substitutes can be
+activated and deactivated. Substitutes are mapped as user-to-group relations.</p>
+</div>
+<div class="paragraph">
+<p>If access control lists are used, users only receive the rights of the access control lists assigned to their active
+substitutions, but not the prohibitions. They receive neither rights nor prohibitions of their inactive substitutions.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_api"><strong>API</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_overview">Overview</h3>
+<div class="paragraph">
+<p>The class <em>UserManagementEnterpriseClient</em> is the entry point for user management enterprise entity functionality. This
+class is a client interface in the module <em>user-management-enterprise</em>. It can be used in an independent application. To
+create a new instance, use the factory method <em>.newInstance</em>.</p>
+</div>
+<div class="paragraph">
+<p>The interface module combines service classes to work with the client
+application. The service classes <em>OrganisationalUnitServiceClient</em> and <em>PositionServiceClient</em> are used to provide an
+instance of an <em>OrganisationalUnitClient</em> or <em>PositionClient</em> respectively. The service client classes are not bound to
+a specific organisational unit or position and are used to search for or create a new organisation unit or job position.
+The client classes are used to work with a defined unit or position and possess a number of utility methods like append,
+replace or delete.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage_of_the_module_user_management_enterprise_in_an_application">Usage of the module <em>user-management-enterprise</em> in an application</h3>
+<div class="paragraph">
+<p>The client application has to be a Spring boot application. It can connect to the server in two ways:</p>
+</div>
+<div class="paragraph">
+<p>1)  by http;</p>
+</div>
+<div class="paragraph">
+<p>In order to do this, add the maven dependency below to your project:</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+&lt;artifactId&gt;cmn-user-management-enterprise-http-client-spring-boot-starter&lt;/artifactId&gt;
+&lt;version&gt;${project.version}&lt;/version&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-enterprise-http-client-spring-boot-starter:5.0.0'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2) embedded by java calls.</p>
+</div>
+<div class="paragraph">
+<p>For this, use the following maven dependency:</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+&lt;artifactId&gt;cmn-user-management-enterprise-embedded-spring-boot-starter&lt;/artifactId&gt;
+&lt;version&gt;${project.version}&lt;/version&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-enterprise-embedded-spring-boot-starter:5.0.0'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-07-28 08:21:51 UTC
+</div>
+</div>
+</body>
+</html>
