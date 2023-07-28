@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Clustering</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">EITCO Job Service 4.0.0</div>
+<ul class="sectlevel1">
+<li><a href="#_clustering"><strong>Clustering</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_disable_job_execution_on_individual_jobservice_instances">Disable job execution on individual JobService instances</a></li>
+<li><a href="#_rest_interface">REST Interface</a></li>
+<li><a href="#_providing_job_implementations">Providing job implementations</a></li>
+</ul>
+</li>
+<li><a href="#_database"><strong>Database</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_database_table_creation">Database table creation</a></li>
+</ul>
+</li>
+<li><a href="#_miscellaneous"><strong>Miscellaneous</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_immediately_triggering_a_job">Immediately triggering a job</a></li>
+<li><a href="#_configuration_options">Configuration Options</a></li>
+<li><a href="#_logging_of_quartzs_activities">Logging of QUARTZ&#8217;s activities</a></li>
+</ul>
+</li>
+<li><a href="#_references"><strong>References</strong></a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div style="page-break-after: always;"></div>
+<div class="sect1">
+<h2 id="_clustering"><strong>Clustering</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The job service is designed to be used in cluster mode: that is several JobService instances care jointly about executing the scheduled jobs and strive to achieve a perfect load balancing between all JobService instances in the cluster. All JobService instances can change the triggers that define which jobs are to be triggered and when these jobs are to be triggered.</p>
+</div>
+<div class="paragraph">
+<p>The synchronization of the JobService instances is done by using a common database instance and leverages row-locks as synchronization mechanism. Hence all JobService instances must have access to very same database tables.</p>
+</div>
+<div class="paragraph">
+<p>The JobService is not multi-tenant capable! The JobService will currently fail to start if there are several tenants configured.</p>
+</div>
+<div class="paragraph">
+<p>Cluster mode is enabled by default via the following default properties in the <code>application.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="title">JobService Configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">  quartz:
+    job-store-type: "jdbc"
+    jdbc:
+      initialize-schema: "NEVER"
+    properties:
+      org:
+        quartz:
+          jobStore:
+            driverDelegateClass: "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate"
+            isClustered: true
+            tablePrefix: "ECQZ_"
+          scheduler:
+            instanceId: "AUTO"</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_disable_job_execution_on_individual_jobservice_instances">Disable job execution on individual JobService instances</h3>
+<div class="paragraph">
+<p>By default, all JobService instances will jointly take care of executing jobs and strive to achieve a perfect load balancing between all JobService instances in the cluster.
+The execution of job&#8217;s on individual JobService instances can disabled, such that these instances will not participate in executing  jobs.
+This can be achieved by setting the configuration option <code>spring.quartz.standbyOnlyScheduler</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">JobService Configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  quartz:
+    standbyOnlyScheduler: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rest_interface">REST Interface</h3>
+<div class="paragraph">
+<p>The REST interface allows the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Editing the triggers that define which jobs shall be executed at what time.</p>
+</li>
+<li>
+<p>Retrieving information about:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>available/known job types that could be scheduled</p>
+</li>
+<li>
+<p>the properties of the configured triggers</p>
+</li>
+<li>
+<p>when the triggers did fire last and when they will fire next</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There is no way to add new job implementations via the REST interface.</p>
+</div>
+<div class="paragraph">
+<p>Once the service is started you can access the API documentation located at:
+   <code><a href="http://localhost:50001/" class="bare">http://localhost:50001/</a></code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_providing_job_implementations">Providing job implementations</h3>
+<div class="paragraph">
+<p>The job implementations must be provided in terms of Java classes that implement the interface <code>org.quartz.Job</code>.
+All JobService instances in a cluster will compete for executing all pending jobs. Hence, the Java classes that implement the jobs must be available on all JobService instances in the cluster.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for an Job implementation</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleJob implements Job {
+
+    // just an arbitrary object to test if Autowired dependency injection works for Job's
+    @Autowired <i class="conum" data-value="1"></i><b>(1)</b>
+    private Tenants tenants;
+
+    public void execute(JobExecutionContext context) throws JobExecutionException { <i class="conum" data-value="2"></i><b>(2)</b>
+
+        System.out.println( "SampleJob - Tenant List:" );
+        tenants.forEach( (tenant) -&gt;{
+            System.out.println( tenant );
+        });
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Dependency injection will work properly when Job class is instantiated using JobDetail-Beans</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Code your logic into the execute method</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Java classes that implement the interface <code>org.quartz.Job</code> are instantiated using a constructor without parameters. A new  java object is created for each execution.</p>
+</div>
+<div class="paragraph">
+<p>These job implementations can not be referenced directly from job triggers, but need to be "registered" with the scheduler. These registrations result in <code>JobDetail</code>-objects/<code>JobDetailFactoryBean</code>-beans that have names and can be referenced from job triggers by that name.
+To make use of spring based dependency injection in Job classes the <code>JobDetail</code>-objects ultimately required by the QUARTZ implementation must not be instantiated manually. One should make use of <code>JobDetailFactoryBean</code>-beans to let spring create the <code>JobDetail</code>-objects.
+The registration of <code>JobDetailFactoryBean</code>-beans is done via spring-boot auto-configuration.
+The name of the <code>JobDetail</code>-objects created via <code>JobDetailFactoryBean</code>-beans is the name of the bean! So you can reference the <code>JobDetail</code> by the name of the bean (and the <code>group</code>- name which defaults to <code>DEFAULT</code> if not specified) when creating triggers for the <code>JobDetail</code>.
+The job implementation classes will usually be bundled in a jar file containing a <code>META-INF/spring.factories</code> manifest file that specifies a configuration Bean, which defines <code>JobDetailFactoryBean</code>-Beans that define the jobs that can be executed. These <code>JobDetailFactoryBean</code>-beans do reference the Java classes that implement the interface <code>org.quartz.Job</code> and do specify additional properties/configuration parameters.</p>
+</div>
+<div class="listingblock">
+<div class="title">META-INF/spring.factories</div>
+<div class="content">
+<pre class="highlight"><code class="language-ini" data-lang="ini">org.springframework.boot.autoconfigure.EnableAutoConfiguration=de.eitco.commons.job.service.test.testjobs.TestJobRegistrationConfiguration</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Example for a JobDetail-Bean</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
+    public JobDetailFactoryBean alienCheckJobDetail() {
+        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+        jobDetailFactory.setJobClass(SampleJob.class); <i class="conum" data-value="1"></i><b>(1)</b>
+        jobDetailFactory.setDescription("Invoke Alien check ...");
+        jobDetailFactory.setDurability(true); <i class="conum" data-value="2"></i><b>(2)</b>
+        return jobDetailFactory;
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The Job implementation class to use</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Usually set to true, such that the job detail is not deleted, when it is no longer referenced by any trigger.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_database"><strong>Database</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_database_table_creation">Database table creation</h3>
+<div class="paragraph">
+<p>The data base tables are created by the JobService at startup via the liquibase script:
+<code>job-service\core\src\main\resources\liquibase-changeLog.xml</code>
+The script defines a custom table prefix for all the QUARTZ tables to prevent table-collisions if some other library or service uses the same database schema. Otherwise the change log simply includes the standard liquibase script provided by the QUARTZ implementation:
+<code>/org/quartz/impl/jdbcjobstore/liquibase.quartz.init.xml</code></p>
+</div>
+<div class="paragraph">
+<p>The QUARTZ implementation can take care of creating the database tables itself, but that solution caused problems in cluster mode.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_miscellaneous"><strong>Miscellaneous</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_immediately_triggering_a_job">Immediately triggering a job</h3>
+<div class="paragraph">
+<p>A job can be immediately triggered by scheduling a simple trigger with <code>StartTime</code> set to <code>now</code>. A simple trigger will be automatically deleted by the scheduler if all executions have been executed. If you want to check the progress of the job you could define the job to be repeated in the far future.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for immediately triggering a job</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    public void simpleTriggerTest() throws InterruptedException {
+        SchedulerResourceClient client = newClient();
+
+        final JobKeyModel jobKey = new JobKeyModel();
+        jobKey.setName("alienCheckJobDetail");
+        //jobKey.setGroup("DEFAULT"); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        TriggerKeyModel triggerKey = new TriggerKeyModel();
+        triggerKey.setName("simpleTriggerTest");
+        //triggerKey.setGroup("DEFAULT"); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        SimpleTriggerModel model = new SimpleTriggerModel();
+        model.setKey( triggerKey );
+        model.setJobKey( jobKey );
+        model.setStartTime( ZonedDateTime.now() );
+
+        //model.setEndTime( ZonedDateTime.now().plusYears(11) ); <i class="conum" data-value="2"></i><b>(2)</b>
+        //model.setRepeatInterval(10 * 365 * 24 * 60 * 60 * 1000L ); // 10 years <i class="conum" data-value="2"></i><b>(2)</b>
+        //model.setRepeatCount(1); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        client.scheduleSimpleTrigger(model);
+
+        // wait some time <i class="conum" data-value="2"></i><b>(2)</b>
+        // Thread.sleep(60 * 1000); // 60 seconds <i class="conum" data-value="2"></i><b>(2)</b>
+
+        // fetch all the triggerDetails and see what has happened to our job... <i class="conum" data-value="2"></i><b>(2)</b>
+        //final List&lt;TriggerModel&gt; triggerDetails = client.getTriggerDetails(); <i class="conum" data-value="2"></i><b>(2)</b>
+        //... see <i class="conum" data-value="2"></i><b>(2)</b>
+
+        // finally delete the trigger again <i class="conum" data-value="2"></i><b>(2)</b>
+        //client.unscheduleJob(triggerKey); <i class="conum" data-value="2"></i><b>(2)</b>
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The group names need not be specified at all for the default group</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>If you want to check the creation and progress of the job you could define the job to be repeated at least once in the far future. The commented lines suggest how this could implemented&#8230;&#8203;</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_options">Configuration Options</h3>
+<div class="paragraph">
+<p>There are three sets of config options that can both be configured via the spring configuration files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>spring supported options, see: <code>org.springframework.boot.autoconfigure.quartz.QuartzProperties</code>. In the yaml file these properties are rooted at <code>spring.quartz</code>.</p>
+</li>
+<li>
+<p>standard quartz options, that are defined by the quartz implementation and exist independently form the spring support. See: <code><a href="http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/" class="bare">http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/</a></code>. In the yaml file these properties are rooted at <code>spring.quartz.properties</code>.</p>
+</li>
+<li>
+<p>the additional JobService specific option <code>standbyOnlyScheduler</code>. In the yaml file this property is located at <code>spring.quartz.standbyOnlyScheduler</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_logging_of_quartzs_activities">Logging of QUARTZ&#8217;s activities</h3>
+<div class="paragraph">
+<p>QUARTZ has an event based extension interface that allows to get notified about activities in the local scheduler instance and there are two extensions that just log these events to a log file. This kind of logging comes in hand during development and can be enabled via these config options:</p>
+</div>
+<div class="listingblock">
+<div class="title">JobService Configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  quartz:
+    properties:
+      org:
+        quartz:
+          plugin:
+            jobHistory:
+              class: "org.quartz.plugins.history.LoggingJobHistoryPlugin"
+            triggHistory:
+              class: "org.quartz.plugins.history.LoggingTriggerHistoryPlugin"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><strong>References</strong></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>The JobService makes use of the standard SpringBoot integration of QUARTZ:
+<a href="https://docs.spring.io/spring-boot/docs/2.0.0.M3/reference/html/boot-features-quartz.html" class="bare">https://docs.spring.io/spring-boot/docs/2.0.0.M3/reference/html/boot-features-quartz.html</a></p>
+</li>
+<li>
+<p>The QUARTZ Scheduler documentation:
+<a href="http://www.quartz-scheduler.org/documentation/quartz-2.2.2/configuration/" class="bare">http://www.quartz-scheduler.org/documentation/quartz-2.2.2/configuration/</a></p>
+</li>
+<li>
+<p>A very detailed book on QUARTZ&#8217;s usage and inner workings:
+<a href="https://flylib.com/books/en/2.65.1/configuring_jobstore_settings.html" class="bare">https://flylib.com/books/en/2.65.1/configuring_jobstore_settings.html</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here are some more references:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://dzone.com/articles/adding-quartz-to-spring-boot" class="bare">https://dzone.com/articles/adding-quartz-to-spring-boot</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.javarticles.com/2016/03/quartz-scheduler-model.html" class="bare">https://www.javarticles.com/2016/03/quartz-scheduler-model.html</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://jeroenbellen.com/configuring-a-quartz-scheduler-in-a-clustered-spring-boot-application/" class="bare">https://jeroenbellen.com/configuring-a-quartz-scheduler-in-a-clustered-spring-boot-application/</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-07-28 07:26:54 UTC
+</div>
+</div>
+</body>
+</html>
