@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 13.1.0</div>
+<div id="toctitle">arveo 14.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -2722,7 +2722,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 13.1.0.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 14.0.0.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3125,7 +3125,7 @@ DemoModelStatus getStatus();
 <p>Under "Language", select "Java"</p>
 </li>
 <li>
-<p>Select Spring Boot version 2.7.11. If your required version is not available, select the most compatible one in terms of major.minor.patch.</p>
+<p>Select Spring Boot version 3.1.2. If your required version is not available, select the most compatible one in terms of major.minor.patch.</p>
 </li>
 <li>
 <p>Define project metadata. For example, use Group = de.eitco.demo, Artifact = demo-tool, Name = demo-tool, Package name = de.eitco.demo.tool</p>
@@ -3160,7 +3160,7 @@ DemoModelStatus getStatus();
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>13.1.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>14.0.0<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -3213,7 +3213,7 @@ DemoModelStatus getStatus();
         <span class="tag">&lt;dependency&gt;</span>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
             <span class="tag">&lt;artifactId&gt;</span>cmn-commons-spring-security<span class="tag">&lt;/artifactId&gt;</span>
-            <span class="tag">&lt;version&gt;</span>7.0.11<span class="tag">&lt;/version&gt;</span>
+            <span class="tag">&lt;version&gt;</span>8.0.0<span class="tag">&lt;/version&gt;</span>
         <span class="tag">&lt;/dependency&gt;</span>
     <span class="tag">&lt;/dependencies&gt;</span>
 <span class="tag">&lt;/dependencyManagement&gt;</span></code></pre>
@@ -5202,7 +5202,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>13.1.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>14.0.0<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -7604,7 +7604,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/1.1.2/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/2.0.0/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit">Access audit</h4>
@@ -7692,7 +7692,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <h5 id="_solr_configurations">Solr Configurations</h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/13.1.0/ecr-environment-configuration-13.1.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/14.0.0/ecr-environment-configuration-14.0.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -7864,7 +7864,7 @@ contains a ZIP file with the plugin and all required libraries.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 4.1.2) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/4.1.2/cmn-user-management-access-control-solr-plugin-4.1.2-zip.zip">nexus repository</a>.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 5.0.0) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/5.0.0/cmn-user-management-access-control-solr-plugin-5.0.0-zip.zip">nexus repository</a>.</p>
 </li>
 <li>
 <p>Install the plugin in Solr by extracting the content of the downloaded ZIP file as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
@@ -8338,9 +8338,11 @@ repository service will create the jobs (if required), but it will not execute t
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-It is required to configure the user and the password to be used for the jobs. The user has to own the required
-authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code> and the autority configured in <em>security.general.role-for-secured-access</em>
-(by default <code>ECR_SERVICE_USER</code>).
+When the jobs are executed in the external Job Service, it is required to configure the user and the password
+to be used for the jobs. The user has to own the required authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code>
+and the authority configured in <em>security.general.role-for-secured-access</em> (by default <code>ECR_SERVICE_USER</code>). When the
+jobs are executed in the scheduler embedded in the repository service, an internal authentication mechanism is used and
+no additional configuration is required.
 </td>
 </tr>
 </table>
@@ -8401,25 +8403,38 @@ how to configure two client registrations for the service:</p>
     <span class="key">oauth2</span>:
       <span class="key">resourceserver</span>:
         <span class="key">jwt</span>:
-          <span class="key">public-key-location</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/public_key</span><span class="delimiter">&quot;</span></span>
+          <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004</span><span class="delimiter">&quot;</span></span>
       <span class="key">client</span>:
         <span class="key">registration</span>:
-          <span class="key">cmn-user-service-client-credentials</span>:
-            <span class="key">provider</span>: <span class="string"><span class="content">user-service</span></span>
-            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">tech-client</span><span class="delimiter">&quot;</span></span>
-            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">tech-secret</span><span class="delimiter">&quot;</span></span>
+          <span class="key">autorization-service-client-credentials</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">authorization-service</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
             <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">client_credentials</span><span class="delimiter">&quot;</span></span>
-            <span class="key">scope</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">oauth2</span><span class="delimiter">&quot;</span></span>
-          <span class="key">cmn-user-service-password</span>:
-            <span class="key">provider</span>: <span class="string"><span class="content">user-service</span></span>
-            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">test-client</span><span class="delimiter">&quot;</span></span>
-            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">my-secret</span><span class="delimiter">&quot;</span></span>
+          <span class="key">authorization-service-password</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">authorization-service</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeit</span><span class="delimiter">&quot;</span></span>
             <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>
-            <span class="key">scope</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">oauth2</span><span class="delimiter">&quot;</span></span>
         <span class="key">provider</span>:
-          <span class="key">user-service</span>:
-            <span class="key">authorization-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/auth</span><span class="delimiter">&quot;</span></span>
-            <span class="key">token-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004/oauth/token</span><span class="delimiter">&quot;</span></span></code></pre>
+          <span class="key">authorization-service</span>:
+            <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:39004</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The username and password to use for the jobs can be configured using the following parameters. Note that these parameters
+are added to the job configuration data stored for the triggers in the database used by the scheduler. Because these triggers
+are created by the scheduler running in the Repository Service (even if this scheduler is set to standby mode), the job
+authentication parameters must be configured for the Repository Service.</p>
+</div>
+<div class="listingblock">
+<div class="title">Job user authentication</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr</span>:
+  <span class="key">server</span>:
+    <span class="key">jobs</span>:
+      <span class="key">username</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>
+      <span class="key">password</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9338,49 +9353,22 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tus-upload-service-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The application name of the tus upload service.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tus-upload-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tus-upload-service-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URL path at which the upload service&#8217;s endpoints are available.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/files</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">update-schema</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether to update the database schema at startup or not.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ecr_server_upload">ecr.server.upload</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maximum-file-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum size of a single file in one multipart upload in bytes. -1 means no limit.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maximum-in-memory-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum size of data to keep in memory before using a temporary file (in bytes).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1048576</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maximum-total-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum total size of all files in one multipart upload in bytes. -1 means no limit.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
 </tr>
 </tbody>
 </table>
@@ -9425,7 +9413,7 @@ of the different services.</p>
 <h2 id="_monitoring"><strong>Monitoring</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/2.7.11/reference/html/actuator.html">Spring Boot Actuator</a>
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/3.1.2/reference/html/actuator.html">Spring Boot Actuator</a>
 to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/">Prometheus</a> or
 the Administration Service. The Actuator documentation linked above contains information about the available monitoring
 data, how to enable or disable specific endpoints and how to configure security.</p>
@@ -9978,7 +9966,7 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <h3 id="_other_monitoring_systems">Other monitoring systems</h3>
 <div class="paragraph">
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
-The <a href="https://docs.spring.io/spring-boot/docs/2.7.11/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
+The <a href="https://docs.spring.io/spring-boot/docs/3.1.2/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
@@ -9996,11 +9984,17 @@ to make it easier to analyze the system&#8217;s behavior:</p>
 <li>
 <p><code>ecr.tenant</code>: The tenant for which the current request is executed.</p>
 </li>
+<li>
+<p><code>ecr.trace-id</code>: The ID of the current trace, if available. The trace-id is set by Open Telemetry (see below).</p>
+</li>
+<li>
+<p><code>ecr.span-id</code>: The ID of the current span, if available. The span-id is set by Open Telemetry (see below).</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
-<p>These attributes are added using a <code>HandlerInterceptor</code> for the REST endpoints using Spring WebMVC.Note that these
-attributes will not be added when <em>arveo</em> is used embedded.In this case, the application using the embedded
+<p>These attributes are added using a <code>HandlerInterceptor</code> for the REST endpoints using Spring WebMVC. Note that these
+attributes will not be added when <em>arveo</em> is used embedded. In this case, the application using the embedded
 <em>arveo</em> instance is responsible for adding required information to the MDC.</p>
 </div>
 <div class="paragraph">
@@ -14730,7 +14724,7 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect2">
 <h3 id="_tenant_separation">Tenant separation</h3>
 <div class="paragraph">
-<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
 </div>
 <div class="paragraph">
 <p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
@@ -14738,14 +14732,14 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect3">
 <h4 id="_fallback_tenant">Fallback-tenant</h4>
 <div class="paragraph">
-<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
-Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
+<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
+Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_usage_2">Usage</h4>
 <div class="paragraph">
-<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
 </div>
 <div class="paragraph">
 <p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
@@ -14765,7 +14759,7 @@ Should a querying user reside in the fallback-tenant, the query will not be filt
 <p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
 </div>
 <div class="paragraph">
-<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/2.0.4/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
+<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
 </div>
 <div class="paragraph">
 <p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
@@ -15217,6 +15211,99 @@ client.create(input);</code></pre>
 <span class="type">boolean</span> hashMatches = documentServiceClient.hashMatches(documentId, <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, hash, <span class="predefined-constant">false</span>);</code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_resumable_uploads">Resumable uploads</h4>
+<div class="paragraph">
+<p>In some situations uploading large files might fail because of timeouts or an unstable network connection. For these
+situations, arveo supports resumable uploads using the <a href="http://tus.io">tus</a> protocol. On the server side, an
+additional service is used that provides the tus API and stores uploaded files in the filesystem. The Content Repository
+Service retrieves uploaded files from the upload service and stores them just as any regular content. When the content
+was stored successfully, the uploaded file is deleted from the upload service&#8217;s storage automatically. In case storing
+the content in the Content Repository Service has failed, the uploaded file is not removed, giving the client the
+opportunity to re-try storing the content without having to upload the entire file again.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows how to use the official tus Java client in combination with the arveo SDK to use
+resumable uploads.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example: Resumable uploads</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">TusClient client = <span class="keyword">new</span> TusClient();
+client.setUploadCreationURL(<span class="keyword">new</span> <span class="predefined-type">URL</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:</span><span class="delimiter">&quot;</span></span> + tusUploadServicePort + <span class="string"><span class="delimiter">&quot;</span><span class="content">/files</span><span class="delimiter">&quot;</span></span>)); <i class="conum" data-value="1"></i><b>(1)</b>
+client.enableResuming(<span class="keyword">new</span> TusURLMemoryStore());
+
+<span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; headers = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+headers.put(HttpHeaders.AUTHORIZATION, <span class="string"><span class="delimiter">&quot;</span><span class="content">Bearer </span><span class="delimiter">&quot;</span></span> + oAuth2TokenManager.getAccessToken()); <i class="conum" data-value="2"></i><b>(2)</b>
+client.setHeaders(headers);
+
+<span class="predefined-type">File</span> file = <span class="keyword">new</span> <span class="predefined-type">File</span>(baseDirectory + <span class="string"><span class="delimiter">&quot;</span><span class="content">/src/test/resources/documents/lorem_ipsum.txt</span><span class="delimiter">&quot;</span></span>);
+TusUpload upload = <span class="keyword">new</span> TusUpload(file);
+
+<span class="directive">final</span> <span class="predefined-type">String</span><span class="type">[]</span> uploadId = <span class="keyword">new</span> <span class="predefined-type">String</span>[<span class="integer">1</span>];
+
+TusExecutor executor = <span class="keyword">new</span> TusExecutor() {
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> makeAttempt() <span class="directive">throws</span> <span class="exception">ProtocolException</span>, <span class="exception">IOException</span> {
+
+        TusUploader uploader = client.resumeOrCreateUpload(upload);
+        uploader.setChunkSize(<span class="integer">102400</span>);
+
+        <span class="keyword">do</span> {
+            <span class="type">long</span> totalBytes = upload.getSize();
+            <span class="type">long</span> bytesUploaded = uploader.getOffset();
+            <span class="type">double</span> progress = (<span class="type">double</span>) bytesUploaded / totalBytes * <span class="integer">100</span>;
+
+            <span class="predefined-type">System</span>.out.printf(<span class="string"><span class="delimiter">&quot;</span><span class="content">Upload at %06.2f%%.</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, progress); <i class="conum" data-value="3"></i><b>(3)</b>
+        } <span class="keyword">while</span> (uploader.uploadChunk() &gt; -<span class="integer">1</span>);
+
+        uploader.finish();
+
+        <span class="predefined-type">String</span> filePart = uploader.getUploadURL().getFile();
+        uploadId[<span class="integer">0</span>] = filePart.substring(filePart.lastIndexOf(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>) + <span class="integer">1</span>); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+};
+
+executor.makeAttempts();
+
+TypedDocumentServiceClient&lt;Files&gt; serviceClient =
+    typeDefinitionServiceClient.getDocumentServiceClient().byClass(Files.class);
+
+Files document = serviceClient.createTypeInstance();
+document.setFilename(<span class="string"><span class="delimiter">&quot;</span><span class="content">lorem_ipsum.txt</span><span class="delimiter">&quot;</span></span>);
+
+AsyncUploadReference uploadReference = <span class="keyword">new</span> AsyncUploadReference(uploadId[<span class="integer">0</span>], <span class="string"><span class="delimiter">&quot;</span><span class="content">lorem_ipsum.txt</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="5"></i><b>(5)</b>
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, ContentReference&gt; contentReferences = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, uploadReference);
+
+TypedDocumentClient&lt;Files&gt; typedDocumentClient =
+    serviceClient.create(<span class="keyword">new</span> TypedDocumentInput&lt;&gt;(document, contentReferences));</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create a new TusClient using the URL of the upload service.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Authentication is done using OAuth2. The Oauth2TokenManager is provided by the OAuth2 client library from eitco commons and can be injected.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An example that shows how to display the progress of the upload.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Determine the unique ID of the upload. It is the last part of the upload URL returned by the TusUploader.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Reference the uploaded file using its ID for the document creation call for the Content Repository Service.</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -17449,22 +17536,22 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">JDK</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Java 11</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integration tests run on Adopt Open JDK 11, but all JDKs are supported</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integration tests run on Eclipse Temurin 17, but all JDKs are supported</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ 5.15,5.16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ 5.18.1</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PostgreSQL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">postgres 12, 13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">postgres 15.1</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr 8.6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr 9.1.0</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -17473,7 +17560,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 NetAPP ONTAP 9<br>
 Dell Elastic Cloud Storage (ECS)<br>
 AWS S3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Retention is not supported yet, even if provided by the vendor</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">File System</p></td>
@@ -17625,7 +17712,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-06-07 11:56:58 UTC
+Last updated 2023-08-01 12:11:36 UTC
 </div>
 </div>
 <style>
