@@ -124,6 +124,7 @@
 <li><a href="#_complex_scenario_a_hospital">Complex scenario: a Hospital</a></li>
 <li><a href="#_revision_history_and_abac">Revision history and ABAC</a></li>
 <li><a href="#_accessing_external_tables">Accessing external tables</a></li>
+<li><a href="#_permissions_on_type_definitions">Permissions on Type definitions</a></li>
 </ul>
 </li>
 <li><a href="#_data_modelling"><strong>Data Modelling</strong></a>
@@ -11523,6 +11524,61 @@ This means arveo will not create the corresponding table.</td>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_permissions_on_type_definitions"><a class="anchor" href="#_permissions_on_type_definitions"></a><a class="link" href="#_permissions_on_type_definitions">Permissions on Type definitions</a></h3>
+<div class="paragraph">
+<p>It is possible to restrict the access of users to certain type definitions. This is an optional feature of a type
+definition that can be enabled using the <code>@AccessChecks(true)</code> annotation. The following type level access rights exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>READ</code>: Allows a user to read entities and to perform search operations.</p>
+</li>
+<li>
+<p><code>INSERT</code>: Allows a user to create new entities.</p>
+</li>
+<li>
+<p><code>UPDATE</code>: Allows a user to update existing entities.</p>
+</li>
+<li>
+<p><code>DELETE</code>: Allows a user to delete existing entities or to recycle and restore entities.</p>
+</li>
+<li>
+<p><code>ASSIGN_ACL</code>: Allows a user to assign an ACL to an entity.</p>
+</li>
+<li>
+<p><code>WRITE</code>: Combines the rights <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> and <code>ASSIGN_ACL</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To assign type level access rights to a user, the user must be granted the required authorities. The authorities consist
+of the prefix <code>ECR-TYPE_</code> followed by the ID of the type definition followed by the granted access right. For instance,
+to grant a user the <code>UPDATE</code> right on the type definition with ID 12345, the authority <code>ECR-TYPE_12345_UPDATE</code> is
+required.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, there are two additional authorities <code>ECR_ALL_TYPES_READ</code> and <code>ECR_ALL_TYPES_WRITE</code>, which give a user
+read or write access to all type definitions. The check of the permissions on the type definitions can also be disabled
+completely using the switch <code>ecr.server.security.type-definition-access-checks-enabled</code> (<code>true</code>/<code>false</code>).</p>
+</div>
+<div class="paragraph">
+<p>Within a folder structure, child elements of a parent folder can belong to different type definitions. To filter the
+result, the user&#8217;s permissions on the type definitions are used. This means that a user will only see folders and
+documents from type definitions for which he or she has read permission.</p>
+</div>
+<div class="paragraph">
+<p>Permissions of folders are inherited to the documents. For example, if a document of a type definition to which the
+user has read permission is located in a folder on whose type definition the user does not have read permission, the
+user is not allowed to access the document either. The folder permissions are currently only checked for the direct
+parent folder. There is no inheritance within the folder hierarchy.</p>
+</div>
+<div class="paragraph">
+<p>The <code>SystemManagementClient</code> provides a method that generates the possible access right authorities for a specific
+type definition. This functionality is provided by the REST endpoint located at <code>/api/system/accessRightValues/{typeDefinitionName}</code>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -11926,7 +11982,7 @@ containing the type annotations. The processor is picked up by the compiler auto
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@AccessChecks</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies whether type-based access-checking will be enabled on a type.
-  Default = false. See <a href="permissions.html#_permissions_on_type_definitions">permissions on type definitions</a> for details.</p></td>
+  Default = false. See <a href="#_permissions_on_type_definitions">permissions on type definitions</a> for details.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@AclDisabled</em></p></td>
@@ -17763,7 +17819,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-06 01:27:13 UTC
+Last updated 2023-09-06 08:33:53 UTC
 </div>
 </div>
 <style>
