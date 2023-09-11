@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Overview</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Integration Service 8.0.1</div>
+<ul class="sectlevel1">
+<li><a href="#_overview"><strong>Overview</strong></a></li>
+<li><a href="#_configuration"><strong>Configuration</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_configuration_parameters">Configuration parameters</a></li>
+<li><a href="#_managing_routes">Managing routes</a></li>
+<li><a href="#_supplied_components">Supplied components</a></li>
+</ul>
+</li>
+<li><a href="#_installation"><strong>Installation</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_windows_service_wrapper">Windows Service Wrapper</a></li>
+<li><a href="#_helm_chart">Helm Chart</a></li>
+</ul>
+</li>
+<li><a href="#_development"><strong>Development</strong></a></li>
+<li><a href="#_web_authentication"><strong>Web Authentication</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_overview_2">Overview</a></li>
+<li><a href="#_oauth2">OAuth2</a></li>
+<li><a href="#_x_509">x.509</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div style="page-break-after: always;"></div>
+<div class="sect1">
+<h2 id="_overview"><strong>Overview</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Enterprise Integration Service is a Spring Service based on the Apache Camel framework. Apache Camel is a rule-based flow control engine that implements the Enterprise Integration Pattern. It provides an API for creating rule-based flows and for process communication.</p>
+</div>
+<div class="paragraph">
+<p>Using simple scripts (Groovy), processing routes can be created (also called pipelines) that allow document processing
+processes to be started in a time-, rule- or event-driven manner.</p>
+</div>
+<div class="paragraph">
+<p>Route elements can be: Upload to an ECM, OCR Service, Full Text Service, Integration ESB, etc.</p>
+</div>
+<div class="paragraph">
+<p>The Integration Service can import files into any repository. Next to the over 300 Camel endpoints we provide an import processor for <a href="https://eitco.github.io/arveo/">arveo</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration"><strong>Configuration</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_configuration_parameters">Configuration parameters</h3>
+<div class="paragraph">
+<p>The following are the configuration parameters of the Integration Service:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configuration Parameters</caption>
+<colgroup>
+<col style="width: 35%;">
+<col>
+<col style="width: 15%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">parameter</th>
+<th class="tableblock halign-left valign-top">meaning</th>
+<th class="tableblock halign-left valign-top">default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">groovy-engine.script-root-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Root directory for all Groovy scripts. Scripts can be organised in subdirectories (like Java packages).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"./scripts"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">groovy-engine.source-encoding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encoding of script files</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UTF-8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">groovy-engine.debug</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable debug mode of the Groovy engine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">groovy-engine.recompile-source</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recompile scripts regularly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">groovy-engine.min-recompilation-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interval (in milliseconds) in which scripts are recompiled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file-scanning-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interval (in milliseconds) in which scripts are checked for new or changed script files</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_managing_routes">Managing routes</h3>
+<div class="paragraph">
+<p>Routes are stored in Groovy scripts in the <em>&lt;groovy-engine.script-root-path&gt;/routes</em> directory and are started
+automatically by the Integration Service. If a script file is changed, the route defined in it is stopped and
+restarted. If a script file is removed, the route is stopped. For this purpose, it is important that each route
+has a unique ID that can be defined in the script. The following example shows a simple route that copies files from
+the "input" directory to "output":</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of a route</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package scripts.routes
+
+import de.eitco.commons.integration.core.ExceptionProcessor
+import org.apache.camel.builder.RouteBuilder
+
+return new RouteBuilder() {
+
+    @Override
+    void configure() throws Exception {
+
+        onException(Exception.class)
+                .process(new ExceptionProcessor())
+                .handled(true)
+                .maximumRedeliveries(0)
+
+        from("file://input?noop=true")
+                .routeId("file-out-test")
+                .to("file://output")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Camel provides a large number of standard components that can be used in a route. An overview can be found here:
+<a href="https://camel.apache.org/components.html" class="bare">https://camel.apache.org/components.html</a>. In addition, further systems can be connected via self-implemented components.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_supplied_components">Supplied components</h3>
+<div class="paragraph">
+<p>The following components are supplied as standard with the Integration Service:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>FTP (<a href="https://camel.apache.org/components/3.4.x/ftp-component.html" class="bare">https://camel.apache.org/components/3.4.x/ftp-component.html</a>)</p>
+</li>
+<li>
+<p>HTTP (<a href="https://camel.apache.org/components/3.4.x/http-component.html" class="bare">https://camel.apache.org/components/3.4.x/http-component.html</a>)</p>
+</li>
+<li>
+<p>Stream (<a href="https://camel.apache.org/components/3.4.x/stream-component.html" class="bare">https://camel.apache.org/components/3.4.x/stream-component.html</a>)</p>
+</li>
+<li>
+<p>Mail (<a href="https://camel.apache.org/components/3.4.x/mail-component.html" class="bare">https://camel.apache.org/components/3.4.x/mail-component.html</a>)</p>
+</li>
+<li>
+<p>Quartz (<a href="https://camel.apache.org/components/3.4.x/quartz-component.html" class="bare">https://camel.apache.org/components/3.4.x/quartz-component.html</a>)</p>
+</li>
+<li>
+<p>CSV (<a href="https://camel.apache.org/components/3.4.x/dataformats/csv-dataformat.html" class="bare">https://camel.apache.org/components/3.4.x/dataformats/csv-dataformat.html</a>)</p>
+</li>
+<li>
+<p>ZIP File (<a href="https://camel.apache.org/components/3.4.x/dataformats/zipfile-dataformat.html" class="bare">https://camel.apache.org/components/3.4.x/dataformats/zipfile-dataformat.html</a>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other components that are frequently required can be included in the standard delivery on request.</p>
+</div>
+<div class="paragraph">
+<p>Additional components must be available in the classpath when starting. To do this, you can define your own lib
+directory, for example, by giving the JVM the parameter <em>-Dloader.path=lib/</em> when starting. This parameter must be entered
+in the XML file for the service as a separate &lt;start argument&gt; tag.</p>
+</div>
+<div class="sect3">
+<h4 id="_hawtio">hawtio</h4>
+<div class="paragraph">
+<p>The Integration Service can be monitored with hawtio. To do this, the Actuator endpoints must be enabled and released for
+Jolokia. This requires the following adjustments to the configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,jolokia
+
+security:
+  general:
+    secured-ant-matchers: "/api/**"
+    open-ant-matchers: "/actuator/**"
+    role-for-secured-access: "INTEGRATION_SERVICE_USER"
+    cors-configuration:
+      allowed-origins: "*"
+      allowed-headers: "*"
+      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      max-age: 3600</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In a hawtio instance started as a standalone process, a remote connection to the Integration Service can then be established.
+The Jolokia endpoint is accessible under the path /actuator/jolokia.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation"><strong>Installation</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_windows_service_wrapper">Windows Service Wrapper</h3>
+<div class="paragraph">
+<p>Like all Common Services, the <a href="https://nexus.eitco.de/repository/maven-public/de/eitco/commons/cmn-integration-service/8.0.1/cmn-integration-service-8.0.1-zip.zip">Integration Service is delivered with the WinSW Service Wrapper</a>, with which you can easily
+create and configure a Windows service. The <a href="https://github.com/winsw/winsw">documentation</a> can be found on GitHub.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_helm_chart">Helm Chart</h3>
+<div class="paragraph">
+<p>For deployments to a kubernetes cluster, we provide a helm chart containing the integration service.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The integration service helm chart expects the eitco service registry and the eitco config service running. It is advised to use their helm charts for that.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The helm chart is
+hosted in the repository <a href="https://nexus.eitco.de/repository/helm-default/" class="bare">https://nexus.eitco.de/repository/helm-default/</a>. The name of the helm chart is <code>eitco-integration-service</code>.
+Assume that the repository <a href="https://nexus.eitco.de/repository/helm-default/" class="bare">https://nexus.eitco.de/repository/helm-default/</a> is registered as <code>eitco</code>, then you can deploy
+the integration service with the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 8.0.1 --name-template eitco-integration-service</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_routes">Routes</h4>
+<div class="paragraph">
+<p>Of course, since there is no route configured this will not do much. To add groovy routes, add the groovy files to a <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">configmap</a> and give the name of the configmap as the parameter <code>routes.configMap</code>.
+For example if your routes are in the configmap <code>routes</code> the command will look like that:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 8.0.1 --name-template eitco-integration-service --set routes.configMap=routes</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_includes">Includes</h4>
+<div class="paragraph">
+<p>Should you want to add groovy scripts that are only included, but are no routes by itself, you can add them to another configmap, and give the name of the config map as the parameter <code>includes.configMap</code>. These files will be mounted in the <code>include</code>-subdirectory of the groovy script root path. So if your include-scripts are located in the configMap <code>include</code>, install the helm chart as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 8.0.1 --name-template eitco-integration-service --set routes.configMap=routes --set includes.configMap=include</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_integration_service_classpath">Integration Service Classpath</h4>
+<div class="paragraph">
+<p>There are several occasions where you need to add jars to the integration services classpath. This could be the case if you want to
+add additional endpoints (for example the arveo endpoints). Or maybe you do not want to write your routes in groovy but
+implement a spring component that provides your routes in java or kotlin. In this case you - again - you need to provide your files in a configMap. The parameter name for this config map is <code>extension.configMap</code>. Any jar located there will be part of the classpath of the integraiton service. So, assume that you added a spring boot autostarter that configures your routes in the configmap <code>extensions</code>, you would install the helm chart like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">helm install eitco/eitco-integration-service --version 8.0.1 --name-template eitco-integration-service --set extensions.configMap=extensions</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_custom_deployment">Custom Deployment</h4>
+<div class="paragraph">
+<p>A project using the integration service will make its kubernetes deployment easiest if it creates its own helm chart.
+This helm chart should have the integration service helm chart (and the helm charts for the service registry,
+configuration service and other services it might need) as dependencies. That way it can define the configMaps used by the
+integration service by itself, eliminating the need to do this manually.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_development"><strong>Development</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this chapter you will learn about developing custom Camel components.</p>
+</div>
+<div class="paragraph">
+<p>Architecture overview for the development of own Camel components:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/integration-service-development-camel-components.png" alt="integration service development camel components">
+</div>
+</div>
+<div class="paragraph">
+<p>Source: <a href="https://stackoverflow.com/a/19706238" class="bare">https://stackoverflow.com/a/19706238</a>)</p>
+</div>
+<div class="paragraph">
+<p>The Camel documentation also contains a chapter on developing your own components: <a href="https://camel.apache.org/writing-components.html" class="bare">https://camel.apache.org/writing-components.html</a></p>
+</div>
+<div class="paragraph">
+<p>The components for the <em>{product-name}</em> and for Saperion can be used as examples. They are located in
+<a href="https://git.eitco.de/projects/CMN/repos/integration-service/browse/components" class="bare">https://git.eitco.de/projects/CMN/repos/integration-service/browse/components</a>.</p>
+</div>
+<div class="paragraph">
+<p>There is a good overview of how Camel components work on Stackoverflow: <a href="https://stackoverflow.com/a/19706238" class="bare">https://stackoverflow.com/a/19706238</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_web_authentication"><strong>Web Authentication</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here we describe the process of authentication for Spring web endpoints.
+By default, the Integration Service does not provide any Spring web endpoints. When custom Spring web endpoints are
+added or when the HTTP Actuator interface is required, one of the additional web authentication modules must be
+added to the classpath. The following web authentication modules are available. Each module contains the actuator
+endpoints and a configuration class for the respective authentication mechanism.</p>
+</div>
+<div class="paragraph">
+<p>There is a test-module for each authentication module with a sample configuration.</p>
+</div>
+<div class="sect2">
+<h3 id="_overview_2">Overview</h3>
+<div class="paragraph">
+<p>The module <code>cmn-integration-web-auth-basic</code> provides a simple HTTP basic authentication configuration that supports
+one configurable user. The username and password can be configured using the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>integration-service.basic-auth.username</code>: The name of the user (default: integration-service-user)</p>
+</li>
+<li>
+<p><code>integration-service.basic-auth.password</code>: The user&#8217;s password (default: changeme)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This module is recommended in environments where mainly the Actuator web interface is used.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_oauth2">OAuth2</h3>
+<div class="paragraph">
+<p>The module <code>cmn-integration-web-auth-oauth2</code> provides OAuth2 authentication based on the OAuth2 module from commons.
+This is the recommended module in environments where multiple different users and/or applications will access the
+web endpoints.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_x_509">x.509</h3>
+<div class="paragraph">
+<p>The module <code>cmn-integration-web-auth-x509</code> provides an authentication mechanism based on the client&#8217;s certificate
+using mutual SSL authentication (x.509).</p>
+</div>
+<div class="paragraph">
+<p>This module is recommended in environments where only applications will access the web endpoints.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-09-11 17:17:40 UTC
+</div>
+</div>
+</body>
+</html>
