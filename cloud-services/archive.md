@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Spring Cloud Services deployed so far.
 
+ * [5.0.1](archive/5.0.1)
  * [5.0.0](archive/5.0.0)
  * [4.1.1](archive/4.1.1)
  * [4.1.0](archive/4.1.0)
