@@ -4493,6 +4493,19 @@ data, URls, &#8230;&#8203;) for the plugin.</p>
 <p>Each profile is identified by name and defines the storage plugin to use. Plugin-specific settings can be configured
 in the <code>pluginSettings</code> map. So the plugin class name determines the storage technology and the plugin settings.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Do not rename a storage profile after data was stored in it. The name of the profile is part of the identifier of a
+content element. Renaming the profile would make it impossible to load the data stored in it.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>If a content element has been saved using the named StoragePlugin, the plugin defined in the profile will return a
 contentID, with which the stored data can be retrieved later. This id, which is usually of type String, is saved with
@@ -17999,7 +18012,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-06 01:27:18 UTC
+Last updated 2023-10-06 15:24:37 UTC
 </div>
 </div>
 <style>
