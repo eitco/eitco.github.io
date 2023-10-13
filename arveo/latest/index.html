@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 15.0.0</div>
+<div id="toctitle">arveo 15.0.1</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -2723,7 +2723,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 15.0.0.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 15.0.1.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3161,7 +3161,7 @@ DemoModelStatus getStatus();
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>15.0.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>15.0.1<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -4493,6 +4493,19 @@ data, URls, &#8230;&#8203;) for the plugin.</p>
 <p>Each profile is identified by name and defines the storage plugin to use. Plugin-specific settings can be configured
 in the <code>pluginSettings</code> map. So the plugin class name determines the storage technology and the plugin settings.</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Do not rename a storage profile after data was stored in it. The name of the profile is part of the identifier of a
+content element. Renaming the profile would make it impossible to load the data stored in it.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>If a content element has been saved using the named StoragePlugin, the plugin defined in the profile will return a
 contentID, with which the stored data can be retrieved later. This id, which is usually of type String, is saved with
@@ -5203,7 +5216,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>15.0.0<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>15.0.1<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -7605,7 +7618,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/3.0.0/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/3.0.1/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit"><a class="anchor" href="#_access_audit"></a><a class="link" href="#_access_audit">Access audit</a></h4>
@@ -7693,7 +7706,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <h5 id="_solr_configurations"><a class="anchor" href="#_solr_configurations"></a><a class="link" href="#_solr_configurations">Solr Configurations</a></h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/15.0.0/ecr-environment-configuration-15.0.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/15.0.1/ecr-environment-configuration-15.0.1-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -7865,7 +7878,7 @@ contains a ZIP file with the plugin and all required libraries.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 6.0.0) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/6.0.0/cmn-user-management-access-control-solr-plugin-6.0.0-zip.zip">nexus repository</a>.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 6.0.1) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/6.0.1/cmn-user-management-access-control-solr-plugin-6.0.1-zip.zip">nexus repository</a>.</p>
 </li>
 <li>
 <p>Install the plugin in Solr by extracting the content of the downloaded ZIP file as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
@@ -8561,6 +8574,186 @@ of the different services.</p>
 </div>
 <div class="sect2">
 <h3 id="_configuration_properties"><a class="anchor" href="#_configuration_properties"></a><a class="link" href="#_configuration_properties">Configuration Properties</a></h3>
+<div class="sect3">
+<h4 id="_commons_cache"><a class="anchor" href="#_commons_cache"></a><a class="link" href="#_commons_cache">commons.cache</a></h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cache-settings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map&lt;java.lang.String,de.eitco.commons.spring.cache.CommonsCacheSettings&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains configuration properties for an individual cache.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">messaging-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to false, the caches will not register JMS listeners and will not send any messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">metrics-name-prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name prefix for the metrics.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commons.cache</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">record-statistics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the underlying caffeine caches will record statistics.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send-clear-messages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the caches will send clear messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send-evict-messages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the caches will send evict messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send-invalidate-messages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the caches will send invalidate messages.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_commons_security_oauth2"><a class="anchor" href="#_commons_security_oauth2"></a><a class="link" href="#_commons_security_oauth2">commons.security.oauth2</a></h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">default-client-credentials-client-registration-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the default client registration ID to use for the client_credentials grant. Only relevant if there is more than one client registration for this grant type.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">default-password-client-registration-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the default client registration ID to use for the password grant. Only relevant if there is more than one client registration for this grant type.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.database.cache-max-age</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the time after which an entry in the cache is expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">365d</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.database.cache-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of entries in the cache.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, user information will not be loaded from the arveo user management service. All information required for a valid user authentication must be contained in the token.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.authorities-claim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the user&#8217;s authorities. Must be a JSON list of strings or a single string.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">authorities</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.fetch-user-info</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the OIDC user info endpoint will be used to fetch user attributes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.user-name-claim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the name of the user.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">preferred_username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.uuid-claim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the UUID of the user. See {@link java.util.UUID#fromString(String)}.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sub</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-properties-cache-max-age</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the time after which an entry in the cache for the external user attributes loaded using a {@link ExternalUserPropertiesResolver} will be expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-properties-cache-max-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum number of entries in the cache used for the external user properties loaded using a {@link ExternalUserPropertiesResolver}.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">forward-tokens</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If enabled, the OAuth2 client will forward the bearer token from the current request context for subsequent requests to other services. If no request context is available of if the request context does not contain a bearer token, the client will retrieve a new token using the configured client registration.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">impersonation-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disabled the impersonation feature.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">original-user-token-required-for-impersonation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, impersonation is possible only when a token issued to the user to impersonate is contained in the X-User-Token header.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">refresh-tokens-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables the usage of refresh tokens to renew an expired access token.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resource-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the ID of the protected resource. The audience claim of a token must contain this ID. If not set, the name of the spring application is used instead.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="sect3">
 <h4 id="_ecr_server_caching"><a class="anchor" href="#_ecr_server_caching"></a><a class="link" href="#_ecr_server_caching">ecr.server.caching</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
@@ -14831,7 +15024,7 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect2">
 <h3 id="_tenant_separation"><a class="anchor" href="#_tenant_separation"></a><a class="link" href="#_tenant_separation">Tenant separation</a></h3>
 <div class="paragraph">
-<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/4.0.1/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/4.0.1/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
 </div>
 <div class="paragraph">
 <p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
@@ -14839,14 +15032,14 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect3">
 <h4 id="_fallback_tenant"><a class="anchor" href="#_fallback_tenant"></a><a class="link" href="#_fallback_tenant">Fallback-tenant</a></h4>
 <div class="paragraph">
-<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
-Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
+<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/4.0.1/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
+Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/4.0.1/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_usage_2"><a class="anchor" href="#_usage_2"></a><a class="link" href="#_usage_2">Usage</a></h4>
 <div class="paragraph">
-<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/4.0.1/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
 </div>
 <div class="paragraph">
 <p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
@@ -14866,7 +15059,7 @@ Should a querying user reside in the fallback-tenant, the query will not be filt
 <p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
 </div>
 <div class="paragraph">
-<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/3.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
+<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/4.0.1/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
 </div>
 <div class="paragraph">
 <p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
@@ -17819,7 +18012,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-12 09:25:26 UTC
+Last updated 2023-10-13 15:18:43 UTC
 </div>
 </div>
 <style>
