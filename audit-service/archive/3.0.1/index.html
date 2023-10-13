@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Usage</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Audit Service 3.0.1</div>
+<ul class="sectlevel1">
+<li><a href="#_usage"><strong>Usage</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_prerequisites_for_usage">Prerequisites for usage</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+</ul>
+</li>
+<li><a href="#_modification"><strong>Modification</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_database_modification">Database modification</a></li>
+<li><a href="#_custom_events">Custom events</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div style="page-break-after: always;"></div>
+<div class="sect1">
+<h2 id="_usage"><strong>Usage</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Audit Service provides database auditing. This is done by two endpoints: one to manage audit rules and one to search audited database changes (deletion, insertion and modification).</p>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_for_usage">Prerequisites for usage</h3>
+<div class="paragraph">
+<p>Currently, the Audit Service only works with postgres databases version 12+. For a table to be eligible for auditing, it has to have one unique field named <code>id</code> (preferably a primary key) of type integer not bigger than <code>bigint</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The Audit Service is configured by a set of audit rules. Audit administrators may add, modify and delete rules from the currently configured rule set. They may also view the rules currently defined. An audit administrator is a user that has the authority <code>AUDIT_ADMIN</code>. Users are administrated by the <a href="https://eitco.github.io/user-management-service/archive/8.0.1">eitco user management service</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="_audit_rules">Audit Rules</h4>
+<div class="paragraph">
+<p>An audit rule consists of the following components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>tableName</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>the name of the table to audit</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>auditTableName</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>the name of the table to log database changes to - optional, defaults to <code>default_audit_log</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>readAccess</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>specifies read access rights to the audit table (see below) - optional</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>deleteUserIdField</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>specifies that the user ID of a delete operation should be read from a specific field in the updated table (see below) - optional</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>deleteUserIdSetting</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>specifies that the user ID of a delete operation should be read from a local setting (see below) - optional</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>updateUserIdField</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>specifies that the user ID of an update operation should be read from a specific field in the updated table (see below) - optional</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>updateUserIdSetting</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>specifies that the user ID of an update operation should be read from a local setting (see below) - optional</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>indexConfiguration</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>this triple of booleans specifies whether json indexes should be created for the fields <code>diff_old</code>, <code>diff_new</code> and <code>current</code> in the audit table.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>defaultAuditEventsEnabled</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>enables or disables the default audit events, which are audited by a trigger for insert, update and delete operations on the audited table</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If a rule with table name <code>my_table</code> and audit table name <code>my_table_log</code> exists, the Audit Service will assure that every change in the table <code>my_table</code> will result in an entry in <code>my_table_log</code> tracking the changes to this table. The Audit Service will create the audit table automatically if it does not already exist.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_specifying_read_access">Specifying read access</h4>
+<div class="paragraph">
+<p>Optionally, a rule may specify which users have read access to the audit table. This is only possible if the access to the audited table is secured by ACLs. ACLs (access control lists) are administrated by the <a href="https://eitco.github.io/access-control-service/archive/6.0.1">eitco user management access control service</a>.</p>
+</div>
+<div class="paragraph">
+<p>It is done by two components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>aclIdField</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>the name of the field in the audited table that holds the id of the acl that is attached to the database row</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>readAccessRight</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>the numerical value of the right a user must at least have to have read access on a database row</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If no read access is specified, only users with the authority <code>AUDITOR</code> may view changes to the tabled audited. If an access rule is specified, only users with at least the <em>readAccessRight</em> specified may read such changes - independent of whether they have the authority <code>AUDITOR</code> or not.</p>
+</div>
+<div class="paragraph">
+<p>The Audit Service provides a REST API to search for changes of tables being audited.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_supplying_the_user_id_for_the_log_entries">Supplying the user id for the log entries</h4>
+<div class="paragraph">
+<p>There are two ways to get the user id for the log entry: By reading it from a specific field contained in the updated
+table or by reading a local setting of the current transaction. The administrator who creates the audit rule in use
+can specify how to read the user ID for each audited table.</p>
+</div>
+<div class="paragraph">
+<p>When the user id should be read from a field contained in the audited table, the name of that field must be set in
+the <code>deleteUserIdField</code> property (for delete operations) and/or the <code>updateUserIdField</code> (for all other operations)
+property of the audit rule. The name of the field must match the regular expression <code>[a-zA-Z][a-zA-Z0-9_]*</code>.</p>
+</div>
+<div class="paragraph">
+<p>When the user id should be read from a local setting, the name of the setting must be set in the <code>deleteUserIdSetting</code>
+property (for delete operations) and/or the <code>updateUserIdSetting</code> property (for all other operations) of the audit rule.
+The name of the setting must match the regular expression <code>[a-zA-Z][a-zA-Z0-9.]*</code>. The application creating the audit rule
+is responsible of assuring that the configured setting is present in the current transaction. On postgres, such a setting
+can be set by executing the following statement prior to the update/delete statement:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">set local "user_id" = 12345</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>deleteUserIdField</code> and <code>deleteUserIdSetting</code> (or <code>updateUserIdField</code> and <code>updateUserIdSetting</code>) are set to null
+in the audit rule, the system will try to read the user id from a setting called <code>authentication.user.id</code>. There is a Spring Boot Starter that automatically configures the <code>DatabaseAccessJooq</code> utility class to set this setting:</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+   &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+   &lt;artifactId&gt;cmn-user-management-authentication-db-context&lt;/artifactId&gt;
+   &lt;version&gt;8.0.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">compile 'de.eitco.commons:cmn-user-management-authentication-db-context:8.0.1'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_json_and_indexes">Json and indexes</h4>
+<div class="paragraph">
+<p>When logging a change in an audited table, the changes are stored in the fields <code>diff_old</code>, <code>diff_new</code> and <code>current</code>. These fields have the type <code>jsonb</code>. Searches in json fields of big tables can reduce performance. For these cases the audit service is able to create gin indexes for these fields. To configure the audit service to do this, create (or update) the corresponding rule with a corresponding <code>indexConfiguration</code>. This configuration consists of three booleans that specify whether a <a href="https://www.postgresql.org/docs/current/gin-intro.html">gin index</a> should be created for each of the fields above. Additionally, the behaviour of the search endpoint will change and generate different queries when querying on equality of elements of this field.</p>
+</div>
+<div class="paragraph">
+<p>As an example, assume that the table <code>auditee</code> is audited to the table <code>audit_log</code>. An index is configured for the field <code>current</code>. When that was configured the audit service created an index for the field <code>current</code> with the following query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">CREATE INDEX IF NOT EXISTS idx_audit_log_diff_old ON audit_log USING GIN (current)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, an eql-query like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                    searchService.where()
+                        .contextReference("current", "field")
+                        .equalTo().value("value")
+                        .holds()
+                        .count()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will be translated to the following sql condition</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">select count(*) from audit_log where (current @&gt; json_build_object(field, value))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the index was not defined, the query would be translated as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">select count(*) from audit_log where current-&gt;&gt;field = value</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A side effect of the first translation is that <code>value</code> can be of any type, while in the first translation the <code>-&gt;&gt;</code> operator will extract the field 'field' as <code>text</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_more_specific_indexes">More specific indexes</h4>
+<div class="paragraph">
+<p>The approach above works well for queries checking for equality of elements in a json field. However, there are cases where this does not suffice. In those cases it is advisable to create an appropriate index manually. <a href="https://www.postgresql.org/docs/current/indexes-expressional.html">Postgresqls indexes on expressions</a> come handy here</p>
+</div>
+<div class="paragraph">
+<p>Say for example, we have a table <code>users</code> with a field <code>first_name</code> which is audited to the table <code>user_audit</code>. Say further that searches in <code>user_audit</code> often checks for changes of the first name starting with an arbitrary string (let&#8217;s assume this string to be 'ch'). Those queries could look like this in eql:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">                    searchService.where()
+                        .contextReference("diff_new", "first_name")
+                        .like().value("ch*")
+                        .holds()
+                        .order().ascendingBy("id").from(0).pageSize(100),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These queries generate sql where clauses like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">where diff_new-&gt;&gt;first_name like ch% escape '\' order by "id" asc offset 0 rows fetch next 100 rows only</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Even if the gin index on field <code>diff_new</code> was defined, this query would not profit from it. However, a postgres expression index on <code>diff_new-&gt;&gt;first_name</code> could improve performance. It is created as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">create index json_functional on user_audit ((diff_new -&gt;&gt; 'first_name') varchar_pattern_ops)</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modification"><strong>Modification</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_database_modification">Database modification</h3>
+<div class="paragraph">
+<p>Each audited event is represented as a <code>DatabaseModification</code>. It contains the following fields:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>table</strong>: The name of the audited table</p>
+</li>
+<li>
+<p><strong>entityId</strong>: The ID of the entity that was modified</p>
+</li>
+<li>
+<p><strong>userId</strong>: The ID of the user who caused the event (might be null if user information was not available)</p>
+</li>
+<li>
+<p><strong>timestamp</strong>: The time and date of the event in UTC</p>
+</li>
+<li>
+<p><strong>type</strong>: The type of the event (INSERT, UPDATE, DELETE, TRUNCATE, CUSTOM)</p>
+</li>
+<li>
+<p><strong>customType</strong>: The type of the custom event or null if the event is a default event</p>
+</li>
+<li>
+<p><strong>currentValues</strong>: A JSON representation of the current state of the entity</p>
+</li>
+<li>
+<p><strong>diffNew</strong>: The new values of the entities properties. Only available for UPDATE events.</p>
+</li>
+<li>
+<p><strong>diffOld</strong>: The old values of the entities properties. Only available for UPDATE events.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_events">Custom events</h3>
+<div class="paragraph">
+<p>The <code>AuditResourceClient</code> provides a method to send custom audit events to the service. These events will be added to
+the audit table defined by the audit rule matching the audited table supplied in the custom event. Custom events can be used to
+audit operations that do not require a change on the database, for example when a download or view of an entity must
+be audited.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A custom audit event must not use one of the default database modification types defined in the enumeration
+<code>DatabaseModificationType</code> when the default audit events are enabled for the audited table.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-10-13 09:21:40 UTC
+</div>
+</div>
+</body>
+</html>
