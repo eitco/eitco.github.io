@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 15.0.4-SNAPSHOT</div>
+<div id="toctitle">arveo 15.1.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -2723,7 +2723,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 15.0.4-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 15.1.0-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -3161,7 +3161,7 @@ DemoModelStatus getStatus();
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;artifactId&gt;</span>ecr-sdk-http<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>15.0.4-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>15.1.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;exclusions&gt;</span>
         <span class="tag">&lt;exclusion&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
             <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
@@ -5216,7 +5216,7 @@ describes how to write a new storage plugin.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>ecr-server<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>15.0.4-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>15.1.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -7706,7 +7706,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <h5 id="_solr_configurations"><a class="anchor" href="#_solr_configurations"></a><a class="link" href="#_solr_configurations">Solr Configurations</a></h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/15.0.4-SNAPSHOT/ecr-environment-configuration-15.0.4-SNAPSHOT-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/15.1.0-SNAPSHOT/ecr-environment-configuration-15.1.0-SNAPSHOT-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -11920,6 +11920,168 @@ You can make your class a type and add features by annotating your classes. You 
 </div>
 <div class="paragraph">
 <p>To create your first project using <em>arveo</em> you may want to review the following examples and follow the pattern.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_variables"><a class="anchor" href="#_variables"></a><a class="link" href="#_variables">Variables</a></h4>
+<div class="paragraph">
+<p>There are two different ways custom metadata can be stored for an entity: As an attribute, which is defined by a getter
+and setter method in the type definition class and gets stored in a separate column in the database, and as a variable,
+which are stored in a JSON structure in a system field in the database. Attributes must be defined in the type definition.
+Changes to the available attributes require an update of the database schema. Variables can be added and removed without
+changing the database schema.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to use variables when searching for an entity, but the available query operations are limited. It is also
+not possible to use variables for references like foreign keys.</p>
+</div>
+<div class="paragraph">
+<p>Variables are an optional feature of a type definition that can be enabled by adding the <code>@Variables</code> annotation to the
+type interface. To access variables, a getter for the respective system field can be used as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Getter for variables</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@SystemProperty</span>(SystemPropertyName.VARIABLES)
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; getVariables();</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The names of variables must comply to the same rules as attribute names as defined by the regular expression
+<code>[a-zA-Z][a-zA-Z0-9_]*</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following Java data types are supported for variable values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Integer</p>
+</li>
+<li>
+<p>Long</p>
+</li>
+<li>
+<p>String</p>
+</li>
+<li>
+<p>Boolean</p>
+</li>
+<li>
+<p>Double</p>
+</li>
+<li>
+<p>LocalDate</p>
+</li>
+<li>
+<p>LocalTime</p>
+</li>
+<li>
+<p>ZonedDateTime</p>
+</li>
+<li>
+<p>UUID</p>
+</li>
+<li>
+<p>Enums</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_storing_variables"><a class="anchor" href="#_storing_variables"></a><a class="link" href="#_storing_variables">Storing variables</a></h5>
+<div class="paragraph">
+<p>Variables can be stored by providing a <code>Map&lt;String, Object&gt;</code> to the respective input type:</p>
+</div>
+<div class="listingblock">
+<div class="title">Storing variables</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; variables = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">myVariable</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">some value</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">myIntVariable</span><span class="delimiter">&quot;</span></span>, <span class="integer">1</span>);
+
+client = serviceClient.create(
+    <span class="keyword">new</span> TypedContainerInput&lt;&gt;(<span class="predefined-constant">null</span>, typeInstance, <span class="predefined-constant">null</span>, <span class="predefined-constant">null</span>, variables));</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_updating_variables"><a class="anchor" href="#_updating_variables"></a><a class="link" href="#_updating_variables">Updating variables</a></h5>
+<div class="paragraph">
+<p>To update variables, simply provide a map with the updated values. Other variables that might already be present in the
+entity will not be changed.</p>
+</div>
+<div class="listingblock">
+<div class="title">Updating variables</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; variables = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">myIntVariable</span><span class="delimiter">&quot;</span></span>, <span class="integer">2</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">newVariable</span><span class="delimiter">&quot;</span></span>, <span class="predefined-constant">true</span>);
+
+client = client.update(
+    <span class="keyword">new</span> TypedContainerInput&lt;&gt;(
+        <span class="predefined-constant">null</span>,
+        serviceClient.createTypeInstance(),
+        <span class="predefined-constant">null</span>,
+        <span class="predefined-constant">null</span>,
+        variables
+    )
+);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_removing_variables"><a class="anchor" href="#_removing_variables"></a><a class="link" href="#_removing_variables">Removing variables</a></h5>
+<div class="paragraph">
+<p>To remove a variable, set it&#8217;s value to <code>new AttributeNullValue()</code> in an update operation.</p>
+</div>
+<div class="listingblock">
+<div class="title">Removing variables</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; variables = <span class="predefined-type">Map</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">newVariable</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> AttributeNullValue());
+
+client = client.update(
+    <span class="keyword">new</span> TypedContainerInput&lt;&gt;(
+        <span class="predefined-constant">null</span>,
+        serviceClient.createTypeInstance(),
+        <span class="predefined-constant">null</span>,
+        <span class="predefined-constant">null</span>,
+        variables
+    )
+);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_searching"><a class="anchor" href="#_searching"></a><a class="link" href="#_searching">Searching</a></h5>
+<div class="paragraph">
+<p>The following examples show how variables can be used when searching for entities.</p>
+</div>
+<div class="listingblock">
+<div class="title">Search for a variable with a specific value</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;TypedContainerClient&lt;RegisteredContainer&gt;&gt; list = serviceClient.where()
+    .variable(<span class="string"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>).withEntityAlias().equalTo().value(uuid).holds().unpaged();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Search for entities that contain a variable with a specific name</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;TypedContainerClient&lt;RegisteredContainer&gt;&gt; list = serviceClient.where()
+    .variable(<span class="string"><span class="delimiter">&quot;</span><span class="content">uuid</span><span class="delimiter">&quot;</span></span>).withEntityAlias().isDefined().holds().unpaged();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Search for entities that do not contain a variable with a specific name</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;TypedContainerClient&lt;RegisteredContainer&gt;&gt; list = serviceClient.where()
+    .variable(<span class="string"><span class="delimiter">&quot;</span><span class="content">nosuchvariable</span><span class="delimiter">&quot;</span></span>).withEntityAlias().isUndefined().holds().unpaged();</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -18024,7 +18186,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-20 09:30:18 UTC
+Last updated 2023-10-20 14:51:00 UTC
 </div>
 </div>
 <style>
