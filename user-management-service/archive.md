@@ -3,6 +3,7 @@
 
 Here you can find documentation about any version of the EITCO User Management Service.
 
+ * [8.0.4](archive/8.0.4)
  * [8.0.3](archive/8.0.3)
  * [8.0.2](archive/8.0.2)
  * [8.0.1](archive/8.0.1)
