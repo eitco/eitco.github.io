@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Guides</title>
+<title>Untitled</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,42 +442,117 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p><strong>Documentation</strong></p>
+<p>To operate <em>arveo</em> successfully the operator of the platform must provide and manage the following services.</p>
 </div>
-<div class="sect1">
-<h2 id="_guides">Guides</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
+<div class="imageblock">
+<div class="content">
+<img src="images/arveo-architecture.png" alt="diagram">
+</div>
+<div class="title">Figure 1. Architecture overview</div>
+</div>
+<div class="paragraph">
+<p>The following table lists 3rd party services used in <em>arveo</em>.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<caption class="title">Table 1. 3rd party services in <em>arveo</em></caption>
 <colgroup>
-<col style="width: 40%;">
+<col>
+<col>
 <col>
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Service</th>
+<th class="tableblock halign-left valign-top">Supported Version</th>
+<th class="tableblock halign-left valign-top">Comment</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="product-features">Product Features</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>arveo</em> and third-party services</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java {java-version}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integration tests run on Eclipse Temurin {java-version}, but all JDKs are supported</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-getting-started">Getting Started</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How to get started with <em>arveo</em>
-Suitable for developers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ 5.18.3</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-administration"> Configuration and Administration</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration and administrative tasks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PostgreSQL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">postgres {postgres-version}</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-developer">Developer Documentation</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Documentation for developers who work with <em>arveo</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr 9.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-compatibility-list">Compatibility List</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3rd party services used in <em>arveo</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ceph 15, 16<br>
+NetAPP ONTAP 9<br>
+Dell Elastic Cloud Storage (ECS)<br>
+AWS S3</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File System</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NFS<br>
+ CIFS</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Linux OS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ubuntu 18.04, 20.04</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application Server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tomcat 9, 10</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If helm deployment is used</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">docker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20.10.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If helm deployment is used</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Grant flows:<br>
+Client Credentials Flow<br>
+Authorization Code Flow with PKCE<br>
+Resource Owner Password Flow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication Services</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Keycloak 15
+Windows Server AD FS 2016</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LDAP Server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MS Active Directory</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MS Graph</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion with Microsoft 365, requires M365 account</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kerberos</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kerberos Aiuthentication Service is MS Active Directory</p></td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
