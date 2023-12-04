@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 15.1.1-SNAPSHOT</div>
+<div id="toctitle">arveo 16.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_gettingstarted_v"><strong>Getting Started</strong></a></li>
 <li><a href="#_security"><strong>Security</strong></a>
@@ -1703,6 +1703,19 @@ of this authority. ECR_DSGVO_PRIVILEGED_DELETE privilege does NOT require ECR_DS
 The handling of ACLs is performed by the Access Control Service. The documentation of the Access Control Service contains
 more information about the general concept of the ACLs used by <em>arveo</em>.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To enable the ACL feature for a type definition, the type class must be annotated with <code>@Acls</code>. Meta-data type definitions
+do not support ACLs.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
 <h4 id="_mapping_of_the_access_control_list_values"><a class="anchor" href="#_mapping_of_the_access_control_list_values"></a><a class="link" href="#_mapping_of_the_access_control_list_values">Mapping of the Access Control List values</a></h4>
 <div class="paragraph">
@@ -2008,6 +2021,7 @@ It allows differentiating between read and write access:</p>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
 @OverwriteAllowed
+@Acls
 public interface ContainerAccessedByUserId {
 
     long getOwner(); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -3340,9 +3354,9 @@ containing the type annotations. The processor is picked up by the compiler auto
   Default = false. See <a href="#_permissions_on_type_definitions">permissions on type definitions</a> for details.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@AclDisabled</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Support for ACLs is enabled by default but can be disabled by annotating the type class with . Additionally,
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Acls</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Support for ACLs is disabled by default but can be enabled by annotating the type class with this annotation. Additionally,
   annotating a getter for the ACL-Id system property with @Mandatory enforces the assignment of an ACL to every entity.
   Meta types do not support ACLs.</p></td>
 </tr>
@@ -3442,6 +3456,11 @@ type.The property is not stored in the database table.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables full-text support for all columns of the document types. By default,
 the full-text support is disabled: <a href="#_nosql_example"><strong>Example</strong></a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Variables</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the support for schema-independent properties stored in a generic map.</p></td>
 </tr>
 </tbody>
 </table>
@@ -5482,6 +5501,7 @@ This permits scenarios where there is one main entity providing the access defin
 <div class="title">Example for the main entity</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+@Acls
 public interface MainEntity {
 
     @Mandatory <i class="conum" data-value="2"></i><b>(2)</b>
@@ -5500,6 +5520,7 @@ public interface MainEntity {
 <div class="title">Example for linked entities</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.DOCUMENT)
+@Acls
 public interface ChildEntity {
 
     @Mandatory <i class="conum" data-value="4"></i><b>(4)</b>
@@ -5694,6 +5715,7 @@ public interface AclView {
 <div class="title">A sofisticated example of an ACL default value</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+@Acls
 public interface ContainerWithDefaultAcl extends WithData {
 
     String DEFAULT_ACL_NAME = "default-container-acl"; <i class="conum" data-value="6"></i><b>(6)</b>
@@ -5871,6 +5893,7 @@ import de.eitco.ecr.type.definition.annotations.constraint.Mandatory;
 import de.eitco.ecr.type.definition.annotations.constraint.SecondaryKey;
 import de.eitco.ecr.type.definition.annotations.defaults.DefaultSystemPropertyValue;
 import de.eitco.ecr.type.definition.annotations.defaults.DefaultValue;
+import de.eitco.ecr.type.definition.annotations.system.Acls;
 import de.eitco.ecr.type.definition.annotations.system.Id;
 import de.eitco.ecr.type.definition.annotations.system.RetentionProtected;
 import de.eitco.ecr.type.definition.annotations.system.SystemProperty;
@@ -5884,6 +5907,7 @@ import java.time.ZonedDateTime;
 @RetentionProtected
 @ContentElement(name = "content", separateField = true)
 @OverwriteAllowed
+@Acls
 public interface DocumentWithDefaultRetention {
 
     @Id
@@ -7034,6 +7058,7 @@ Queries like this can be executed using the aggregated search. As opposed to the
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.DOCUMENT)
 @FilingEnabled
+@Acls
 public interface Customer {
 
     @SystemProperty(SystemPropertyName.ID)
@@ -7048,6 +7073,7 @@ public interface Customer {
 
 @Type(ObjectType.DOCUMENT)
 @FilingEnabled
+@Acls
 public interface Invoice {
 
     @ForeignKey(name = "fk_invoice_customer", target = Customer.class, targetProperty = "id")
@@ -8750,7 +8776,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-04 02:27:18 UTC
+Last updated 2023-12-04 10:56:42 UTC
 </div>
 </div>
 </body>
