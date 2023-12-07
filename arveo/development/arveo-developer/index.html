@@ -435,14 +435,103 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">arveo 16.0.0-SNAPSHOT</div>
+<ul class="sectlevel1">
+<li><a href="#_gettingstarted_v"><strong>Getting Started</strong></a></li>
+<li><a href="#_security"><strong>Security</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_application_security">Application security</a></li>
+<li><a href="#_data_security">Data security</a></li>
+<li><a href="#_tenant_security">Tenant security</a></li>
+<li><a href="#_security_patches">Security patches</a></li>
+<li><a href="#_application_protection_by_design">Application protection by design</a></li>
+<li><a href="#_compliance_recommendations_gobd">Compliance recommendations (GoBD)</a></li>
+</ul>
+</li>
+<li><a href="#_data_store"><strong>Data Store</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_persistence_architecture">Persistence architecture</a></li>
+<li><a href="#_data_types">Data types</a></li>
+<li><a href="#_high_availability">High availability</a></li>
+<li><a href="#_data_integrity_1">Data integrity</a></li>
+<li><a href="#_content_storage_2">Content storage</a></li>
+<li><a href="#_clustering">Clustering</a></li>
+<li><a href="#_data_deletion">Data deletion</a></li>
+<li><a href="#_recycle_bin">Recycle bin</a></li>
+</ul>
+</li>
+<li><a href="#_access_control"><strong>Access Control</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_access_rights">Access rights</a></li>
+<li><a href="#_access_control_lists">Access control lists</a></li>
+</ul>
+</li>
+<li><a href="#_attribute_based_access_control_abac">Attribute Based Access Control (ABAC)</a>
+<ul class="sectlevel2">
+<li><a href="#_parameters">Parameters</a></li>
+<li><a href="#_examples">Examples</a></li>
+<li><a href="#_interface_inheritance">Interface inheritance</a></li>
+<li><a href="#_complex_scenario_a_hospital">Complex scenario: a Hospital</a></li>
+<li><a href="#_revision_history_and_abac">Revision history and ABAC</a></li>
+<li><a href="#_accessing_external_tables">Accessing external tables</a></li>
+<li><a href="#_permissions_on_type_definitions">Permissions on Type definitions</a></li>
+</ul>
+</li>
+<li><a href="#_data_modelling"><strong>Data Modelling</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_objects_types_definitions">Entity types</a></li>
+<li><a href="#_type_annotations">Type annotations</a></li>
+<li><a href="#_property_annotations">Property annotations</a></li>
+<li><a href="#_data_types_2">Data Types</a></li>
+<li><a href="#_system_properties">System Properties</a></li>
+<li><a href="#_document_type">Document type</a></li>
+<li><a href="#_container_type">Container type</a></li>
+<li><a href="#_relation_type">Relation type</a></li>
+<li><a href="#_folder_type">Folder type</a></li>
+<li><a href="#_metadata_type">Metadata type</a></li>
+<li><a href="#_inheritance">Inheritance</a></li>
+<li><a href="#_retention">Retention</a></li>
+<li><a href="#_tenant_separation">Tenant separation</a></li>
+<li><a href="#_advanced_db_schema_changes">Advanced db schema changes</a></li>
+</ul>
+</li>
+<li><a href="#_document_service"><strong>Document Service</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_upload_data">Upload data</a></li>
+<li><a href="#_download_data">Download data</a></li>
+<li><a href="#_document_service_recycle_bin">Delete an object</a></li>
+<li><a href="#_locking">Locking</a></li>
+<li><a href="#_download_links_for_external_users">Download links for external users</a></li>
+<li><a href="#_versioning_v">Versioning</a></li>
+<li><a href="#_search_language">Search language</a></li>
+<li><a href="#_search_endpoints">Search endpoints</a></li>
+<li><a href="#_retention_periods_retention">Retention periods</a></li>
+</ul>
+</li>
+<li><a href="#_rest_api"><strong>REST API</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_client_sdks">Client SDKs</a></li>
+<li><a href="#_java_sdk">Java SDK</a></li>
+</ul>
+</li>
+<li><a href="#_system_tables"><strong>System tables</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_tables_for_type_definitions">Tables for type definitions</a></li>
+<li><a href="#_folder_structure_tables">Folder structure tables</a></li>
+<li><a href="#_recovery_table">Recovery table</a></li>
+<li><a href="#_keystore_tables">Keystore tables</a></li>
+</ul>
+</li>
+<li><a href="#_important_terminology"><strong>Important Terminology</strong></a></li>
+</ul>
+</div>
 </div>
 <div id="content">
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 <div style="page-break-after: always;"></div>
 <div class="sect1">
 <h2 id="_gettingstarted_v"><a class="anchor" href="#_gettingstarted_v"></a><a class="link" href="#_gettingstarted_v"><strong>Getting Started</strong></a></h2>
@@ -614,9 +703,6 @@ It is command line interface that can be easily integrated in any nightly build 
 For further information, consult National Vulnerability Database (NVD)– (<a href="https://nvd.nist.gov" class="bare">https://nvd.nist.gov</a>). <br>
 The following source is worth having a look at: Jeff Williams und Arshan Dabirsiaghi “Unfortunate Reality of Insecure Libraries”<br>
  (<a href="https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf" class="bare">https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf</a>).<br></p>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
 </div>
 </div>
 </div>
@@ -912,9 +998,6 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <div class="sect1">
 <h2 id="_data_store"><a class="anchor" href="#_data_store"></a><a class="link" href="#_data_store"><strong>Data Store</strong></a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 <div class="sect2">
 <h3 id="_persistence_architecture"><a class="anchor" href="#_persistence_architecture"></a><a class="link" href="#_persistence_architecture">Persistence architecture</a></h3>
 <div class="paragraph">
@@ -1471,9 +1554,6 @@ To achieve high availability for <em>arveo</em> the provider must guarantee that
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -1765,9 +1845,6 @@ Pay attention to the method <em>setRightsTo()</em>, which is called to modify th
             .setRightsTo(GrantAndDeny.grant(AclRight.READ)).of(umAdmin.getIdentifier())
             .execute();</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
 </div>
 </div>
 </div>
@@ -2747,9 +2824,6 @@ type definition. This functionality is provided by the REST endpoint located at 
 <div class="sect1">
 <h2 id="_data_modelling"><a class="anchor" href="#_data_modelling"></a><a class="link" href="#_data_modelling"><strong>Data Modelling</strong></a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 <div class="sect2">
 <h3 id="_objects_types_definitions"><a class="anchor" href="#_objects_types_definitions"></a><a class="link" href="#_objects_types_definitions">Entity types</a></h3>
 <div class="paragraph">
@@ -3245,9 +3319,6 @@ containing the type annotations. The processor is picked up by the compiler auto
 <td>A query is formulated using the fluent API of the EQL using the attributes invoice_number and amount</td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
 </div>
 </div>
 </div>
@@ -5703,9 +5774,6 @@ public interface ContainerWithDefaultAcl extends WithData {
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -5931,9 +5999,6 @@ The retention annotations also work for the document types: container, folder an
 </td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
 </div>
 </div>
 </div>
@@ -6192,9 +6257,6 @@ In a case where an index prefixed with <code>ecr_mnl_</code> is used it will be 
 <div class="sect1">
 <h2 id="_document_service"><a class="anchor" href="#_document_service"></a><a class="link" href="#_document_service"><strong>Document Service</strong></a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 <div class="paragraph">
 <p>The Document Service service is responsible for handling various repository entities such as documents and folders. The following entity types are supported: document, folder, container, relation and metadata.</p>
 </div>
@@ -7102,9 +7164,6 @@ public interface Invoice {
 ==== NoSQL Document Database apache solr 8.6
 Apache Solr is a search server and is used as an independent full-text search server for ECR Healthcare. Solr uses the Apache Lucene search library as the core for full-text indexing and search.</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -7660,9 +7719,6 @@ schedulerClient.scheduleSimpleTrigger(trigger);</code></pre>
 <div class="sect1">
 <h2 id="_rest_api"><a class="anchor" href="#_rest_api"></a><a class="link" href="#_rest_api"><strong>REST API</strong></a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
 <div class="sect2">
 <h3 id="_client_sdks"><a class="anchor" href="#_client_sdks"></a><a class="link" href="#_client_sdks">Client SDKs</a></h3>
 <div class="paragraph">
@@ -8295,9 +8351,6 @@ List&lt;EcrId&gt; ids = batchOperationServiceClient.performTypedBatchOperations(
 <h2 id="_system_tables"><a class="anchor" href="#_system_tables"></a><a class="link" href="#_system_tables"><strong>System tables</strong></a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Unresolved directive in ../../../../docs-commons/src/main/asciidoc/properties.adoc - include::../../../../project/src/main/asciidoc/versions.adoc[ properties ]</p>
-</div>
-<div class="paragraph">
 <p>This section contains information about the system tables used by <em>arveo</em>.</p>
 </div>
 <div class="sect2">
@@ -8721,7 +8774,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-07 13:53:11 UTC
+Last updated 2023-12-07 15:17:56 UTC
 </div>
 </div>
 </body>
