@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Access Control Service deployed so far.
 
+ * [7.0.0](archive/7.0.0)
  * [6.0.4](archive/6.0.4)
  * [6.0.3](archive/6.0.3)
  * [6.0.2](archive/6.0.2)
