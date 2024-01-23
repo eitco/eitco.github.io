@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 15.1.0</div>
+<div id="toctitle">arveo 16.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_installation"><strong>Installation</strong></a>
 <ul class="sectlevel2">
@@ -494,10 +494,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="content">
 <div style="page-break-after: always;"></div>
 <div class="sect1">
-<h2 id="_installation"><strong>Installation</strong></h2>
+<h2 id="_installation"><a class="anchor" href="#_installation"></a><a class="link" href="#_installation"><strong>Installation</strong></a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_deployment_options">Deployment options</h3>
+<h3 id="_deployment_options"><a class="anchor" href="#_deployment_options"></a><a class="link" href="#_deployment_options">Deployment options</a></h3>
 <div class="paragraph">
 <p>The lightweight and stateless services are delivered as
 containers for all platforms and allow the <em>arveo</em> to automatically scale horizontally. Customers have the choice between an on-premise, cloud or hybrid installation.</p>
@@ -518,7 +518,7 @@ creating a container. Several containers can be started from one image;</p>
 <p>a <em>.war</em> file: Deploy the services as web applications in an application server like Tomcat;</p>
 </li>
 <li>
-<p>Spring Boot application: Deployed as a self running service using an embedded undertow servlet container;</p>
+<p>Spring Boot application: Deployed as a self running service using an embedded tomcat servlet container;</p>
 </li>
 <li>
 <p>Debian package: Debian packages are used for software installation on Debian-based operating systems;</p>
@@ -531,27 +531,27 @@ automated service provision.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_system_requirements">System requirements</h3>
+<h3 id="_system_requirements"><a class="anchor" href="#_system_requirements"></a><a class="link" href="#_system_requirements">System requirements</a></h3>
 <div class="paragraph">
 <p>This chapter describes the system requirements for an on premise installation. The configuration and deployment of all required artefacts is performed by Eitco or a partner by the automated deployment tool "Puppet".</p>
 </div>
 <div class="sect3">
-<h4 id="_general_prerequisites">General prerequisites</h4>
+<h4 id="_general_prerequisites"><a class="anchor" href="#_general_prerequisites"></a><a class="link" href="#_general_prerequisites">General prerequisites</a></h4>
 <div class="sect4">
-<h5 id="_firewall">Firewall</h5>
+<h5 id="_firewall"><a class="anchor" href="#_firewall"></a><a class="link" href="#_firewall">Firewall</a></h5>
 <div class="paragraph">
 <p>Some firewall permissions are required. The IP addresses and the ports are customer-specific. In order to notify the provider of this, the customer must fill out the form customer-specific information.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_network_access">Network Access</h5>
+<h5 id="_network_access"><a class="anchor" href="#_network_access"></a><a class="link" href="#_network_access">Network Access</a></h5>
 <div class="paragraph">
 <p>SSH access from the Eitco network to all customer-specific systems (including server) is required so that the installation can be carried out. Access to the official Ubuntu package sources is required. This is done either in the form of direct access via the Internet or by providing a local copy of the corresponding repository.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_smtp_mail">SMTP Mail</h4>
+<h4 id="_smtp_mail"><a class="anchor" href="#_smtp_mail"></a><a class="link" href="#_smtp_mail">SMTP Mail</a></h4>
 <div class="paragraph">
 <p>In addition, an SMTP server access is required for sending mail, as well as access to the Eitco Puppet Master via VPN. The following parameters must also be provided by the customer so that any error messages from the HL7 Integration Service can be sent by email:</p>
 </div>
@@ -585,19 +585,19 @@ automated service provision.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reference_integration_system">Reference Integration System</h4>
+<h4 id="_reference_integration_system"><a class="anchor" href="#_reference_integration_system"></a><a class="link" href="#_reference_integration_system">Reference Integration System</a></h4>
 <div class="paragraph">
 <p>A reference system (in the form of a VM or similar) is required to test the system. There must be the same setup as on the customer client systems (i.e. the same web browser, with the same settings, etc). In addition, a terminal / RDP access is to be provided so that Eitco can test the client installation.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_web_browser">Web browser</h4>
+<h4 id="_web_browser"><a class="anchor" href="#_web_browser"></a><a class="link" href="#_web_browser">Web browser</a></h4>
 <div class="paragraph">
 <p>For the administration user interfaces the following web browsers are supported: Safari, Google Chrome, Microsoft Edge, Mozilla Firefox, each in the current version.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_system_requirements">Containerized Applications</h4>
+<h4 id="_system_requirements"><a class="anchor" href="#_system_requirements"></a><a class="link" href="#_system_requirements">Containerized Applications</a></h4>
 <div class="paragraph">
 <p>For the installation of the product, certain requirements for the hardware, software and infrastructure to be provided
 must be met.
@@ -707,7 +707,7 @@ and each service requires: &lt; 1 CPU, 256 MB for all services.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_typical_non_containerized_installation">Typical Non-Containerized Installation</h4>
+<h4 id="_typical_non_containerized_installation"><a class="anchor" href="#_typical_non_containerized_installation"></a><a class="link" href="#_typical_non_containerized_installation">Typical Non-Containerized Installation</a></h4>
 <div class="paragraph">
 <p>Assuming that the installation is performed as spring boot services we recommend to set up a minimum of 3 machines. The database and the document service carry the highest load and should be deployed on separate machines. All other services and 3rd party services can run on one OS instance. Some services like Archive Link, Document Conversion may consume high CPU and RAM and can make it necessary to outsource them to separate machines,</p>
 </div>
@@ -882,9 +882,9 @@ individual project setup as well as the requirements of the project.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installation_2">Installation</h3>
+<h3 id="_installation_2"><a class="anchor" href="#_installation_2"></a><a class="link" href="#_installation_2">Installation</a></h3>
 <div class="sect3">
-<h4 id="_general_concept">General concept</h4>
+<h4 id="_general_concept"><a class="anchor" href="#_general_concept"></a><a class="link" href="#_general_concept">General concept</a></h4>
 <div class="paragraph">
 <p>These instructions describe the installation procedure, the installation content and the items required for commissioning the product.
 We recommend controlling the rollout of the <em>_arveo</em> services by a continuous integration process that provides all artefact required for the deployment of the required content services and your web solution and integrations.</p>
@@ -894,7 +894,7 @@ We recommend controlling the rollout of the <em>_arveo</em> services by a contin
 </div>
 </div>
 <div class="sect3">
-<h4 id="_on_premise_installation_by_eitco">On premise installation By Eitco</h4>
+<h4 id="_on_premise_installation_by_eitco"><a class="anchor" href="#_on_premise_installation_by_eitco"></a><a class="link" href="#_on_premise_installation_by_eitco">On premise installation By Eitco</a></h4>
 <div class="paragraph">
 <p>This chapter describes the compliant On Premise installation provided by Eitco. The configuration and deployment of all required artefacts is performed by Eitco or a partner by the automated deployment tool "Puppet".</p>
 </div>
@@ -914,7 +914,7 @@ In order to guarantee the atomicity of the transactions and to avoid inconsisten
 </div>
 </div>
 <div class="sect3">
-<h4 id="_puppet">Puppet</h4>
+<h4 id="_puppet"><a class="anchor" href="#_puppet"></a><a class="link" href="#_puppet">Puppet</a></h4>
 <div class="paragraph">
 <p>Puppet is open source software developed by Puppet Labs and is used for the automated configuration and deployment of software deliveries. It ensures the configuration management of servers with both Unix-like operating systems and the Windows operating system via network. The Ad-min-Tool allows the automated configuration of computers and servers as well as the services installed on them.
 The <em>arveo</em> services are installed and configured with Puppet. After the server has been provided, see <a href="#_system_requirements">System Requirements</a>, the Puppet Agent is installed on it, which then takes care of setting up the environment and the actual application. The duration of the installation process can vary and requires an adequate internet connection. The individual installation components are installed in the form of .deb packages.
@@ -922,7 +922,7 @@ The installation is completely automated and carried out remotely.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_installed_services">Installed services</h4>
+<h4 id="_installed_services"><a class="anchor" href="#_installed_services"></a><a class="link" href="#_installed_services">Installed services</a></h4>
 <div class="paragraph">
 <p><a href="content-services.html#_3rd_party_services"><strong>3rd Party Services</strong></a></p>
 </div>
@@ -997,7 +997,7 @@ The installation is completely automated and carried out remotely.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_order_of_services">Order of services</h4>
+<h4 id="_order_of_services"><a class="anchor" href="#_order_of_services"></a><a class="link" href="#_order_of_services">Order of services</a></h4>
 <div class="paragraph">
 <p>Following you find the order of the service starts. The content services may not work before important services are started.</p>
 </div>
@@ -1072,20 +1072,20 @@ The current status of the service can also be determined with systemctl status &
 </div>
 </div>
 <div class="sect3">
-<h4 id="_ssl_certificates">SSL Certificates</h4>
+<h4 id="_ssl_certificates"><a class="anchor" href="#_ssl_certificates"></a><a class="link" href="#_ssl_certificates">SSL Certificates</a></h4>
 <div class="paragraph">
 <p>If all connections between the services are to be encrypted, SSL certificates are required. The following requirements apply:
 An <a href="authentication-x509.html">X-509 certificate</a> with an associated "private key" is required for each server. The certificate should be signed by an official CA or the company&#8217;s own CA. Self-signed certificates can also be used. The following special feature must be observed: the X509 extension “Subject Alternative Name” must contain all DNS names and IP addresses via which the respective systems are accessed.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_licensing">Licensing</h4>
+<h4 id="_licensing"><a class="anchor" href="#_licensing"></a><a class="link" href="#_licensing">Licensing</a></h4>
 <div class="paragraph">
 <p>The client software uses several 3rd party licenses. The list of licenses can be called up via the following link: <a href="https://&lt;customername&gt;.eitco.de/3rdpartylicenses.txt" class="bare">https://&lt;customername&gt;.eitco.de/3rdpartylicenses.txt</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_backups">Backups</h4>
+<h4 id="_backups"><a class="anchor" href="#_backups"></a><a class="link" href="#_backups">Backups</a></h4>
 <div class="paragraph">
 <p>The logs are on the db server in the directory /var/log/postgresql/backup.log.
 The database backup script is located at /var/lib/postgresql/backup.sh. This can also be started manually at any time. There should not yet be a folder with the current date under / backup / full /. If such a folder exists, it must be moved beforehand.
@@ -1096,10 +1096,10 @@ The script is controlled by cron and is always started automatically at 10 p.m.<
 </div>
 </div>
 <div class="sect1">
-<h2 id="_administration"><strong>Administration</strong></h2>
+<h2 id="_administration"><a class="anchor" href="#_administration"></a><a class="link" href="#_administration"><strong>Administration</strong></a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_configure_database_access">Configure Database access</h3>
+<h3 id="_configure_database_access"><a class="anchor" href="#_configure_database_access"></a><a class="link" href="#_configure_database_access">Configure Database access</a></h3>
 <div class="paragraph">
 <p><em>arveo</em> uses the default spring datasource configuration for the JDBC datasource. The datasource must be
 configured as shown in the following example:</p>
@@ -1138,9 +1138,9 @@ To configure the connection pool, use the <code>spring.datasource.hikari</code> 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_storage_locations">Configure Storage Locations</h3>
+<h3 id="_configure_storage_locations"><a class="anchor" href="#_configure_storage_locations"></a><a class="link" href="#_configure_storage_locations">Configure Storage Locations</a></h3>
 <div class="sect3">
-<h4 id="_content_and_type_definitions">Content and type definitions</h4>
+<h4 id="_content_and_type_definitions"><a class="anchor" href="#_content_and_type_definitions"></a><a class="link" href="#_content_and_type_definitions">Content and type definitions</a></h4>
 <div class="paragraph">
 <p>Only Documents can contain content elements. A Document in the repository can contain several content elements.
 For example, a document could contain a content element with the original content (like a TIFF image or a Word document)
@@ -1179,7 +1179,7 @@ numbers and the <code>&#95;</code> character. More formally, the name must match
 </div>
 </div>
 <div class="sect3">
-<h4 id="_types_of_content_elements">Types of content elements</h4>
+<h4 id="_types_of_content_elements"><a class="anchor" href="#_types_of_content_elements"></a><a class="link" href="#_types_of_content_elements">Types of content elements</a></h4>
 <div class="paragraph">
 <p>It is specified in the type definition, which content elements this type definition may have.</p>
 </div>
@@ -1229,7 +1229,7 @@ type, the server will automatically detect the content type of the uploaded bina
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_default_content_element">The default content element</h4>
+<h4 id="_the_default_content_element"><a class="anchor" href="#_the_default_content_element"></a><a class="link" href="#_the_default_content_element">The default content element</a></h4>
 <div class="paragraph">
 <p>If a type definition of type DOCUMENT does not contain any <code>@ContentElement</code> annotations, the server will automatically
 assign a content element with the name <code>content</code> to it. This content element&#8217;s metadata will be stored in the JSON
@@ -1237,7 +1237,7 @@ field of the type definition and it accepts any kind of content type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_contentelement_annotation">The ContentElement annotation</h4>
+<h4 id="_the_contentelement_annotation"><a class="anchor" href="#_the_contentelement_annotation"></a><a class="link" href="#_the_contentelement_annotation">The ContentElement annotation</a></h4>
 <div class="paragraph">
 <p>The following Table contains an Overview of the available attributes of the <code>@ContentElement</code> annotation.</p>
 </div>
@@ -1285,7 +1285,7 @@ field of the type definition and it accepts any kind of content type.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_storage_profiles">Storage profiles</h4>
+<h4 id="_storage_profiles"><a class="anchor" href="#_storage_profiles"></a><a class="link" href="#_storage_profiles">Storage profiles</a></h4>
 <div class="paragraph">
 <p>A StorageProfile defines on which storage the content elements are saved. Access to the storage backends (like
 filesystem or S3) is handled by storage plugins.</p>
@@ -1366,7 +1366,7 @@ it may also be a text string.</p>
 specified for the configuration of the plug-in. The profiles are identified by their name.</p>
 </div>
 <div class="sect4">
-<h5 id="_using_aliases_for_storage_profiles">Using aliases for storage profiles</h5>
+<h5 id="_using_aliases_for_storage_profiles"><a class="anchor" href="#_using_aliases_for_storage_profiles"></a><a class="link" href="#_using_aliases_for_storage_profiles">Using aliases for storage profiles</a></h5>
 <div class="paragraph">
 <p>It is possible to assign aliases to storage profile names. This might be required when storage profiles are mapped
 to content elements by configuration as described below. Assigning aliases can be done in the configuration by defining
@@ -1403,12 +1403,12 @@ The bucket selector plugin does not support aliases when selection rules are eva
 </div>
 </div>
 <div class="sect3">
-<h4 id="_mapping_content_elements_to_storage_profiles">Mapping content elements to storage profiles</h4>
+<h4 id="_mapping_content_elements_to_storage_profiles"><a class="anchor" href="#_mapping_content_elements_to_storage_profiles"></a><a class="link" href="#_mapping_content_elements_to_storage_profiles">Mapping content elements to storage profiles</a></h4>
 <div class="paragraph">
 <p>There are two ways to map a specific content element to a storage profile.</p>
 </div>
 <div class="sect4">
-<h5 id="_mapping_by_code">Mapping by code</h5>
+<h5 id="_mapping_by_code"><a class="anchor" href="#_mapping_by_code"></a><a class="link" href="#_mapping_by_code">Mapping by code</a></h5>
 <div class="paragraph">
 <p>To define the mapping of the content elements to storage profiles in the application code, the storage profile name
 can be set in the <code>@ContentElement</code> annotation using the <code>profile</code> attribute.</p>
@@ -1429,7 +1429,7 @@ called <em>fileSystemProfile</em>.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_mapping_by_configuration">Mapping by configuration</h5>
+<h5 id="_mapping_by_configuration"><a class="anchor" href="#_mapping_by_configuration"></a><a class="link" href="#_mapping_by_configuration">Mapping by configuration</a></h5>
 <div class="paragraph">
 <p>If the mapping should be controlled by the configuration and not be defined in the code, storage profiles with auto-
 matchable names must be used. The matching is based on the name of the type definition (in snake-case) and the name
@@ -1470,7 +1470,7 @@ following steps:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_examples">Examples</h4>
+<h4 id="_examples"><a class="anchor" href="#_examples"></a><a class="link" href="#_examples">Examples</a></h4>
 <div class="paragraph">
 <p>The following example shows the simplest possible configuration. The type definition does not contain any content element.
 It implicitly uses the default content element named <code>content</code>. The content element will be stored in a storage profile
@@ -1514,13 +1514,13 @@ public interface MyDocument {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_plugin_configuration">Plugin configuration</h4>
+<h4 id="_plugin_configuration"><a class="anchor" href="#_plugin_configuration"></a><a class="link" href="#_plugin_configuration">Plugin configuration</a></h4>
 <div class="paragraph">
 <p>The service uses a plug-in interface for connection to the specific storage provider. The following plugins
 are currently available:</p>
 </div>
 <div class="sect4">
-<h5 id="_file_system">File system</h5>
+<h5 id="_file_system"><a class="anchor" href="#_file_system"></a><a class="link" href="#_file_system">File system</a></h5>
 <div class="paragraph">
 <p>Class name: <em>de.eitco.ecr.storage.plugin.filesystem.FileSystemPlugin</em>.</p>
 </div>
@@ -1548,7 +1548,7 @@ are currently available:</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_aws_netapp_or_emc_elastic_cloud_storage">AWS, NetAPP or EMC Elastic Cloud Storage</h5>
+<h5 id="_aws_netapp_or_emc_elastic_cloud_storage"><a class="anchor" href="#_aws_netapp_or_emc_elastic_cloud_storage"></a><a class="link" href="#_aws_netapp_or_emc_elastic_cloud_storage">AWS, NetAPP or EMC Elastic Cloud Storage</a></h5>
 <div class="paragraph">
 <p>Class name: <em>de.eitco.ecr.storage.plugin.s3.S3Plugin</em>.</p>
 </div>
@@ -1688,7 +1688,7 @@ the default configuration of the Amazon S3 SDK will be used.</p></td>
 </tbody>
 </table>
 <div class="sect5">
-<h6 id="_configuring_the_retry_policy_of_the_s3_plugin">Configuring the retry policy of the S3 plugin</h6>
+<h6 id="_configuring_the_retry_policy_of_the_s3_plugin"><a class="anchor" href="#_configuring_the_retry_policy_of_the_s3_plugin"></a><a class="link" href="#_configuring_the_retry_policy_of_the_s3_plugin">Configuring the retry policy of the S3 plugin</a></h6>
 <div class="paragraph">
 <p>The Amazon S3 SDK used to connect to a S3 compatible storage supports different ways to retry failed requests. By default,
 a retry policy using jitter and 3 retries is used. To configure a custom retry policy, all three parameters <code>baseDelay</code>,
@@ -1714,7 +1714,7 @@ of the different strategies.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_retention">Retention</h5>
+<h5 id="_retention"><a class="anchor" href="#_retention"></a><a class="link" href="#_retention">Retention</a></h5>
 <div class="paragraph">
 <p>The S3 plugin supports the usage of S3 object locks to set a retention time and litigation hold status on content
 elements stored in the S3 compatible storage. To enable the feature, set the parameter <code>retentionEnabled</code> to true.</p>
@@ -1755,7 +1755,7 @@ the end of the retention interval is reached.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_azure_blob_storage">Azure blob storage</h5>
+<h5 id="_azure_blob_storage"><a class="anchor" href="#_azure_blob_storage"></a><a class="link" href="#_azure_blob_storage">Azure blob storage</a></h5>
 <div class="paragraph">
 <p>Class name: <code>de.eitco.ecr.storage.plugin.azureblob.AzureBlobStoragePlugin</code></p>
 </div>
@@ -1809,7 +1809,7 @@ the end of the retention interval is reached.
 Azure SDK.</p>
 </div>
 <div class="sect5">
-<h6 id="_retention_2">Retention</h6>
+<h6 id="_retention_2"><a class="anchor" href="#_retention_2"></a><a class="link" href="#_retention_2">Retention</a></h6>
 <div class="paragraph">
 <p>The Azure blob storage plugin supports the immutability policy feature of Azure blob storage. Using this feature
 enables an additional security level for retention protected content elements. If a content element is retention
@@ -1858,7 +1858,7 @@ account before the end of the retention interval is reached.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_bucketorganizer">BucketOrganizer</h4>
+<h4 id="_bucketorganizer"><a class="anchor" href="#_bucketorganizer"></a><a class="link" href="#_bucketorganizer">BucketOrganizer</a></h4>
 <div class="paragraph">
 <p>Class name: <em>de.eitco.ecr.server.storage.plugins.BucketOrganizerPlugin</em>.</p>
 </div>
@@ -1877,7 +1877,7 @@ matches the value pair.The storage profile named in this rule will be used to st
 selection rule consists of three parts that are separated by the pipe (|) symbol.</p>
 </div>
 <div class="sect4">
-<h5 id="_1_retention_date_match_expression">1.  retention date match expression</h5>
+<h5 id="_1_retention_date_match_expression"><a class="anchor" href="#_1_retention_date_match_expression"></a><a class="link" href="#_1_retention_date_match_expression">1.  retention date match expression</a></h5>
 <div class="paragraph">
 <p>The retention date match expression is usually a time interval that begins at some calendar day and extends to some
 later calendar day. The notation for the interval is inspired by ISO 8601 and may read like this
@@ -1892,20 +1892,20 @@ A retention date match expression can also be specified to be <code>&#42;</code>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_2_litigation_hold_match_expression">2.  litigation hold match expression</h5>
+<h5 id="_2_litigation_hold_match_expression"><a class="anchor" href="#_2_litigation_hold_match_expression"></a><a class="link" href="#_2_litigation_hold_match_expression">2.  litigation hold match expression</a></h5>
 <div class="paragraph">
 <p>The litigation hold match expression can be one of these literals: <code>true</code>, <code>false</code>, <code>&#42;</code>.
 While the literal <code>&#42;</code> will always match, the other literals will match the denoted value only.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_3_target_storage_profile_name">3.  target storage profile name</h5>
+<h5 id="_3_target_storage_profile_name"><a class="anchor" href="#_3_target_storage_profile_name"></a><a class="link" href="#_3_target_storage_profile_name">3.  target storage profile name</a></h5>
 <div class="paragraph">
 <p>The name of the target storage profile to be used if both expressions match the corresponding system field values</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configuration_parameters">Configuration parameters</h5>
+<h5 id="_configuration_parameters"><a class="anchor" href="#_configuration_parameters"></a><a class="link" href="#_configuration_parameters">Configuration parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 9. Configuration parameters of BucketOrganizer plugin</caption>
 <colgroup>
@@ -1997,7 +1997,7 @@ target storage profile name.</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_storage_profile_templates">Storage profile templates</h5>
+<h5 id="_storage_profile_templates"><a class="anchor" href="#_storage_profile_templates"></a><a class="link" href="#_storage_profile_templates">Storage profile templates</a></h5>
 <div class="paragraph">
 <p>To reduce the number of required entries in the list of bucket selection rules, storage profile templates can be used.
 A storage profile template consists of a name template with placeholders, a specific time range and the regular
@@ -2052,7 +2052,7 @@ for the current year.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_writing_a_custom_storage_plugin">Writing a custom storage plugin</h4>
+<h4 id="_writing_a_custom_storage_plugin"><a class="anchor" href="#_writing_a_custom_storage_plugin"></a><a class="link" href="#_writing_a_custom_storage_plugin">Writing a custom storage plugin</a></h4>
 <div class="paragraph">
 <p>As mentioned above, <em>arveo</em> uses a plugin interface for the connection to the storage backends. This section
 describes how to write a new storage plugin.</p>
@@ -2065,7 +2065,7 @@ describes how to write a new storage plugin.</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
     &lt;artifactId&gt;ecr-server&lt;/artifactId&gt;
-    &lt;version&gt;15.1.0&lt;/version&gt;
+    &lt;version&gt;16.0.0&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -2103,7 +2103,7 @@ be thread-safe.</p>
 </ul>
 </div>
 <div class="sect4">
-<h5 id="_configuration_settings">Configuration settings</h5>
+<h5 id="_configuration_settings"><a class="anchor" href="#_configuration_settings"></a><a class="link" href="#_configuration_settings">Configuration settings</a></h5>
 <div class="paragraph">
 <p>The <code>StoragePlugin</code> interface contains a method called <code>configure</code>, which will be called once for each plugin instance.
 It is used to process the generic parameter values that might be required to configure the plugin. For example, the
@@ -2116,7 +2116,7 @@ by the health checks.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_using_the_custom_storage_plugin">Using the custom storage plugin</h5>
+<h5 id="_using_the_custom_storage_plugin"><a class="anchor" href="#_using_the_custom_storage_plugin"></a><a class="link" href="#_using_the_custom_storage_plugin">Using the custom storage plugin</a></h5>
 <div class="paragraph">
 <p>To use the custom plugin, it is enough to add its classes to the classpath of the repository service. The plugin can then
 be used for a storage profile by specifying it&#8217;s qualified class name in the <code>pluginClassName</code> parameter. To add the
@@ -2127,7 +2127,7 @@ to a directory containing the required jar files.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_renditions">Renditions</h3>
+<h3 id="_renditions"><a class="anchor" href="#_renditions"></a><a class="link" href="#_renditions">Renditions</a></h3>
 <div class="paragraph">
 <p>Renditions of content elements, for example a PDF rendition of an image, can be created automatically. To create a
 rendition, the <code>@Rendition</code> annotation can be used as shown in the following example.</p>
@@ -2283,7 +2283,7 @@ The system will not try to create a rendition when the rendition content element
 plugins available on the classpath of the service.</p>
 </div>
 <div class="sect3">
-<h4 id="_error_handling">Error handling</h4>
+<h4 id="_error_handling"><a class="anchor" href="#_error_handling"></a><a class="link" href="#_error_handling">Error handling</a></h4>
 <div class="paragraph">
 <p>When the creation of a rendition fails, the system will re-try to create the rendition. The number of re-tries can
 be configured, the default is three (see <a href="#_ecr_server_messaging">configuration properties</a>).
@@ -2301,7 +2301,7 @@ use an individual dead letter queue as described in <a href="https://activemq.ap
 </div>
 </div>
 <div class="sect4">
-<h5 id="_reset_status_of_failed_renditions">Reset status of failed renditions</h5>
+<h5 id="_reset_status_of_failed_renditions"><a class="anchor" href="#_reset_status_of_failed_renditions"></a><a class="link" href="#_reset_status_of_failed_renditions">Reset status of failed renditions</a></h5>
 <div class="paragraph">
 <p>The status of failed renditions can be set to RESET (-2) either by using the API method
 <code>de.eitco.ecr.sdk.document.TypedDocumentServiceClient.resetFailedRenditionStatus</code> or simply by setting the value in the
@@ -2311,7 +2311,7 @@ create the renditions. The interval in which the job polls the database can be c
 </div>
 </div>
 <div class="sect4">
-<h5 id="_dynamically_skipping_renditions">Dynamically skipping renditions</h5>
+<h5 id="_dynamically_skipping_renditions"><a class="anchor" href="#_dynamically_skipping_renditions"></a><a class="link" href="#_dynamically_skipping_renditions">Dynamically skipping renditions</a></h5>
 <div class="paragraph">
 <p>There are cases where the decision, whether to create a rendition for a content element, can only be made at run-time. For cases like this a type can provide a method implementing that decision. This method is marked by the annotation <code>@RenditionCreationCondition</code>. Only one method of a type may have this annotation. The method</p>
 </div>
@@ -2366,7 +2366,7 @@ create the renditions. The interval in which the job polls the database can be c
 <p>If such a method exists, arveo evaluates it before posting rendition messages. If the method returns <code>false</code> the message is not posted. Such a method may be present on types that are not Documents, but will not have any effect. This might be helpful in scenarios where there are complex inheritance structures.</p>
 </div>
 <div class="sect5">
-<h6 id="_example_1">Example 1</h6>
+<h6 id="_example_1"><a class="anchor" href="#_example_1"></a><a class="link" href="#_example_1">Example 1</a></h6>
 <div class="paragraph">
 <p>Let&#8217;s assume a scenario where we have a document with a content element "content" that can have an arbitrary type. It is supposed to be a multi-page document, so in most cases it is a pdf-file. However, there are cases  where a document is created with the content element being an MS-word document and in some cases it is just a single page image. Even multi-page tiffs are possible and in some seldom cases the content is unclear and simply "application/octet-stream".</p>
 </div>
@@ -2462,7 +2462,7 @@ public interface DocumentWithDynamicRenditionDecision {
 </div>
 </div>
 <div class="sect5">
-<h6 id="_example_2">Example 2</h6>
+<h6 id="_example_2"><a class="anchor" href="#_example_2"></a><a class="link" href="#_example_2">Example 2</a></h6>
 <div class="paragraph">
 <p>Assume the application described in example 1. Assume further that at one point it becomes necessary to migrate some older documents to this application. An importer is written, however most of the imports fail. This is due to the fact that many of the documents are in an older msword format that the current render engine is incapable of transforming into pdf. So it is decided to not create a rendition for those elements and simply provide a download link in the applications' client.</p>
 </div>
@@ -2539,7 +2539,7 @@ public interface DynamicRenditionExample2 {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_text_renditions">Text renditions</h4>
+<h4 id="_text_renditions"><a class="anchor" href="#_text_renditions"></a><a class="link" href="#_text_renditions">Text renditions</a></h4>
 <div class="paragraph">
 <p>The rendition feature can be used to store extracted fulltext data as content elements of a document. To achieve this,
 simply add a rendition content element with the content type <code>text/plain</code>.</p>
@@ -2575,9 +2575,9 @@ fly.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_retention_container">Configure retention container</h3>
+<h3 id="_configure_retention_container"><a class="anchor" href="#_configure_retention_container"></a><a class="link" href="#_configure_retention_container">Configure retention container</a></h3>
 <div class="sect4">
-<h5 id="_configure_storage_containers_for_yearly_retention_periods">Configure storage containers for yearly retention periods</h5>
+<h5 id="_configure_storage_containers_for_yearly_retention_periods"><a class="anchor" href="#_configure_storage_containers_for_yearly_retention_periods"></a><a class="link" href="#_configure_storage_containers_for_yearly_retention_periods">Configure storage containers for yearly retention periods</a></h5>
 <div class="paragraph">
 <p>Once you have deployed your new data type with enabled retention, all your data is stored in your default storage profile
 and has a default retention of <strong>10 years</strong>.
@@ -2836,13 +2836,13 @@ If you want to use directories instead of buckets you can configure file system 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_encryption">Configure Encryption</h3>
+<h3 id="_encryption"><a class="anchor" href="#_encryption"></a><a class="link" href="#_encryption">Configure Encryption</a></h3>
 <div class="paragraph">
 <p><em>arveo</em> provides a transparent encryption for data stored in the profiles. The encryption can be configured individually
 for each storage profile.</p>
 </div>
 <div class="sect3">
-<h4 id="_overview">Overview</h4>
+<h4 id="_overview"><a class="anchor" href="#_overview"></a><a class="link" href="#_overview">Overview</a></h4>
 <div class="paragraph">
 <p>Encrypting and decrypting is performed by configurable encryption providers. Each provider is identified by a unique
 name. The available providers are described below.</p>
@@ -2905,7 +2905,7 @@ by the bucket selection rules. Configuring the encryption for the BucketOrganize
 </div>
 </div>
 <div class="sect3">
-<h4 id="_commons_aes_provider">Commons AES provider</h4>
+<h4 id="_commons_aes_provider"><a class="anchor" href="#_commons_aes_provider"></a><a class="link" href="#_commons_aes_provider">Commons AES provider</a></h4>
 <div class="paragraph">
 <p>The <code>commons-aes</code> provider supports AES encryption with 256bit keys. When a new content element is created in an encrypted
 profile, the provider generates a random cipher key for the element. The key is encrypted using a master password that is
@@ -2986,7 +2986,7 @@ most secure algorithm available will be used</p></td>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_vault_aes_provider">Vault AES provider</h4>
+<h4 id="_vault_aes_provider"><a class="anchor" href="#_vault_aes_provider"></a><a class="link" href="#_vault_aes_provider">Vault AES provider</a></h4>
 <div class="paragraph">
 <p>The <code>vault-aes</code> encryption provider uses the transit secrets engine of
 <a href="https://www.vaultproject.io/docs/secrets/transit">Hashicorp Vault</a> to encrypt and decrypt a generated random cipher key.
@@ -3065,12 +3065,12 @@ most secure algorithm available will be used</p></td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_implementation_details_of_aes_encryption">Implementation details of AES encryption</h4>
+<h4 id="_implementation_details_of_aes_encryption"><a class="anchor" href="#_implementation_details_of_aes_encryption"></a><a class="link" href="#_implementation_details_of_aes_encryption">Implementation details of AES encryption</a></h4>
 <div class="paragraph">
 <p>The following chapter contains information about the implementation details of the AES encryption used by <em>arveo</em>.</p>
 </div>
 <div class="sect4">
-<h5 id="_header">Header</h5>
+<h5 id="_header"><a class="anchor" href="#_header"></a><a class="link" href="#_header">Header</a></h5>
 <div class="paragraph">
 <p>The encryption library is designed to encrypt data in such a way that it can be stored permanently in encrypted form and
 possibly only decrypted after a long time. In order to guarantee decryption, all data required for this (except the key, of
@@ -3080,7 +3080,7 @@ for decryption.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_aes">AES</h5>
+<h5 id="_aes"><a class="anchor" href="#_aes"></a><a class="link" href="#_aes">AES</a></h5>
 <div class="paragraph">
 <p>The library uses AES according to the recommendation of the Federal Office for Information Security of March 2020:</p>
 </div>
@@ -3152,7 +3152,7 @@ To generate the random data for the initialisation vector and the salt, a <em>Se
 </div>
 </div>
 <div class="sect4">
-<h5 id="_header_format">Header Format</h5>
+<h5 id="_header_format"><a class="anchor" href="#_header_format"></a><a class="link" href="#_header_format">Header Format</a></h5>
 <div class="paragraph">
 <p>The header begins with a string to identify data encrypted with the library followed by the length of the
 payload data in the header. The header is divided into blocks and can be read serially.</p>
@@ -3166,7 +3166,7 @@ Marker|length|method|header version|key length|checksum length|iteration|storage
 </div>
 </div>
 <div class="sect4">
-<h5 id="_key">Key</h5>
+<h5 id="_key"><a class="anchor" href="#_key"></a><a class="link" href="#_key">Key</a></h5>
 <div class="paragraph">
 <p>The keys used for encryption are either generated using random data or derived from any password using the Argon2 hash
 function. Since deriving keys can be very computationally intensive depending on the configuration, a key ID can be
@@ -3180,7 +3180,7 @@ is stored in the header instead.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_usage">Usage</h5>
+<h5 id="_usage"><a class="anchor" href="#_usage"></a><a class="link" href="#_usage">Usage</a></h5>
 <div class="paragraph">
 <p>Instantiation of the AesEncryptorAndDecryptor:</p>
 </div>
@@ -3210,7 +3210,7 @@ is stored in the header instead.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_note_on_linux">Note on Linux</h5>
+<h5 id="_note_on_linux"><a class="anchor" href="#_note_on_linux"></a><a class="link" href="#_note_on_linux">Note on Linux</a></h5>
 <div class="paragraph">
 <p>On Linux, Java uses the NativePRNG algorithm by default for generating random data with SecureRandom.getInstanceStrong().
 This implementation uses /dev/random and may block if there is not enough data available there. This can lead to very
@@ -3228,7 +3228,7 @@ service haveged start</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_active_mq">Configure Active MQ</h3>
+<h3 id="_configure_active_mq"><a class="anchor" href="#_configure_active_mq"></a><a class="link" href="#_configure_active_mq">Configure Active MQ</a></h3>
 <div class="paragraph">
 <p><em>arveo</em> uses Apache ActiveMQ to queue asynchronous tasks. Access to the message broker is configured in the YAML file of
 the <em>arveo</em> service using the default configuration properties of the Spring ActiveMQ integration:</p>
@@ -3274,12 +3274,12 @@ dead letter queues must be activated by adding the following policy entries to _
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_arveo_user_management_as_authentication_service">Configure <em>arveo</em> user management as Authentication Service</h3>
+<h3 id="_configure_arveo_user_management_as_authentication_service"><a class="anchor" href="#_configure_arveo_user_management_as_authentication_service"></a><a class="link" href="#_configure_arveo_user_management_as_authentication_service">Configure <em>arveo</em> user management as Authentication Service</a></h3>
 <div class="paragraph">
 <p>The User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue JSON web tokens that can be used to log in to services that are also secured with OAuth2.</p>
 </div>
 <div class="sect3">
-<h4 id="_configuration_of_the_authorization_server">Configuration of the Authorization Server</h4>
+<h4 id="_configuration_of_the_authorization_server"><a class="anchor" href="#_configuration_of_the_authorization_server"></a><a class="link" href="#_configuration_of_the_authorization_server">Configuration of the Authorization Server</a></h4>
 <div class="paragraph">
 <p>To enable the Authorization Server, the <em>user-service.authorization-server.enabled</em> setting must be
 enabled and a keystore must be configured. The keystore must contain an RSA keypair under the specified alias:</p>
@@ -3298,7 +3298,7 @@ enabled and a keystore must be configured. The keystore must contain an RSA keyp
 </div>
 </div>
 <div class="sect3">
-<h4 id="_oauth_clients">OAuth clients</h4>
+<h4 id="_oauth_clients"><a class="anchor" href="#_oauth_clients"></a><a class="link" href="#_oauth_clients">OAuth clients</a></h4>
 <div class="paragraph">
 <p>To obtain a token, a client application must log on to a specific client configured in the Authorization Server. Clients can be created both by API and by configuration. At least one client must have been configured to be able to log in via OAuth. Clients are always stored in the master
 tenant. In the configuration, clients can be specified as follows:</p>
@@ -3347,13 +3347,13 @@ The clients are always stored in the master tenant. For systems with multiple cl
 </table>
 </div>
 <div class="sect4">
-<h5 id="_refreshing_tokens">Refreshing tokens</h5>
+<h5 id="_refreshing_tokens"><a class="anchor" href="#_refreshing_tokens"></a><a class="link" href="#_refreshing_tokens">Refreshing tokens</a></h5>
 <div class="paragraph">
 <p>When a new token is issued, a refresh token is also generated (except for the client_credentials grant). This refresh token can be used to renew an expiring token without requiring the user to log in again. By default, when a token refresh request is made, the user also receives a new refresh token whose validity is still that of the first refresh token. This ensures that a user cannot be issued new access tokens by the service indefinitely. If this behavior is not desired, and the refresh tokens should each have an extended validity, the <em>user-service.authorization-service.reuse-refresh-tokens</em> parameter can be set to false.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_client_login">Client login</h5>
+<h5 id="_client_login"><a class="anchor" href="#_client_login"></a><a class="link" href="#_client_login">Client login</a></h5>
 <div class="paragraph">
 <p>To get a token, the client application must send the respective client id and the client secret as HTTP Basic Auth
 header in the token request. The remaining parameters are sent as form data via POST to the endpoint
@@ -3373,7 +3373,7 @@ This will also allow you to enable single sign on for your web clients.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_install_keycloak">Install Keycloak</h5>
+<h5 id="_install_keycloak"><a class="anchor" href="#_install_keycloak"></a><a class="link" href="#_install_keycloak">Install Keycloak</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3392,7 +3392,7 @@ This will also allow you to enable single sign on for your web clients.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_create_keycloak_realm">Create Keycloak realm</h5>
+<h5 id="_create_keycloak_realm"><a class="anchor" href="#_create_keycloak_realm"></a><a class="link" href="#_create_keycloak_realm">Create Keycloak realm</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3405,7 +3405,7 @@ This will also allow you to enable single sign on for your web clients.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_create_keycloak_clients">Create Keycloak clients</h5>
+<h5 id="_create_keycloak_clients"><a class="anchor" href="#_create_keycloak_clients"></a><a class="link" href="#_create_keycloak_clients">Create Keycloak clients</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3445,7 +3445,7 @@ Implicit flow is no longer recommended. The standard flow should be used. Furthe
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_a_client">Configure a client</h5>
+<h5 id="_configure_a_client"><a class="anchor" href="#_configure_a_client"></a><a class="link" href="#_configure_a_client">Configure a client</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3529,7 +3529,7 @@ Add To UserInfo = On</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_keycloak_for_sso_with_kerberos">Configure Keycloak for SSO with Kerberos</h5>
+<h5 id="_configure_keycloak_for_sso_with_kerberos"><a class="anchor" href="#_configure_keycloak_for_sso_with_kerberos"></a><a class="link" href="#_configure_keycloak_for_sso_with_kerberos">Configure Keycloak for SSO with Kerberos</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -3662,7 +3662,7 @@ Role Mappings=&lt;add arveo-service-user&gt;</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_authentication_between_content_services">Configure authentication between Content Services</h3>
+<h3 id="_configure_authentication_between_content_services"><a class="anchor" href="#_configure_authentication_between_content_services"></a><a class="link" href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></h3>
 <div class="paragraph">
 <p>All <em>arveo</em> content services use <strong>Spring Security</strong> for user authentication and authorization. Spring Security supports several standardized protocols as well as custom implementations. The basic configuration is independent of the protocol used.</p>
 </div>
@@ -3673,7 +3673,7 @@ a "resource server". Other services, such as the repository service, communicate
 role of a "resource server" and a "client" at the same time.</p>
 </div>
 <div class="sect4">
-<h5 id="_resource_and_client_configuration">Resource and client configuration</h5>
+<h5 id="_resource_and_client_configuration"><a class="anchor" href="#_resource_and_client_configuration"></a><a class="link" href="#_resource_and_client_configuration">Resource and client configuration</a></h5>
 <div class="paragraph">
 <p>The following configuration can be used to make a service an OAuth2.0 resource and/or an OAuth2.0 client in the service&#8217;s <em>application.yaml</em>:</p>
 </div>
@@ -3740,7 +3740,7 @@ role of a "resource server" and a "client" at the same time.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_configure_resource">Configure resource</h5>
+<h5 id="_configure_resource"><a class="anchor" href="#_configure_resource"></a><a class="link" href="#_configure_resource">Configure resource</a></h5>
 <div class="paragraph">
 <p>Configure the respective <em>application.yaml</em> of the service like this:</p>
 </div>
@@ -3776,7 +3776,7 @@ spring:
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_the_client">Configure the client</h5>
+<h5 id="_configure_the_client"><a class="anchor" href="#_configure_the_client"></a><a class="link" href="#_configure_the_client">Configure the client</a></h5>
 <div class="paragraph">
 <p>Configure the respective <em>application.yaml</em> of the service like this:</p>
 </div>
@@ -3884,7 +3884,7 @@ see documentation on user management/client context/client secret</p></td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_troubleshooting">Troubleshooting</h4>
+<h4 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a><a class="link" href="#_troubleshooting">Troubleshooting</a></h4>
 <div class="paragraph">
 <p>Some common error messages and ways to fix them:</p>
 </div>
@@ -3901,7 +3901,7 @@ see documentation on user management/client context/client secret</p></td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_authentication-oauth2">OAuth2.0 Authentication</h3>
+<h3 id="_authentication-oauth2"><a class="anchor" href="#_authentication-oauth2"></a><a class="link" href="#_authentication-oauth2">OAuth2.0 Authentication</a></h3>
 <div class="paragraph">
 <p>All <em>arveo</em> services require authentication, ensuring that only another <em>arveo</em> service or an authenticated user can use the REST API. Authentication of a user is done by the either a authentication service like Keycloak or the <em>arveo</em> User Management Service.
 The user context is passed to invoked services. Single Sign on is supported with OAuth2.0 and Open ID Connect.</p>
@@ -3930,7 +3930,7 @@ The user context is passed to invoked services. Single Sign on is supported with
 This OAuth2.0 authorization service can either be the <em>arveo</em> user management service or Keycloak, Active Directory.</p>
 </div>
 <div class="sect3">
-<h4 id="_oauth2_0_flows_grant_types">OAuth2.0 Flows (Grant types)</h4>
+<h4 id="_oauth2_0_flows_grant_types"><a class="anchor" href="#_oauth2_0_flows_grant_types"></a><a class="link" href="#_oauth2_0_flows_grant_types">OAuth2.0 Flows (Grant types)</a></h4>
 <div class="paragraph">
 <p>OAuth2.0 defines four flows to get an access token. These flows are called grant types. <em>arveo</em> supports two flows for user authentication and service authentication.</p>
 </div>
@@ -3952,7 +3952,7 @@ This OAuth2.0 authorization service can either be the <em>arveo</em> user manage
 </div>
 </div>
 <div class="sect3">
-<h4 id="_client_credential_flow">Client Credential Flow</h4>
+<h4 id="_client_credential_flow"><a class="anchor" href="#_client_credential_flow"></a><a class="link" href="#_client_credential_flow">Client Credential Flow</a></h4>
 <div class="paragraph">
 <p>Our machine-to-machine content services authenticate and authorize the app not an user. For this scenario, typical authentication schemes like username + password or social logins don&#8217;t make sense. Instead, the services use the Client Credentials Flow, in which they pass along their Client ID and Client Secret to authenticate themselves and get a token.</p>
 </div>
@@ -3983,7 +3983,7 @@ This OAuth2.0 authorization service can either be the <em>arveo</em> user manage
 </div>
 </div>
 <div class="sect3">
-<h4 id="_authentication_code_flow_pkce">Authentication Code Flow (PKCE)</h4>
+<h4 id="_authentication_code_flow_pkce"><a class="anchor" href="#_authentication_code_flow_pkce"></a><a class="link" href="#_authentication_code_flow_pkce">Authentication Code Flow (PKCE)</a></h4>
 <div class="paragraph">
 <p>The <em>arveo</em> single-page web applications requests Access Tokens, some additional security concerns are posed that are not mitigated by the Authorization Code Flow alone. This is because:</p>
 </div>
@@ -4047,7 +4047,7 @@ This OAuth2.0 authorization service can either be the <em>arveo</em> user manage
 </div>
 </div>
 <div class="sect3">
-<h4 id="_maintenance_mode_for_the_database_schema">Maintenance mode for the database schema</h4>
+<h4 id="_maintenance_mode_for_the_database_schema"><a class="anchor" href="#_maintenance_mode_for_the_database_schema"></a><a class="link" href="#_maintenance_mode_for_the_database_schema">Maintenance mode for the database schema</a></h4>
 <div class="paragraph">
 <p>This chapter documents the <em>arveo</em> parameters to start the database service, alter schema and stop the service.</p>
 </div>
@@ -4102,7 +4102,7 @@ schema and shut down once the update is finished. It will not accept requests wh
 </div>
 </div>
 <div class="sect3">
-<h4 id="_supported_schema_changes">Supported schema changes</h4>
+<h4 id="_supported_schema_changes"><a class="anchor" href="#_supported_schema_changes"></a><a class="link" href="#_supported_schema_changes">Supported schema changes</a></h4>
 <div class="paragraph">
 <p>The following list contains the supported schema changes. Note that some changes like removing an attribute or adding
 constraints might not be possible when the existing data or existing constraints might be violated by the change.</p>
@@ -4159,7 +4159,7 @@ constraints might not be possible when the existing data or existing constraints
 </div>
 </div>
 <div class="sect3">
-<h4 id="_checking_for_schema_changes">Checking for schema changes</h4>
+<h4 id="_checking_for_schema_changes"><a class="anchor" href="#_checking_for_schema_changes"></a><a class="link" href="#_checking_for_schema_changes">Checking for schema changes</a></h4>
 <div class="paragraph">
 <p>By setting the properties <code>arveo.server.system.maintenanceMode</code> and <code>arveo.server.system.logSchemaChanges</code> to true,
 the system will start up, check for required schema changes, write them to a special log file, and shut down again.
@@ -4195,7 +4195,7 @@ possible when the schema update itself is skipped.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_audit">Configure audit</h3>
+<h3 id="_configure_audit"><a class="anchor" href="#_configure_audit"></a><a class="link" href="#_configure_audit">Configure audit</a></h3>
 <div class="paragraph">
 <p>A <code>@Type</code> may define to be audited. This means, that any write access i.e. any create, update and delete operation to any entity of this type will be logged into another table. This is done with the annotation <code>@Audit</code>:</p>
 </div>
@@ -4233,6 +4233,7 @@ public interface AuditedContainer {
     value = AuditLocation.GLOBAL, <i class="conum" data-value="1"></i><b>(1)</b>
     indexOn = {AuditJsonField.CURRENT} <i class="conum" data-value="2"></i><b>(2)</b>
 )
+@Acls
 public interface AuditedDocument {
 
     @Optional
@@ -4258,17 +4259,17 @@ public interface AuditedDocument {
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/3.0.3/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/4.0.0/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
-<h4 id="_access_audit">Access audit</h4>
+<h4 id="_access_audit"><a class="anchor" href="#_access_audit"></a><a class="link" href="#_access_audit">Access audit</a></h4>
 <div class="paragraph">
 <p>To access the audit, the audit service provides a REST API. Access will be restricted depending on the type: If ACLs are activated on a <code>@Type</code>, only users that have read access to an entity will be allowed to audit this entity. If ACLs are deactivated on a <code>@Type</code>, only users with the <a href="#Basic functions of the user administration">authority</a> <code>AUDITOR</code> are allowed to audit the entities of this type.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_solr">Solr</h3>
+<h3 id="_solr"><a class="anchor" href="#_solr"></a><a class="link" href="#_solr">Solr</a></h3>
 <div class="paragraph">
 <p>In order to use Solr in connection with <em>arveo</em>, an installation of a Solr service is required. Under the
 following link you can download the current versions of Solr: <a href="https://solr.apache.org/downloads.html" class="bare">https://solr.apache.org/downloads.html</a>.</p>
@@ -4285,12 +4286,12 @@ the entities that have to be stored in Solr. A <a href="#_nosql_queue_job">syste
 entries in the queue table.</p>
 </div>
 <div class="sect3">
-<h4 id="_solr_deployment">Solr deployment</h4>
+<h4 id="_solr_deployment"><a class="anchor" href="#_solr_deployment"></a><a class="link" href="#_solr_deployment">Solr deployment</a></h4>
 <div class="paragraph">
 <p>A small tutorial for setting up Solr for <em>arveo</em>.</p>
 </div>
 <div class="sect4">
-<h5 id="_arveo_yaml_configuration"><em>arveo</em> yaml configuration:</h5>
+<h5 id="_arveo_yaml_configuration"><a class="anchor" href="#_arveo_yaml_configuration"></a><a class="link" href="#_arveo_yaml_configuration"><em>arveo</em> yaml configuration:</a></h5>
 <div class="paragraph">
 <p>In the following example you can see a minimal <em>arveo</em> yaml configuration for Solr:</p>
 </div>
@@ -4322,7 +4323,7 @@ Collections will be created automatically from <em>arveo</em>.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_solr_security">Solr security</h5>
+<h5 id="_solr_security"><a class="anchor" href="#_solr_security"></a><a class="link" href="#_solr_security">Solr security</a></h5>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -4343,10 +4344,10 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 </div>
 </div>
 <div class="sect4">
-<h5 id="_solr_configurations">Solr Configurations</h5>
+<h5 id="_solr_configurations"><a class="anchor" href="#_solr_configurations"></a><a class="link" href="#_solr_configurations">Solr Configurations</a></h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/15.1.0/ecr-environment-configuration-15.1.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/16.0.0/ecr-environment-configuration-16.0.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -4368,7 +4369,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 </div>
 </div>
 <div class="sect5">
-<h6 id="_type_definitions">Type definitions</h6>
+<h6 id="_type_definitions"><a class="anchor" href="#_type_definitions"></a><a class="link" href="#_type_definitions">Type definitions</a></h6>
 <div class="paragraph">
 <p>You can annotate a type definition Class with @NOSql. If you do that every attribute in the type definition will be created as field in the Solr schema. If you want to deactivate an attribute of a type definition for Solr you can do the following:</p>
 </div>
@@ -4402,7 +4403,7 @@ public interface PersonSimple {
 </div>
 </div>
 <div class="sect5">
-<h6 id="_fulltext_extraction">Fulltext Extraction</h6>
+<h6 id="_fulltext_extraction"><a class="anchor" href="#_fulltext_extraction"></a><a class="link" href="#_fulltext_extraction">Fulltext Extraction</a></h6>
 <div class="paragraph">
 <p><em>arveo</em> automatically extracts the content of the type definitions which are annotated with <code>@Type(ObjectType.DOCUMENT)</code> and <code>@NOSql</code>. You must set up the documents conversion service for this functionality. At the following we describe the process of the automatic extraction of Solr:</p>
 </div>
@@ -4432,7 +4433,7 @@ public interface PersonSimple {
 </div>
 </div>
 <div class="sect3">
-<h4 id="_solr_security_configuration">Solr security configuration</h4>
+<h4 id="_solr_security_configuration"><a class="anchor" href="#_solr_security_configuration"></a><a class="link" href="#_solr_security_configuration">Solr security configuration</a></h4>
 <div class="paragraph">
 <p>By default, Solr does not use any kind of authorization or authentication. In productive systems, Solr must be secured
 by enabling transport encryption, authentication and authorization.</p>
@@ -4509,7 +4510,7 @@ configuration for <em>arveo</em>:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_acl_filter_plugin">ACL filter plugin</h4>
+<h4 id="_acl_filter_plugin"><a class="anchor" href="#_acl_filter_plugin"></a><a class="link" href="#_acl_filter_plugin">ACL filter plugin</a></h4>
 <div class="paragraph">
 <p>When searching for ACL protected entities in Solr, the search result is filtered by ACL right. This is achieved by
 using a custom Solr plugin, which must be installed manually by following the steps below. The Nexus repository
@@ -4518,7 +4519,7 @@ contains a ZIP file with the plugin and all required libraries.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 6.0.3) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/6.0.3/cmn-user-management-access-control-solr-plugin-6.0.3-zip.zip">nexus repository</a>.</p>
+<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 7.0.0) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/7.0.0/cmn-user-management-access-control-solr-plugin-7.0.0-zip.zip">nexus repository</a>.</p>
 </li>
 <li>
 <p>Install the plugin in Solr by extracting the content of the downloaded ZIP file as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
@@ -4594,7 +4595,7 @@ will try to load a token from ~/.vault-token)</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_storing_entities_in_solr">Storing entities in Solr</h4>
+<h4 id="_storing_entities_in_solr"><a class="anchor" href="#_storing_entities_in_solr"></a><a class="link" href="#_storing_entities_in_solr">Storing entities in Solr</a></h4>
 <div class="paragraph">
 <p>To be able to use Solr for advanced queries, the entities must be stored in Solr, too. To enable this, simply add the
 <code>@NOSql</code> annotation to the attributes to be stored in Solr to the getters of your type definitions. The annotation can
@@ -4605,7 +4606,7 @@ by a dot. For example, an attribute called "name" in a type definition called "i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_fulltext_extraction_2">Fulltext extraction</h4>
+<h4 id="_fulltext_extraction_2"><a class="anchor" href="#_fulltext_extraction_2"></a><a class="link" href="#_fulltext_extraction_2">Fulltext extraction</a></h4>
 <div class="paragraph">
 <p>It is also possible to store fulltext data of the content of documents in Solr. For this, set the <code>fulltextExtraction</code>
 attribute of the <code>@ContentElement</code> annotation to true (see <a href="#_configure_storage_locations">Content Elements</a>). The
@@ -4624,7 +4625,7 @@ the mime type is set to the default value (application/octet-stream), the servic
 </div>
 </div>
 <div class="sect3">
-<h4 id="_searching_in_solr">Searching in Solr</h4>
+<h4 id="_searching_in_solr"><a class="anchor" href="#_searching_in_solr"></a><a class="link" href="#_searching_in_solr">Searching in Solr</a></h4>
 <div class="paragraph">
 <p>The <em>arveo</em> API provides methods to perform queries in Solr. The methods use the EQL just like the regular
 search methods that perform queries on the relational database. There are some EQL features that are not supported
@@ -4702,7 +4703,7 @@ entities in multiple type definitions, the method <code>de.eitco.ecr.sdk.SearchC
 </div>
 </div>
 <div class="sect3">
-<h4 id="_combined_search">Combined search</h4>
+<h4 id="_combined_search"><a class="anchor" href="#_combined_search"></a><a class="link" href="#_combined_search">Combined search</a></h4>
 <div class="paragraph">
 <p><em>arveo</em> creates a special multi-valued field called <code>ecr_attributes</code> in Solr. When a getter (or an entire
 interface) is annotated with <code>@NOSql(combinedSearch = true)</code>, the attribute of the getter (or all attributes of the interface)
@@ -4746,7 +4747,7 @@ the Solr index. A value of <code>0</code> means no limit.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_relations_in_solr">Relations in Solr</h4>
+<h4 id="_relations_in_solr"><a class="anchor" href="#_relations_in_solr"></a><a class="link" href="#_relations_in_solr">Relations in Solr</a></h4>
 <div class="paragraph">
 <p>Relations between entities can be described using relation type definitions. While those relations can be easily
 resolved in the relational database, NoSQL databases like Solr are not designed to support a relational data model as
@@ -4808,7 +4809,7 @@ child IDs in Solr</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rebuilding_the_solr_index">Rebuilding the Solr index</h4>
+<h4 id="_rebuilding_the_solr_index"><a class="anchor" href="#_rebuilding_the_solr_index"></a><a class="link" href="#_rebuilding_the_solr_index">Rebuilding the Solr index</a></h4>
 <div class="paragraph">
 <p>Currently, there is no automated way to rebuild the Solr index. If the data in Solr was lost or corrupted, it can be
 rebuilt using the NOSql queue tables of the affected type definitions.</p>
@@ -4881,7 +4882,7 @@ useful when writing the SQL script to copy these values. The trigger function wi
 the relation type definition with a <code>_nrtf</code> suffix.</p>
 </div>
 <div class="sect4">
-<h5 id="_example_scripts">Example scripts</h5>
+<h5 id="_example_scripts"><a class="anchor" href="#_example_scripts"></a><a class="link" href="#_example_scripts">Example scripts</a></h5>
 <div class="paragraph">
 <p>The following examples show how to copy data to the queue table. The main table of the type definition in the example
 is called <code>test_simple_invoice</code>.</p>
@@ -4961,7 +4962,7 @@ from "test_invoice_person_relation" a;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_system_jobs">System jobs</h3>
+<h3 id="_system_jobs"><a class="anchor" href="#_system_jobs"></a><a class="link" href="#_system_jobs">System jobs</a></h3>
 <div class="paragraph">
 <p>The <em>arveo</em> system uses several background jobs to perform essential functions. These jobs are managed by
 a clustered <a href="http://www.quartz-scheduler.org/">Quartz scheduler</a> running inside the repository service and/or in a dedicated job service. The scheduler
@@ -4997,7 +4998,7 @@ no additional configuration is required.
 </table>
 </div>
 <div class="sect3">
-<h4 id="_clean_recovery_table_job">Clean recovery table job</h4>
+<h4 id="_clean_recovery_table_job"><a class="anchor" href="#_clean_recovery_table_job"></a><a class="link" href="#_clean_recovery_table_job">Clean recovery table job</a></h4>
 <div class="paragraph">
 <p>The expired entries in the recovery table (see <a href="#_recovery_log">Recovery</a>) are deleted by the
 clean recovery table job. By default, the job is triggered every day at 3 a.m. The user configured to execute the system
@@ -5005,7 +5006,7 @@ jobs needs to have the <code>ECR_PURGE_RECOVERY_TABLE</code> authority to be abl
 </div>
 </div>
 <div class="sect3">
-<h4 id="_nosql_queue_job">NOSQL queue job</h4>
+<h4 id="_nosql_queue_job"><a class="anchor" href="#_nosql_queue_job"></a><a class="link" href="#_nosql_queue_job">NOSQL queue job</a></h4>
 <div class="paragraph">
 <p>Data that is supposed to be stored in the SOLR NOSQL database is stored in dedicated queue tables in the relational
 database used by <em>arveo</em>. The NOSQL queue job is used to read the data from the queue tables and to write
@@ -5028,7 +5029,7 @@ have to be disabled or removed manually from the scheduler.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_using_external_job_service_instances">Using external Job Service instances</h4>
+<h4 id="_using_external_job_service_instances"><a class="anchor" href="#_using_external_job_service_instances"></a><a class="link" href="#_using_external_job_service_instances">Using external Job Service instances</a></h4>
 <div class="paragraph">
 <p>It is possible to use one or more external Job Service instances to execute the scheduled system jobs. The service must
 be configured to use the same tenants as the repository service. To be able to execute the system jobs,
@@ -5102,7 +5103,7 @@ standby mode:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hashicorp_vault">Using Hashicorp Vault</h3>
+<h3 id="_hashicorp_vault"><a class="anchor" href="#_hashicorp_vault"></a><a class="link" href="#_hashicorp_vault">Using Hashicorp Vault</a></h3>
 <div class="paragraph">
 <p><a href="https://www.vaultproject.io/">Hashicorp Vault</a> can be used to store sensitive configuration parameters like database
 passwords or encryption master keys. Each <em>arveo</em> service tries to load configuration data from a Vault
@@ -5148,7 +5149,7 @@ found in the <a href="https://docs.spring.io/spring-cloud-vault/docs/current/ref
 the Spring Cloud Vault project.</p>
 </div>
 <div class="sect3">
-<h4 id="_defining_secrets">Defining secrets</h4>
+<h4 id="_defining_secrets"><a class="anchor" href="#_defining_secrets"></a><a class="link" href="#_defining_secrets">Defining secrets</a></h4>
 <div class="paragraph">
 <p>Vault features several ways to provide secrets to applications. Configuration properties for the <em>arveo</em>
 services must be stored in the key value secrets engine. Each secret consists of a <em>path</em> and several <em>key-value-pairs</em>.
@@ -5208,9 +5209,9 @@ of the different services.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration_properties">Configuration Properties</h3>
+<h3 id="_configuration_properties"><a class="anchor" href="#_configuration_properties"></a><a class="link" href="#_configuration_properties">Configuration Properties</a></h3>
 <div class="sect3">
-<h4 id="_commons_cache">commons.cache</h4>
+<h4 id="_commons_cache"><a class="anchor" href="#_commons_cache"></a><a class="link" href="#_commons_cache">commons.cache</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5273,7 +5274,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_commons_security_oauth2">commons.security.oauth2</h4>
+<h4 id="_commons_security_oauth2"><a class="anchor" href="#_commons_security_oauth2"></a><a class="link" href="#_commons_security_oauth2">commons.security.oauth2</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5291,6 +5292,12 @@ of the different services.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">clock-skew</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configures the maximum acceptable clock skew used when checking the expiration time of an access- or refresh-token.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">default-client-credentials-client-registration-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the default client registration ID to use for the client_credentials grant. Only relevant if there is more than one client registration for this grant type.</p></td>
@@ -5301,6 +5308,12 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the default client registration ID to use for the password grant. Only relevant if there is more than one client registration for this grant type.</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enforce-audience</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the server will only accept tokens which contain the service&#8217;s application name in the aud claim.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.database.cache-max-age</p></td>
@@ -5390,7 +5403,7 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">refresh-tokens-enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enables or disables the usage of refresh tokens to renew an expired access token.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">resource-id</p></td>
@@ -5402,7 +5415,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_client_caching">ecr.client.caching</h4>
+<h4 id="_ecr_client_caching"><a class="anchor" href="#_ecr_client_caching"></a><a class="link" href="#_ecr_client_caching">ecr.client.caching</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5435,7 +5448,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_client_stream">ecr.client.stream</h4>
+<h4 id="_ecr_client_stream"><a class="anchor" href="#_ecr_client_stream"></a><a class="link" href="#_ecr_client_stream">ecr.client.stream</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5480,7 +5493,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_sdk">ecr.sdk</h4>
+<h4 id="_ecr_sdk"><a class="anchor" href="#_ecr_sdk"></a><a class="link" href="#_ecr_sdk">ecr.sdk</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5507,7 +5520,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_caching">ecr.server.caching</h4>
+<h4 id="_ecr_server_caching"><a class="anchor" href="#_ecr_server_caching"></a><a class="link" href="#_ecr_server_caching">ecr.server.caching</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5588,7 +5601,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_content-access-tokens">ecr.server.content-access-tokens</h4>
+<h4 id="_ecr_server_content-access-tokens"><a class="anchor" href="#_ecr_server_content-access-tokens"></a><a class="link" href="#_ecr_server_content-access-tokens">ecr.server.content-access-tokens</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5645,7 +5658,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_http">ecr.server.http</h4>
+<h4 id="_ecr_server_http"><a class="anchor" href="#_ecr_server_http"></a><a class="link" href="#_ecr_server_http">ecr.server.http</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5690,7 +5703,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_jobs">ecr.server.jobs</h4>
+<h4 id="_ecr_server_jobs"><a class="anchor" href="#_ecr_server_jobs"></a><a class="link" href="#_ecr_server_jobs">ecr.server.jobs</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5825,7 +5838,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_jobs_retention-cleanup">ecr.server.jobs.retention-cleanup</h4>
+<h4 id="_ecr_server_jobs_retention-cleanup"><a class="anchor" href="#_ecr_server_jobs_retention-cleanup"></a><a class="link" href="#_ecr_server_jobs_retention-cleanup">ecr.server.jobs.retention-cleanup</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5876,7 +5889,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_liquibase">ecr.server.liquibase</h4>
+<h4 id="_ecr_server_liquibase"><a class="anchor" href="#_ecr_server_liquibase"></a><a class="link" href="#_ecr_server_liquibase">ecr.server.liquibase</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5927,7 +5940,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_listeners">ecr.server.listeners</h4>
+<h4 id="_ecr_server_listeners"><a class="anchor" href="#_ecr_server_listeners"></a><a class="link" href="#_ecr_server_listeners">ecr.server.listeners</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -5978,7 +5991,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_memory">ecr.server.memory</h4>
+<h4 id="_ecr_server_memory"><a class="anchor" href="#_ecr_server_memory"></a><a class="link" href="#_ecr_server_memory">ecr.server.memory</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6005,7 +6018,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_messaging">ecr.server.messaging</h4>
+<h4 id="_ecr_server_messaging"><a class="anchor" href="#_ecr_server_messaging"></a><a class="link" href="#_ecr_server_messaging">ecr.server.messaging</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6062,7 +6075,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_query">ecr.server.query</h4>
+<h4 id="_ecr_server_query"><a class="anchor" href="#_ecr_server_query"></a><a class="link" href="#_ecr_server_query">ecr.server.query</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6101,7 +6114,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_security">ecr.server.security</h4>
+<h4 id="_ecr_server_security"><a class="anchor" href="#_ecr_server_security"></a><a class="link" href="#_ecr_server_security">ecr.server.security</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6128,7 +6141,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_solr">ecr.server.solr</h4>
+<h4 id="_ecr_server_solr"><a class="anchor" href="#_ecr_server_solr"></a><a class="link" href="#_ecr_server_solr">ecr.server.solr</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6239,7 +6252,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_storage">ecr.server.storage</h4>
+<h4 id="_ecr_server_storage"><a class="anchor" href="#_ecr_server_storage"></a><a class="link" href="#_ecr_server_storage">ecr.server.storage</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6278,7 +6291,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_ecr_server_system">ecr.server.system</h4>
+<h4 id="_ecr_server_system"><a class="anchor" href="#_ecr_server_system"></a><a class="link" href="#_ecr_server_system">ecr.server.system</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6295,6 +6308,12 @@ of the different services.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">batch-operation-limit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities allowed to be affected by one batch operation like update or delete.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100000</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">batch-update-statement-cache-enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
@@ -6359,7 +6378,7 @@ of the different services.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_job-service">job-service</h4>
+<h4 id="_job-service"><a class="anchor" href="#_job-service"></a><a class="link" href="#_job-service">job-service</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
 <col>
@@ -6395,10 +6414,10 @@ of the different services.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_monitoring"><strong>Monitoring</strong></h2>
+<h2 id="_monitoring"><a class="anchor" href="#_monitoring"></a><a class="link" href="#_monitoring"><strong>Monitoring</strong></a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/3.1.5/reference/html/actuator.html">Spring Boot Actuator</a>
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/3.2.1/reference/html/actuator.html">Spring Boot Actuator</a>
 to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/">Prometheus</a> or
 the Administration Service. The Actuator documentation linked above contains information about the available monitoring
 data, how to enable or disable specific endpoints and how to configure security.</p>
@@ -6407,7 +6426,7 @@ data, how to enable or disable specific endpoints and how to configure security.
 <p>The overview of all actuator endpoints is available at <code>/actuator</code>. Health information is available at <code>/actuator/health</code>.</p>
 </div>
 <div class="sect2">
-<h3 id="_custom_health_indicators">Custom health indicators</h3>
+<h3 id="_custom_health_indicators"><a class="anchor" href="#_custom_health_indicators"></a><a class="link" href="#_custom_health_indicators">Custom health indicators</a></h3>
 <div class="paragraph">
 <p>In addition to the default health indicators, <em>arveo</em> provides the following additional health indicators:</p>
 </div>
@@ -6444,7 +6463,7 @@ failed, the endpoint checks if the Swift service is available.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_custom_endpoints">Custom endpoints</h3>
+<h3 id="_custom_endpoints"><a class="anchor" href="#_custom_endpoints"></a><a class="link" href="#_custom_endpoints">Custom endpoints</a></h3>
 <div class="paragraph">
 <p>In addition to the default actuator endpoints, <em>arveo</em> provides the following custom actuator endpoints.</p>
 </div>
@@ -6464,13 +6483,13 @@ failed, the endpoint checks if the Swift service is available.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_custom_metrics">Custom metrics</h3>
+<h3 id="_custom_metrics"><a class="anchor" href="#_custom_metrics"></a><a class="link" href="#_custom_metrics">Custom metrics</a></h3>
 <div class="paragraph">
 <p>In addition to the default metrics, <em>arveo</em> provides additional metrics that can be used to monitor the
 performance of the system.</p>
 </div>
 <div class="sect3">
-<h4 id="_storage">Storage</h4>
+<h4 id="_storage"><a class="anchor" href="#_storage"></a><a class="link" href="#_storage">Storage</a></h4>
 <div class="paragraph">
 <p>For each storage profile a metric is available that records the following statistics:</p>
 </div>
@@ -6563,7 +6582,7 @@ only disable the availability of the metrics but the entire recording mechanism.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_relational_database">Relational database</h4>
+<h4 id="_relational_database"><a class="anchor" href="#_relational_database"></a><a class="link" href="#_relational_database">Relational database</a></h4>
 <div class="paragraph">
 <p>The following metrics are collected for operations on the relational database:</p>
 </div>
@@ -6612,7 +6631,7 @@ time after which an execution time warning is logged and the counter is incremen
 </div>
 </div>
 <div class="sect3">
-<h4 id="_solr_2">Solr</h4>
+<h4 id="_solr_2"><a class="anchor" href="#_solr_2"></a><a class="link" href="#_solr_2">Solr</a></h4>
 <div class="paragraph">
 <p>The following metrics are collected for the Solr object database:</p>
 </div>
@@ -6669,7 +6688,7 @@ be configured using the setting <code>ecr.server.query.noSqlQueryTimeWarningMill
 </div>
 </div>
 <div class="sect3">
-<h4 id="_jms_queues">JMS queues</h4>
+<h4 id="_jms_queues"><a class="anchor" href="#_jms_queues"></a><a class="link" href="#_jms_queues">JMS queues</a></h4>
 <div class="paragraph">
 <p><em>arveo</em> provides metrics to monitor the state of the JMS queues used for asynchronous operations. These
 metrics rely on the <a href="https://activemq.apache.org/statisticsplugin">statistics plugin</a> of ActiveMQ to retrieve statistics.
@@ -6787,7 +6806,7 @@ by the repository service:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_type_definitions_2">Type definitions</h4>
+<h4 id="_type_definitions_2"><a class="anchor" href="#_type_definitions_2"></a><a class="link" href="#_type_definitions_2">Type definitions</a></h4>
 <div class="paragraph">
 <p><em>arveo</em> provides metrics for several operations for each type definition. The following metrics are available:</p>
 </div>
@@ -6908,7 +6927,7 @@ was taken for.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_prometheus">Prometheus</h3>
+<h3 id="_prometheus"><a class="anchor" href="#_prometheus"></a><a class="link" href="#_prometheus">Prometheus</a></h3>
 <div class="paragraph">
 <p><em>arveo</em> provides an actuator endpoint that can be used to collect metrics data using <a href="https://prometheus.io/">Prometheus</a>.
 Prometheus collects data by periodically calling configured sources ("scrapes"). The following example shows an entry
@@ -6948,15 +6967,15 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 </div>
 </div>
 <div class="sect2">
-<h3 id="_other_monitoring_systems">Other monitoring systems</h3>
+<h3 id="_other_monitoring_systems"><a class="anchor" href="#_other_monitoring_systems"></a><a class="link" href="#_other_monitoring_systems">Other monitoring systems</a></h3>
 <div class="paragraph">
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
-The <a href="https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
+The <a href="https://docs.spring.io/spring-boot/docs/3.2.1/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_attributes_in_mdc">Attributes in MDC</h3>
+<h3 id="_attributes_in_mdc"><a class="anchor" href="#_attributes_in_mdc"></a><a class="link" href="#_attributes_in_mdc">Attributes in MDC</a></h3>
 <div class="paragraph">
 <p><em>arveo</em> adds the following additional attributes to the mapped diagnostic context (MDC) of the logging framework
 to make it easier to analyze the system&#8217;s behavior:</p>
@@ -6988,7 +7007,7 @@ attributes will not be added when <em>arveo</em> is used embedded. In this case,
 </div>
 </div>
 <div class="sect2">
-<h3 id="_open_telemetry">Open Telemetry</h3>
+<h3 id="_open_telemetry"><a class="anchor" href="#_open_telemetry"></a><a class="link" href="#_open_telemetry">Open Telemetry</a></h3>
 <div class="paragraph">
 <p><em>arveo</em> supports using <a href="https://opentelemetry.io/">Open Telemetry</a> to monitor the system&#8217;s behavior. Most notably
 it is possible to view traces of requests across the different services using a tracing backend like
@@ -7021,13 +7040,13 @@ the actuator endpoints.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_system_tables"><strong>System tables</strong></h2>
+<h2 id="_system_tables"><a class="anchor" href="#_system_tables"></a><a class="link" href="#_system_tables"><strong>System tables</strong></a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section contains information about the system tables used by <em>arveo</em>.</p>
 </div>
 <div class="sect2">
-<h3 id="_tables_for_type_definitions">Tables for type definitions</h3>
+<h3 id="_tables_for_type_definitions"><a class="anchor" href="#_tables_for_type_definitions"></a><a class="link" href="#_tables_for_type_definitions">Tables for type definitions</a></h3>
 <div class="paragraph">
 <p>The system stores some information like the ID of type definitions in the database. For this, the following tables are
 used:</p>
@@ -7129,7 +7148,7 @@ used:</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_folder_structure_tables">Folder structure tables</h3>
+<h3 id="_folder_structure_tables"><a class="anchor" href="#_folder_structure_tables"></a><a class="link" href="#_folder_structure_tables">Folder structure tables</a></h3>
 <div class="paragraph">
 <p>The object type FOLDER is used to create tree-like structures with parent- and child-relationships. The structure is
 stored in the <em>ecr_folder_structure</em> table. The table <em>ecr_folder_structure_closure</em> contains a transitive hull of the
@@ -7227,7 +7246,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_recovery_table">Recovery table</h3>
+<h3 id="_recovery_table"><a class="anchor" href="#_recovery_table"></a><a class="link" href="#_recovery_table">Recovery table</a></h3>
 <div class="paragraph">
 <p>The recovery table <em>ecr_recovery</em> is used for the <a href="data-deletion.html#_recovery_log">recovery</a> feature.</p>
 </div>
@@ -7286,7 +7305,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_keystore_tables">Keystore tables</h3>
+<h3 id="_keystore_tables"><a class="anchor" href="#_keystore_tables"></a><a class="link" href="#_keystore_tables">Keystore tables</a></h3>
 <div class="paragraph">
 <p>When the <a href="#_encryption">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
 profile-specific database tables. For each encrypted profile, a table called <code>ecr_keys-&lt;profile&gt;</code> and a table called
@@ -7357,7 +7376,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <div class="sect1">
-<h2 id="_compatibility_list"><strong>Compatibility list</strong></h2>
+<h2 id="_compatibility_list"><a class="anchor" href="#_compatibility_list"></a><a class="link" href="#_compatibility_list"><strong>Compatibility list</strong></a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To operate <em>arveo</em> successfully the operator of the platform must provide and manage the following services.</p>
@@ -7388,8 +7407,8 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">JDK</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Java {java-version}</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integration tests run on Eclipse Temurin {java-version}, but all JDKs are supported</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integration tests run on Eclipse Temurin 17, but all JDKs are supported</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ</p></td>
@@ -7398,12 +7417,12 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PostgreSQL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">postgres {postgres-version}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">postgres 15.1</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr 9.1.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr 9.4.0</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -7474,7 +7493,7 @@ Windows Server AD FS 2016</p></td>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_important_terminology"><strong>Important Terminology</strong></h2>
+<h2 id="_important_terminology"><a class="anchor" href="#_important_terminology"></a><a class="link" href="#_important_terminology"><strong>Important Terminology</strong></a></h2>
 <div class="sectionbody">
 <div class="dlist glossary">
 <dl>
@@ -7564,7 +7583,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-20 07:48:20 UTC
+Last updated 2024-01-23 16:27:35 UTC
 </div>
 </div>
 </body>
