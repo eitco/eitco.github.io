@@ -441,118 +441,44 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 </div>
 <div id="content">
-<div class="paragraph">
-<p>To operate <em>arveo</em> successfully the operator of the platform must provide and manage the following services.</p>
-</div>
-<div class="imageblock">
+<details open>
+<summary class="title">Release notes 16.0.0 (23. Januar 2024)</summary>
 <div class="content">
-<img src="images/arveo-architecture.png" alt="diagram">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
 </div>
-<div class="title">Figure 1. Architecture overview</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[ECR-1260]: ACLs are now disabled by default.</p>
+</li>
+<li>
+<p>[ECR-1291]: Unchanged type definitions no longer cause entries in the databasechangelog table.</p>
+</li>
+<li>
+<p>[ECR-1301]: Fixed a bug that caused missing entries in the content tables after a batch update.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>The following table lists 3rd party services used in <em>arveo</em>.</p>
+<p><strong class="big">Interface breaking changes</strong></p>
 </div>
-<table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 1. 3rd party services in <em>arveo</em></caption>
-<colgroup>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Service</th>
-<th class="tableblock halign-left valign-top">Supported Version</th>
-<th class="tableblock halign-left valign-top">Comment</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">JDK</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Java 17</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integration tests run on Eclipse Temurin 17, but all JDKs are supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ 5.18.3</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PostgreSQL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">postgres 15.1</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Solr 9.4.0</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 Storage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ceph 15, 16<br>
-NetAPP ONTAP 9<br>
-Dell Elastic Cloud Storage (ECS)<br>
-AWS S3</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">File System</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NFS<br>
- CIFS</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Linux OS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ubuntu 18.04, 20.04</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Application Server</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tomcat 9, 10</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">kubernetes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.19</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If helm deployment is used</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docker</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">20.10.8</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If helm deployment is used</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OAuth2.0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Grant flows:<br>
-Client Credentials Flow<br>
-Authorization Code Flow with PKCE<br>
-Resource Owner Password Flow</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication Services</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Keycloak 15
-Windows Server AD FS 2016</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LDAP Server</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MS Active Directory</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MS Graph</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion with Microsoft 365, requires M365 account</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SSO</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Kerberos</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Kerberos Aiuthentication Service is MS Active Directory</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1260: ACLs are now disabled by default</dt>
+<dd>
+<p>Beginning from version 16.0.0, the ACL feature is now disabled by default for a type definition. The <code>@AclDisabled</code>
+annotation is no longer checked and can be removed. Instead, to enable ACLs, add the <code>@Acls</code> annotation to all
+type definitions that use ACLs. To disable ACLs for a type definition that had the ACL feature enabled it is necessary
+to drop the <code>acl_id</code> column from the type definition&#8217;s main table manually from the database.</p>
+</dd>
+</dl>
+</div>
+</div>
+</details>
 </div>
 <div id="footer">
 <div id="footer-text">
