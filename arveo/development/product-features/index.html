@@ -1116,7 +1116,7 @@ expiry date. That ensures that only client authenticated against the central ser
 <p><em>arveo</em>  can encrypt the content with AES 256 and thus protect it against unauthorized access.
 The key is stored in such a way that maximum security is guaranteed.
 In order not to re-encrypt all data if the key is compromised, own keys are generated.
-Only the keys used are encrypted with the customer key and stored separately (<a href="arveo-administration#configure-encryption">Encryption</a>).<br>
+Only the keys used are encrypted with the customer key and stored separately (<a href="../arveo-administration#_encryption">Encryption</a>).<br>
 See also <a href="#_data_integrity">Data Integrity</a>.</p>
 </div>
 <div class="paragraph">
@@ -1271,8 +1271,8 @@ The following source is worth having a look at: Jeff Williams und Arshan Dabirsi
 <div class="sect3">
 <h4 id="_indexing_and_retrievel"><a class="anchor" href="#_indexing_and_retrievel"></a><a class="link" href="#_indexing_and_retrievel">Indexing and retrievel</a></h4>
 <div class="paragraph">
-<p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique and immutable unique identifier property ( <a href="#type_annotations"><strong>Data Modelling</strong></a>).
-The property must be <em>@Unique</em> to ensure that a user or business application can clearly identify the item.
+<p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique and immutable unique identifier property (<a href="../arveo-developer#<em>type_annotations">Data Modelling</a>).
+The property must be _@Unique</em> to ensure that a user or business application can clearly identify the item.
 The unique identifier should use the taxonomy of business processes and contain all information to clearly recognize the document.
 Make the property <em>@Readonly</em> to ensure that the identifier is always set and immutable.</p>
 </div>
@@ -1284,7 +1284,7 @@ Make the property <em>@Readonly</em> to ensure that the identifier is always set
 Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets your requirements.</p>
 </div>
 <div class="paragraph">
-<p>If you need a more sophisticated unique identifier you can use the annotation _@FormattedCounter which allows you to create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="entity-annotations.html#_formatted_counters_example"><strong>Unique Identifier Example</strong></a>)</p>
+<p>If you need a more sophisticated unique identifier you can use the annotation _@FormattedCounter which allows you to create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="../arveo-developer#_formatted_counters_example"><strong>Unique Identifier Example</strong></a>)</p>
 </div>
 <div class="paragraph">
 <p>List data types allow you to store more than String or long value for a property. You can search for each value using the array search operation of the <em>arveo</em> query language (<a href="#_data_types"><strong>Data Types</strong></a>).</p>
@@ -1296,7 +1296,7 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <div class="sect3">
 <h4 id="_retention_periods"><a class="anchor" href="#_retention_periods"></a><a class="link" href="#_retention_periods">Retention periods</a></h4>
 <div class="paragraph">
-<p>Enable that the statutory retention periods are assigned to the records, cases and document types  (<a href="#_retention_periods_retention"><strong>Retention Periods</strong></a>, <a href="#_retention"><strong>Retention Rules</strong></a>) and ensure that the storage container are configured correctly (<a href="#_retention_container"><strong>Retention Container</strong></a>) .</p>
+<p>Enable that the statutory retention periods are assigned to the records, cases and document types  (<a href="../arveo-developer#_retention_periods_retention">Retention Periods</a>, <a href="../arveo-developer#_retention">Retention Rules</a>) and ensure that the storage container are configured correctly (<a href="../arveo-developer#_retention_container">Retention Container</a>) .</p>
 </div>
 <div class="paragraph">
 <p>Check if the technically assigned retention periods also correspond to the statutory retention periods. Monitor the audit logs to ensure that the retention period is set and is correct. Monitoring could be automated or could be a random control by an employee.</p>
@@ -1320,10 +1320,10 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <div class="sect4">
 <h5 id="_audit_log"><a class="anchor" href="#_audit_log"></a><a class="link" href="#_audit_log">Audit log</a></h5>
 <div class="paragraph">
-<p>Enable the audit option for all types containing legally compliant content (<a href="#_configure_audit">Audit Log</a>). If the platform is operated safely (<a href="#<em>platform_link">Platform Security</a>) users and applications can exclusively write content and metadata using the _arveo</em> REST API. <em>arveo</em> logs all user or application update operations of content and metadata to the audit table.</p>
+<p>Enable the audit option for all types containing legally compliant content (<a href="../arveo-administration#<em>configure_audit">Audit Log</a>). If the platform is operated safely (<a href=".#_platform_link">Platform Security</a>) users and applications can exclusively write content and metadata using the _arveo</em> REST API. <em>arveo</em> logs all user or application update operations of content and metadata to the audit table.</p>
 </div>
 <div class="paragraph">
-<p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="#_versioning_v">Versioning</a>) on your storage system and an audit entry is written to the audit log table (<a href="#_configure_audit">Audit Log</a>) containing the author and the timestamp of the change. If a document is updated the version is incremented and saved in the version number. Although all version are traceable and accessible by the API we recommend making the version number system property visible in the application to identify copies of the original easily.</p>
+<p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="../arveo-developer#_versioning_v">Versioning</a>) on your storage system and an audit entry is written to the audit log table (<a href="../arveo-administration#_configure_audit">Audit Log</a>) containing the author and the timestamp of the change. If a document is updated the version is incremented and saved in the version number. Although all version are traceable and accessible by the API we recommend making the version number system property visible in the application to identify copies of the original easily.</p>
 </div>
 <div class="paragraph">
 <p>Ensure that the <em>@Overwrite</em> option is not set for legally compliant document types. If overwrite is turned on it is possible to manipulate the originally saved content and compromise the document without creating a versioned copy.</p>
@@ -1347,7 +1347,7 @@ Save the dumps as an <em>arveo</em> document with a 10-year retention period. If
 </div>
 <div class="paragraph">
 <p>In the event that data has to be migrated, <em>arveo</em> offers an extensive export API that enables content and metadata to be exported.
-<em>arveo</em> saves the hash value (<a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" class="bare">https://en.wikipedia.org/wiki/Cryptographic_hash_function</a>) in the database that was determined when the content was first uploaded (<a href="#_upload_data">Upload Data</a>). This hash value can be used as a checksum to detect accidental or intentionally corruption of data. If the hash value of the content after the migration is identical to the original hash the migration report proves the correctness of the migration process. To report the completeness of the migration process  the <em>arveo</em> API allows you to export a list of all records, cases and documents in a document type.</p>
+<em>arveo</em> saves the hash value (<a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" class="bare">https://en.wikipedia.org/wiki/Cryptographic_hash_function</a>) in the database that was determined when the content was first uploaded (<a href="../arveo-developer#<em>upload_data">Upload Data</a>). This hash value can be used as a checksum to detect accidental or intentionally corruption of data. If the hash value of the content after the migration is identical to the original hash the migration report proves the correctness of the migration process. To report the completeness of the migration process  the _arveo</em> API allows you to export a list of all records, cases and documents in a document type.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1416,11 +1416,11 @@ Depending on your retention policy you can create separate reports for a retenti
 </div>
 <div class="paragraph">
 <p>Enable the verify option for all clients and integrations. The upload API optionally can verify the uploaded content. The content service downloads the just uploaded stream from the
-content storage and compares the hash once again with the expected value (<a href="#_upload_data">Upload content</a>).
-<em>arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
+content storage and compares the hash once again with the expected value (<a href="../arveo-developer#<em>upload_data">Upload content</a>).
+_arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
 </div>
 <div class="paragraph">
-<p>In case of very sensible data you can enable transparent encryption (<a href="#_encryption">Encryption</a>) to follow the data protection rules and prevent your administrators from access of document content.</p>
+<p>In case of very sensible data you can enable transparent encryption (<a href="../arveo-administration#_encryption">Encryption</a>) to follow the data protection rules and prevent your administrators from access of document content.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1477,7 +1477,7 @@ Ensure technically and organizationally that there is sufficient space for stori
 <p>For the best high availability the provider of your storage system must protect the stored data against accidental, malicious, or disaster-induced loss of data. The better your data replication the better is your availability in case of a failure.</p>
 </div>
 <div class="paragraph">
-<p>To achieve high availability for <em>arveo</em> the provider must guarantee that all required (<a href="#_content__services">content services</a>) run as a cluster.</p>
+<p>To achieve high availability for <em>arveo</em> the provider must guarantee that all required (<a href="../product-features#_content__services">content services</a>) run as a cluster.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1492,7 +1492,7 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>An administrator only can illegally manipulate content if he can access both database and content storage because the control hash value of the content is stored in the database. Take care that none of your administrators has exclusive and unattended access to the content storage and the database.</p>
 </div>
 <div class="paragraph">
-<p>Distributed management roles of the storage systems and the <em>arveo</em> transparent <a href="#_encryption"><strong>encryption</strong></a> feature make your system more forgery-proof!</p>
+<p>Distributed management roles of the storage systems and the <em>arveo</em> transparent <a href="../arveo-administration#_encryption">encryption</a> feature make your system more forgery-proof!</p>
 </div>
 <div class="paragraph">
 <p>The activities of administrators with extensive rights must be logged by the operator. The logs are subject to the retention periods of tax law and must be checked regularly.</p>
@@ -1506,10 +1506,10 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <div class="ulist">
 <ul>
 <li>
-<p>ensure that HTTPS communication is enabled for all clients, applications, 3rd party components and services (<a href="#_content__services"><strong>Services</strong></a>).</p>
+<p>ensure that HTTPS communication is enabled for all clients, applications, 3rd party components and services (<a href="../product-features#_content__services">Services</a>).</p>
 </li>
 <li>
-<p>enable OAuth2.0 or X.509 certificate authentication <a href="#_authentication-x509">X.509 certificate authentication</a> and authorization for all <em>arveo</em> service (<a href="#_authentication-oauth2"><strong>OAuth2.0</strong></a>). All <em>arveo</em> services require authentication, ensuring that only  <em>arveo</em> services or authenticated and authorized users can use the API. We recommend using a state-of-the-art authentication services like keycloak and to enable <a href="#_configure_keycloak_for_sso_with_kerberos"><strong>SSO</strong></a> with at least 2-factor authentication.</p>
+<p>enable OAuth2.0 or X.509 certificate authentication <a href="../arveo-developer#<em>authentication-x509">X.509 certificate authentication</a> and authorization for all _arveo</em> service (<a href="../arveo-administration#<em>authentication-oauth2">OAuth2.0</a>). All _arveo</em> services require authentication, ensuring that only  <em>arveo</em> services or authenticated and authorized users can use the API. We recommend using a state-of-the-art authentication services like keycloak and to enable <a href="../arveo-administration#_configure_keycloak_for_sso_with_kerberos"><strong>SSO</strong></a> with at least 2-factor authentication.</p>
 </li>
 <li>
 <p>take suitable technical or organizational actions against unauthorized changes to the data such as firewall, VPN, transparent encryption with <em>arveo</em> or at hardware level,</p>
@@ -1534,7 +1534,7 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>make sure that only authorized persons receive an account that grants access to <em>arveo</em> documents;</p>
 </li>
 <li>
-<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="#_access_control_lists"><strong>ACLs</strong></a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read);</p>
+<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="../arveo-developer#_access_control_lists">ACLs</a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read);</p>
 </li>
 <li>
 <p>the activities of managers who can change ACLs are logged via <em>arveo</em> audit and checked at regular intervals;</p>
@@ -2302,7 +2302,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-30 02:27:33 UTC
+Last updated 2024-01-30 11:14:06 UTC
 </div>
 </div>
 </body>
