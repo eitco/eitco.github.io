@@ -446,8 +446,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>In this guide you will create a simple application that implements a basic project file scenario. It will consist of a document type, that represents documents used in a project.</p>
 </div>
-<div class="sect2">
-<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a><a class="link" href="#_prerequisites">Prerequisites</a></h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a><a class="link" href="#_prerequisites">Prerequisites</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To complete the steps in this guide, you need the following tools installed on your machine:</p>
 </div>
@@ -465,13 +468,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_maven_configuration"><a class="anchor" href="#_maven_configuration"></a><a class="link" href="#_maven_configuration">Maven configuration</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_maven_configuration"><a class="anchor" href="#_maven_configuration"></a><a class="link" href="#_maven_configuration">Maven configuration</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To be able to access the maven artifacts of arveo, you need access to the EITCO Nexus repository.</p>
 </div>
-<div class="sect3">
-<h4 id="_internal"><a class="anchor" href="#_internal"></a><a class="link" href="#_internal">Internal</a></h4>
+<div class="sect2">
+<h3 id="_internal"><a class="anchor" href="#_internal"></a><a class="link" href="#_internal">Internal</a></h3>
 <div class="paragraph">
 <p>When you are inside the company network or the VPN, you can use the internal Nexus that does not require authentication. The following maven settings.xml file shows how to configure the required repositories. The settings.xml file can be found in the <em>.m2</em> directory in your user home directory.</p>
 </div>
@@ -538,8 +543,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_external"><a class="anchor" href="#_external"></a><a class="link" href="#_external">External</a></h4>
+<div class="sect2">
+<h3 id="_external"><a class="anchor" href="#_external"></a><a class="link" href="#_external">External</a></h3>
 <div class="paragraph">
 <p>When you are outside the company network and the VPN, you need to use the public Nexus repository that requires authentication. To do so, maven requires credentials. For security reasons, the credentials should be encrypted. Follow the instructions in the <a href="https://maven.apache.org/guides/mini/guide-encryption.html">Maven documentation</a> to configure a master password and to create an encrypted password.</p>
 </div>
@@ -642,8 +647,10 @@ unencrypted repository connections.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_step_1_type_definitions"><a class="anchor" href="#_step_1_type_definitions"></a><a class="link" href="#_step_1_type_definitions">Step 1 - Type definitions</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_step_1_type_definitions"><a class="anchor" href="#_step_1_type_definitions"></a><a class="link" href="#_step_1_type_definitions">Step 1 - Type definitions</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>In the first step you will define the data model of your application. In arveo, this is done by creating Java
 (or Kotlin) interfaces which contain getters and setters for the fields that will be available on each individual entity
@@ -716,8 +723,8 @@ Only types that have been registered can be used in your application.</p>
 <div class="paragraph">
 <p>You will notice an additional class called <em>DemoModelId</em>. This class demonstrates how to create a typed ID for a specific model class. It is not required for the system to be able to use the <em>DemoModel</em> type. If you do not require typed IDs, you can remove the class.</p>
 </div>
-<div class="sect3">
-<h4 id="_running_the_tests"><a class="anchor" href="#_running_the_tests"></a><a class="link" href="#_running_the_tests">Running the tests</a></h4>
+<div class="sect2">
+<h3 id="_running_the_tests"><a class="anchor" href="#_running_the_tests"></a><a class="link" href="#_running_the_tests">Running the tests</a></h3>
 <div class="paragraph">
 <p>The tests are run automatically in a full maven build. The system-test module is configured to automatically start a complete arveo system including all required services and a database. If you want to run the tests manually from the IDE, you can still use maven to start the <em>arveo</em> system.Open a command line in the system-test directory and run <code>mvn -Denv</code>. Maven will start the following processes:</p>
 </div>
@@ -775,8 +782,8 @@ adding the following command line option when starting the arveo service instanc
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_adapt_the_model"><a class="anchor" href="#_adapt_the_model"></a><a class="link" href="#_adapt_the_model">Adapt the model</a></h4>
+<div class="sect2">
+<h3 id="_adapt_the_model"><a class="anchor" href="#_adapt_the_model"></a><a class="link" href="#_adapt_the_model">Adapt the model</a></h3>
 <div class="paragraph">
 <p>Now you can adapt the generated type definition so that it fits the requirements for our project scenario. In this
 scenario, documents are organized in a two-level folder structure. For example, the project could contain a folder
@@ -818,8 +825,8 @@ imported to arveo - see system fields)</p>
 <div class="paragraph">
 <p>In addition to these custom fields, the document will contain some system fields like content metadata (filename, size, mimetype&#8230;&#8203;) and versioning information like creation- and update-timestamps. The two metadata fields name and number that are already contained in DemoModel.java can be removed.</p>
 </div>
-<div class="sect4">
-<h5 id="_adding_getters_for_system_fields"><a class="anchor" href="#_adding_getters_for_system_fields"></a><a class="link" href="#_adding_getters_for_system_fields">Adding getters for system fields</a></h5>
+<div class="sect3">
+<h4 id="_adding_getters_for_system_fields"><a class="anchor" href="#_adding_getters_for_system_fields"></a><a class="link" href="#_adding_getters_for_system_fields">Adding getters for system fields</a></h4>
 <div class="paragraph">
 <p>Complete listings for the steps below can be found at the end of this chapter.</p>
 </div>
@@ -842,8 +849,8 @@ ModificationInformation getModificationInformation();</code></pre>
 <p>The JavaDoc for the SystemPropertyName enum constants contains information about each field. The data type for the <em>contentInformation</em> field is a map because each document can contain multiple content elements. For example, a document could contain a TIFF image and a PDF rendition of the TIFF.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_adding_getters_and_setters_for_custom_fields"><a class="anchor" href="#_adding_getters_and_setters_for_custom_fields"></a><a class="link" href="#_adding_getters_and_setters_for_custom_fields">Adding getters and setters for custom fields</a></h5>
+<div class="sect3">
+<h4 id="_adding_getters_and_setters_for_custom_fields"><a class="anchor" href="#_adding_getters_and_setters_for_custom_fields"></a><a class="link" href="#_adding_getters_and_setters_for_custom_fields">Adding getters and setters for custom fields</a></h4>
 <div class="paragraph">
 <p>Now we can add the getters and setters for the custom metadata fields:</p>
 </div>
@@ -1045,13 +1052,15 @@ public interface DemoModel {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_step_2_command_line_tool"><a class="anchor" href="#_step_2_command_line_tool"></a><a class="link" href="#_step_2_command_line_tool">Step 2 - Command line tool</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_step_2_command_line_tool"><a class="anchor" href="#_step_2_command_line_tool"></a><a class="link" href="#_step_2_command_line_tool">Step 2 - Command line tool</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>In the second step you will implement a simple command line application that uses the model defined in step 1. We will use the Spring Initializer to generate a maven project with the required dependencies for a Spring command line application.</p>
 </div>
-<div class="sect3">
-<h4 id="_generating_the_project"><a class="anchor" href="#_generating_the_project"></a><a class="link" href="#_generating_the_project">Generating the project</a></h4>
+<div class="sect2">
+<h3 id="_generating_the_project"><a class="anchor" href="#_generating_the_project"></a><a class="link" href="#_generating_the_project">Generating the project</a></h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1089,8 +1098,8 @@ public interface DemoModel {
 <p>Click Generate and download the zip file containing the generated project. Unzip the file to a directory of your choice and open the project in your IDE. Delete the 'test' directory.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_adding_arveo_dependencies"><a class="anchor" href="#_adding_arveo_dependencies"></a><a class="link" href="#_adding_arveo_dependencies">Adding arveo dependencies</a></h4>
+<div class="sect2">
+<h3 id="_adding_arveo_dependencies"><a class="anchor" href="#_adding_arveo_dependencies"></a><a class="link" href="#_adding_arveo_dependencies">Adding arveo dependencies</a></h3>
 <div class="paragraph">
 <p>Open the generated pom.xml file and add the following dependencies:</p>
 </div>
@@ -1159,8 +1168,8 @@ public interface DemoModel {
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_implementing_the_tool"><a class="anchor" href="#_implementing_the_tool"></a><a class="link" href="#_implementing_the_tool">Implementing the tool</a></h4>
+<div class="sect2">
+<h3 id="_implementing_the_tool"><a class="anchor" href="#_implementing_the_tool"></a><a class="link" href="#_implementing_the_tool">Implementing the tool</a></h3>
 <div class="paragraph">
 <p>The tool will use the picocli library to make it easy to write a command line application with features like usage help and simple parameter binding. You can read more about picocli <a href="https://picocli.info">here</a>.</p>
 </div>
@@ -1500,8 +1509,8 @@ in the test system provided by the system test module of the project created in 
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_building_and_running_the_tool"><a class="anchor" href="#_building_and_running_the_tool"></a><a class="link" href="#_building_and_running_the_tool">Building and running the tool</a></h4>
+<div class="sect2">
+<h3 id="_building_and_running_the_tool"><a class="anchor" href="#_building_and_running_the_tool"></a><a class="link" href="#_building_and_running_the_tool">Building and running the tool</a></h3>
 <div class="paragraph">
 <p>Now we can build and run the command line tool. You can either use the IDE or run <code>mvn clean install</code> in a command line for the project containing the demo tool. After the build has finished, you have to start the test system. Open a command line in the system-test module of the type definition project and execute the command <code>mvn -Denv</code> (see <a href="#_running_the_tests">Running the tests</a>). Now we can use another command line in the target directory of the command line tool project to run the tool. Running <code>java -jar .\demo-tool-0.0.1-SNAPSHOT.jar</code> prints out usage help for the tool:</p>
 </div>
@@ -1741,13 +1750,15 @@ public class ArveoCommand implements Runnable {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_step_3_perform_a_task_with_arveo"><a class="anchor" href="#_step_3_perform_a_task_with_arveo"></a><a class="link" href="#_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_step_3_perform_a_task_with_arveo"><a class="anchor" href="#_step_3_perform_a_task_with_arveo"></a><a class="link" href="#_step_3_perform_a_task_with_arveo">Step 3 - Perform a task with arveo</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>In the third step you will perform a specific task using arveo.</p>
 </div>
-<div class="sect3">
-<h4 id="_creating_a_standardized_project_structure"><a class="anchor" href="#_creating_a_standardized_project_structure"></a><a class="link" href="#_creating_a_standardized_project_structure">Creating a standardized project structure</a></h4>
+<div class="sect2">
+<h3 id="_creating_a_standardized_project_structure"><a class="anchor" href="#_creating_a_standardized_project_structure"></a><a class="link" href="#_creating_a_standardized_project_structure">Creating a standardized project structure</a></h3>
 <div class="paragraph">
 <p>Your project structure must have a certain structure to be successfully imported and/or archived in arveo.</p>
 </div>
@@ -1797,8 +1808,10 @@ Imported file Incoming_invoice.png belonging to project Webclient
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_the_types_archetype"><a class="anchor" href="#_the_types_archetype"></a><a class="link" href="#_the_types_archetype">The Types archetype</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_the_types_archetype"><a class="anchor" href="#_the_types_archetype"></a><a class="link" href="#_the_types_archetype">The Types archetype</a></h2>
+<div class="sectionbody">
 <div id="_archetype_overview" class="paragraph">
 <p>This archetype creates a rather small project. It consists of an arveo scenario and tests for that.</p>
 </div>
@@ -1869,8 +1882,10 @@ Imported file Incoming_invoice.png belonging to project Webclient
 <p>would not ask for any parameters and just create the project.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_overview_of_the_generated_project"><a class="anchor" href="#_overview_of_the_generated_project"></a><a class="link" href="#_overview_of_the_generated_project">Overview of the generated project</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_overview_of_the_generated_project"><a class="anchor" href="#_overview_of_the_generated_project"></a><a class="link" href="#_overview_of_the_generated_project">Overview of the generated project</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The project generated by the archetype will consist of two modules:</p>
 </div>
@@ -1880,8 +1895,8 @@ Imported file Incoming_invoice.png belonging to project Webclient
 <p>This module contains your arveo scenario. An example type will be created with the name &lt;class-name-prefix&gt;Model. You can define more types here, but you will need to register them in register in &lt;class-name-prefix&gt;TypeRegistration. The chapter <a href="#_objects_types_definitions"><strong>arveo type definitions</strong></a> describes how to define types.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_testsystem_test"><a class="anchor" href="#_testsystem_test"></a><a class="link" href="#_testsystem_test">test\system-test</a></h4>
+<div class="sect2">
+<h3 id="_testsystem_test"><a class="anchor" href="#_testsystem_test"></a><a class="link" href="#_testsystem_test">test\system-test</a></h3>
 <div class="paragraph">
 <p>This module contains tests for your scenario. These tests will be executed in the build. For that a complete arveo environment will be created, so you can add tests, that simply connect to arveo by the http client and can assume that your scenario is deployed.</p>
 </div>
@@ -1898,8 +1913,10 @@ Imported file Incoming_invoice.png belonging to project Webclient
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_the_full_featured_archetype"><a class="anchor" href="#_the_full_featured_archetype"></a><a class="link" href="#_the_full_featured_archetype">The full-featured archetype</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_the_full_featured_archetype"><a class="anchor" href="#_the_full_featured_archetype"></a><a class="link" href="#_the_full_featured_archetype">The full-featured archetype</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>This archetype creates a more complex project. It is based on the eitco commons archetype It will contain a simple web service, with an automatically generated client layer, based on eitco commons.
 The maven coordinate of this archetype are:</p>
@@ -1966,8 +1983,10 @@ The maven coordinate of this archetype are:</p>
 <p>would not ask for any parameters and just create the project.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_overview_of_the_generated_project_2"><a class="anchor" href="#_overview_of_the_generated_project_2"></a><a class="link" href="#_overview_of_the_generated_project_2">Overview of the generated project</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_overview_of_the_generated_project_2"><a class="anchor" href="#_overview_of_the_generated_project_2"></a><a class="link" href="#_overview_of_the_generated_project_2">Overview of the generated project</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The project generated by the archetype will consist of four modules:</p>
 </div>
@@ -1987,14 +2006,14 @@ The maven coordinate of this archetype are:</p>
 </li>
 </ul>
 </div>
-<div class="sect3">
-<h4 id="_the_documentation_module"><a class="anchor" href="#_the_documentation_module"></a><a class="link" href="#_the_documentation_module">The documentation module</a></h4>
+<div class="sect2">
+<h3 id="_the_documentation_module"><a class="anchor" href="#_the_documentation_module"></a><a class="link" href="#_the_documentation_module">The documentation module</a></h3>
 <div class="paragraph">
 <p>This module holds a frame for an asciidoc based documentation of your project.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_the_implementation_module"><a class="anchor" href="#_the_implementation_module"></a><a class="link" href="#_the_implementation_module">The implementation module</a></h4>
+<div class="sect2">
+<h3 id="_the_implementation_module"><a class="anchor" href="#_the_implementation_module"></a><a class="link" href="#_the_implementation_module">The implementation module</a></h3>
 <div class="paragraph">
 <p>This module contains the actual source code. It is separated into five submodules.</p>
 </div>
@@ -2102,7 +2121,6 @@ The maven coordinate of this archetype are:</p>
 </li>
 </ul>
 </div>
-</div>
 <div class="sect3">
 <h4 id="_the_packaging_module"><a class="anchor" href="#_the_packaging_module"></a><a class="link" href="#_the_packaging_module">The packaging module</a></h4>
 <div class="paragraph">
@@ -2122,15 +2140,18 @@ The maven coordinate of this archetype are:</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_the_test_module"><a class="anchor" href="#_the_test_module"></a><a class="link" href="#_the_test_module">The test module</a></h4>
+</div>
+<div class="sect2">
+<h3 id="_the_test_module"><a class="anchor" href="#_the_test_module"></a><a class="link" href="#_the_test_module">The test module</a></h3>
 <div class="paragraph">
 <p>This module contains a system test module. When building this module maven will start a complete arveo system (containing all required services) with the newly generated service in the <code>pre-integration-test</code>-phase so that tests written here (like the generated example &lt;class-name-prefix&gt;ClientIT) may simply call the new service via the generated http-client (see above).</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_working_on_the_generated_project"><a class="anchor" href="#_working_on_the_generated_project"></a><a class="link" href="#_working_on_the_generated_project">Working on the generated project</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_working_on_the_generated_project"><a class="anchor" href="#_working_on_the_generated_project"></a><a class="link" href="#_working_on_the_generated_project">Working on the generated project</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Most implementation will be done in the implementation\server module since this contains the server side code. You api and model will be defined in the implementation\common and implementation\types modules. The later will only be used for classes that are part of your arveo model and need to be in the classpath of arveo.</p>
 </div>
@@ -2159,10 +2180,9 @@ The maven coordinate of this archetype are:</p>
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-01 02:27:28 UTC
+Last updated 2024-02-01 10:36:56 UTC
 </div>
 </div>
 </body>

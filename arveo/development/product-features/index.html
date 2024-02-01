@@ -1116,8 +1116,7 @@ expiry date. That ensures that only client authenticated against the central ser
 <p><em>arveo</em>  can encrypt the content with AES 256 and thus protect it against unauthorized access.
 The key is stored in such a way that maximum security is guaranteed.
 In order not to re-encrypt all data if the key is compromised, own keys are generated.
-Only the keys used are encrypted with the customer key and stored separately (<a href="../arveo-administration#_encryption">Encryption</a>).<br>
-See also <a href="#_data_integrity">Data Integrity</a>.</p>
+Only the keys used are encrypted with the customer key and stored separately (<a href="../arveo-administration#_encryption">Encryption</a>). See also <a href="#_data_integrity">Data Integrity</a>.</p>
 </div>
 <div class="paragraph">
 <p><em>arveo</em> allows you to organize documents into folders and records.
@@ -1271,8 +1270,8 @@ The following source is worth having a look at: Jeff Williams und Arshan Dabirsi
 <div class="sect3">
 <h4 id="_indexing_and_retrievel"><a class="anchor" href="#_indexing_and_retrievel"></a><a class="link" href="#_indexing_and_retrievel">Indexing and retrievel</a></h4>
 <div class="paragraph">
-<p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique and immutable unique identifier property (<a href="../arveo-developer#<em>type_annotations">Data Modelling</a>).
-The property must be _@Unique</em> to ensure that a user or business application can clearly identify the item.
+<p>To allow users and 3rd party applications to identify and find objects in <em>arveo</em> you should define a unique and immutable unique identifier property (<a href="../arveo-developer#type_annotations">Data Modelling</a>).
+The property must be <em>@Unique</em> to ensure that a user or business application can clearly identify the item.
 The unique identifier should use the taxonomy of business processes and contain all information to clearly recognize the document.
 Make the property <em>@Readonly</em> to ensure that the identifier is always set and immutable.</p>
 </div>
@@ -1284,10 +1283,10 @@ Make the property <em>@Readonly</em> to ensure that the identifier is always set
 Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets your requirements.</p>
 </div>
 <div class="paragraph">
-<p>If you need a more sophisticated unique identifier you can use the annotation _@FormattedCounter which allows you to create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="../arveo-developer#_formatted_counters_example"><strong>Unique Identifier Example</strong></a>)</p>
+<p>If you need a more sophisticated unique identifier you can use the annotation _@FormattedCounter which allows you to create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="../arveo-developer#_formatted_counters_example">Unique Identifier Example</a>)</p>
 </div>
 <div class="paragraph">
-<p>List data types allow you to store more than String or long value for a property. You can search for each value using the array search operation of the <em>arveo</em> query language (<a href="#_data_types"><strong>Data Types</strong></a>).</p>
+<p>List data types allow you to store more than String or long value for a property. You can search for each value using the array search operation of the <em>arveo</em> query language (<a href="#_data_types">Data Types</a>).</p>
 </div>
 <div class="paragraph">
 <p>Enumeration data types allow you to set one or more values from a fixed set of values.</p>
@@ -1320,7 +1319,7 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <div class="sect4">
 <h5 id="_audit_log"><a class="anchor" href="#_audit_log"></a><a class="link" href="#_audit_log">Audit log</a></h5>
 <div class="paragraph">
-<p>Enable the audit option for all types containing legally compliant content (<a href="../arveo-administration#<em>configure_audit">Audit Log</a>). If the platform is operated safely (<a href=".#_platform_link">Platform Security</a>) users and applications can exclusively write content and metadata using the _arveo</em> REST API. <em>arveo</em> logs all user or application update operations of content and metadata to the audit table.</p>
+<p>Enable the audit option for all types containing legally compliant content (<a href="../arveo-administration#configure_audit">Audit Log</a>). If the platform is operated safely (<a href=".#<em>platform_link">Platform Security</a>) users and applications can exclusively write content and metadata using the _arveo</em> REST API. <em>arveo</em> logs all user or application update operations of content and metadata to the audit table.</p>
 </div>
 <div class="paragraph">
 <p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="../arveo-developer#_versioning_v">Versioning</a>) on your storage system and an audit entry is written to the audit log table (<a href="../arveo-administration#_configure_audit">Audit Log</a>) containing the author and the timestamp of the change. If a document is updated the version is incremented and saved in the version number. Although all version are traceable and accessible by the API we recommend making the version number system property visible in the application to identify copies of the original easily.</p>
@@ -2144,7 +2143,7 @@ If you delete objects only in the database the content objects are orphaned, and
 <p>Any document, container or folder type can use the optional <em>recycle bin</em> feature. If it is enabled, entities in the type definition can be moved to and restored from the recycle bin.</p>
 </div>
 <div class="paragraph">
-<p>The recycle bin is implemented as a boolean database system property <em>DELETED</em>. Entities in the recycle bin will be filtered from normal queries by default, but a client can compose search expressions that override this behavior (see <a href="#_document_service_recycle_bin"><strong>Recycle Bin</strong></a>).</p>
+<p>The recycle bin is implemented as a boolean database system property <em>DELETED</em>. Entities in the recycle bin will be filtered from normal queries by default, but a client can compose search expressions that override this behavior (see <a href="#_document_service_recycle_bin">Recycle Bin</a>).</p>
 </div>
 <div class="paragraph">
 <p>If you delete or purge an object in the recycle bin it is deleted like a document without recycle bin feature and cannot be restored.</p>
@@ -2302,7 +2301,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-01 02:27:28 UTC
+Last updated 2024-02-01 10:36:56 UTC
 </div>
 </div>
 </body>
