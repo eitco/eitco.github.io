@@ -554,8 +554,7 @@ expiry date. That ensures that only client authenticated against the central ser
 <div class="paragraph">
 <p><em>arveo</em>  can encrypt the content with AES 256 and thus protect it against unauthorized access.
 The key is stored in such a way that maximum security is guaranteed.
-In order not to re-encrypt all data if the key is compromised, own keys are generated.
-Only the keys used are encrypted with the customer key and stored separately (<a href="../arveo-administration#_encryption">Encryption</a>). See also <a href="#_data_integrity">Data Integrity</a>.</p>
+In order not to re-encrypt all data if the key is compromised, own keys are generated. Only the keys used are encrypted with the customer key and stored separately (<a href="../arveo-administration#_encryption">Encryption</a>). See also <a href=".#_data_integrity">Data Integrity</a>.</p>
 </div>
 <div class="paragraph">
 <p><em>arveo</em> allows you to organize documents into folders and records.
@@ -1186,7 +1185,7 @@ The database provider should configure the transaction deadlock timeout on your 
 <div class="sect3">
 <h4 id="_download"><a class="anchor" href="#_download"></a><a class="link" href="#_download">Download</a></h4>
 <div class="paragraph">
-<p>When you use the download API (<a href="#_download_data">Download Content</a>) the client SDK computes the SHA-256 hash of the downloaded stream and compares it to the hash value
+<p>When you use the download API (<a href="../arveo-developer#_download_data">Download Content</a>) the client SDK computes the SHA-256 hash of the downloaded stream and compares it to the hash value
 in the system property of the document type. If the hash does not match the upload hash value in the database the download fails with a data integrity exception
 telling the caller that the data on the storage was most likely manipulated.</p>
 </div>
@@ -1222,9 +1221,9 @@ Distributed management roles of the storage systems and the <em>arveo</em> trans
 <p><em>arveo</em> support evidence proof long term storage of your content and metadata by storing the content legally secure to either a S3 object storage or a file system. The storage must be redundant. Object storage systems like AWS, NetAPP or EMC Elastic Cloud Storage guarantee the long term availability and integrity of your content.</p>
 </div>
 <div class="paragraph">
-<p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="./versioning.html">Versioning</a>) on your storage system
-and an audit entry is written to the audit log table (<a href="#_configure_audit">Audit Log</a>).
-<em>arveo</em> creates a version each time metadata including comments and annotations or content of a document is changed by the API <em>arveo</em>} creates a new entry containing the author and the timestamp pf the change in the version management table.
+<p>All changes of content or metadata are persisted as a traceable and immutable version (<a href="../arveo-developer#<em>versioning_v">Versioning</a>) on your storage system
+and an audit entry is written to the audit log table (<a href="../arveo-administration#_configure_audit">Audit Log</a>).
+_arveo</em> creates a version each time metadata including comments and annotations or content of a document is changed by the API <em>arveo</em>} creates a new entry containing the author and the timestamp pf the change in the version management table.
 The Update API allows you to add a comment to each version. The Version Management API provides access to all version information and metadata and content of previous versions.</p>
 </div>
 <div class="admonitionblock warning">
@@ -1375,7 +1374,7 @@ all times. We store semi-structured or dynamic document metadata to a NoSQL docu
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/solr_arveo.png" alt="solr arveo">
+<img src="../../images/solr_arveo.png" alt="solr arveo">
 </div>
 </div>
 <div class="paragraph">
@@ -7387,7 +7386,7 @@ Mass deletion of documents under retention requires the <em>SUPER_USER</em> priv
 </td>
 <td class="content">
 Enable the audit log feature for all document types and dependent document types if you need a report of the erased objects.
-<a href="#_configure_audit">Audit Log</a>
+<a href="../arveo-administration#_configure_audit">Audit Log</a>
 </td>
 </tr>
 </table>
@@ -8548,7 +8547,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="sect2">
 <h3 id="_recovery_table"><a class="anchor" href="#_recovery_table"></a><a class="link" href="#_recovery_table">Recovery table</a></h3>
 <div class="paragraph">
-<p>The recovery table <em>ecr_recovery</em> is used for the <a href="data-deletion.html#_recovery_log">recovery</a> feature.</p>
+<p>The recovery table <em>ecr_recovery</em> is used for the <a href=".#_recovery_log">recovery</a> feature.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -8607,9 +8606,9 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="sect2">
 <h3 id="_keystore_tables"><a class="anchor" href="#_keystore_tables"></a><a class="link" href="#_keystore_tables">Keystore tables</a></h3>
 <div class="paragraph">
-<p>When the <a href="#_encryption">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
+<p>When the <a href="../arveo-administration#<em>encryption">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
 profile-specific database tables. For each encrypted profile, a table called <code>ecr_keys-&lt;profile&gt;</code> and a table called
-<code>ecr_keys_assoc_&lt;profile&gt;</code> is created. The ecr_keys_&lt;profile&gt; table contains the generated keys, and the
+<code>ecr_keys_assoc</em>&lt;profile&gt;</code> is created. The ecr_keys_&lt;profile&gt; table contains the generated keys, and the
 ecr_keys_assoc_&lt;profile&gt; table contains the associations between content elements and keys.</p>
 </div>
 <div class="imageblock">
@@ -8766,7 +8765,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-01 10:36:56 UTC
+Last updated 2024-02-01 12:33:15 UTC
 </div>
 </div>
 </body>
