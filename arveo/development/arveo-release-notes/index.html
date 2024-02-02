@@ -459,10 +459,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </details>
 <details>
-<summary class="title">Release notes 16.1.0 (<em>currentDate</em>)</summary>
+<summary class="title">Release notes 16.0.1 (2024 2 2)</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1323: New "Release Note" page on arveo GitHub page</dt>
+<dd>
+<p>Beginning from version 16.0.1, we add release notes as new GitHub page.</p>
+</dd>
+<dt class="hdlist1">ECR-1328 New system field for the initial creation user id</dt>
+<dd>
+<p>A new system field was added that stores the ID of the user who created the initial version of an entity.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
@@ -473,10 +485,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
 </div>
+<div class="paragraph">
+<p>ECR-1328 added a new system field, which requires a manual migration for existing database tables. The new field contains
+the ID of the user who created the initial version of an entity. The following script can be used to migrate existing
+tables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">do $$
+declare
+	rec record;
+begin
+	for rec in select distinct "table_name" FROM "information_schema"."columns" WHERE "table_schema"='integrationtest' AND "column_name"='version_number' and "table_name" not like '%_ver' and "table_name" not like '%_con'
+	loop
+		execute format('alter table "%1$s" add column "initial_creation_user_id" int8', rec.table_name);
+		execute format('update "%1$s" set "initial_creation_user_id" = (select "creator_user_id" from "%1$s_ver" v where v."entity_id" = "id" and v."version_number" = 1)', rec.table_name);
+		execute format('alter table "%1$s" alter column "initial_creation_user_id" set not null', rec.table_name);
+	end loop;
+end $$;</code></pre>
+</div>
+</div>
 </div>
 </details>
 <details>
-<summary class="title">Release notes 16.0.0 (23. Januar 2024)</summary>
+<summary class="title">Release notes 16.0.0 (2024 1 23)</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">Finished stories and bugs</strong></p>
@@ -516,7 +548,7 @@ to drop the <code>acl_id</code> column from the type definition&#8217;s main tab
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-02 15:11:06 UTC
+Last updated 2024-02-02 16:35:16 UTC
 </div>
 </div>
 </body>
