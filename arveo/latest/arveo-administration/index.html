@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 16.0.0</div>
+<div id="toctitle">arveo 16.1.0</div>
 <ul class="sectlevel1">
 <li><a href="#_installation"><strong>Installation</strong></a>
 <ul class="sectlevel2">
@@ -924,7 +924,7 @@ The installation is completely automated and carried out remotely.</p>
 <div class="sect3">
 <h4 id="_installed_services"><a class="anchor" href="#_installed_services"></a><a class="link" href="#_installed_services">Installed services</a></h4>
 <div class="paragraph">
-<p><a href="content-services.html#_3rd_party_services"><strong>3rd Party Services</strong></a></p>
+<p><a href="../product-features#_3rd_party_services"><strong>3rd Party Services</strong></a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -949,7 +949,7 @@ The installation is completely automated and carried out remotely.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="#_content__services"><strong><em>arveo</em> Content Services</strong></a></p>
+<p><a href="../product-features#<em>content__services"><strong></em>arveo_ Content Services</strong></a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -1075,7 +1075,7 @@ The current status of the service can also be determined with systemctl status &
 <h4 id="_ssl_certificates"><a class="anchor" href="#_ssl_certificates"></a><a class="link" href="#_ssl_certificates">SSL Certificates</a></h4>
 <div class="paragraph">
 <p>If all connections between the services are to be encrypted, SSL certificates are required. The following requirements apply:
-An <a href="authentication-x509.html">X-509 certificate</a> with an associated "private key" is required for each server. The certificate should be signed by an official CA or the company&#8217;s own CA. Self-signed certificates can also be used. The following special feature must be observed: the X509 extension “Subject Alternative Name” must contain all DNS names and IP addresses via which the respective systems are accessed.</p>
+An <a href="../arveo-developer#_authentication-x509">X-509 certificate</a> with an associated "private key" is required for each server. The certificate should be signed by an official CA or the company&#8217;s own CA. Self-signed certificates can also be used. The following special feature must be observed: the X509 extension “Subject Alternative Name” must contain all DNS names and IP addresses via which the respective systems are accessed.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2065,7 +2065,7 @@ describes how to write a new storage plugin.</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
     &lt;artifactId&gt;ecr-server&lt;/artifactId&gt;
-    &lt;version&gt;16.0.0&lt;/version&gt;
+    &lt;version&gt;16.1.0&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -3438,7 +3438,7 @@ Client Protocol=openid-connect<br></p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Implicit flow is no longer recommended. The standard flow should be used. Furthermore, the extension PKCE (Proof Key for Code Exchange Code) should be used (<a href="#_authentication_code_flow_pkce">*Authentication Standard Flow with PKCE</a>.
+Implicit flow is no longer recommended. The standard flow should be used. Furthermore, the extension PKCE (Proof Key for Code Exchange Code) should be used (<a href=".#_authentication_code_flow_pkce">*Authentication Standard Flow with PKCE</a>.
 </td>
 </tr>
 </table>
@@ -4196,7 +4196,7 @@ possible when the schema update itself is skipped.</p>
 </div>
 <div class="sect2">
 <h3 id="_configure_audit"><a class="anchor" href="#_configure_audit"></a><a class="link" href="#_configure_audit">Configure audit</a></h3>
-<div class="paragraph">
+<div id="configure_audit" class="paragraph">
 <p>A <code>@Type</code> may define to be audited. This means, that any write access i.e. any create, update and delete operation to any entity of this type will be logged into another table. This is done with the annotation <code>@Audit</code>:</p>
 </div>
 <div class="listingblock">
@@ -4347,7 +4347,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <h5 id="_solr_configurations"><a class="anchor" href="#_solr_configurations"></a><a class="link" href="#_solr_configurations">Solr Configurations</a></h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/16.0.0/ecr-environment-configuration-16.0.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/16.1.0/ecr-environment-configuration-16.1.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -4976,10 +4976,10 @@ It is also possible to start the scheduler embedded in the repository service in
 repository service will create the jobs (if required), but it will not execute them.</p>
 </div>
 <div class="paragraph">
-<p>The available configuration parameters for the scheduler are listed here: <a href="configuration-properties.html#_job_service">Job service</a></p>
+<p>The available configuration parameters for the scheduler are listed here: <a href=".#_job-service">Job service</a></p>
 </div>
 <div class="paragraph">
-<p>The available configuration parameters for the jobs are listed here: <a href="configuration-properties.html#_ecr_server_jobs">Job configuration</a></p>
+<p>The available configuration parameters for the jobs are listed here: <a href=".#_ecr_server_jobs">Job configuration</a></p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -7248,7 +7248,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="sect2">
 <h3 id="_recovery_table"><a class="anchor" href="#_recovery_table"></a><a class="link" href="#_recovery_table">Recovery table</a></h3>
 <div class="paragraph">
-<p>The recovery table <em>ecr_recovery</em> is used for the <a href="data-deletion.html#_recovery_log">recovery</a> feature.</p>
+<p>The recovery table <em>ecr_recovery</em> is used for the <a href=".#_recovery_log">recovery</a> feature.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -7307,9 +7307,9 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="sect2">
 <h3 id="_keystore_tables"><a class="anchor" href="#_keystore_tables"></a><a class="link" href="#_keystore_tables">Keystore tables</a></h3>
 <div class="paragraph">
-<p>When the <a href="#_encryption">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
+<p>When the <a href="../arveo-administration#<em>encryption">encryption</a> feature is enabled for a storage profile, the generated keys are stored in
 profile-specific database tables. For each encrypted profile, a table called <code>ecr_keys-&lt;profile&gt;</code> and a table called
-<code>ecr_keys_assoc_&lt;profile&gt;</code> is created. The ecr_keys_&lt;profile&gt; table contains the generated keys, and the
+<code>ecr_keys_assoc</em>&lt;profile&gt;</code> is created. The ecr_keys_&lt;profile&gt; table contains the generated keys, and the
 ecr_keys_assoc_&lt;profile&gt; table contains the associations between content elements and keys.</p>
 </div>
 <div class="imageblock">
@@ -7583,7 +7583,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-23 16:27:35 UTC
+Last updated 2024-02-02 14:08:26 UTC
 </div>
 </div>
 </body>
