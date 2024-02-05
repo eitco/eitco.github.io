@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Guides</title>
+<title>Untitled</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -441,51 +441,48 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 </div>
 <div id="content">
+<details>
+<summary class="title">Release notes 16.0.0 (January 23, 2024)</summary>
+<div class="content">
 <div class="paragraph">
-<p><strong>Documentation</strong></p>
+<p><strong class="big">Finished stories and bugs</strong></p>
 </div>
-<div class="sect1">
-<h2 id="_guides">Guides</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 40%;">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="product-features">Product Features</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>arveo</em> and third-party services</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-getting-started">Getting Started</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How to get started with <em>arveo</em>
-Suitable for developers</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-administration"> Configuration and Administration</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration and administrative tasks</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-developer">Developer Documentation</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Documentation for developers who work with <em>arveo</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-compatibility-list">Compatibility List</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3rd party services used in <em>arveo</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="arveo-release-notes">Release Notes</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Release notes of all  <em>arveo</em> versions</p></td>
-</tr>
-</tbody>
-</table>
+<div class="ulist">
+<ul>
+<li>
+<p>[ECR-1260]: ACLs are now disabled by default.</p>
+</li>
+<li>
+<p>[ECR-1291]: Unchanged type definitions no longer cause entries in the databasechangelog table.</p>
+</li>
+<li>
+<p>[ECR-1301]: Fixed a bug that caused missing entries in the content tables after a batch update.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1260: ACLs are now disabled by default</dt>
+<dd>
+<p>Beginning from version 16.0.0, the ACL feature is now disabled by default for a type definition. The <code>@AclDisabled</code>
+annotation is no longer checked and can be removed. Instead, to enable ACLs, add the <code>@Acls</code> annotation to all
+type definitions that use ACLs. To disable ACLs for a type definition that had the ACL feature enabled it is necessary
+to drop the <code>acl_id</code> column from the type definition&#8217;s main table manually from the database.</p>
+</dd>
+</dl>
 </div>
 </div>
+</details>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-23 16:27:35 UTC
+Last updated 2024-02-02 14:08:26 UTC
 </div>
 </div>
 </body>
