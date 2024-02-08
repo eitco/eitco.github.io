@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 16.1.2-SNAPSHOT</div>
+<div id="toctitle">arveo 17.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a>
 <ul class="sectlevel2">
@@ -775,11 +775,6 @@ For the highest possible security on the web and to be suitable for mobile acces
 <p class="tableblock">Search of metadata with relational database postgreSQL 12 and NoSQL document db apache solr 8.6</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User management with users, groups and roles.<br>
-Secure login and token authentication</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Registry Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service registry for all <em>arveo</em> content services managing the availability of the services.</p></td>
 </tr>
@@ -788,12 +783,8 @@ Secure login and token authentication</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Secure storage of configuration data in git or database</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access Control Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Object access control providing permissions to users/groups</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Creates and manages audit tables for all other entity types like document types, user management objects, etc.
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates and manages audit tables for all other entity types like document types etc.
 Provides API to access the audit trail of any object by its entoty ID</p></td>
 </tr>
 <tr>
@@ -803,10 +794,6 @@ Provides API to access the audit trail of any object by its entoty ID</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service (optional)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Conversion of document formats like docx, xlsx, etc. to image formats or PDF/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise User Management Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Extends <em>arveo</em> with organisation structure features like positions or substitutes</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise Integration Service (optional)</p></td>
@@ -857,9 +844,9 @@ Easily integrate all your applications and IT systems e.g. scheduled data import
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Authentication Service (optional)<br>
-Keycloak, Active Directory</p></td>
+Keycloak</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Identity Management implementing OAUTH2 workflow for secure login.<br>
-Implement Single Sign On (SSO) with identity management providers:  Keycloak, Active Directory</p></td>
+Implement Single Sign On (SSO) with identity management providers:  Keycloak</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Monitoring (optional)</p></td>
@@ -1106,7 +1093,7 @@ that our services can be operated securely in the cloud.</p>
 <p>All <em>arveo</em> content services and clients communicate via state-of-the-art secure REST interfaces via
 the secure HTTPS (SSL) protocol.
 All services require the web standard OAUTH2 with OpenID Connect authentication using tokens.
-A central authentication service (Keycloak, Active Directory or <em>arveo</em> user management service) issues tokens with an
+A central authentication service (Keycloak) issues tokens with an
 expiry date. That ensures that only client authenticated against the central service can use the content service APIs.</p>
 </div>
 </div>
@@ -1123,7 +1110,7 @@ In order not to re-encrypt all data if the key is compromised, own keys are gene
 attributes or access lists and thus grant or deny the corresponding access to the groups or users.</p>
 </div>
 <div class="paragraph">
-<p><strong>ACL Permissions</strong></p>
+<p><strong>Access rights</strong></p>
 </div>
 <div class="ulist">
 <ul>
@@ -1402,7 +1389,7 @@ Depending on your retention policy you can create separate reports for a retenti
 <div class="sect3">
 <h4 id="_data_integrity"><a class="anchor" href="#_data_integrity"></a><a class="link" href="#_data_integrity">Data integrity</a></h4>
 <div class="paragraph">
-<p><em>arveo</em> guarantees high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by proven and well-thought concepts. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via ACLs. User rights are based on the developed concepts for roles, groups and ACLs. More detailed information on this is provided in the relevant chapters of this manual.</p>
+<p><em>arveo</em> guarantees high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by proven and well-thought concepts. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via attribute based access control. User rights are based on the developed concepts for roles and groups. More detailed information on this is provided in the relevant chapters of this manual.</p>
 </div>
 <div class="paragraph">
 <p>Access to all data (documents, metadata) takes place exclusively via the API, with the corresponding protection mechanisms so that the security of the data is guaranteed at all times.</p>
@@ -1532,10 +1519,10 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>make sure that only authorized persons receive an account that grants access to <em>arveo</em> documents;</p>
 </li>
 <li>
-<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="../arveo-developer#_access_control_lists">ACLs</a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read);</p>
+<p>ensure that objects are protected against unauthorized access using attribute based access control.</p>
 </li>
 <li>
-<p>the activities of managers who can change ACLs are logged via <em>arveo</em> audit and checked at regular intervals;</p>
+<p>the activities of managers who can change access rights are logged via <em>arveo</em> audit and checked at regular intervals;</p>
 </li>
 <li>
 <p>organizationally ensure that the password the <em>arveo</em> administration users are changed regularly.</p>
@@ -1995,11 +1982,6 @@ The provider of the apache solr 8.6 cluster must guarantee that data is replicat
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No login possible, system outage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Config Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration not available to all nodes, system outage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2</p></td>
@@ -2033,11 +2015,6 @@ The provider of the apache solr 8.6 cluster must guarantee that data is replicat
 <td class="tableblock halign-left valign-top"><p class="tableblock">Federation Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Access to external repositories (Documentum, Saperion) not available</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2-n, automatic scale up/down by load</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access Control Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access of objects with  access control list fails, partial system outage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2</p></td>
 </tr>
 </tbody>
 </table>
@@ -2115,7 +2092,7 @@ To achieve high availability for <em>arveo</em> the provider must guarantee that
 Each document can have a retention period that ensures that the document cannot be deleted before the period expires.</p>
 </div>
 <div class="paragraph">
-<p>You can delete or purge any object with the <em>arveo</em> Delete-API if you have the <em>DELETE</em> right for the document type and the object ACL and the retentions period has not expired.</p>
+<p>You can delete or purge any object with the <em>arveo</em> Delete-API if you have the <em>DELETE</em> right for the document type and the entity and the retention period has not expired.</p>
 </div>
 <div class="paragraph">
 <p>The delete method deletes all entities including all versions of the object in the database, but it does not delete the content objects or files. The delete operation cannot be restored and the data is permanently deleted.</p>
@@ -2300,7 +2277,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-08 09:10:17 UTC
+Last updated 2024-02-08 13:54:45 UTC
 </div>
 </div>
 </body>

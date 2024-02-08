@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 16.1.2-SNAPSHOT</div>
+<div id="toctitle">arveo 17.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_gettingstarted_v"><strong>Security</strong></a>
 <ul class="sectlevel2">
@@ -467,7 +467,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_access_control"><strong>Access Control</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_access_rights">Access rights</a></li>
-<li><a href="#_access_control_lists">Access control lists</a></li>
 </ul>
 </li>
 <li><a href="#_attribute_based_access_control_abac">Attribute Based Access Control (ABAC)</a>
@@ -545,7 +544,7 @@ that our services can be operated securely in the cloud.</p>
 <p>All <em>arveo</em> content services and clients communicate via state-of-the-art secure REST interfaces via
 the secure HTTPS (SSL) protocol.
 All services require the web standard OAUTH2 with OpenID Connect authentication using tokens.
-A central authentication service (Keycloak, Active Directory or <em>arveo</em> user management service) issues tokens with an
+A central authentication service (Keycloak) issues tokens with an
 expiry date. That ensures that only client authenticated against the central service can use the content service APIs.</p>
 </div>
 </div>
@@ -562,7 +561,7 @@ In order not to re-encrypt all data if the key is compromised, own keys are gene
 attributes or access lists and thus grant or deny the corresponding access to the groups or users.</p>
 </div>
 <div class="paragraph">
-<p><strong>ACL Permissions</strong></p>
+<p><strong>Access rights</strong></p>
 </div>
 <div class="ulist">
 <ul>
@@ -841,7 +840,7 @@ Depending on your retention policy you can create separate reports for a retenti
 <div class="sect3">
 <h4 id="_data_integrity"><a class="anchor" href="#_data_integrity"></a><a class="link" href="#_data_integrity">Data integrity</a></h4>
 <div class="paragraph">
-<p><em>arveo</em> guarantees high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by proven and well-thought concepts. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via ACLs. User rights are based on the developed concepts for roles, groups and ACLs. More detailed information on this is provided in the relevant chapters of this manual.</p>
+<p><em>arveo</em> guarantees high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by proven and well-thought concepts. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via attribute based access control. User rights are based on the developed concepts for roles and groups. More detailed information on this is provided in the relevant chapters of this manual.</p>
 </div>
 <div class="paragraph">
 <p>Access to all data (documents, metadata) takes place exclusively via the API, with the corresponding protection mechanisms so that the security of the data is guaranteed at all times.</p>
@@ -971,10 +970,10 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>make sure that only authorized persons receive an account that grants access to <em>arveo</em> documents;</p>
 </li>
 <li>
-<p>ensure that objects are protected against unauthorized access using ACLs. We recommend defining a separation of functions and implementing this via <a href="../arveo-developer#_access_control_lists">ACLs</a>. To achieve the best data security assign ACLs to all records, cases and documents. Make sure that for all used ACLs the assignment of access rights to users and groups is carried out regularly (e.g. Invoice document type, accounting: write, employees: read);</p>
+<p>ensure that objects are protected against unauthorized access using attribute based access control.</p>
 </li>
 <li>
-<p>the activities of managers who can change ACLs are logged via <em>arveo</em> audit and checked at regular intervals;</p>
+<p>the activities of managers who can change access rights are logged via <em>arveo</em> audit and checked at regular intervals;</p>
 </li>
 <li>
 <p>organizationally ensure that the password the <em>arveo</em> administration users are changed regularly.</p>
@@ -1434,11 +1433,6 @@ The provider of the apache solr 8.6 cluster must guarantee that data is replicat
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No login possible, system outage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Config Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration not available to all nodes, system outage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2</p></td>
@@ -1472,11 +1466,6 @@ The provider of the apache solr 8.6 cluster must guarantee that data is replicat
 <td class="tableblock halign-left valign-top"><p class="tableblock">Federation Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Access to external repositories (Documentum, Saperion) not available</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2-n, automatic scale up/down by load</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access Control Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access of objects with  access control list fails, partial system outage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2</p></td>
 </tr>
 </tbody>
 </table>
@@ -1554,7 +1543,7 @@ To achieve high availability for <em>arveo</em> the provider must guarantee that
 Each document can have a retention period that ensures that the document cannot be deleted before the period expires.</p>
 </div>
 <div class="paragraph">
-<p>You can delete or purge any object with the <em>arveo</em> Delete-API if you have the <em>DELETE</em> right for the document type and the object ACL and the retentions period has not expired.</p>
+<p>You can delete or purge any object with the <em>arveo</em> Delete-API if you have the <em>DELETE</em> right for the document type and the entity and the retention period has not expired.</p>
 </div>
 <div class="paragraph">
 <p>The delete method deletes all entities including all versions of the object in the database, but it does not delete the content objects or files. The delete operation cannot be restored and the data is permanently deleted.</p>
@@ -1659,9 +1648,6 @@ It is possible to empty the recovery log by an automated custom job scheduled in
 <div class="ulist">
 <ul>
 <li>
-<p><strong>ECR_SERVICE_USER</strong> (configurable): Required authority for all API endpoints. Must always be present.</p>
-</li>
-<li>
 <p><strong>ECR_ADMIN</strong>: Allows editing type- and attribute definitions as well as other administrative operations.</p>
 </li>
 <li>
@@ -1683,161 +1669,6 @@ of this authority. ECR_DSGVO_PRIVILEGED_DELETE privilege does NOT require ECR_DS
 <p><strong>ECR_PURGE_RECOVERY_TABLE</strong>: Allows a user to trigger the removal of expired entries in the recovery table.</p>
 </li>
 </ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_access_control_lists"><a class="anchor" href="#_access_control_lists"></a><a class="link" href="#_access_control_lists">Access control lists</a></h3>
-<div class="paragraph">
-<p><em>arveo</em> makes use of access control lists (ACLs) to protect entities. Each entity can be protected by one ACL.
-The handling of ACLs is performed by the Access Control Service. The documentation of the Access Control Service contains
-more information about the general concept of the ACLs used by <em>arveo</em>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-To enable the ACL feature for a type definition, the type class must be annotated with <code>@Acls</code>. Meta-data type definitions
-do not support ACLs.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_mapping_of_the_access_control_list_values"><a class="anchor" href="#_mapping_of_the_access_control_list_values"></a><a class="link" href="#_mapping_of_the_access_control_list_values">Mapping of the Access Control List values</a></h4>
-<div class="paragraph">
-<p>Although the module <code>user-management-access-control</code> defines the concepts and functionality of the ACLs, the actual
-mapping of the values is implemented in <em>arveo</em>. The class <code>de.eitco.ecr.acl.AclRight</code> implements the
-following permissions using the numeric values shown below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">/**
- * The user is allowed to see the object's meta data but not the content.
- */
-BROWSE(4000),
-
-/**
- * The user is allowed to see the meta data and content of the object.
- */
-READ(8000),
-
-/**
- * The user is allowed to add annotations to the object.
- */
-COMMENT(12000),
-
-/**
- * The user is allowed to change meta data and content of the object creating a new version.
- */
-WRITE(16000),
-
-/**
- * The user is allowed to overwrite an existing version of the object.
- */
-OVERWRITE(20000),
-
-/**
- * The user is allowed to delete the object.
- */
-DELETE(24000),
-
-/**
- * The user is allowed to change the ACL of the object.
- */
-CHANGE_ACL((Short.MAX_VALUE - 1));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To illustrate the information above, here are some examples:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>The permission COMMENT is assigned to a group or a job position. In this case, the assignee is per default granted
-the permissions BROWSE and READ;</p>
-</li>
-<li>
-<p>The prohibition WRITE is assigned to a group or a job position. In this case, the assignee is per default prohibited
-all the higher rights, so OVERWRITE, DELETE and CHANGE_ACL;</p>
-</li>
-<li>
-<p>A job position J1 with the permission COMMENT acts as a substitute for a job position J2 with the permission OVERWRITE.
-So the job position J1 is assigned the permission OVERWRITE for the time of the substitution.</p>
-</li>
-<li>
-<p>A job position J1 with the prohibition WRITE acts as a substitute for a job position J2 with the prohibition READ.
-The job position J1 is still assigned the prohibition WRITE for the time of the substitution. This way, it is guaranteed,
-that J1 is still able to perform their tasks (which would become impossible if they were assigned stronger prohibitions,
-that is, the prohibitions of J2).</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_batch_updates_for_acls"><a class="anchor" href="#_batch_updates_for_acls"></a><a class="link" href="#_batch_updates_for_acls">Batch updates for ACLs</a></h4>
-<div class="paragraph">
-<p>It is possible to change values of multiple ACLs. So lists of ACLs, that satisfy a certain condition, can be processed.
-For every ACL, that fulfills a given condition, the following modifications can be specified:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>addgroupright (adds a given right to a given group in every ACL that fulfills the condition);</p>
-</li>
-<li>
-<p>adduserright (adds a given right to a given user in every ACL that fulfills the condition);</p>
-</li>
-<li>
-<p>keepgroupright (keeps the current right of a given group in every ACL that fulfills the condition);</p>
-</li>
-<li>
-<p>keepuserright (keeps the current right of a given user in every ACL that fulfills the condition).</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-All the other entries in the ACLs that fulfill the condition, are removed.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The ACL updates are performed in the the module 'common', in the Client SDK by the class <em>AclServiceClient</em>. It calls the
-method <em>updateAclsWhere()</em> and passes two parameters: an <em>Expression</em> of type <em>Boolean</em> (the condition mentioned above)
-and a <em>List</em> of type <em>AccessControlListModification</em> as modifications (the four modifications mentioned above) to apply
-to every ACL. The method <em>updateAclsWhere()</em> executes the given ACL batch updates.</p>
-</div>
-<div class="paragraph">
-<p>There is also a more convenient method with the same name updateAclsWhere(), that returns a <em>ConditionBuilder</em>, that can
-be used in searches (see <a href=".#_search_service">Search Service</a>).</p>
-</div>
-<div class="sect4">
-<h5 id="_example_of_usage"><a class="anchor" href="#_example_of_usage"></a><a class="link" href="#_example_of_usage">Example of usage</a></h5>
-<div class="paragraph">
-<p>Consider the following snippet from a test class as an example of the batch update functionality for the ACLs.
-Pay attention to the method <em>setRightsTo()</em>, which is called to modify the current rights.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example of batch update functionality</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        aclServiceClient.updateAclsWhere().contextReference("id").in().values(
-                acl1.getIdentifier().getValue(),
-                acl2.getIdentifier().getValue()
-            ).holds()
-            .setRightsTo(GrantAndDeny.grant(AclRight.READ)).of(umAdmin.getIdentifier())
-            .execute();</code></pre>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1916,23 +1747,23 @@ public interface ThresholdContainer {
 <p>Users may only access entities of the type above where the field 'threshold' is greater than 300.</p>
 </div>
 <div class="paragraph">
-<p>In order to check the user requesting an operation, one can define a parameter to the method of the type <code>AuthenticationContext</code>.
+<p>In order to check the user requesting an operation, one can define a parameter to the method of the type <code>de.eitco.ecr.common.search.AuthenticationContext</code>.
 Other information may be accessed this way, too.
 The method can have up to four parameters of the following types:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>AuthenticationContext</code>: this class holds information about the user requesting the operation.</p>
+<p><code>de.eitco.ecr.common.search.AuthenticationContext</code>: this class holds information about the user requesting the operation.</p>
 </li>
 <li>
-<p><code>AclRight</code>: the right needed to perform the operation.</p>
+<p><code>de.eitco.ecr.common.AccessRight</code>: the right needed to perform the operation.</p>
 </li>
 <li>
-<p><code>Alias</code>: identifies the part of the query that holds the entity</p>
+<p><code>de.eitco.ecr.common.search.Alias</code>: identifies the part of the query that holds the entity</p>
 </li>
 <li>
-<p><code>DSLContext</code>: an entrypoint to the <a href="https://www.jooq.org/doc/3.15/manual/">jooq</a> api bound to the database and schema the table containing the entities is located in.</p>
+<p><code>org.jooq.DSLContext</code>: an entrypoint to the <a href="https://www.jooq.org/doc/3.15/manual/">jooq</a> api bound to the database and schema the table containing the entities is located in.</p>
 </li>
 </ul>
 </div>
@@ -1967,7 +1798,7 @@ public interface DocumentWithAccessToken {
         return EcrQueryLanguage.condition()
             .alias(alias).field("access_token").isNull() <i class="conum" data-value="2"></i><b>(2)</b>
             .or()
-            .value(authenticationContext.getAuthorities())
+            .value(authenticationContext.getAuthoritiesAsStrings())
             .contains().alias(alias).field("access_token")
             .holds();
     }
@@ -1997,11 +1828,38 @@ public interface DocumentWithAccessToken {
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>The <code>AuthenticationContext</code> provides access to the <code>CommonAuthentication</code> and the <code>ExternalCommonUserDetails</code> stored in the
+security context of the current user. The <code>CommonAuthentication</code> contains the user&#8217;s IDs (internal and external). The
+<code>ExternalCommonUserDetails</code> contain common and generic attributes that were read from the user&#8217;s access token and/or from
+the OpenID Connect user info endpoint. All of this information can be used to decide whether the user is allowed to
+perform a specific action or not. In the next example the email of a user is used in an ABAC security method.</p>
+</div>
+<div class="listingblock">
+<div class="title">using a user&#8217;s email address in ABAC</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Mandatory
+String getEmail();
+
+void setEmail(String email);
+
+@Security
+static Expression&lt;Boolean&gt; checkAccess(Alias alias, AuthenticationContext authenticationContext) {
+
+    ExternalCommonUserDetails details = authenticationContext.getCommonUserDetails();
+
+    return EcrQueryLanguage.condition()
+        .alias(alias).field("email")
+        .equalTo().value(details.getEmail())
+        .holds();
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_aclright_what_will_the_operation_do"><a class="anchor" href="#_aclright_what_will_the_operation_do"></a><a class="link" href="#_aclright_what_will_the_operation_do"><code>AclRight</code>: what will the operation do?</a></h4>
+<h4 id="_accessright_what_will_the_operation_do"><a class="anchor" href="#_accessright_what_will_the_operation_do"></a><a class="link" href="#_accessright_what_will_the_operation_do"><code>AccessRight</code>: what will the operation do?</a></h4>
 <div class="paragraph">
-<p>The <code>AclRight</code> parameter holds the right necessary to perform the operation requested.
+<p>The <code>AccessRight</code> parameter holds the right necessary to perform the operation requested.
 This is a hint for the method about what should actually be done in the operation.
 It allows differentiating between read and write access:</p>
 </div>
@@ -2010,7 +1868,6 @@ It allows differentiating between read and write access:</p>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
 @OverwriteAllowed
-@Acls
 public interface ContainerAccessedByUserId {
 
     long getOwner(); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2022,11 +1879,11 @@ public interface ContainerAccessedByUserId {
     void setAudience(List&lt;Long&gt; audience);
 
     @Security
-    static Expression&lt;Boolean&gt; checkAccess(Alias alias, AuthenticationContext authenticationContext, AclRight right) {
+    static Expression&lt;Boolean&gt; checkAccess(Alias alias, AuthenticationContext authenticationContext, AccessRight right) {
 
-        long userId = authenticationContext.getUser().getIdentifier().getValue();
+        long userId = authenticationContext.getAuthentication().getInternalIdOrFail();
 
-        if (AclRight.READ.getValue() &lt; right.getValue()) { <i class="conum" data-value="3"></i><b>(3)</b>
+        if (AccessRight.READ.getValue() &lt; right.getValue()) { <i class="conum" data-value="3"></i><b>(3)</b>
 
             return EcrQueryLanguage.condition().alias(alias).field("owner").equalTo().value(userId).holds();
         }
@@ -2165,7 +2022,7 @@ public interface OwnedDocument {
     @Security
     static Expression&lt;Boolean&gt; calculateAccess(Alias alias, AuthenticationContext authenticationContext) {
 
-        List&lt;Long&gt; groupIds = authenticationContext.getAllGroups().stream().map(group -&gt; group.getIdentifier().getValue()).collect(Collectors.toList()); <i class="conum" data-value="3"></i><b>(3)</b>
+        Collection&lt;Long&gt; groupIds = authenticationContext.getCommonUserDetails().getCollectionAttribute("group-ids", Long.class, List.of()); <i class="conum" data-value="3"></i><b>(3)</b>
 
         return EcrQueryLanguage.condition().alias(alias).field("contained_in").in() <i class="conum" data-value="4"></i><b>(4)</b>
             .select("id").from("owned_container").as("container").where().
@@ -2189,7 +2046,8 @@ public interface OwnedDocument {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The <code>AuthenticationContext</code> is used to obtain the ids of every group the current user is a member of.</td>
+<td>The <code>AuthenticationContext</code> is used to obtain the ids of every group the current user is a member of.
+The <em>group-ids</em> attribute was added to the user info response by the authentication service and loaded by the repository service using OpenId Connect.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -2229,7 +2087,7 @@ public interface WithAccessToken {
             .alias(alias).field("access_token").isNull()
             .or()
             .alias(alias).field("access_token").in()
-            .values(new ArrayList&lt;&gt;(authenticationContext.getAuthorities()))
+            .values(authenticationContext.getAuthoritiesAsStrings())
             .holds();
     }
 
@@ -2318,8 +2176,8 @@ public interface MedicalRecordCase {
     @Security
     static Expression&lt;Boolean&gt; access(Alias alias, AuthenticationContext authenticationContext) {
 
-        List&lt;String&gt; groupNames = authenticationContext.getAllGroups() <i class="conum" data-value="3"></i><b>(3)</b>
-            .stream().map(group -&gt; group.getEntityName().getValue()).collect(Collectors.toList());
+        Collection&lt;String&gt; groupNames = authenticationContext.getCommonUserDetails()
+            .getCollectionAttribute("group-names", String.class, List.of()); <i class="conum" data-value="3"></i><b>(3)</b>
 
         Expression&lt;Boolean&gt; result = null;
 
@@ -2366,7 +2224,8 @@ This attribute is also mandatory.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>When computing access, the groups - and thus the wards - of the current user are obtained from the <code>AuthenticationContext</code></td>
+<td>When computing access, the groups - and thus the wards - of the current user are obtained from the <code>AuthenticationContext</code>.
+The <em>group-names</em> attribute was added to the user info response by the authentication service and loaded by the repository service using OpenId Connect.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -2639,7 +2498,7 @@ This could be used to access the 'employee_to_ward' table:</p>
         DSLContext context  <i class="conum" data-value="1"></i><b>(1)</b>
     ) {
 
-        long userId = authenticationContext.getUser().getIdentifier().getValue(); <i class="conum" data-value="2"></i><b>(2)</b>
+        long userId = authenticationContext.getAuthentication().getInternalIdOrFail(); <i class="conum" data-value="2"></i><b>(2)</b>
 
         final List&lt;String&gt; wards = context.selectFrom("test_employee_to_ward")
             .where(DSL.field(DSL.name("employee")).eq(DSL.value(userId))) <i class="conum" data-value="3"></i><b>(3)</b>
@@ -2725,7 +2584,7 @@ This means arveo will not create the corresponding table.</td>
             .exists().select("ward").from(UserToWard.class).as(userWard.getValue())<i class="conum" data-value="2"></i><b>(2)</b>
             .where()
                 .alias(userWard).field("employee").equalTo()
-                .value(authenticationContext.getUser().getIdentifier().getValue()) <i class="conum" data-value="3"></i><b>(3)</b>
+                .value(authenticationContext.getAuthentication().getInternalIdOrFail()) <i class="conum" data-value="3"></i><b>(3)</b>
             .and()
                 .alias(alias).field("wards").contains() <i class="conum" data-value="4"></i><b>(4)</b>
                 .alias(userWard).field("ward").holds()
@@ -2776,10 +2635,10 @@ definition that can be enabled using the <code>@AccessChecks(true)</code> annota
 <p><code>DELETE</code>: Allows a user to delete existing entities or to recycle and restore entities.</p>
 </li>
 <li>
-<p><code>ASSIGN_ACL</code>: Allows a user to assign an ACL to an entity.</p>
+<p><code>ASSIGN_ACCESS_RIGHTS</code>: Allows a user to assign access rights to an entity.</p>
 </li>
 <li>
-<p><code>WRITE</code>: Combines the rights <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> and <code>ASSIGN_ACL</code>.</p>
+<p><code>WRITE</code>: Combines the rights <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> and <code>ASSIGN_ACCESS_RIGHTS</code>.</p>
 </li>
 </ul>
 </div>
@@ -3033,7 +2892,7 @@ The names of variables must comply to the same rules as attribute names as defin
 <pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; variables = Map.of("myVariable", "some value", "myIntVariable", 1);
 
 client = serviceClient.create(
-    new TypedContainerInput&lt;&gt;(null, typeInstance, null, null, variables));</code></pre>
+    new TypedContainerInput&lt;&gt;(null, typeInstance, null, variables));</code></pre>
 </div>
 </div>
 </div>
@@ -3052,7 +2911,6 @@ client = client.update(
     new TypedContainerInput&lt;&gt;(
         null,
         serviceClient.createTypeInstance(),
-        null,
         null,
         variables
     )
@@ -3074,7 +2932,6 @@ client = client.update(
     new TypedContainerInput&lt;&gt;(
         null,
         serviceClient.createTypeInstance(),
-        null,
         null,
         variables
     )
@@ -3341,13 +3198,6 @@ containing the type annotations. The processor is picked up by the compiler auto
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies whether type-based access-checking will be enabled on a type.
   Default = false. See <a href="#_permissions_on_type_definitions">permissions on type definitions</a> for details.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Acls</em></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Support for ACLs is disabled by default but can be enabled by annotating the type class with this annotation. Additionally,
-  annotating a getter for the ACL-Id system property with @Mandatory enforces the assignment of an ACL to every entity.
-  Meta types do not support ACLs.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@FilingEnabled</em></p></td>
@@ -3839,28 +3689,9 @@ The following fields are property-like:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>acl_id;</p>
-</li>
-<li>
 <p>retention_date.</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>The following listing shows the definition of a getter and a setter method on a property-like field.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example of property-like fields</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface Secured {
-
-    @SystemProperty(SystemPropertyName.ACL_ID)
-    AccessControlListId getAclId();
-
-    void setAclId(AccessControlListId aclId);
-
-}</code></pre>
-</div>
 </div>
 </div>
 </div>
@@ -3897,49 +3728,6 @@ public interface NamedEntity {
 <td class="content">
 External views will only be read from ecr.It will never write to an external view.
 </td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>For example, the <a href="#Access Control Service">access-control-service</a> defines several tables, one of it named <code>usrv_acl</code>.In this table there are - amongst others - two fields: <code>id</code> (a <code>bigint</code>) and <code>name</code> (a <code>varchar</code>).With this knowledge one can define the following external view:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example for an external view</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@View <i class="conum" data-value="1"></i><b>(1)</b>
-@Type(ObjectType.META) <i class="conum" data-value="2"></i><b>(2)</b>
-@TableName("usrv_acl") <i class="conum" data-value="3"></i><b>(3)</b>
-public interface AclView {
-
-    @Unique
-    String getName(); <i class="conum" data-value="4"></i><b>(4)</b>
-
-    @PrimaryKey
-    long getId(); <i class="conum" data-value="5"></i><b>(5)</b>
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>We annotate the class with <em>@View</em> to declare it as an external view.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Specifying the type as a <code>META</code> type is good practice, since every other type would expect specific system fields.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Specifying the table name is good practice here, since an external table most likely follows its own name convention. However, it would be possible to omit the <em>@TableName</em> annotation here and instead name the class <code>UsrvAcl</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Since we know that the table <code>usrv_acl</code> has a field <code>name</code> of type <code>varchar</code> we can define the property <code>name</code> of type <code>String</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>We know that the table <code>usrv_acl</code> has a field <code>id</code> of type <code>bigint</code>, so we specify a java property accordingly.</td>
 </tr>
 </table>
 </div>
@@ -4001,13 +3789,6 @@ on relations.</p>
 <li>
 <p>CREATOR_USER_ID: The id of the user that created this relation. Use on UserId properties. Can only be used on
 relations.</p>
-</li>
-<li>
-<p>ACL_ID: The id of the ACL currently assigned to the entity. Might be null. This is not supported for metadata entities.</p>
-</li>
-<li>
-<p>ACL_RIGHT: The resolved right based on the ACL currently assigned to the entity and the current user.
-This is not supported for metadata entities.</p>
 </li>
 <li>
 <p>RETENTION_INFO: Information about the retention properties of the entity.
@@ -4306,11 +4087,6 @@ All system columns in the database are snake case but not camel case. e.g. the J
 <td class="tableblock halign-left valign-top"><p class="tableblock">The unique identifier of the entity. Use EcrId properties (or subclasses as applicable). Can be used on any entity and is applied by <em>arveo</em> for all types but metadata.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">acl_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the ACL currently assigned to the entity. Might be null. This is not supported for metadata entities or type with disabled ACLs.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">creation_date</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">datetime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GMT timestamp when the entity or version was created, precision (1/1000 second)</p></td>
@@ -4318,7 +4094,7 @@ All system columns in the database are snake case but not camel case. e.g. the J
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">creator_user_id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">bigint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the user who created the entity or version (<a href="#user_management"><strong>User Management</strong></a>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the user who created the entity or version</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">deleted</p></td>
@@ -5479,294 +5255,8 @@ In the example above, the object <strong>Invoice</strong> inherits both the <em>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This form of inheritance is currently not needed and therefore not supported by ECR.
+This form of inheritance is currently not needed and therefore not supported by arveo.
 </td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_inheritance_of_acls"><a class="anchor" href="#_inheritance_of_acls"></a><a class="link" href="#_inheritance_of_acls">Inheritance of ACLs</a></h4>
-<div class="paragraph">
-<p>The <code>acl_id</code> system field is <a href="#_property_like_system_fields">property-like</a>, thus a type can define it as inherited.
-This permits scenarios where there is one main entity providing the access definition with several entities being linked to it. If the acl of the main entity changes, the ACLs of the linked entities change as well:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example for the main entity</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
-@Acls
-public interface MainEntity {
-
-    @Mandatory <i class="conum" data-value="2"></i><b>(2)</b>
-    @SystemProperty(SystemPropertyName.ACL_ID) <i class="conum" data-value="1"></i><b>(1)</b>
-    AccessControlListId getMainAcl(); <i class="conum" data-value="7"></i><b>(7)</b>
-
-    void setMainAcl(AccessControlListId id);
-
-    // ...
-    // your custom attribute definitions
-    // ...
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Example for linked entities</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.DOCUMENT)
-@Acls
-public interface ChildEntity {
-
-    @Mandatory <i class="conum" data-value="4"></i><b>(4)</b>
-    @ForeignKey(target = MainEntity.class, targetProperty = "id") <i class="conum" data-value="3"></i><b>(3)</b>
-    ContainerId getCurrentMainEntity(); <i class="conum" data-value="6"></i><b>(6)</b>
-
-    void setCurrentMainEntity(ContainerId mainEntity);
-
-
-    @SystemProperty(SystemPropertyName.ACL_ID)
-    @InheritedProperty(foreignKeyPropertyName = "current_main_entity", sourcePropertyName = "acl_id") <i class="conum" data-value="5"></i><b>(5)</b>
-    AccessControlListId getAcl();
-
-    // ...
-    // your custom attribute definitions
-    // ...
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The main entity defines a property that accesses the ACL system property.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This property is defined mandatory - thus the main entity will always have an ACL.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The child entity defines a foreign key to the main entity.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>By specifying the foreign key property as mandatory, every child entity will be linked to a main entity</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Now we can specify an ACL property being inherited.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Note that <code>foreignKeyPropertyName</code> (in line 12) is written in snake-case while the actual property getter is written in camel-case.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Note further, that while the property referenced is actually defined by the getter <code>getMainAcl</code> (MainEntity line 6), <code>sourcePropertyName</code> is set to the name of the system field <code>"acl_id"</code> to derive the property.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Let&#8217;s see this behaviour in action.
-Assume that we have a <code>TypeDefinitionServiceClient</code> named <code>typeDefintionServiceClient</code> and also the ids of two ACLs (<code>firstAclId</code> and <code>differenceAclId</code>).
-First we can create service Clients for the two types defined above:</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The annotation <em>@DefaultValue()</em> only accepts the database column name as static string parameter. As the document type properties are CAMEL case and the database column names are SNAKE case
-you must convert your properties e.g. MyCamelCaseProperty = my_camel_case_property.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        TypedContainerServiceClient&lt;MainEntity&gt; mainEntityServiceClient =
-            typeDefinitionServiceClient.getContainerServiceClient().byClass(MainEntity.class);
-        TypedDocumentServiceClient&lt;ChildEntity&gt; childEntityServiceClient =
-            typeDefinitionServiceClient.getDocumentServiceClient().byClass(ChildEntity.class);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>With these service clients we can now create several entity instances of <code>MainEntity</code> and <code>ChildEntity</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        MainEntity mainEntity = mainEntityServiceClient.createTypeInstance();
-        mainEntity.setMainAcl(firstAclId);
-        TypedContainerClient&lt;MainEntity&gt; mainEntityClient = mainEntityServiceClient.createEntity(mainEntity);
-
-        ChildEntity childEntity1 = childEntityServiceClient.createTypeInstance();
-        childEntity1.setCurrentMainEntity(mainEntityClient.getIdentifier());
-        TypedDocumentClient&lt;ChildEntity&gt; childEntityClient1 = childEntityServiceClient.createEntity(childEntity1);
-
-        // ...
-
-        ChildEntity childEntityN = childEntityServiceClient.createTypeInstance();
-        childEntityN.setCurrentMainEntity(mainEntityClient.getIdentifier());
-        TypedDocumentClient&lt;ChildEntity&gt; childEntityClientN = childEntityServiceClient.createEntity(childEntityN);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The instances of <code>ChildEntity</code> will automatically have the same ACL as <code>mainEntity</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        Assert.assertEquals(childEntityClient1.getEntity().getAcl(), firstAclId);
-        // ...
-        Assert.assertEquals(childEntityClientN.getEntity().getAcl(), firstAclId);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If the ACL of the parent is updated&#8230;&#8203;</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        mainEntity.setMainAcl(differentAclId);
-        mainEntityClient.updateAttributes(mainEntity);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>&#8230;&#8203;then the ACLs the instances of <code>ChildEntity</code> change as well:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        childEntityClient1 = childEntityClient1.reload();
-        // ...
-        childEntityClientN = childEntityClientN.reload();
-
-        Assert.assertEquals(childEntityClient1.getEntity().getAcl(), differentAclId);
-        // ...
-        Assert.assertEquals(childEntityClientN.getEntity().getAcl(), differentAclId);</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_default_acls_and_inheritance"><a class="anchor" href="#_default_acls_and_inheritance"></a><a class="link" href="#_default_acls_and_inheritance">Default ACLs and Inheritance</a></h4>
-<div class="paragraph">
-<p>In many cases it will be desirable to be able to specify a default ACL for a given type. But the naive approach for defining a default ACL will prove cumbersome:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
-public interface ContainerWithDefaultAcl extends WithData {
-
-    @Mandatory
-    @SystemProperty(SystemPropertyName.ACL_ID)
-    long getAclId();
-
-    void setAclId(long aclId);
-
-    @DefaultValue("acl_id") <i class="conum" data-value="1"></i><b>(1)</b>
-    default long defaultAcl() {
-
-        return ?? <i class="conum" data-value="2"></i><b>(2)</b>
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Of course one can define the ACL system property with a default value.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>However, when specifying the default value one faces a problem. The id of an ACL is set by the Access Control Service
-automatically and will vary from deployment to deployment, even between test and production environments.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>However, the concepts presented so far can be used for a better solution. The main idea is to specify the ACL by its name instead of its id. For that we will need access to a table containing ACL names and their respective ids. Here <a href="#External Views">external views</a> can be used. We have already seen an external view exposing the ACL table to <em>arveo</em>:</p>
-</div>
-<div class="listingblock">
-<div class="title">Defintion of a view to the acl table</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@View
-@Type(ObjectType.META)
-@TableName("usrv_acl")
-public interface AclView {
-
-    @Unique
-    String getName();
-
-    @PrimaryKey
-    long getId();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Since that exposes ACLs as <em>arveo</em> type instances, ACLs can be used for <a href="#Direct inheritance">inheritance</a>. And since ACL names are unique they can be used as a foreign key, particularly as one defining inheritance. That way the actual ACL id can be inherited by a key that is an ACL name, for which we can easily define a <a href="#Default Values">default value</a> that is stable over every environment:</p>
-</div>
-<div class="listingblock">
-<div class="title">A sofisticated example of an ACL default value</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
-@Acls
-public interface ContainerWithDefaultAcl extends WithData {
-
-    String DEFAULT_ACL_NAME = "default-container-acl"; <i class="conum" data-value="6"></i><b>(6)</b>
-
-    @Id
-    ContainerId getId();
-
-    @Optional <i class="conum" data-value="7"></i><b>(7)</b>
-    @ForeignKey(target = AclView.class, targetProperty = "name") <i class="conum" data-value="2"></i><b>(2)</b>
-    String getAcl(); <i class="conum" data-value="1"></i><b>(1)</b>
-
-    void setAcl(String acl);
-
-    @DefaultValue("acl")
-    default String defaultAcl() { <i class="conum" data-value="3"></i><b>(3)</b>
-
-        return DEFAULT_ACL_NAME;
-    }
-
-    @Mandatory <i class="conum" data-value="7"></i><b>(7)</b>
-    @InheritedProperty(foreignKeyPropertyName = "acl", sourcePropertyName = "id") <i class="conum" data-value="5"></i><b>(5)</b>
-    @SystemProperty(SystemPropertyName.ACL_ID)
-    long getAclId(); <i class="conum" data-value="4"></i><b>(4)</b>
-
-    void setAclId(long aclId);
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>In our type we define a property ACL, that holds the name of the ACL.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This property is a foreign key that targets the field <code>name</code> table <code>usr_acl</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>For this property we can easily specify a default value.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Now we specify the ACL property.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>It is simply defined to be inherited by the foreign key to the ACL table.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>It is good practice to store constant default values in constants.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Marking the ACL id as <em>@Mandatory</em> enforces that every instance of the entity must have an ACL. However, this does not need to be an inherited one (since the ACL name is marked <em>@Optional</em>). So the more cumbersome way - to set the ACL by its id - is still possible. Marking the ACL propery as <em>@Mandatory</em> would forbid this.</td>
 </tr>
 </table>
 </div>
@@ -5887,7 +5377,6 @@ import de.eitco.ecr.type.definition.annotations.constraint.Mandatory;
 import de.eitco.ecr.type.definition.annotations.constraint.SecondaryKey;
 import de.eitco.ecr.type.definition.annotations.defaults.DefaultSystemPropertyValue;
 import de.eitco.ecr.type.definition.annotations.defaults.DefaultValue;
-import de.eitco.ecr.type.definition.annotations.system.Acls;
 import de.eitco.ecr.type.definition.annotations.system.Id;
 import de.eitco.ecr.type.definition.annotations.system.RetentionProtected;
 import de.eitco.ecr.type.definition.annotations.system.SystemProperty;
@@ -5901,7 +5390,6 @@ import java.time.ZonedDateTime;
 @RetentionProtected
 @ContentElement(name = "content", separateField = true)
 @OverwriteAllowed
-@Acls
 public interface DocumentWithDefaultRetention {
 
     @Id
@@ -6002,7 +5490,7 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect2">
 <h3 id="_tenant_separation"><a class="anchor" href="#_tenant_separation"></a><a class="link" href="#_tenant_separation">Tenant separation</a></h3>
 <div class="paragraph">
-<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/5.0.0/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/5.0.0/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
 </div>
 <div class="paragraph">
 <p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
@@ -6010,14 +5498,14 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect3">
 <h4 id="_fallback_tenant"><a class="anchor" href="#_fallback_tenant"></a><a class="link" href="#_fallback_tenant">Fallback-tenant</a></h4>
 <div class="paragraph">
-<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/5.0.0/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
-Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/5.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
+<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
+Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_usage"><a class="anchor" href="#_usage"></a><a class="link" href="#_usage">Usage</a></h4>
 <div class="paragraph">
-<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/5.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
 </div>
 <div class="paragraph">
 <p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
@@ -6037,7 +5525,7 @@ public interface Person {
 <p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
 </div>
 <div class="paragraph">
-<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/5.0.0/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
+<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
 </div>
 <div class="paragraph">
 <p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
@@ -6645,7 +6133,7 @@ e.g. two processes A and B load the same object including content and versions a
 <div class="sect2">
 <h3 id="_download_links_for_external_users"><a class="anchor" href="#_download_links_for_external_users"></a><a class="link" href="#_download_links_for_external_users">Download links for external users</a></h3>
 <div class="paragraph">
-<p>You can create download links for content elements that can be used by external users who do not exist in the user management service. Such a link has an expiration date and can be used to download a single content element. The links are digitally signed using a configurable certificate, so that the receiver cannot alter the
+<p>You can create download links for content elements that can be used by external users. Such a link has an expiration date and can be used to download a single content element. The links are digitally signed using a configurable certificate, so that the receiver cannot alter the
 referenced content element or the expiration date of the link. The <em>arveo</em> service provides a special HTTP endpoint to process download links. This endpoint does not require authentication. Instead, the download link contains credentials that allow the user to access the referenced content element.</p>
 </div>
 <div class="admonitionblock note">
@@ -6854,12 +6342,6 @@ In this case, a certain property is defined to let the system know, a certain ve
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version_acl_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">modification_date</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ZonedDateTime</p></td>
@@ -6921,8 +6403,7 @@ formulated similarly, what is different is the search result, which is always ty
 <h4 id="_technical_implementation"><a class="anchor" href="#_technical_implementation"></a><a class="link" href="#_technical_implementation">Technical implementation</a></h4>
 <div class="paragraph">
 <p>Search Service is part of the module 'commons'. It was created to enable more convenient searching. The Search Service
-works on the basis of EQL (Eitco Query Language). This query language is also used for some other services, like
-Access Control Service.
+works on the basis of EQL (Eitco Query Language). This query language is also used for some other services.
 The main interface is SearchService. It is a functional interface, providing just one method to be implemented: search().
 However, this functional interface has a variety of convenience methods, enabling faster and more convenient search, like
 <em>firstResult()</em>, <em>uniqueResult()</em>, <em>count()</em>, <em>stream()</em> and others.</p>
@@ -7052,7 +6533,6 @@ Queries like this can be executed using the aggregated search. As opposed to the
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.DOCUMENT)
 @FilingEnabled
-@Acls
 public interface Customer {
 
     @SystemProperty(SystemPropertyName.ID)
@@ -7067,7 +6547,6 @@ public interface Customer {
 
 @Type(ObjectType.DOCUMENT)
 @FilingEnabled
-@Acls
 public interface Invoice {
 
     @ForeignKey(name = "fk_invoice_customer", target = Customer.class, targetProperty = "id")
@@ -7102,12 +6581,12 @@ public interface Invoice {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">        final EcrSearchService&lt;Map&lt;String, Object&gt;&gt; aggregationSearchService = searchClient.aggregate() <i class="conum" data-value="1"></i><b>(1)</b>
-                .count("i", "id").as("invoice_count") <i class="conum" data-value="2"></i><b>(2)</b>
-                .sum("i", "total").as("invoice_total")
-                .groupedBy("c", "name").as("customer")
-                .from().type(Invoice.class).as("i").join().type(Customer.class).as("c")  <i class="conum" data-value="3"></i><b>(3)</b>
-                .on().alias("i").field("customer_number").equalTo().alias("c").id() <i class="conum" data-value="4"></i><b>(4)</b>
-                .holds().build();</code></pre>
+            .count("i", "id").as("invoice_count") <i class="conum" data-value="2"></i><b>(2)</b>
+            .sum("i", "total").as("invoice_total")
+            .groupedBy("c", "name").as("customer")
+            .from().type(ProtectedInvoice.class).as("i").join().type(ProtectedCustomer.class).as("c")  <i class="conum" data-value="3"></i><b>(3)</b>
+            .on().alias("i").field("customer_number").equalTo().alias("c").id() <i class="conum" data-value="4"></i><b>(4)</b>
+            .holds().build();</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -7147,8 +6626,8 @@ public interface Invoice {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">        final List&lt;Map&lt;String, Object&gt;&gt; open = aggregationSearchService.where()
-                .alias("i").field("open").equalTo().value(true)
-                .holds().unpaged();</code></pre>
+            .alias("i").field("open").equalTo().value(true)
+            .holds().unpaged();</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8770,7 +8249,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-08 09:10:17 UTC
+Last updated 2024-02-08 13:54:45 UTC
 </div>
 </div>
 </body>

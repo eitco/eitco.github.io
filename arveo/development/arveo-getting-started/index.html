@@ -668,7 +668,7 @@ directory and perform the following operation.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 16.1.2-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 17.0.0-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -740,19 +740,16 @@ Only types that have been registered can be used in your application.</p>
 <p>A SOLR server</p>
 </li>
 <li>
+<p>A Keycloak server</p>
+</li>
+<li>
 <p>The Service Registry</p>
 </li>
 <li>
 <p>The Configuration Service</p>
 </li>
 <li>
-<p>The User management Service</p>
-</li>
-<li>
 <p>The Audit Service</p>
-</li>
-<li>
-<p>The Access Control Service</p>
 </li>
 <li>
 <p>The <em>arveo</em> Service</p>
@@ -831,7 +828,7 @@ imported to arveo - see system fields)</p>
 <p>Complete listings for the steps below can be found at the end of this chapter.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s first add some getters for system fields. Those will provide access to system information that is generated automatically when an entity is created or updated. The generated DemoModel class already contains getters for the ID- and ACL- system properties. Add the following lines to DemoModel.java:</p>
+<p>Let&#8217;s first add some getters for system fields. Those will provide access to system information that is generated automatically when an entity is created or updated. The generated DemoModel class already contains getters for the ID system property. Add the following lines to DemoModel.java:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -995,10 +992,6 @@ public interface DemoModel {
         return DemoModelId.of(getDocumentId());
     }
 
-    @SystemProperty(SystemPropertyName.ACL_ID)
-    Long getAclId();
-    void setAclId(Long aclId);
-
     @SystemProperty(SystemPropertyName.CONTENT)
     Map&lt;String, ContentInformation&gt; getContentInformation();
 
@@ -1108,7 +1101,7 @@ public interface DemoModel {
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt; <i class="conum" data-value="1"></i><b>(1)</b>
     &lt;artifactId&gt;ecr-sdk-http&lt;/artifactId&gt;
-    &lt;version&gt;16.1.2-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;17.0.0-SNAPSHOT&lt;/version&gt;
     &lt;exclusions&gt;
         &lt;exclusion&gt; <i class="conum" data-value="2"></i><b>(2)</b>
             &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
@@ -1161,7 +1154,7 @@ public interface DemoModel {
         &lt;dependency&gt;
             &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
             &lt;artifactId&gt;cmn-commons-spring-security&lt;/artifactId&gt;
-            &lt;version&gt;10.0.0&lt;/version&gt;
+            &lt;version&gt;10.0.1-SNAPSHOT&lt;/version&gt;
         &lt;/dependency&gt;
     &lt;/dependencies&gt;
 &lt;/dependencyManagement&gt;</code></pre>
@@ -1967,7 +1960,7 @@ The maven coordinate of this archetype are:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>disable-optional-features</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">when set to false, it will create a little more complex project, including the audit service, the user-management enterprise service and jmeter samplers. If set to true (the default value) these features will be disabled but can be activated by uncommenting certain source locations.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">when set to false, it will create a little more complex project, including the audit service and jmeter samplers. If set to true (the default value) these features will be disabled but can be activated by uncommenting certain source locations.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2182,7 +2175,7 @@ The maven coordinate of this archetype are:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-08 09:10:17 UTC
+Last updated 2024-02-08 13:54:45 UTC
 </div>
 </div>
 </body>

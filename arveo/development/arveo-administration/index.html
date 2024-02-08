@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 16.1.2-SNAPSHOT</div>
+<div id="toctitle">arveo 17.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_installation"><strong>Installation</strong></a>
 <ul class="sectlevel2">
@@ -451,15 +451,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_administration"><strong>Administration</strong></a>
 <ul class="sectlevel2">
+<li><a href="#_authentication-oauth2">OAuth2.0 authentication and authorization</a></li>
 <li><a href="#_configure_database_access">Configure Database access</a></li>
 <li><a href="#_configure_storage_locations">Configure Storage Locations</a></li>
 <li><a href="#_renditions">Renditions</a></li>
 <li><a href="#_configure_retention_container">Configure retention container</a></li>
 <li><a href="#_encryption">Configure Encryption</a></li>
 <li><a href="#_configure_active_mq">Configure Active MQ</a></li>
-<li><a href="#_configure_arveo_user_management_as_authentication_service">Configure <em>arveo</em> user management as Authentication Service</a></li>
-<li><a href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></li>
-<li><a href="#_authentication-oauth2">OAuth2.0 Authentication</a></li>
 <li><a href="#_configure_audit">Configure audit</a></li>
 <li><a href="#_solr">Solr</a></li>
 <li><a href="#_system_jobs">System jobs</a></li>
@@ -628,11 +626,6 @@ However, a different setup can be used, depending on the customer infrastructure
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 32 GB</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 2 GB</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Registry Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 512 MB</p></td>
@@ -641,11 +634,6 @@ However, a different setup can be used, depending on the customer infrastructure
 <td class="tableblock halign-left valign-top"><p class="tableblock">Config Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 512 MB</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access Control Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 2 GB</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
@@ -661,16 +649,6 @@ However, a different setup can be used, depending on the customer infrastructure
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service (optional)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 2 GB</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise User Management Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 1 GB</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise Integration Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 1 GB</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Federation Service (optional)</p></td>
@@ -902,7 +880,7 @@ We recommend controlling the rollout of the <em>_arveo</em> services by a contin
 <p>The customer provides several virtual machines that are configured by Eitco with the automated deployment tool Puppet (<a href="#_puppet">Puppet Deployment</a>) in order to ensure a problem-free software rollout in the customer system.</p>
 </div>
 <div class="paragraph">
-<p>Depending on the service level agreement Eitco can guarantee high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by technical or organizational measures. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via ACLs. User rights are based on the concepts for roles, groups and ACLs. More detailed information on this is provided in the relevant chapters of this manual.</p>
+<p>Depending on the service level agreement Eitco can guarantee high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by technical or organizational measures. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed with an attribute based access control (ABAC). More detailed information on this is provided in the relevant chapters of this manual.</p>
 </div>
 <div class="paragraph">
 <p>All changes to the system and the data are logged via the API, and the changes are traceable via
@@ -938,7 +916,7 @@ The installation is completely automated and carried out remotely.</p>
 <p>JDK 11, 16</p>
 </li>
 <li>
-<p>Keycloak, Active Directory Authentication Service</p>
+<p>Keycloak Authentication Service</p>
 </li>
 <li>
 <p>Active MQ Message Service Hub</p>
@@ -963,12 +941,6 @@ The installation is completely automated and carried out remotely.</p>
 <p>Configuration Service</p>
 </li>
 <li>
-<p>User Management Service</p>
-</li>
-<li>
-<p>Access Control Service</p>
-</li>
-<li>
 <p>Audit Service (optional)</p>
 </li>
 <li>
@@ -976,12 +948,6 @@ The installation is completely automated and carried out remotely.</p>
 </li>
 <li>
 <p>Enterprise Integration Service (optional)</p>
-</li>
-<li>
-<p>Enterprise User Management Service (optional)</p>
-</li>
-<li>
-<p>Enterprise Federation Service (optional).</p>
 </li>
 </ul>
 </div>
@@ -1031,18 +997,6 @@ Additional information on registration, user management and the use of the web c
 </li>
 <li>
 <p>Registry Service: systemctl start/stop common_registry_service.service</p>
-</li>
-<li>
-<p>User Management Service: systemctl start/stop common_user_management.service</p>
-</li>
-<li>
-<p>ACL Service: systemctl start/stop common_access_control.service</p>
-</li>
-<li>
-<p>Enterprise User Management Service: systemctl start/stop common_enterprise_user_management.service (optional)*</p>
-</li>
-<li>
-<p>Federation Service: esystemctl start/stop cr_federation.service (optional)</p>
 </li>
 <li>
 <p>Audit Service: systemctl start/stop common_audit.service (optional)</p>
@@ -1098,6 +1052,203 @@ The script is controlled by cron and is always started automatically at 10 p.m.<
 <div class="sect1">
 <h2 id="_administration"><a class="anchor" href="#_administration"></a><a class="link" href="#_administration"><strong>Administration</strong></a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_authentication-oauth2"><a class="anchor" href="#_authentication-oauth2"></a><a class="link" href="#_authentication-oauth2">OAuth2.0 authentication and authorization</a></h3>
+<div class="paragraph">
+<p>All <em>arveo</em> services require authentication, ensuring that only another <em>arveo</em> service or an authenticated user can use the REST API. Authentication of a user is done by an authentication service like Keycloak using OAuth2.0 and OpenID Connect.</p>
+</div>
+<div class="paragraph">
+<p>This chapter describes</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>how <em>arveo</em>'s content services act as an OAuth2.0 resource server for applications using the <em>arveo</em> REST API</p>
+</li>
+<li>
+<p>how the <em>arveo</em> services use OAuth2.0 to authenticate to other services as a technical user.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All content services use Spring Security for user authentication and authorization. The services support OAuth2.0 with OpenID Connect.
+An arveo service can take the role of an OAuth2.0 <em>resource server</em> and/or a <em>client</em>. Services acting as a <em>client</em> perform authenticated requests to other services, using the authentication service to retrieve an access token.</p>
+</div>
+<div class="sect3">
+<h4 id="_oauth2_0_flows_grant_types"><a class="anchor" href="#_oauth2_0_flows_grant_types"></a><a class="link" href="#_oauth2_0_flows_grant_types">OAuth2.0 Flows (Grant types)</a></h4>
+<div class="paragraph">
+<p>OAuth2.0 defines four flows to get an access token. These flows are called grant types. <em>arveo</em> supports the following flows for user authentication and service authentication.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Client Credentials Flow: used for machine-to-machine service communication.</p>
+</li>
+<li>
+<p>Authorization Code Flow with Proof Key for Code Exchange (PKCE) technique: used by <em>arveo</em> Web Applications sand also used by mobile apps.</p>
+</li>
+<li>
+<p>Resource Owner Password Flow: can be used by highly-trusted apps.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_connecting_arveo_services_to_an_authentication_service_using_oauth2_0"><a class="anchor" href="#_connecting_arveo_services_to_an_authentication_service_using_oauth2_0"></a><a class="link" href="#_connecting_arveo_services_to_an_authentication_service_using_oauth2_0">Connecting arveo services to an authentication service using OAuth2.0</a></h4>
+<div class="paragraph">
+<p>To connect the arveo services to an authentication service that supports OAuth2.0, the issuer URI of the authentication service must be configured. Required configuration properties like OAuth2.0 endpoints and public keys will be discovered automatically. If the authentication service does not support auto discovery of configuration options, the required settings can be set manually using the configuration options of <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.security">Spring Security</a>.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows a configuration for an arveo service acting as a <em>resource-server</em> using Keycloak.</p>
+</div>
+<div class="listingblock">
+<div class="title">resource-server configuration using JSON web tokens</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "https://keyloak.example.com/realms/MyRealm"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In case the authentication service uses opaque tokens instead of JSON web tokens, the configuration would look as shown in the next example. In this case, the URI of the token introspection endpoint of the authentication service must be configured.</p>
+</div>
+<div class="listingblock">
+<div class="title">resource-server configuration using opaque tokens</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  security:
+    oauth2:
+      resourceserver:
+        opaquetoken:
+          introspection-uri: "https://authentication.example.com/oauth2/introspect"
+          client-id: "opaque-client"
+          client-secret: "secret"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the service will communicate with other services, it acts as a <em>resource-server</em> and a <em>client</em>. Therefore, an oauth client must be configured as well. The following example shows a client configuration using the <em>client_credentials</em> grant type for service to service communication:</p>
+</div>
+<div class="listingblock">
+<div class="title">resource-server and client configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "https://keyloak.example.com/realms/MyRealm"
+      client:
+        registration:
+          keycloak-client-credentials:
+            provider: keycloak
+            client-id: "myclient"
+            client-secret: "BatqOpzPlIksUsqeZjgxcbAgrA0PQuFM"
+            authorization-grant-type: "client_credentials"
+        provider:
+          keycloak:
+            issuer-uri: "https://keyloak.example.com/realms/MyRealm"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_access_tokens_and_openid_connect"><a class="anchor" href="#_access_tokens_and_openid_connect"></a><a class="link" href="#_access_tokens_and_openid_connect">Access tokens and OpenID Connect</a></h4>
+<div class="paragraph">
+<p>The arveo services retrieve required information about the user from the access token. The <em>authentication</em> of the user is done by validating the signature of the JSON web token (JWT) or by introspecting the opaque token submitted in the request. <em>Authorization-</em> and additional information of the user like name, e-mail or custom attributes are retrieved from the access token&#8217;s claims.</p>
+</div>
+<div class="paragraph">
+<p>Each arveo service checks the audience (<em>aud</em>) claim of a JWT to ensure that the user is authorized to access the service. The <em>aud</em> claim must contain the service&#8217;s name. The following table contains the names of the services.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. audiences</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Service</th>
+<th class="tableblock halign-left valign-top">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content Repository Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">audit-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document-conversion-service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TUS Upload Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tus-upload-service</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>User rights are read from a custom claim called <code>authorities</code>. Some services require specific authorities for some features. The required authorities are listed in the service&#8217;s documentation.</p>
+</div>
+<div class="paragraph">
+<p>The information read from the access token can be used in ABAC security methods to check a user&#8217;s access rights. Sometimes the information in the access tokens might not be sufficient. For example, information about a user&#8217;s group memberships might be too big to be stored in an access token. For situations like this, the OpenID Connect (OIDC) user information endpoint can be used to load additional information about a user. Information loaded using OIDC is added to the security context and is available in ABAC security methods, too. To activate this feature, the following configuration parameter must be set:</p>
+</div>
+<div class="listingblock">
+<div class="title">enabling OIDC</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">commons:
+  security:
+    oauth2:
+      external-user-management:
+        oidc:
+          fetch-user-info: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, the URI of the user info endpoint is determined automatically by using the configured issuer URL of the resource-server configuration. Alternatively, the issuer URI for the OIDC lookup can be configured as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring the issuer-uri</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">commons:
+  security:
+    oauth2:
+      external-user-management:
+        oidc:
+          fetch-user-info: true
+          issuer-uri: "http://localhost:12345"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The information loaded from the user info endpoint is cached to avoid frequent requests to the authentication service. By default, the cache entries are kept for 60 minutes. The configuration properties section for the group <code>commons.security.oauth2</code> contains information about how to change the caching parameters.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_user_ids"><a class="anchor" href="#_user_ids"></a><a class="link" href="#_user_ids">User IDs</a></h4>
+<div class="paragraph">
+<p>Services that require a unique ID of a user use the value of the subject (<em>sub</em>) claim of a JWT or the name attribute of the token introspection response in case opaque tokens are used. The content repository service requires a unique 64 bit integer ID for each user. There are different ways of how to assign these internal IDs to a user. By default, the content repository service assumes that the authentication service is not able to assign numerical IDs and assigns a unique numerical ID to each user when the user performs the first request to the service. The assigned IDs are stored in a database table called <code>cmn_external_users</code>. This behavior can be deactivated as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">deactivating automatic internal ID assignment</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">commons:
+  security:
+    oauth2:
+      external-user-management:
+        database:
+          enabled: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service will then try to get a numeric ID for the user from the access token by checking for a claim called <em>user-id</em>.</p>
+</div>
+</div>
+</div>
 <div class="sect2">
 <h3 id="_configure_database_access"><a class="anchor" href="#_configure_database_access"></a><a class="link" href="#_configure_database_access">Configure Database access</a></h3>
 <div class="paragraph">
@@ -1242,7 +1393,7 @@ field of the type definition and it accepts any kind of content type.</p>
 <p>The following Table contains an Overview of the available attributes of the <code>@ContentElement</code> annotation.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Attributes of the ContentElement annotation</caption>
+<caption class="title">Table 6. Attributes of the ContentElement annotation</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1528,7 +1679,7 @@ are currently available:</p>
 <p>The FileSystemPlugin offers storage of the data as files in the file system.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Configuration parameters of the file system</caption>
+<caption class="title">Table 7. Configuration parameters of the file system</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -1568,7 +1719,7 @@ If <em>arveo</em> has no permissions to create buckets, then the administrator h
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Configuration parameter of the S3 plugin</caption>
+<caption class="title">Table 8. Configuration parameter of the S3 plugin</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -1763,7 +1914,7 @@ the end of the retention interval is reached.
 <p>The Azure blob storage plugin can be used to connect to a storage account in Microsoft Azure.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Configuration parameter of the azure blob storage plugin</caption>
+<caption class="title">Table 9. Configuration parameter of the azure blob storage plugin</caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -1907,7 +2058,7 @@ While the literal <code>&#42;</code> will always match, the other literals will 
 <div class="sect4">
 <h5 id="_configuration_parameters"><a class="anchor" href="#_configuration_parameters"></a><a class="link" href="#_configuration_parameters">Configuration parameters</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Configuration parameters of BucketOrganizer plugin</caption>
+<caption class="title">Table 10. Configuration parameters of BucketOrganizer plugin</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -2065,7 +2216,7 @@ describes how to write a new storage plugin.</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
     &lt;artifactId&gt;ecr-server&lt;/artifactId&gt;
-    &lt;version&gt;16.1.2-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;17.0.0-SNAPSHOT&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -2189,7 +2340,7 @@ a status value and the number of times the system tried to create the rendition,
 be one of the following values:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Rendition status values</caption>
+<caption class="title">Table 11. Rendition status values</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -2227,7 +2378,7 @@ be one of the following values:</p>
 <p>The <code>@Rendition</code> annotation accepts the following parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Parameters of <code>@Rendition</code></caption>
+<caption class="title">Table 12. Parameters of <code>@Rendition</code></caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -2851,7 +3002,7 @@ name. The available providers are described below.</p>
 <p>The following tables give an overview of encryption settings for a storage profile.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Encryption settings</caption>
+<caption class="title">Table 13. Encryption settings</caption>
 <colgroup>
 <col style="width: 25%;">
 <col>
@@ -2957,7 +3108,7 @@ The encryption feature is configured as shown in the following example:</p>
 <p>The following tables give an overview of encryption settings for the <em>commons-aes</em> provider:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 14. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 30%;">
@@ -3014,7 +3165,7 @@ decrypt the content data!
 <p>The following tables give an overview of encryption settings for the <code>vault-aes</code> provider:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Provider specific settings for 'commons-aes'</caption>
+<caption class="title">Table 15. Provider specific settings for 'commons-aes'</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 40%;">
@@ -3272,780 +3423,6 @@ dead letter queues must be activated by adding the following policy entries to _
 &lt;/policyEntry&gt;</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_configure_arveo_user_management_as_authentication_service"><a class="anchor" href="#_configure_arveo_user_management_as_authentication_service"></a><a class="link" href="#_configure_arveo_user_management_as_authentication_service">Configure <em>arveo</em> user management as Authentication Service</a></h3>
-<div class="paragraph">
-<p>The User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue JSON web tokens that can be used to log in to services that are also secured with OAuth2.</p>
-</div>
-<div class="sect3">
-<h4 id="_configuration_of_the_authorization_server"><a class="anchor" href="#_configuration_of_the_authorization_server"></a><a class="link" href="#_configuration_of_the_authorization_server">Configuration of the Authorization Server</a></h4>
-<div class="paragraph">
-<p>To enable the Authorization Server, the <em>user-service.authorization-server.enabled</em> setting must be
-enabled and a keystore must be configured. The keystore must contain an RSA keypair under the specified alias:</p>
-</div>
-<div class="listingblock">
-<div class="title">Excerpt from a configuration file</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
-  authorization-server:
-  enabled: true
-  keystore:
-    file: "Pfad/zum/Keytore/keystore.jks"
-    password: test
-    alias: test</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_oauth_clients"><a class="anchor" href="#_oauth_clients"></a><a class="link" href="#_oauth_clients">OAuth clients</a></h4>
-<div class="paragraph">
-<p>To obtain a token, a client application must log on to a specific client configured in the Authorization Server. Clients can be created both by API and by configuration. At least one client must have been configured to be able to log in via OAuth. Clients are always stored in the master
-tenant. In the configuration, clients can be specified as follows:</p>
-</div>
-<div class="listingblock">
-<div class="title">Excerpt from a configuration file</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">user-service:
-  config-data:
-    tenants:
-      - tenant-id: master
-        oauth2-clients:
-          - clientId: test-client
-            resourceIds:
-              - user-management-service
-            clientSecret: my-secret
-            authorizedGrantTypes:
-              - password
-              - client_credentials
-              - refresh_token
-            authorities:
-              - USER_MANAGEMENT_SERVICE_USER
-            accessTokenValiditySeconds: 300
-            refreshTokenValiditySeconds: 600</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the above example, a client with the ID "test-client" is configured to have access to the <em>arveo</em> User Management
-Service (resourceIds and authorities) and to offer the authorization grants password, client_credentials and refresh_tokens. The grants are the same as those in the OAuth2.0 standard.</p>
-</div>
-<div class="paragraph">
-<p>By default, the client&#8217;s configured authorities are included in the issued tokens. In addition, the user&#8217;s authorities
-(= privileges) configured in the user service are entered in the tokens. To prevent the client&#8217;s authorities from
-being included in the tokens, the <em>user-service.authorization-server.inherit-authorities</em> setting can be set to false.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The clients are always stored in the master tenant. For systems with multiple clients, care must be taken to specify the master tenant in the configuration.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_refreshing_tokens"><a class="anchor" href="#_refreshing_tokens"></a><a class="link" href="#_refreshing_tokens">Refreshing tokens</a></h5>
-<div class="paragraph">
-<p>When a new token is issued, a refresh token is also generated (except for the client_credentials grant). This refresh token can be used to renew an expiring token without requiring the user to log in again. By default, when a token refresh request is made, the user also receives a new refresh token whose validity is still that of the first refresh token. This ensures that a user cannot be issued new access tokens by the service indefinitely. If this behavior is not desired, and the refresh tokens should each have an extended validity, the <em>user-service.authorization-service.reuse-refresh-tokens</em> parameter can be set to false.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_client_login"><a class="anchor" href="#_client_login"></a><a class="link" href="#_client_login">Client login</a></h5>
-<div class="paragraph">
-<p>To get a token, the client application must send the respective client id and the client secret as HTTP Basic Auth
-header in the token request. The remaining parameters are sent as form data via POST to the endpoint
-<a href="https://user-management-service/oauth/token" class="bare">https://user-management-service/oauth/token</a>.
-=== Configure authentication/SSO with Keycloak</p>
-</div>
-<div class="paragraph">
-<p>The <em>arveo</em> content services support OAuth2.0 with OpenID Connect to authenticate users and services.
-You can install Keycloak as your identity management and use it as OAuth2.0 authentication service instead of the _arveo user management service.
-This will also allow you to enable single sign on for your web clients.</p>
-</div>
-<div class="paragraph">
-<p>The content services take either the role of a "resource server" or the role "resource server" and a "client" if the use resources of other services.</p>
-</div>
-<div class="paragraph">
-<p>In principle, any authentication server that supports OAuth2.0 and OpenID Connect can be used. Currently Keycloak, Active Directory are approved for use with <em>arveo</em>.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_install_keycloak"><a class="anchor" href="#_install_keycloak"></a><a class="link" href="#_install_keycloak">Install Keycloak</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Download and install Keycloak: <a href="https://www.keycloak.org/downloads.html" class="bare">https://www.keycloak.org/downloads.html</a></p>
-</li>
-<li>
-<p>Start the server. With standalone.bat -Djboss.socket.binding.port-offset=100 the used ports can be adjusted.</p>
-</li>
-<li>
-<p>Call the configuration interface (e.g. localhost:8180) and define an administrator user for the first login.</p>
-</li>
-<li>
-<p>Refer to Keycloak documentation to configure Keycloak on your system.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_create_keycloak_realm"><a class="anchor" href="#_create_keycloak_realm"></a><a class="link" href="#_create_keycloak_realm">Create Keycloak realm</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Create your own realm (e.g. "<em>arveo</em>") with keycloak configuration interface.</p>
-</li>
-<li>
-<p>Copy the public RSA key from the realm keys tab. We will use later for the configuration of the content services.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_create_keycloak_clients"><a class="anchor" href="#_create_keycloak_clients"></a><a class="link" href="#_create_keycloak_clients">Create Keycloak clients</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Next, the keycloak clients for the <em>arveo</em> services are set up. Clients may access resources, resources validate access to themselves. There is also a mixed form (confidential) that accesses resources, but can also be a resource itself.<br>
-All clients have set Client Protocol=openid-connect<br>
-Client Authenticator must be Client Id and Secret to allow a secure OAuth2.0 flow.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Create a client <em>arveo</em>-service for the secure communication between the <em>arveo</em> services,<br>
-This client behaves like a technical user for service/service calls<br>
-access-type=confidential</p>
-</li>
-<li>
-<p>Create client for your applications e.g. arveo-webclient which is public and accesses all <em>arveo</em> services<br>
-This client is used for the users of your application that have logged with credentials.<br>
-Client-Protocol=public<br>
-Valid Redirect URIs=&lt;URI of your web client&gt;<br>
-Client Protocol=openid-connect<br></p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Implicit flow is no longer recommended. The standard flow should be used. Furthermore, the extension PKCE (Proof Key for Code Exchange Code) should be used (<a href=".#_authentication_code_flow_pkce">*Authentication Standard Flow with PKCE</a>.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_configure_a_client"><a class="anchor" href="#_configure_a_client"></a><a class="link" href="#_configure_a_client">Configure a client</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>To allow the client to access the <em>arveo</em> services, add the role arveo-service-user to the client.</p>
-</li>
-<li>
-<p>Add token mappers to allow <em>arveo</em> to get information from the token<br></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Tenant, the tenant in <em>arveo</em>. This is used to assign the user to a client.<br>
-Name=Tenant<br>
-Mapper-Type=User Attribute<br>
-User Attribute=tenant<br>
-Token Claim Name=tenant<br>
-Claim JSON Type=String<br>
-Multi Valued = Off<br>
-Add To Id Token=On<br>
-Add To Access Token=On<br>
-Add To User Info=On<br></p>
-</li>
-<li>
-<p>Audience for repository service, _arveo pays attention to access tokens from the score-client at all, the score-backend client must also be in the token as an audience<br>
-Name=Audience for arveo services<br>
-Mapper-Type=Audience<br>
-Included Client Audience=arveo-webclient<br>
-Add To ID Token=Off<br>
-Add To Access Token=On</p>
-</li>
-<li>
-<p>GUUID, important for authentication via LDAP. In the access token, the user_name attribute is set to the GUUID from the LDAP. This is largely stable, in contrast to the Keycloak internal user ID.<br>
-Name=GUUID<br>
-Mapper-Type=User Attribute<br>
-User Attribute=LDAP_ID<br>
-Token Claim Name=user_name<br>
-Claim JSON Type=String<br>
-Multi Valued = Off<br>
-Add To Id Token=On<br>
-Add To Access Token=On<br>
-Add To User Info=On</p>
-</li>
-<li>
-<p>Client ID, keycloak ClientID
-Name=Client ID<br>
-Mapper-Type=User Session Note<br>
-User Attribute=clientid<br>
-Token Claim Name=clientid<br>
-Claim JSON Type=String<br>
-Add To Id Token=On<br>
-Add To Access Token=On</p>
-</li>
-<li>
-<p>Client roles, is required for the _arveo services. The client needs the authority arveo-user-role to access the service. All roles from the client with the ClientID arveo-client are added to the claim authorities.
-Name=client roles<br>
-Mapper-Type=User Client Role<br>
-User Attribute=LDAP_ID<br>
-Multi Valued = On<br>
-Token Claim Name=authorities<br>
-Claim JSON Type=String<br>
-Multi Valued = Off<br>
-Add To Id Token=Off<br>
-Add To Access Token=On<br>
-Add To UserInfo = Off</p>
-</li>
-<li>
-<p>Service user. is required to identify the user of the access token as a service user.
-Name=Service user<br>
-Mapper-Type=Script Mapper<br>
-Script=exports=user.getUserName.startsWith("service-account");<br>
-Multi Valued = Off<br>
-Token Claim Name=technical-user<br>
-Claim JSON Type=boolean<br>
-Add To Id Token=On<br>
-Add To Access Token=On<br>
-Add To UserInfo = On</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_configure_keycloak_for_sso_with_kerberos"><a class="anchor" href="#_configure_keycloak_for_sso_with_kerberos"></a><a class="link" href="#_configure_keycloak_for_sso_with_kerberos">Configure Keycloak for SSO with Kerberos</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Configure Keycloak user federation for SSO with Active Directory using Kerberos</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/keycloak-ldap-mapper.png" alt="LDAP Mapper">
-</div>
-<div class="title">Figure 1. LDAP Mapping</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>2 additional LDAP mappers have to be added:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Adding the tenant to the user attributes, since the tenant does not come from the AD.<br>
-Name: add-<em>arveo</em>-tenant<br>
-Mapper Type: hardcoded-attribute-mapper<br>
-User Model Attribute Name: tenant<br>
-Attribute Value: master</p>
-</li>
-<li>
-<p>The role so that the user is authorized to access the <em>arveo</em> services
-Name: add-arveo_-user<br>
-Mapper Type: hardcoded-ldap-role-mapper<br>
-Role: arveo-service-user<br></p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-As soon as a user logs on to the _arveo web client application for the first time, the user is imported from the LDAP into Keyclaok. Users who are not in the LDAP can be created locally in the Keycloak.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Configure Keycloak:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Install package freeipa-client (Ubuntu)</p>
-</li>
-<li>
-<p>Setup /etc/krb5.conf<br></p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-config" data-lang="config">[libdefaults]
-default_realm = &lt;your realm&gt;
-# The following krb5.conf variables are only for MIT Kerberos.
-kdc_timesync = 1
-ccache_type = 4
-forwardable = true
-proxiable = true
-# The following encryption type specification will be used by MIT Kerberos
-# if uncommented. In general, the defaults in the MIT Kerberos code are
-# correct and overriding these specifications only serves to disable new
-# encryption types as they are added, creating interoperability problems.
-#
-# The only time when you might need to uncomment these lines and change
-# the enctypes is if you have local software that will break on ticket
-# caches containing ticket encryption types it doesn't know about (such as
-# old versions of Sun Java).# default_tgs_enctypes = des3-hmac-sha1
-# default_tkt_enctypes = des3-hmac-sha1
-# permitted_enctypes = des3-hmac-sha1
-# The following libdefaults parameters are only for Heimdal Kerberos.
-fcc-mit-ticketflags = true
-[realms]
-YOURDOMAIN.COM={
-kdc=yourdomaincontronler:port
-}
-[domain_realm]
-yourdmain.com=YOURDOMAIN.COM
-.yourdomain.com=YOURDOMAIN.COM</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>chown on arveo:arveo und chmod 600</p>
-</li>
-<li>
-<p>Import the CA certificate to your Java truststore<br>
-e.g. %javahome%/keytool -import -alias YourDomain.com -keystore truststore.jks -file ~/ca.pem</p>
-</li>
-<li>
-<p>Activate Kerberos Single Sign On:<br>
-To allow SSO set requirement for all Flow to ALTERNATIVE</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/keycloak-flows.png" alt="*Keycloak Flows*">
-</div>
-<div class="title">Figure 2. Keycloak Flows</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Add a non ldap test user in manage users<br>
-Details:<br>
-Name=TestUser<br>
-User Enabled=On<br>
-Attributes:<br>
-LDAP_ID=&lt;new UUID&gt;<br>
-Tenant=master<br>
-Role Mappings=&lt;add arveo-service-user&gt;</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_configure_authentication_between_content_services"><a class="anchor" href="#_configure_authentication_between_content_services"></a><a class="link" href="#_configure_authentication_between_content_services">Configure authentication between Content Services</a></h3>
-<div class="paragraph">
-<p>All <em>arveo</em> content services use <strong>Spring Security</strong> for user authentication and authorization. Spring Security supports several standardized protocols as well as custom implementations. The basic configuration is independent of the protocol used.</p>
-</div>
-<div class="paragraph">
-<p>When configuring the service, it is important to consider the role that the service plays in the overall system. Some
-services are only used by different clients and do not communicate with other services. These services only take the role of
-a "resource server". Other services, such as the repository service, communicate with other services themselves and assume the
-role of a "resource server" and a "client" at the same time.</p>
-</div>
-<div class="sect4">
-<h5 id="_resource_and_client_configuration"><a class="anchor" href="#_resource_and_client_configuration"></a><a class="link" href="#_resource_and_client_configuration">Resource and client configuration</a></h5>
-<div class="paragraph">
-<p>The following configuration can be used to make a service an OAuth2.0 resource and/or an OAuth2.0 client in the service&#8217;s <em>application.yaml</em>:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Service</th>
-<th class="tableblock halign-left valign-top">Client</th>
-<th class="tableblock halign-left valign-top">Resource</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Document Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access Control Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SAP Archive Link Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise User Management Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise Integration Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Federation Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_configure_resource"><a class="anchor" href="#_configure_resource"></a><a class="link" href="#_configure_resource">Configure resource</a></h5>
-<div class="paragraph">
-<p>Configure the respective <em>application.yaml</em> of the service like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">security:
-  general:
-    secured-ant-matchers: "/api/**"
-    open-ant-matchers: "/actuator/health,/actuator/info"
-    role-for-secured-access: "&lt;service - name&gt;"
-    cors-configuration:
-      allowed-origins: "*"
-      allowed-headers: "*"
-      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-      max-age: 3600
-
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-# public key for user management service
-#          public-key-location: "http://localhost:39002/oauth/public_key"
-# public key location for keycloak
-          jwk-set-uri: "http://localhost:8080/auth/realms/ecr/protocol/openid-connect/certs"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>(1) Generally, these parameters shouldn&#8217;t be changed.</p>
-</div>
-<div class="paragraph">
-<p>(2) CORS defines a way in which a browser and server can interact to determine whether it is safe to allow the cross-origin request.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_configure_the_client"><a class="anchor" href="#_configure_the_client"></a><a class="link" href="#_configure_the_client">Configure the client</a></h5>
-<div class="paragraph">
-<p>Configure the respective <em>application.yaml</em> of the service like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          cmn-user-service-client-credentials:
-            provider: user-service
-            client-id: "arveo-service"
-            client-secret: "my-secret"
-            authorization-grant-type: "client_credentials"
-            scope: "arveo"
-        provider:
-          user-service:
-            authorization-uri: "http://localhost:39002/oauth/auth"
-            token-uri: "http://localhost:39002/oauth/token"-----
-          keycloak:
-            authorization-uri: "http://localhost:8080/auth/realms/arveo/protocol/openid-connect/auth"
-            token-uri: "http://localhost:8080/auth/realms/arveo/protocol/openid-connect/token"</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Parameter</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">oauth2.resourceserver.jwt.public-key-location</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Validation key of the authentication service to validate the token. e.g. PEM or RSA Public Key. For keycloak <a href="#_create_keycloak_realm"><strong>Realm Settings Keys</strong></a>, for User management service see documentation on user-management/securing rest endpoints</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">security.general.role-for-secured-access</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique identifier of the service: see names of services in table below</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.registration.cmn-user-service-client-credentials.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client Id configured in your authentication service. In our keyckloak example: arveo-service,  <a href="#_configure_a_client"><strong>Client-ID</strong></a>, for User management service
-see documentation on user management/client context/client ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.registration.cmn-user-service-client-credentials.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Your client secret of the authentication service. For keyckloak <a href="#_configure_a_client"><strong>Client Secret</strong></a>, for User management service
-see documentation on user management/client context/client secret</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.provider.user-service.authorization-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">end point for user authorization</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.provider.user-service.token-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">end point to get an access token</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.security.oauth2.client.registration.cmn-user-service-client-credentials.scope</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Scope is always arveo</p></td>
-</tr>
-</tbody>
-</table>
-<div class="ulist">
-<ul>
-<li>
-<p>The public-key-location defines a path to a resource containing the public key of the service that issued the signed tokens. If the issuing service supports JSON Web Keys, the URL to the JWK endpoint can be set using jwk-set-uri.</p>
-</li>
-<li>
-<p>To enable the user impersonation feature, add the following to the <em>application.yaml</em> configuration:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">    commons:
-        security:
-            oauth2:
-                impersonation-enabled: true</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>It is possible to disable the auto configuration of the server components by setting spring.security.oauth2.resourceserver.enabled to false.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Troubleshooting some common error messages and ways to fix them:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>principal cannot be null from OAuth2AuthorizeRequest: There probably was no Authentication in the application&#8217;s SecurityContext. Check if the application sets an Authentication.</p>
-</li>
-<li>
-<p>Startup fails because no bean of type ClientRegistrationRepository was found: Check the configuration. This usually happens when the values in spring.security.oauth2.client are either missing or invalid. Check indentation!</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a><a class="link" href="#_troubleshooting">Troubleshooting</a></h4>
-<div class="paragraph">
-<p>Some common error messages and ways to fix them:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Principal cannot be null from OAuth2AuthorizeRequest: There probably was no Authentication in the application&#8217;s SecurityContext. Check if the application sets an Authentication.</p>
-</li>
-<li>
-<p>Startup fails because no bean of type ClientRegistrationRepository was found: Check the configuration. This usually happens when the values in spring.security.oauth2.client are either missing or invalid. Check indentation!</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_authentication-oauth2"><a class="anchor" href="#_authentication-oauth2"></a><a class="link" href="#_authentication-oauth2">OAuth2.0 Authentication</a></h3>
-<div class="paragraph">
-<p>All <em>arveo</em> services require authentication, ensuring that only another <em>arveo</em> service or an authenticated user can use the REST API. Authentication of a user is done by the either a authentication service like Keycloak or the <em>arveo</em> User Management Service.
-The user context is passed to invoked services. Single Sign on is supported with OAuth2.0 and Open ID Connect.</p>
-</div>
-<div class="paragraph">
-<p>The <em>arveo</em> User Management Service can also be used as an OAuth2.0 Authorization Server. The service can issue JSON web tokens that can be used to log in to services that are also secured with OAuth2.</p>
-</div>
-<div class="paragraph">
-<p>This chapter describes</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>how <em>arveo</em>'s content services act as an OAuth2.0 resource server for applications using the <em>arveo</em> REST API</p>
-</li>
-<li>
-<p>how the <em>arveo</em> services use OAuth2.0 to authenticate to other services as a technical user.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>All content services use Spring Security for user authentication and authorization. The services support OAuth2.0 with OpenID Connect.</p>
-</div>
-<div class="paragraph">
-<p>Spring Security enables both the OAuth2.0 support for the service&#8217;s web resources and the OAuth2.0 client support. The content services retrieve a new OAuth2.0 token from the configured OAuth2.0 authorization service when a authentication is required.
-This OAuth2.0 authorization service can either be the <em>arveo</em> user management service or Keycloak, Active Directory.</p>
-</div>
-<div class="sect3">
-<h4 id="_oauth2_0_flows_grant_types"><a class="anchor" href="#_oauth2_0_flows_grant_types"></a><a class="link" href="#_oauth2_0_flows_grant_types">OAuth2.0 Flows (Grant types)</a></h4>
-<div class="paragraph">
-<p>OAuth2.0 defines four flows to get an access token. These flows are called grant types. <em>arveo</em> supports two flows for user authentication and service authentication.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Client Credentials Flow: used for machine-to-machine content services communication.</p>
-</li>
-<li>
-<p>Authorization Code Flow with Proof Key for Code Exchange (PKCE) technique: used by <em>arveo</em> Web Applications sand also used by mobile apps.</p>
-</li>
-<li>
-<p>Resource Owner Password Flow: can be used by highly-trusted web apps.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In the following paragraphs we describe the flows. The authentication service can either be the <em>arveo</em> User Management Service or Keycloak. If you use Keycloak you must turn off <em>arveo</em> internal authentication service.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_client_credential_flow"><a class="anchor" href="#_client_credential_flow"></a><a class="link" href="#_client_credential_flow">Client Credential Flow</a></h4>
-<div class="paragraph">
-<p>Our machine-to-machine content services authenticate and authorize the app not an user. For this scenario, typical authentication schemes like username + password or social logins don&#8217;t make sense. Instead, the services use the Client Credentials Flow, in which they pass along their Client ID and Client Secret to authenticate themselves and get a token.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/auth-sequence-client-credentials.png" alt="*Credential Flow*">
-</div>
-<div class="title">Figure 3. Credential Flow</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><em>arveo</em> authenticates with Authorization Service using its Client ID and Client Secret (/oauth/token endpoint).</p>
-</li>
-<li>
-<p>The Authorization Service validates the Client ID and Client Secret.</p>
-</li>
-<li>
-<p>The Authorization Service responds with an Access Token.</p>
-</li>
-<li>
-<p><em>arveo</em> can use the Access Token to call an API on behalf of itself.</p>
-</li>
-<li>
-<p>The Service API responds with requested data.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_authentication_code_flow_pkce"><a class="anchor" href="#_authentication_code_flow_pkce"></a><a class="link" href="#_authentication_code_flow_pkce">Authentication Code Flow (PKCE)</a></h4>
-<div class="paragraph">
-<p>The <em>arveo</em> single-page web applications requests Access Tokens, some additional security concerns are posed that are not mitigated by the Authorization Code Flow alone. This is because:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Native apps cannot securely store a Client Secret. Decompiling the app will reveal the Client Secret, which is bound to the app and is the same for all users and devices.</p>
-</li>
-<li>
-<p>Single-page apps cannot securely store a Client Secret because their entire source is available to the browser.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Given these situations, OAuth 2.0 provides a version of the Authorization Code Flow which makes use of a Proof Key for Code Exchange (PKCE).</p>
-</div>
-<div class="paragraph">
-<p>The PKCE-enhanced Authorization Code Flow introduces a secret created by the calling application that can be verified by the authorization server; this secret is called the Code Verifier. Additionally, the calling app creates a transform value of the Code Verifier called the Code Challenge and sends this value over HTTPS to retrieve an Authorization Code. This way, a malicious attacker can only intercept the Authorization Code, and they cannot exchange it for a token without the Code Verifier.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/auth-sequence-auth-code-pkce.png" alt="Authentication Code Flow">
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The user clicks Login within the application.</p>
-</li>
-<li>
-<p>The OAUTH2 java script SDK creates a cryptographically-random code_verifier and from this generates a code_challenge.</p>
-</li>
-<li>
-<p>OAUTH2 java script SDK redirects the user to the authorization service (/authorize endpoint) along with the code_challenge.</p>
-</li>
-<li>
-<p>The authorization service redirects the user to the login and authorization prompt.</p>
-</li>
-<li>
-<p>The user authenticates using one of the configured login options and may see a consent page listing the permissions Auth0 will give to the application.</p>
-</li>
-<li>
-<p>The authorization service stores the code_challenge and redirects the user back to the application with an authorization code, which is good for one use.</p>
-</li>
-<li>
-<p>OAUTH2 jav script SDK sends this code and the code_verifier (created in step 2) to the Auth0 Authorization Server (/oauth/token endpoint).</p>
-</li>
-<li>
-<p>The authorization service verifies the code_challenge and code_verifier.</p>
-</li>
-<li>
-<p>The authorization server responds with an ID Token and Access Token (and optionally, a Refresh Token).</p>
-</li>
-<li>
-<p>The <em>arveo</em> web application can use the Access Token to call an API to access information about the user.</p>
-</li>
-<li>
-<p>The API responds with requested data.</p>
-</li>
-</ul>
-</div>
-</div>
 <div class="sect3">
 <h4 id="_maintenance_mode_for_the_database_schema"><a class="anchor" href="#_maintenance_mode_for_the_database_schema"></a><a class="link" href="#_maintenance_mode_for_the_database_schema">Maintenance mode for the database schema</a></h4>
 <div class="paragraph">
@@ -4141,9 +3518,6 @@ constraints might not be possible when the existing data or existing constraints
 <div class="ulist">
 <ul>
 <li>
-<p>Enabling ACL support.</p>
-</li>
-<li>
 <p>Enabling document filing.</p>
 </li>
 <li>
@@ -4233,7 +3607,6 @@ public interface AuditedContainer {
     value = AuditLocation.GLOBAL, <i class="conum" data-value="1"></i><b>(1)</b>
     indexOn = {AuditJsonField.CURRENT} <i class="conum" data-value="2"></i><b>(2)</b>
 )
-@Acls
 public interface AuditedDocument {
 
     @Optional
@@ -4259,12 +3632,12 @@ public interface AuditedDocument {
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/4.0.0/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/5.0.0-SNAPSHOT/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit"><a class="anchor" href="#_access_audit"></a><a class="link" href="#_access_audit">Access audit</a></h4>
 <div class="paragraph">
-<p>To access the audit, the audit service provides a REST API. Access will be restricted depending on the type: If ACLs are activated on a <code>@Type</code>, only users that have read access to an entity will be allowed to audit this entity. If ACLs are deactivated on a <code>@Type</code>, only users with the <a href="#Basic functions of the user administration">authority</a> <code>AUDITOR</code> are allowed to audit the entities of this type.</p>
+<p>To access the audit, the audit service provides a REST API. Access will be restricted to users with the <a href="#Basic functions of the user administration">authority</a> <code>AUDITOR</code>.</p>
 </div>
 </div>
 </div>
@@ -4339,15 +3712,12 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <div class="paragraph">
 <p>For more information for setting up the security settings for Solr you can go the chapter <a href="#_solr_security_configuration">solr security configuration</a></p>
 </div>
-<div class="paragraph">
-<p>If you use the <em>arveo</em> acl functionallity you can setup the solr-acl-plugin. More information for the solr-acl-plugin you can find <a href="#_acl_filter_plugin">here</a>.</p>
-</div>
 </div>
 <div class="sect4">
 <h5 id="_solr_configurations"><a class="anchor" href="#_solr_configurations"></a><a class="link" href="#_solr_configurations">Solr Configurations</a></h5>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/16.1.2-SNAPSHOT/ecr-environment-configuration-16.1.2-SNAPSHOT-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/17.0.0-SNAPSHOT/ecr-environment-configuration-17.0.0-SNAPSHOT-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>
@@ -4507,91 +3877,6 @@ configuration for <em>arveo</em>:</p>
       username: "ecr-solr-user"
       password: "password"</code></pre>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_acl_filter_plugin"><a class="anchor" href="#_acl_filter_plugin"></a><a class="link" href="#_acl_filter_plugin">ACL filter plugin</a></h4>
-<div class="paragraph">
-<p>When searching for ACL protected entities in Solr, the search result is filtered by ACL right. This is achieved by
-using a custom Solr plugin, which must be installed manually by following the steps below. The Nexus repository
-contains a ZIP file with the plugin and all required libraries.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Download the <code>cmn-user-management-access-control-solr-plugin</code> ZIP (version 7.0.0) from the <a href="https://nexus.eitco.de/repository/maven-public-releases/de/eitco/commons/cmn-user-management-access-control-solr-plugin/7.0.0/cmn-user-management-access-control-solr-plugin-7.0.0-zip.zip">nexus repository</a>.</p>
-</li>
-<li>
-<p>Install the plugin in Solr by extracting the content of the downloaded ZIP file as described in the <a href="https://solr.apache.org/guide/8_11/solr-plugins.html#installing-plugins">Solr documentation</a>.</p>
-</li>
-<li>
-<p>Configure the plugin in <code>solrconfig.xml</code> as shown below:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;queryParser name="aclright" class="de.eitco.commons.user.management.access.control.solr.AclRightParserPlugin"&gt;
-    &lt;str name="solrAclPlugin.jdbcUrl"&gt;jdbc:postgresql://localhost:5432/mydatabase?currentSchema=mytenant&lt;/str&gt;
-    &lt;str name="solrAclPlugin.jdbcUser"&gt;myuser&lt;/str&gt;
-    &lt;str name="solrAclPlugin.jdbcPassword"&gt;mypassword&lt;/str&gt;
-&lt;/queryParser&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The plugin requires a JDBC connection to the relational database to load ACL rights. Do not change the name of the
-query parser. Solr queries generated by arveo will contain a filter query using the <code>aclright</code> prefix to
-perform the actual filtering.</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-The Access Control Solr Plugin does not yet support multiple tenants!
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Alternatively, the configuration parameters for the ACL filter plugin can be set as Java system properties for the
-Solr server, as environment variables, or they can be stored as secrets in Vault. To use Vault, set the following
-parameters either in the <code>solrconfig.xml</code> file, as Java system properties, or as environment variables:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>solrAclPlugin.vaultEnabled=true</code></p>
-</li>
-<li>
-<p><code>solrAclPlugin.vaultAddress=https://myvaultserver:port</code> (optional, the default value is "http://127.0.0.1:8200")</p>
-</li>
-<li>
-<p><code>solrAclPlugin.vaultToken=token</code> (optional, can be a token value or the path to a token file. By default, the plugin
-will try to load a token from ~/.vault-token)</p>
-</li>
-<li>
-<p><code>solrAclPlugin.vaultSecretEnginePath=path</code> (optional, the default is "secret")</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The order in which the plugin loads configuration properties is:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Vault</p>
-</li>
-<li>
-<p>System properties</p>
-</li>
-<li>
-<p>Environment variables</p>
-</li>
-</ol>
 </div>
 </div>
 <div class="sect3">
@@ -4757,7 +4042,7 @@ shown in the following diagram:</p>
 <div class="content">
 <img src="relation-type-model.png" alt="relation type model" width="780" height="140">
 </div>
-<div class="title">Figure 4. A model using a relation table</div>
+<div class="title">Figure 1. A model using a relation table</div>
 </div>
 <div class="paragraph">
 <p>It is still possible to search for <em>Parent</em> entities by the IDs of the related <em>Child</em> entities in Solr using
@@ -4908,7 +4193,6 @@ is called <code>test_simple_invoice</code>.</p>
         "parent_id",
         "modification_date",
         "id",
-        "acl_id",
         "amount",
         "invoice_number",
         "nosql_processing_counter",
@@ -4930,7 +4214,6 @@ select
     "parent_id",
     "modification_date",
     "id",
-    "acl_id",
     "amount",
     "invoice_number",
     0,
@@ -5177,18 +4460,6 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">content-repository-service</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user-management-service</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User Management Access Control Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user-management-access-control-service</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise User Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user-management-enterprise-service</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">document-conversion-service</p></td>
 </tr>
@@ -5210,69 +4481,6 @@ of the different services.</p>
 </div>
 <div class="sect2">
 <h3 id="_configuration_properties"><a class="anchor" href="#_configuration_properties"></a><a class="link" href="#_configuration_properties">Configuration Properties</a></h3>
-<div class="sect3">
-<h4 id="_commons_cache"><a class="anchor" href="#_commons_cache"></a><a class="link" href="#_commons_cache">commons.cache</a></h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cache-settings</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map&lt;java.lang.String,de.eitco.commons.spring.cache.CommonsCacheSettings&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Contains configuration properties for an individual cache.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">messaging-enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to false, the caches will not register JMS listeners and will not send any messages.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">metrics-name-prefix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name prefix for the metrics.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commons.cache</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">record-statistics</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the underlying caffeine caches will record statistics.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">send-clear-messages</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the caches will send clear messages.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">send-evict-messages</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the caches will send evict messages.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">send-invalidate-messages</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the caches will send invalidate messages.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="sect3">
 <h4 id="_commons_security_oauth2"><a class="anchor" href="#_commons_security_oauth2"></a><a class="link" href="#_commons_security_oauth2">commons.security.oauth2</a></h4>
 <table class="tableblock frame-all grid-all fit-content">
@@ -5316,24 +4524,6 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.database.cache-max-age</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the time after which an entry in the cache is expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">365d</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.database.cache-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of entries in the cache.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, user information will not be loaded from the arveo user management service. All information required for a valid user authentication must be contained in the token.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.authorities-claim</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the user&#8217;s authorities. Must be a JSON list of strings or a single string.</p></td>
@@ -5343,7 +4533,7 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.email-claim</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the email address of the user.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">email</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.fetch-user-info</p></td>
@@ -5352,27 +4542,51 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.issuer-uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The issuer URI of the OIDC provider. If not set, the value from spring.security.oauth2.resourceserver.jwt.issuer-uri is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.user-name-claim</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the name of the user.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">preferred_username</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.uuid-claim</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the UUID of the user. See {@link java.util.UUID#fromString(String)}.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sub</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-properties-cache-max-age</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.token-id-resolver.id-claim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the claim used to get the internal ID from. The claim must contain either a long value or a string that can be parsed to long.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-ids.cache-max-age</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the time after which an entry in the cache for the external user attributes loaded using a {@link ExternalUserPropertiesResolver} will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the time after which an entry in the cache is expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">365d</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-properties-cache-max-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-ids.cache-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the maximum number of entries in the cache used for the external user properties loaded using a {@link ExternalUserPropertiesResolver}.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of entries in the cache.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-properties.cache-max-age</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the time after which an entry in the cache is expired.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60m</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.user-properties.cache-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum number of entries in the cache.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
 </tr>
 <tr>
@@ -5392,12 +4606,6 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The prefix that will be added to authority names when the authority was defined using an OAuth2 scope.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SCOPE_</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">original-user-token-required-for-impersonation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, impersonation is possible only when a token issued to the user to impersonate is contained in the X-User-Token header.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">refresh-tokens-enabled</p></td>
@@ -5545,18 +4753,6 @@ of the different services.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">content-access-tokens.size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-acls.expire-after</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time after which an entity in the cache will be expired.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">15m</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-acls.size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entities in the cache.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
@@ -7065,10 +6261,10 @@ used:</p>
 <div class="content">
 <img src="type-system-tables.png" alt="type system tables" width="810" height="196">
 </div>
-<div class="title">Figure 5. ERD of type system tables</div>
+<div class="title">Figure 2. ERD of type system tables</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Columns of ecr_types</caption>
+<caption class="title">Table 16. Columns of ecr_types</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -7105,7 +6301,7 @@ used:</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Columns of ecr_types_content_elements</caption>
+<caption class="title">Table 17. Columns of ecr_types_content_elements</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -7158,10 +6354,10 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="content">
 <img src="folder-structure-tables.png" alt="folder structure tables" width="780" height="210">
 </div>
-<div class="title">Figure 6. ERD of folder structure tables</div>
+<div class="title">Figure 3. ERD of folder structure tables</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Columns of ecr_folder_structure</caption>
+<caption class="title">Table 18. Columns of ecr_folder_structure</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -7198,7 +6394,7 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Columns of ecr_folder_structure_closure</caption>
+<caption class="title">Table 19. Columns of ecr_folder_structure_closure</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 15%;">
@@ -7254,10 +6450,10 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="content">
 <img src="ecr-recovery-table.png" alt="ecr recovery table" width="310" height="196">
 </div>
-<div class="title">Figure 7. ERD of ecr_recovery</div>
+<div class="title">Figure 4. ERD of ecr_recovery</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Columns of <em>ecr_recovery</em></caption>
+<caption class="title">Table 20. Columns of <em>ecr_recovery</em></caption>
 <colgroup>
 <col style="width: 20%;">
 <col>
@@ -7316,10 +6512,10 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="content">
 <img src="ecr-keystore-tables.png" alt="ecr keystore tables" width="720" height="154">
 </div>
-<div class="title">Figure 8. ERD of keystore tables</div>
+<div class="title">Figure 5. ERD of keystore tables</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Columns of ecr_keys_&lt;profile&gt;</caption>
+<caption class="title">Table 21. Columns of ecr_keys_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -7346,7 +6542,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
+<caption class="title">Table 22. Columns of ecr_keys_assoc_&lt;profile&gt;</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -7385,13 +6581,13 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="content">
 <img src="images/arveo-architecture.png" alt="diagram">
 </div>
-<div class="title">Figure 9. Architecture overview</div>
+<div class="title">Figure 6. Architecture overview</div>
 </div>
 <div class="paragraph">
 <p>The following table lists 3rd party services used in <em>arveo</em>.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Table 22. 3rd party services in <em>arveo</em></caption>
+<caption class="title">Table 23. 3rd party services in <em>arveo</em></caption>
 <colgroup>
 <col>
 <col>
@@ -7583,7 +6779,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-08 09:10:17 UTC
+Last updated 2024-02-08 13:54:45 UTC
 </div>
 </div>
 </body>

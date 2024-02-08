@@ -442,16 +442,63 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <details>
-<summary class="title">Release notes 16.1.1 (February 08, 2024)</summary>
+<summary class="title">Release notes 17.0.0 (February 08, 2024)</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">Finished stories and bugs</strong></p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1316: Removed ACL feature and dependencies to internal user management</dt>
+<dd>
+<p>The ACL feature was removed. Access rights are managed using attribute based access control now. The arveo services are now
+completely independent of the internal user management and can be used with any AuthX service supporting OAuth2. The
+User Management Service is now deprecated and should not be used in production environments anymore.</p>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The support for ACLs was removed. This affects all entity input types (except for meta-data-types). API methods for
+ACL management have been removed, too.</p>
+</li>
+<li>
+<p>The <code>id</code> field of the <code>CommonAuthentication</code> has been changed to String to support generic IDs. The internal ID of type
+long is now contained in the field <code>internalId</code>.</p>
+</li>
+<li>
+<p>The classes <code>ModificationStamp</code> and <code>UserId</code> have been moved to the package <code>de.eitco.ecr.common</code>.</p>
+</li>
+<li>
+<p>The <code>AclRight</code> enumeration was renamed to <code>AccessRight</code>.</p>
+</li>
+<li>
+<p>The <code>AuthenticationContext</code> class for ABAC security methods now provides convenience methods to access the <code>CommonAuthentication</code>
+in the spring security context. Other members of the class were removed.</p>
+</li>
+<li>
+<p>ACL-related type definition annotations have been removed.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p>The services no longer require a specific authority to authorize a request. Access to different services can still be
+controlled using the audience (<em>aud</em>) claim of the JWT. If the old behavior is still required, it can be activated by
+configuring the required authority as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">security:
+  general:
+    role-for-secured-access: "REQUIRED_AUTHORITY"</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
@@ -598,7 +645,7 @@ to drop the <code>acl_id</code> column from the type definition&#8217;s main tab
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-08 09:10:17 UTC
+Last updated 2024-02-08 13:54:45 UTC
 </div>
 </div>
 </body>
