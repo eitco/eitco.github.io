@@ -558,7 +558,7 @@ configuring the required authority as shown below:</p>
 <p><strong class="big">Manual migration steps</strong></p>
 </div>
 <div class="paragraph">
-<p>ECR-1328 added a new system field, which requires a manual migration for existing database tables. The new field contains
+<p><strong>ECR-1328</strong> added a new system field, which requires a manual migration for existing database tables. The new field contains
 the ID of the user who created the initial version of an entity. The following script can be used to migrate existing
 tables:</p>
 </div>
@@ -585,18 +585,9 @@ end $$;</code></pre>
 <div class="paragraph">
 <p><strong class="big">Finished stories and bugs</strong></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>[ECR-1260]: ACLs are now disabled by default.</p>
-</li>
-<li>
-<p>[ECR-1291]: Unchanged type definitions no longer cause entries in the databasechangelog table.</p>
-</li>
-<li>
-<p>[ECR-1301]: Fixed a bug that caused missing entries in the content tables after a batch update.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>ECR-1291: Unchanged type definitions no longer cause entries in the databasechangelog table.<br>
+ECR-1301: Fixed a bug that caused missing entries in the content tables after a batch update.</p>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
@@ -606,7 +597,7 @@ end $$;</code></pre>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">ECR-1260: ACLs are now disabled by default</dt>
+<dt class="hdlist1">ECR-1260: ACLs are now disabled by default.</dt>
 <dd>
 <p>Beginning from version 16.0.0, the ACL feature is now disabled by default for a type definition. The <code>@AclDisabled</code>
 annotation is no longer checked and can be removed. Instead, to enable ACLs, add the <code>@Acls</code> annotation to all
@@ -617,10 +608,437 @@ to drop the <code>acl_id</code> column from the type definition&#8217;s main tab
 </div>
 </div>
 </details>
+<details>
+<summary class="title">Release notes 15.1.0 (November 20, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1242: Added support for variables.<br>
+ECR-1283: Added support for variables in SOLR.<br>
+ECR-1292: Service won&#8217;t try to render content elements that cannot be rendered anymore.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p>To be able to store variables in SOLR, the managed-schema configuration file for SOLR must be adapted. Variables are
+stored as dynamic fields in SOLR, so one dynamic field for each type of variable must be added:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dynamicField name="*_integer.var"  type="integer"    indexed="true"  stored="true"/&gt;
+&lt;dynamicField name="*_long.var"  type="long"    indexed="true"  stored="true"/&gt;
+&lt;dynamicField name="*_double.var"  type="double"    indexed="true"  stored="true"/&gt;
+&lt;dynamicField name="*_date.var"  type="date"    indexed="true"  stored="true"/&gt;
+&lt;dynamicField name="*_boolean.var"  type="boolean"    indexed="true"  stored="true"/&gt;
+&lt;dynamicField name="*_uuid.var"  type="uuid"    indexed="true"  stored="true"/&gt;
+&lt;dynamicField name="*_string.var"  type="string"    indexed="true"  stored="true"/&gt;
+&lt;dynamicField name="*_lowercase.var"  type="lowercase"    indexed="true"  stored="true"/&gt;</code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 15.0.4 (November 30, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1299: Improved handling of ACL right calculation to avoid system blockage due to long running transactions.<br>
+ECR-1300: Added configuration option for batch operation limit.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>ECR-1300</strong> added configuration option for batch operation limit. The batch operation limit can now be configured using the property ecr.server.system.batch-operation-limit. The default value is 100000. To disable the limit, set the property to -1.</p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 15.0.3 (October 20, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1289: Fixed download problems regarding XML content.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 15.0.1 (October 13, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1261: Fixed quoting of table names in generated liquibase scripts.<br>
+ECR-1277: TypeDefinitionInvocationHandler no longer throws an UninitializedPropertyAccessException when the delegate object is null.<br>
+ECR-1280: CreateRenditionsListener no longer pollutes the log with error messages and stack traces.<br>
+ECR-1242: Fixed recognition of changed indexes for schema update.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 15.0.0 (September 12, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1038: HTTP endpoints now set Content-Type and Content-Length headers when reading content.<br>
+ECR-1166: Added initial creation date to modification information.<br>
+ECR-1194: Added client methods to update or overwrite multiple entities with different input data.<br>
+ECR-1200: Fixed potential insertion of outdated data in NOSQL database.<br>
+ECR-1202: Added switches to disable individual message listeners.<br>
+ECR-1254: Content access tokens now work with external OAuth user authentication.<br>
+ECR-1255: Service now contains a Swagger UI.<br>
+ECR-1257: Added endpoint that returns possible type definition access right values.<br></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>ECR-1200</strong> fixed potential insertion of outdated data in NOSQL database.<br>
+The fix requires changes in the SOLR configuration.</p>
+</div>
+<div class="paragraph">
+<p>Add the following field in <code>managed-schema</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;field name="nosql_version_number" type="integer" indexed="true" stored="true" required="true" multiValued="false" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add the following entry in <code>solrconfig.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">  &lt;updateRequestProcessorChain name="docCentricVersioning"&gt;
+    &lt;processor class="solr.DocBasedVersionConstraintsProcessorFactory"&gt;
+      &lt;str name="versionField"&gt;nosql_version_number&lt;/str&gt;
+      &lt;bool name="ignoreOldUpdates"&gt;true&lt;/bool&gt;
+      &lt;bool name="supportMissingVersionOnOldDocs"&gt;true&lt;/bool&gt;
+    &lt;/processor&gt;
+    &lt;processor class="solr.LogUpdateProcessorFactory" /&gt;
+    &lt;processor class="solr.RunUpdateProcessorFactory" /&gt;
+  &lt;/updateRequestProcessorChain&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more details see:
+<a href="https://solr.apache.org/guide/solr/latest/indexing-guide/partial-document-updates.html#document-centric-versioning-constraints" class="bare">https://solr.apache.org/guide/solr/latest/indexing-guide/partial-document-updates.html#document-centric-versioning-constraints</a></p>
+</div>
+<div class="paragraph">
+<p><strong>ECR-1166</strong> added initial creation date to modification information.<br>
+Use a getter of type <code>EcrModificationInformation</code> for the system property <code>MODIFICATION_INFO</code> to access the initial creation date.</p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 14.0.0 (August 01, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1109: Updated to Spring Boot 3.1.<br>
+ECR-1192: Simplified internal job authentication.<br>
+ECR-1206: Implemented resumable uploads.<br>
+ECR-1207: Better error message when data types in query parameters do not match.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Migration guide for arveo version 14.0.0</strong></p>
+</div>
+<div class="paragraph">
+<p>The following steps are necessary when updating to arveo version 14.0.0.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use a Java 17 runtime. arveo 14.0.0 cannot run on Java 11.</p>
+</li>
+<li>
+<p>Adapt your Spring Boot Starter used to register type definitions according to the [Spring Boot Migration Guide](<a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide#auto-configuration-files" class="bare">https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide#auto-configuration-files</a>).</p>
+</li>
+<li>
+<p>Install the new [Authorization Service](<a href="https://git.eitco.de/projects/CMN/repos/authorization-service/browse" class="bare">https://git.eitco.de/projects/CMN/repos/authorization-service/browse</a>)</p>
+</li>
+<li>
+<p>Migrate OAuth client configuration</p>
+</li>
+<li>
+<p>The Authorization Server feature (including the management of OAuth Clients) has been removed from the User
+Management Service and has to be migrated to the new Authorization Service.</p>
+</li>
+<li>
+<p>OAuth Clients stored in the database will be removed (the entire table will be dropped). The Authorization Service
+uses the standard Spring Boot configuration mechanism to load registered clients.</p>
+</li>
+<li>
+<p>A sample configuration file can be found in <code>test/basic-environment-test/tests/src/test/resource-templates/config/authorization-service.yaml</code></p>
+</li>
+<li>
+<p>The Authorization Service uses an embedded User Management Service to access the user database. Configuration properties
+for the User Management Service contained in <code>test/basic-environment-test/tests/src/test/resource-templates/config/application.yaml</code>
+are read by the Authorization Service, too!</p>
+</li>
+<li>
+<p>The User Management Service now uses the same OAuth2 implementation as the other services. The configuration has to be
+adapted accordingly. See <code>test/basic-environment-test/tests/src/test/resource-templates/config/user-management-service.yaml</code>
+for an example.</p>
+</li>
+<li>
+<p>Migrate configuration for file- and request-size limits. arveo now uses the default Spring configuration properties:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code><code>`yaml
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+</code>`</code></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">New authentication for jobs running in the embedded job scheduler (ECR-1192)</dt>
+<dd>
+<p>Jobs running in the embedded job scheduler now use an internal authentication mechanism and no longer require the
+configured job user. On systems without a standalone Job Service, the job user can be removed.</p>
+</dd>
+</dl>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 13.1.1 (December 07, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1301: Fixed a bug that caused missing entries in the content tables after a batch update.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 13.1.0 (June 07, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1193: Several fixes for JOOQ records used as type definitions.<br>
+ECR-1198: Content information is now stored in SOLR.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>ECR-1198</strong> The content information of document type objects is now stored in a field called "content" in SOLR. The default schema configuration already contains a field called "content" with a different data type. This field has to be removed, as the used data type uses tokenizing. The provided schema configuration in the tests module was changed accordingly.</p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 13.0.7 (June 01, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1184: Enhanced handling of content references for solr.<br>
+ECR-1186: Fixed configuration of OriginalUserTokenDecoder using issuerUri.<br>
+ECR-1195: Fixed overwrite mode in createOrOverwrite calls.<br>
+ECR-1197: Use SOLR field type 'lowercase' for case-insensitive string fields.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>ECR-1197</strong> fix requires a re-initialization of the SOLR schema and the SOLR index.</p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 13.0.5 (May 11, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1183: Fixed possible NullPointerException in SolrModelFactory.<br>
+ECR-1174: SOLR schema is created correctly now when types are updated.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 13.0.4 (April 20, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1138: Server won&#8217;t start any more if two file system plugin profiles use the same storage path.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 13.0.0 (March 29, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1146: Better logging for login errors.<br>
+ECR-1152: Database exceptions are now propagated.<br>
+ECR-1155: Removed unnecessary dependencies from ecr-embedded.<br>
+ECR-1158: Added support for attributes of type LocalDateTime.<br>
+ECR-1163: Added new batch operation for delete with selector.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 12.0.0 (March 10, 2023)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-865: Implemented cascading of recycle operations.<br>
+ECR-1115: Implemented content access tokens for external users.<br>
+ECR-1121: Updated to SOLR 9.1 to mitigate CVE-2022-39135.<br>
+ECR-1125: Added job to clean up entities with expired retention.<br>
+ECR-1127: Added support for Kubernetes service discovery.<br>
+ECR-1130: Added convenience method for Base64 upload to Java SDK.<br>
+ECR-1134: Fixed count queries in SOLR.<br>
+ECR-1139: Performance enhancements for batch processing.<br>
+ECR-1140: Added support for classes for type definitions.<br>
+ECR-1141: Fixed cleanup of SOLR client.<br>
+ECR-1147: Implemented asynchronous mode for retention cleanup job.<br>
+ECR-1148: Added support for arrays for multi value attributes.<br>
+ECR-1153: Fixed handling of enum types in batch updates.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p>Deprecated methods have been removed</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p>The way expiration times for the caches of the repository service is configured was changed. Before, the expiration time had to be configured in seconds. Now, a duration (like 1d for one day) must be set. See the configuration properties section in the documentation for details.</p>
+</div>
+<div class="paragraph">
+<p><strong>ECR-1125</strong> The quartz triggers for the system jobs have been updated. All triggers created by earlier versions will automatically be replaced by the new default triggers. Manual changes made to the triggers will be lost but can be re-applied to the new default triggers.</p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 11.0.1 (October 19, 2022)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-289: Extended type definition access rights</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Release notes 11.0.0 (October 09, 2022)</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="paragraph">
+<p>ECR-1045: Added new API call to get content with different media type.<br>
+ECR-1052: Updated Spring Boot to 2.7.4</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+</div>
+</details>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-09 09:36:36 UTC
+Last updated 2024-02-09 12:46:05 UTC
 </div>
 </div>
 </body>
