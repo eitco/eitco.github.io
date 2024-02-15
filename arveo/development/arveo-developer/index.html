@@ -469,9 +469,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_access_rights">Access rights</a></li>
 </ul>
 </li>
-<li><a href="#_attribute_based_access_control_abac">Attribute Based Access Control (ABAC)</a>
+<li><a href="#_abac">Attribute Based Access Control (ABAC)</a>
 <ul class="sectlevel2">
 <li><a href="#_parameters">Parameters</a></li>
+<li><a href="#_abac_properties">Security properties</a></li>
 <li><a href="#_examples">Examples</a></li>
 <li><a href="#_interface_inheritance">Interface inheritance</a></li>
 <li><a href="#_complex_scenario_a_hospital">Complex scenario: a Hospital</a></li>
@@ -840,7 +841,7 @@ Depending on your retention policy you can create separate reports for a retenti
 <div class="sect3">
 <h4 id="_data_integrity"><a class="anchor" href="#_data_integrity"></a><a class="link" href="#_data_integrity">Data integrity</a></h4>
 <div class="paragraph">
-<p><em>arveo</em> guarantees high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by proven and well-thought concepts. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via attribute based access control. User rights are based on the developed concepts for roles and groups. More detailed information on this is provided in the relevant chapters of this manual.</p>
+<p><em>arveo</em> guarantees high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by proven and well-thought concepts. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed via attribute based access control. User rights are based on the developed concepts for users, groups and security attributes. More detailed information on this is provided in the relevant chapters of this manual.</p>
 </div>
 <div class="paragraph">
 <p>Access to all data (documents, metadata) takes place exclusively via the API, with the corresponding protection mechanisms so that the security of the data is guaranteed at all times.</p>
@@ -970,10 +971,10 @@ write (INSERT,UPDATE, DELETE) permissions for the database and the content repos
 <p>make sure that only authorized persons receive an account that grants access to <em>arveo</em> documents;</p>
 </li>
 <li>
-<p>ensure that objects are protected against unauthorized access using attribute based access control.</p>
+<p>ensure that objects are protected against unauthorized access using attribute based access control. We recommend defining access control either using type level restrictions or <a href="../arveo-developer#_abac_properties">security attributes</a>.</p>
 </li>
 <li>
-<p>the activities of managers who can change access rights are logged via <em>arveo</em> audit and checked at regular intervals;</p>
+<p>the activities of managers who can change security attributes are logged via <em>arveo</em> audit and versioning. Both may be checked at regular intervals.</p>
 </li>
 <li>
 <p>organizationally ensure that the password the <em>arveo</em> administration users are changed regularly.</p>
@@ -1674,7 +1675,7 @@ of this authority. ECR_DSGVO_PRIVILEGED_DELETE privilege does NOT require ECR_DS
 </div>
 </div>
 <div class="sect1">
-<h2 id="_attribute_based_access_control_abac"><a class="anchor" href="#_attribute_based_access_control_abac"></a><a class="link" href="#_attribute_based_access_control_abac">Attribute Based Access Control (ABAC)</a></h2>
+<h2 id="_abac"><a class="anchor" href="#_abac"></a><a class="link" href="#_abac">Attribute Based Access Control (ABAC)</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>arveo allows entity access based on attributes of that entity.
@@ -1982,6 +1983,129 @@ The simplest way to assure this, is to use the DSLContext only to read data.
 </div>
 </div>
 <div class="sect2">
+<h3 id="_abac_properties"><a class="anchor" href="#_abac_properties"></a><a class="link" href="#_abac_properties">Security properties</a></h3>
+<div class="paragraph">
+<p>Sometimes it might be required to distinguish between a user changing the value of an attribute used for the attribute based access control and a user changing some other attribute of an entity. For example, the security requirements might make it necessary that only one specific user is allowed to change security-relevant attributes, but other users are allowed to change other attributes.</p>
+</div>
+<div class="paragraph">
+<p>To meet such requirements, attributes used in ABAC can be annotated with <code>@SecurityProperty</code>. Changing the value of such a property requires the highest access right <code>CHANGE_ACCESS_RIGHTS</code>. If such an operation occurs, the ABAC method will be called with the value <code>CHANGE_ACCESS_RIGHTS</code> for the <code>AccessRight</code> parameter.</p>
+</div>
+<div class="paragraph">
+<p>Security properties can be defined as exclusive or basic. Exclusive security properties cannot be changed in an operation that would change any other property of the entity. This can be used to ensure that a user, who is designated to manage entity security cannot perform any other kind of change on the entities.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows a type definition that uses a list of user IDs to decide whether a user is allowed to access an entity or not. To keep the example simple, no distinction is made betweed read- and write-access. Changing the value of the security attribute however is only allowed if the user was given an authority called <code>CHANGE_ACCESS_RIGHTS</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">security properties</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@SecurityProperty(exclusive = true)
+@Optional
+List&lt;Long&gt; getAuthorizedUsers(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+void setAuthorizedUsers(List&lt;Long&gt; authorizedUsers);
+
+@Security
+static Expression&lt;Boolean&gt; checkAccess(Alias alias, AuthenticationContext authenticationContext, AccessRight right) {
+
+    if (right == AccessRight.CHANGE_ACCESS_RIGHTS) {
+
+        Set&lt;String&gt; authorities = authenticationContext.getAuthoritiesAsStrings();
+        return EcrQueryLanguage.condition().value(right.name()).in().values(authorities).holds(); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+    long userId = authenticationContext.getAuthentication().getInternalIdOrFail();
+
+    return EcrQueryLanguage.condition()
+        .alias(alias).field("authorized_users").isNull().or()
+        .alias(alias).field("authorized_users").contains().value(userId).holds(); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Changing this attribute requires the <code>CHANGE_ACCESS_RIGHTS</code> right</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Only a user with an authority called <code>CHANGED_ACCESS_RIGHTS</code> is allowed to perform this operation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Everything else is allowed, when the user&#8217;s ID is contained in the list of authorized users</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_security_attributes_and_inheritance"><a class="anchor" href="#_security_attributes_and_inheritance"></a><a class="link" href="#_security_attributes_and_inheritance">Security attributes and inheritance</a></h4>
+<div class="paragraph">
+<p>It is possible to annotate an <a href="inheritance.adoc#_inheritance">inherited</a> attribute with <code>@SecurityProperty</code>, but there is one important difference compared to non-inherited attributes. The inheritance is triggered as an update one the foreign key attribute that is used to reference the entity the value is inherited from. This means that such an operation requires the <code>WRITE</code> access right, not the <code>CHANGE_ACCESS_RIGHTS</code> right. The actual update of the value is performed on the database level, where the check for the <code>CHANGE_ACCESS_RIGHTS</code> right will occur. For the inheritance to work, the user performing the operation needs both <code>WRITE</code> and <code>CHANGE_ACCESS_RIGHTS</code> privileges on the entity. Of course, it is possible to annotate the foreign key attribute with <code>@SecurityProperty</code>, too. This would impose a stricter access requirement, making it impossible to change any inherited attribute for users without the <code>CHANGE_ACCESS_RIGHTS</code> right.</p>
+</div>
+<div class="listingblock">
+<div class="title">security attribute inheritance</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ForeignKey(target = LabeledContainer.class, targetProperty = "id")
+Long getContainerId(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+void setContainerId(Long value);
+
+@SecurityProperty(exclusive = true)
+@InheritedProperty(foreignKeyPropertyName = "container_id", sourcePropertyName = "label")
+String getSecurityLabel(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+@Security
+static Expression&lt;Boolean&gt; checkAccess(Alias alias, AuthenticationContext authenticationContext, AccessRight right) {
+
+    if (right == AccessRight.CHANGE_ACCESS_RIGHTS) { <i class="conum" data-value="3"></i><b>(3)</b>
+
+        Set&lt;String&gt; authorities = authenticationContext.getAuthoritiesAsStrings();
+        return EcrQueryLanguage.condition().value(right.name()).in().values(authorities).holds();
+    }
+
+    Set&lt;String&gt; authorities = authenticationContext.getAuthoritiesAsStrings();
+
+    return EcrQueryLanguage.condition() <i class="conum" data-value="4"></i><b>(4)</b>
+        .alias(alias).field("security_label").equalTo().value("admins")
+        .and().value(authorities).contains().value("ECR_ADMIN") <i class="conum" data-value="5"></i><b>(5)</b>
+        .or()
+        .alias(alias).field("security_label").equalTo().value("auditors")
+        .and().value(authorities).contains().value("AUDITOR").holds(); <i class="conum" data-value="6"></i><b>(6)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The foreign key that references the entity to inherit the value for the security_label attribute from</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The inherited security attribute</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The condition for operations requiring <code>CHANGE_ACCESS_RIGHTS</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The condition for operations requiring all other rights including <code>WRITE</code>, which is required for inheritance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>In this case, the user would require the <code>ECR_ADMIN</code> and the <code>CHANGE_ACCESS_RIGHTS</code> authority to successfully change the inherited security property</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>In this case, the user would require the <code>AUDITOR</code> and the <code>CHANGE_ACCESS_RIGHTS</code> authority to successfully change the inherited security property</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_examples"><a class="anchor" href="#_examples"></a><a class="link" href="#_examples">Examples</a></h3>
 <div class="sect3">
 <h4 id="_subselect"><a class="anchor" href="#_subselect"></a><a class="link" href="#_subselect">Subselect</a></h4>
@@ -2075,6 +2199,7 @@ In this case it is a good practice to combine the access method and field in a c
 <pre class="highlight"><code class="language-java" data-lang="java"><i class="conum" data-value="2"></i><b>(2)</b>
 public interface WithAccessToken {
 
+    @SecurityProperty
     @Mandatory(false)
     String getAccessToken();
 
@@ -8249,7 +8374,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-14 02:27:41 UTC
+Last updated 2024-02-15 09:05:25 UTC
 </div>
 </div>
 </body>
