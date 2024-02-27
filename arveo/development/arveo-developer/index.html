@@ -446,7 +446,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_application_security">Application security</a></li>
 <li><a href="#_data_security">Data security</a></li>
-<li><a href="#_tenant_security">Tenant security</a></li>
 <li><a href="#_security_patches">Security patches</a></li>
 <li><a href="#_application_protection_by_design">Application protection by design</a></li>
 <li><a href="#_compliance_recommendations_gobd">Compliance recommendations (GoBD)</a></li>
@@ -588,15 +587,6 @@ attributes or access lists and thus grant or deny the corresponding access to th
 <p><strong>Delete</strong> - The user can delete the object</p>
 </li>
 </ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_tenant_security"><a class="anchor" href="#_tenant_security"></a><a class="link" href="#_tenant_security">Tenant security</a></h3>
-<div class="paragraph">
-<p>The metadata and the content of the tenants are separated. Each tenant has its own storage container and
-database. It is ensured that all data of a tenant is protected from
-unauthorized access by another tenant.<br>
-The data of a tenant can be easily exported.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2830,10 +2820,10 @@ type definition. This functionality is provided by the REST endpoint located at 
 <p>Each type definition is represented by one (or more) tables in the database.</p>
 </div>
 <div class="paragraph">
-<p>Each entity is referred by its system-wide unique id, which consists of a tenant id and its type definition id, followed by the sequential database id of this entity:</p>
+<p>Each entity is referred by its system-wide unique id, which consists of a system id and its type definition id, followed by the sequential database id of this entity:</p>
 </div>
 <div class="paragraph">
-<p>[12bit Tenant id][14bit Type Definition id][38bit Entity id].</p>
+<p>[12bit System id][14bit Type Definition id][38bit Entity id].</p>
 </div>
 <div class="sect3">
 <h4 id="_versioned_entities"><a class="anchor" href="#_versioned_entities"></a><a class="link" href="#_versioned_entities">Versioned entities</a></h4>
@@ -5615,49 +5605,21 @@ The retention annotations also work for the document types: container, folder an
 <div class="sect2">
 <h3 id="_tenant_separation"><a class="anchor" href="#_tenant_separation"></a><a class="link" href="#_tenant_separation">Tenant separation</a></h3>
 <div class="paragraph">
-<p>Objects can be separated by <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html">tenant</a>. If this is activated on a type definition, the corresponding table will contain a system field <em>tenant_id</em>, where the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_tenants">id of the tenant</a> an entity resides in is stored.</p>
+<p>A tenant separation can be implemented using several different mechanisms. Using attribute based access control, a
+claim or an authority of the access token of the current user can be matched against an attribute of the entities to
+limit a user&#8217;s access (including visibility of entities). For example, the access token might contain a claim containing
+the name of the division of the company the user is assigned to. By storing the division names in an attribute of the
+entities, a simple separation by division can be achieved.</p>
 </div>
 <div class="paragraph">
-<p>The field will be assigned to the creation users tenants id and never change. When entities are queried, a filter will be added that filters only entities whose <em>tenant_id</em> field have the value of the querying users tenants id.</p>
-</div>
-<div class="sect3">
-<h4 id="_fallback_tenant"><a class="anchor" href="#_fallback_tenant"></a><a class="link" href="#_fallback_tenant">Fallback-tenant</a></h4>
-<div class="paragraph">
-<p>Should the creation user be in the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#<em>the_fallback_tenant">fallback-tenant</a>, the _tenant_id</em> field will be set to <em>NULL</em>.
-Should a querying user reside in the fallback-tenant, the query will not be filtered by tenant. This means that the fallback tenant behaves like a view to the data that combines all tenants. If such a thing is unwanted deactivate the fallback tenant using the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_usage"><a class="anchor" href="#_usage"></a><a class="link" href="#_usage">Usage</a></h4>
-<div class="paragraph">
-<p>The behaviour is primarily defined by the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a></p>
+<p>Another way to separate entities by client is to use one type definition for each tenant. Using inheritance, the type
+definitions can still share a common set of attributes. To decide which type definition(s) a user is allowed to use can
+either be made by the integrated type level security mechanism or by a custom service hosting the business logic that
+is used as a gateway to the arveo services.</p>
 </div>
 <div class="paragraph">
-<p>It can be controlled more fine-grained by the annotation <em>@TenantSeparation</em>, however this makes sense mostly in environments where <em>multi-tenancy.mode</em> is <em>allowed</em>.</p>
-</div>
-<div class="listingblock">
-<div class="title">A type separating its entities by tenant</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
-@TenantSeparation(true)
-public interface Person {
-
-// property definitions ...
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>There are aliases specified: <em>@TenantSeparated</em> for <em>@TenantSeparation(true)</em> and <em>@TenantAgnostic</em> for <em>@TenantSeparation(false)</em>.</p>
-</div>
-<div class="paragraph">
-<p>The default behaviour depends on the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.tenant/cmn-tenant-parent/6.0.0-SNAPSHOT/documentation/index.html#_configuration">multi-tenancy.mode configuration property</a>:</p>
-</div>
-<div class="paragraph">
-<p>If it is <em>enforced</em>, types are separated by tenant by default. Any type specified to be not separated by tenant will cause arveo to fail at startup.</p>
-</div>
-<div class="paragraph">
-<p>If it is <em>disabled</em>, types are not separated by tenant by default. Any type specified to be separated by tenant will cause arveo to fail at startup.</p>
-</div>
+<p>The third option is to use a different set of service instances for each tenant. Each set of services can use a different
+database (or database schema) to store each tenant&#8217;s data separately.</p>
 </div>
 </div>
 <div class="sect2">
@@ -5717,7 +5679,7 @@ definition.</p>
 <div class="paragraph">
 <p>The values of the configuration properties for the global scripts and the annotations must be valid URIs pointing to
 a liquibase changelog script. The URIs can point to a filesystem resource (using <code>file:/</code>) or a classpath resource
-(using <code>classpath:</code>). Each script will be executed in every configured tenant.</p>
+(using <code>classpath:</code>).</p>
 </div>
 <div class="sect3">
 <h4 id="_schema_initialization_steps"><a class="anchor" href="#_schema_initialization_steps"></a><a class="link" href="#_schema_initialization_steps">Schema initialization steps</a></h4>
@@ -5725,10 +5687,6 @@ a liquibase changelog script. The URIs can point to a filesystem resource (using
 <p>For a better understanding of how the schema initialization works, the following list shows the steps performed by the
 system at startup:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>for each tenant:</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5757,9 +5715,6 @@ system at startup:</p>
 <p>Execute custom liquibase changelog if configured</p>
 </li>
 </ol>
-</div>
-</li>
-</ul>
 </div>
 <div class="paragraph">
 <p>Note that the actions performed by the automatic schema initialization in step 3.b. can be influenced by the changes
@@ -6504,12 +6459,11 @@ In this case, a certain property is defined to let the system know, a certain ve
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>[12bit Tenant id][14bit Type Definition id][38bit Version id]</pre>
+<pre>[12bit System id][14bit Type Definition id][38bit Version id]</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Here the tenant may be for instance a database scheme or a customer. It is followed by a type definition, for instance
-<em>Container</em>. The third part is the version id in the database. The composed version id is unique in <em>arveo</em> system.</p>
+<p>The system ID is an internal requirement. It is followed by a type definition ID. The third part is the version id in the database. The composed version id is unique in <em>arveo</em> system.</p>
 </div>
 </div>
 </div>
@@ -6563,7 +6517,7 @@ that can be used to create any joins on search statements.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_usage_2"><a class="anchor" href="#_usage_2"></a><a class="link" href="#_usage_2">Usage</a></h4>
+<h4 id="_usage"><a class="anchor" href="#_usage"></a><a class="link" href="#_usage">Usage</a></h4>
 <div class="paragraph">
 <p>The following examples demonstrates the usage of the Search Service to retrieve an object page.</p>
 </div>
@@ -7184,18 +7138,6 @@ retention period that has expired before the specified time will be removed. The
 </li>
 </ul>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-On systems supporting multiple tenants, the tenant to run the job for must be configured using the property <code>tenant</code>.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>The following optional properties can be set in the context of the triggered execution:</p>
 </div>
@@ -7301,7 +7243,6 @@ trigger.setNextFireTime(ZonedDateTime.now());
 trigger.setJobDataMap(Map.of(
     SystemJobDataKeys.TYPE_DEFINITION_NAME, SimpleInvoiceNames.getTypeDefinitionName(),
     SystemJobDataKeys.RETENTION_CLEANUP_RETENTION_END_TIME, ZonedDateTime.now(),
-    SystemJobDataKeys.TENANT, "master",
     SystemJobDataKeys.RETENTION_CLEANUP_PROTOCOL_FILE, getTargetDir() + File.separator + "retention-cleanup-job.log"
 ));
 
@@ -8374,7 +8315,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-16 11:55:16 UTC
+Last updated 2024-02-27 16:04:36 UTC
 </div>
 </div>
 </body>

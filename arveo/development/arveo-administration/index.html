@@ -3542,8 +3542,7 @@ performing the actual schema update.</p>
 </div>
 <div class="paragraph">
 <p>The directory used to store the schema update log can be specified using the property <code>arveo.server.system.schemaChangeLogDirectory</code>.
-The default value is <code>logs</code>. The system will create one logfile for each tenant. The contents of the file will look like
-the following example:</p>
+The default value is <code>logs</code>. The contents of the file will look like the following example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3885,7 +3884,7 @@ configuration for <em>arveo</em>:</p>
 <p>To be able to use Solr for advanced queries, the entities must be stored in Solr, too. To enable this, simply add the
 <code>@NOSql</code> annotation to the attributes to be stored in Solr to the getters of your type definitions. The annotation can
 be added to the class to store all attributes in Solr. <em>arveo</em> will automatically create the required fields
-in the Solr schema. All entities of one tenant will be stored in a single collection in Solr. To avoid name collisions,
+in the Solr schema. All entities will be stored in a single collection in Solr. To avoid name collisions,
 the names of the fields in Solr will consist of the name of the type definition and the name of the attribute, separated
 by a dot. For example, an attribute called "name" in a type definition called "invoice" would be named "invoice.name".</p>
 </div>
@@ -4314,11 +4313,10 @@ have to be disabled or removed manually from the scheduler.
 <div class="sect3">
 <h4 id="_using_external_job_service_instances"><a class="anchor" href="#_using_external_job_service_instances"></a><a class="link" href="#_using_external_job_service_instances">Using external Job Service instances</a></h4>
 <div class="paragraph">
-<p>It is possible to use one or more external Job Service instances to execute the scheduled system jobs. The service must
-be configured to use the same tenants as the repository service. To be able to execute the system jobs,
-the job implementations must be present in each of the Job Service&#8217;s class paths. The jobs are available as a ZIP
-file (<em>ecr-packaging-jobs-external&lt;version&gt;.zip</em>) that contains all required libraries. Simply extract the contents of
-the ZIP file to a directory (e.g. <em>libs</em>) and start the Job Service with the following parameter:
+<p>It is possible to use one or more external Job Service instances to execute the scheduled system jobs. To be able to
+execute the system jobs, the job implementations must be present in each of the Job Service&#8217;s class paths.
+The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external&lt;version&gt;.zip</em>) that contains all required libraries.
+Simply extract the contents of the ZIP file to a directory (e.g. <em>libs</em>) and start the Job Service with the following parameter:
 <code>-Dloader.path=libs</code>.</p>
 </div>
 <div class="paragraph">
@@ -5553,6 +5551,12 @@ of the different services.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">migration.main-migrated-tenant-numerical-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">schema-change-log-directory</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The location of the logfile used when checkForSchemaChanges is set to true.</p></td>
@@ -5809,7 +5813,7 @@ only disable the availability of the metrics but the entire recording mechanism.
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each of these metrics contains a tag for the current tenant and the type of statement that was executed. The threshold
+<p>Each of these metrics contains a tag for the type of statement that was executed. The threshold
 time after which an execution time warning is logged and the counter is incremented can be configured using the setting
 <code>ecr.server.query.statementExecutionTimeWarningMillis</code> (in milliseconds).</p>
 </div>
@@ -5866,7 +5870,7 @@ time after which an execution time warning is logged and the counter is incremen
 </tbody>
 </table>
 <div class="paragraph">
-<p>All of the above metrics contain a tag for the current tenant. The error counter contains a tag for the type of operation
+<p>The error counter contains a tag for the type of operation
 that has failed. The threshold time after which an execution time warning is logged and the counter is incremented can
 be configured using the setting <code>ecr.server.query.noSqlQueryTimeWarningMillis</code> (in milliseconds).</p>
 </div>
@@ -6182,9 +6186,6 @@ to make it easier to analyze the system&#8217;s behavior:</p>
 <p><code>ecr.user-id</code>: The ID of the user performing the current request, if available</p>
 </li>
 <li>
-<p><code>ecr.tenant</code>: The tenant for which the current request is executed.</p>
-</li>
-<li>
 <p><code>ecr.trace-id</code>: The ID of the current trace, if available. The trace-id is set by Open Telemetry (see below).</p>
 </li>
 <li>
@@ -6208,8 +6209,8 @@ attributes will not be added when <em>arveo</em> is used embedded. In this case,
 <p><em>arveo</em> supports using <a href="https://opentelemetry.io/">Open Telemetry</a> to monitor the system&#8217;s behavior. Most notably
 it is possible to view traces of requests across the different services using a tracing backend like
 <a href="https://www.jaegertracing.io/">Jaeger</a> or <a href="https://zipkin.io/">Zipkin</a>. The outermost span of a trace that was started by
-a user&#8217;s request will contain the <code>ecr.user-id</code> and <code>ecr.tenant</code> attributes containing the user&#8217;s ID and the current
-tenant. This is done by the same mechanism as described above for the <a href="#_attributes_in_mdc">MDC</a>.</p>
+a user&#8217;s request will contain the <code>ecr.user-id</code> attribute containing the user&#8217;s ID.
+This is done by the same mechanism as described above for the <a href="#_attributes_in_mdc">MDC</a>.</p>
 </div>
 <div class="paragraph">
 <p>Because <em>arveo</em> is based on several widely used open source libraries, the automatic instrumentation mode of
@@ -6613,7 +6614,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PostgreSQL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">postgres 15.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">postgres 16.2</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -6779,7 +6780,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-16 11:55:16 UTC
+Last updated 2024-02-27 16:04:36 UTC
 </div>
 </div>
 </body>

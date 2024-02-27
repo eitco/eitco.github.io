@@ -1154,7 +1154,7 @@ public interface DemoModel {
         &lt;dependency&gt;
             &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
             &lt;artifactId&gt;cmn-commons-spring-security&lt;/artifactId&gt;
-            &lt;version&gt;10.0.1-SNAPSHOT&lt;/version&gt;
+            &lt;version&gt;11.0.0-SNAPSHOT&lt;/version&gt;
         &lt;/dependency&gt;
     &lt;/dependencies&gt;
 &lt;/dependencyManagement&gt;</code></pre>
@@ -1215,11 +1215,7 @@ private String username;
 
 @CommandLine.Option(names = {"-p", "--password"}, required = true, interactive = true,
     description = "The password used to log on to arveo")
-private String password;
-
-@CommandLine.Option(names = {"-t", "--tenant"}, required = true,
-    description = "The tenant used to log on to arveo")
-private String tenant;</code></pre>
+private String password;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1312,7 +1308,7 @@ private TypeDefinitionServiceClient typeDefinitionServiceClient;</code></pre>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">private void importFile(String projectName, String level1, String level2, File file) {
 
-    AuthenticationHelper.runAsUser(username, password, tenant, () -&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    AuthenticationHelper.runAsUser(username, password, () -&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
         TypedDocumentServiceClient&lt;DemoModel&gt; serviceClient = <i class="conum" data-value="2"></i><b>(2)</b>
             typeDefinitionServiceClient.getDocumentServiceClient().byClass(DemoModel.class);
@@ -1520,7 +1516,7 @@ in the test system provided by the system test module of the project created in 
  :: Spring Boot ::                (v2.5.8)
 
 Missing required options: '--username', '--password', '--directory=&lt;baseDirectory&gt;'
-Usage: &lt;main class&gt; [-hV] -p -u [-c=&lt;customer&gt;] -d=&lt;baseDirectory&gt; [-t=&lt;tenant&gt;]
+Usage: &lt;main class&gt; [-hV] -p -u [-c=&lt;customer&gt;] -d=&lt;baseDirectory&gt;
 arveo demo tool
   -c, --customer=&lt;customer&gt;
                           The name of the customer
@@ -1528,7 +1524,6 @@ arveo demo tool
                           The base directory to import from
   -h, --help              Show this help message and exit.
   -p, --password          The password used to log on to arveo
-  -t, --tenant=&lt;tenant&gt;   The tenant used to log on to arveo
   -u, --username          The username used to log on to arveo
   -V, --version           Print version information and exit.</pre>
 </div>
@@ -1626,10 +1621,6 @@ public class ArveoCommand implements Runnable {
         description = "The password used to log on to arveo")
     private String password;
 
-    @CommandLine.Option(names = {"-t", "--tenant"}, required = true,
-        description = "The tenant used to log on to arveo")
-    private String tenant;
-
     @CommandLine.Option(names = {"-d", "--directory"}, required = true,
         description = "The base directory to import from")
     private File baseDirectory;
@@ -1695,7 +1686,7 @@ public class ArveoCommand implements Runnable {
 
     private void importFile(String projectName, String level1, String level2, File file) {
 
-        AuthenticationHelper.runAsUser(username, password, tenant, () -&gt; {
+        AuthenticationHelper.runAsUser(username, password, () -&gt; {
 
             TypedDocumentServiceClient&lt;DemoModel&gt; serviceClient =
                 typeDefinitionServiceClient.getDocumentServiceClient().byClass(DemoModel.class);
@@ -2175,7 +2166,7 @@ The maven coordinate of this archetype are:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-16 11:55:16 UTC
+Last updated 2024-02-27 16:04:36 UTC
 </div>
 </div>
 </body>
