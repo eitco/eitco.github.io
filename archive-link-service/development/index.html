@@ -195,6 +195,27 @@ can be used as long as it matches the requirements listed above. Example type de
 <p>Certificates are stored as secrets in Vault&#8217;s KV engine. Each secret is stored in a separate path consisting of the
 content repository ID, the authId and the certificate&#8217;s serial number:</p>
 </div>
+<div class="paragraph">
+<div class="title">Vault permissions</div>
+<p>To store the certificates in vault, the vault certificate storage logic needs to have proper access rights to adjust
+the vault data below the storage root path. The required access rights need to be granted by an access policy as  shown
+below.</p>
+</div>
+<div class="listingblock">
+<div class="title">Storage root path</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>secret/eitco-archive-link/certificates</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Policy to grant access rights to storage root path</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>  vault policy write archive-link-service -&lt;&lt;EOF
+    path &quot;secret/data/eitco-archive-link/certificates/*&quot; {capabilities = [&quot;create&quot;, &quot;read&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;, &quot;list&quot;] }
+    path &quot;secret/metadata/eitco-archive-link/certificates/*&quot; {capabilities = [&quot;list&quot;] }
+EOF</code></pre>
+</div>
+</div>
 <div class="listingblock">
 <div class="title">Example path</div>
 <div class="content">
@@ -429,7 +450,7 @@ The approval process and everything else take place without further use of the {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-04 03:17:17 UTC
+Last updated 2024-03-04 21:48:38 UTC
 </div>
 </div>
 <style>
