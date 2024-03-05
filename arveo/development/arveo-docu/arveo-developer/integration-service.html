@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Search language :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/search-service.html">
-    <link rel="prev" href="versioning.html">
-    <link rel="next" href="enterprise-search-nosql.html">
+    <title>Enterprise Integration Service :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/integration-service.html">
+    <link rel="prev" href="events.html">
+    <link rel="next" href="system-tables.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
   </head>
@@ -263,7 +263,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="versioning.html">Versioning</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="search-service.html">Search language</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -296,7 +296,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="events.html">Events</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="integration-service.html">Enterprise Integration Service</a>
   </li>
 </ul>
@@ -350,8 +350,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>Document Service</li>
-    <li><a href="search-service.html">Search language</a></li>
+    <li>Events and messaging</li>
+    <li><a href="integration-service.html">Enterprise Integration Service</a></li>
   </ul>
 </nav>
 </div>
@@ -360,55 +360,26 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Search language</h1>
-<div class="sect1">
-<h2 id="_search_service"><a class="anchor" href="#_search_service"></a>Concept</h2>
+<h1 class="page">Enterprise Integration Service</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Any client application, that needs a search function, can implement the Search Service with a suitable parameter. An
-example of such an implementation is the class <em>DocumentServiceClient</em> in the Client API. The search queries are
-formulated similarly, what is different is the search result, which is always typed. In  <em>arveo</em> the type is
-<em>Entity</em>.</p>
+<p>arveo comes with a custom <a href="https://eitco.github.io/integration-service" target="_blank" rel="noopener">enterprise integration service</a> endpoint.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="technical_implementation"><a class="anchor" href="#technical_implementation"></a>Technical implementation</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Search Service is part of the module 'commons'. It was created to enable more convenient searching. The Search Service
-works on the basis of EQL (Eitco Query Language). This query language is also used for some other services.
-The main interface is SearchService. It is a functional interface, providing just one method to be implemented: search().
-However, this functional interface has a variety of convenience methods, enabling faster and more convenient search, like
-<em>firstResult()</em>, <em>uniqueResult()</em>, <em>count()</em>, <em>stream()</em> and others.</p>
+<p>The <em>arveo</em> component resides in the Maven repository at the following coordinates:</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing for the search method definition</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Page&lt;EntityType&gt; search(@NotNull SearchRequest searchRequest);</code></pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
+    &lt;artifactId&gt;ecr-integration-service-endpoint&lt;/artifactId&gt;
+    &lt;version&gt;17.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>As the only parameter, a search request is accepted, returning a <em>Page</em> of results. A Page has a page definition, a
-completeCount and a parameterized list of results. The Search Service also provides a method <em>where()</em> with a condition
-builder, filtering results based on a specific condition.</p>
-</div>
-<div class="paragraph">
-<p><em>SearchServiceFactory</em> is a server class, which builds search queries. It has methods for creating an instance of search
-service for Documents (<em>searchServiceForDocument()</em>), but also for all the other entities, including Metadata. The result
-of the search is transformed into a Document (or respectively another entity) by the <em>DocumentMapper</em>.</p>
-</div>
-<div class="paragraph">
-<p>The class <em>SearchResourceImplementation</em> provides an API for searches that are not bound to one and only one type
-definition.</p>
-</div>
-<div class="paragraph">
-<p>The interface SearchService is implemented by the class <em>EcrSearchService</em>.</p>
-</div>
-<div class="paragraph">
-<p>The search client creates different search services, which can be used to search for corresponding entities, for
-instance a folder search service, a document search service and so on. And there is also a <em>GenericUnionSearchService</em>,
-that can be used to create any joins on search statements.</p>
+<p>The component provides access to <em>arveo</em> from Apache Camel. It uses the client SDK, which communicates with <em>arveo</em> over HTTP.</p>
 </div>
 </div>
 </div>
@@ -416,211 +387,338 @@ that can be used to create any joins on search statements.</p>
 <h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The following examples demonstrates the usage of the Search Service to retrieve an object page.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example of Search Service usage</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">SearchService&lt;Object&gt; searchService = &lt;a valid instance&gt;;
-Page&lt;Object&gt; objectPage = searchService.where()
-    .contextReference("field").equalTo().value(7).or()
-    .contextReference("other_field").greaterEqual().contextReference("another_field")
-    .holds()
-    .order().descendingBy("field").from(5).pageSize(7);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is possible to check the type of object searched for:</p>
-</div>
-<div class="listingblock">
-<div class="title">Example for type checking</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">            searchService.where() <i class="conum" data-value="1"></i><b>(1)</b>
-                .entity().typeId()   <i class="conum" data-value="2"></i><b>(2)</b>
-                .equalTo()
-                .typeId(NamedFile.class) <i class="conum" data-value="3"></i><b>(3)</b>
-                .or()
-                .entity().typeName() <i class="conum" data-value="4"></i><b>(4)</b>
-                .in().expressions(x -&gt; x
-                    .typeName(NamedTextFile.class) <i class="conum" data-value="5"></i><b>(5)</b>
-                    .typeName(NamedFolder.class)
-                ).and()
-                .entity().typeId().notEqual().typeId("named_relation") <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The variable <code>searchService</code> is an <code>EcrSearchService</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The id of the type of given entity is referenced by the method <code>typeId()</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The type id is checked to be the id of the type defined by the class <code>NamedFile</code> (which is obtained by the method <code>typeId()</code>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Here the type name is referenced instead of the type id.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>As with the type id, the name of the type defined by the class <code>NamedTextFile</code> is obtained.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The type id can also be obtained if only the type name is given.</td>
-</tr>
-</table>
+<p>The <em>arveo</em> component provides two Camel endpoints for inclusion in a route. A URL endpoint and a bean endpoint for Groovy scripts.
+The URL endpoint&#8217;s URL has the format <code>ecr:typedefinition</code>. Here, 'typedefinition' specifies the name of the type definition where the object should be stored. The URL endpoint can be used for simple create or upload operations. The script endpoint offers more flexibility as it makes it possible to use the entire feature set of the client SDK.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="search_endpoints"><a class="anchor" href="#search_endpoints"></a>Search endpoints</h2>
+<h2 id="url_endpoint"><a class="anchor" href="#url_endpoint"></a>URL endpoint</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="document_upload"><a class="anchor" href="#document_upload"></a>Document upload</h3>
 <div class="paragraph">
-<p>Using the ecr sdk you will be able to obtain a <code>SearchClient</code> by spring injection.</p>
+<p>The following example shows a route where a document with the content of a file and an attribute named "filename" is created in <em>arveo</em>. The type definition used is named "files". The content of the file is stored in a content element called "content". At the end of the route the file is copied to another directory.</p>
 </div>
 <div class="listingblock">
-<div class="title">Injecting a search client</div>
+<div class="title">Example of the route to upload a document</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">    @Autowired
-    private SearchClient searchClient;</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package scripts.routes
+
+import de.eitco.commons.integration.core.ExceptionProcessor
+import org.apache.camel.builder.RouteBuilder
+
+return new RouteBuilder() {
+
+    @Override
+    void configure() throws Exception {
+
+        onException(Exception.class)
+                .process(new ExceptionProcessor())
+                .handled(true)
+                .maximumRedeliveries(0)
+
+        from("file://directory/input?noop=true")
+                .routeId("test-route")
+                .setHeader("ecr-attribute:filename", simple('${file:onlyname}'))
+                .setHeader("ecr-content-name", constant('content'))
+                .to("ecr://files")
+                .to("file://directory/output")
+    }
+}</code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="creating_a_container_or_metadata_entity"><a class="anchor" href="#creating_a_container_or_metadata_entity"></a>Creating a Container or Metadata Entity</h3>
 <div class="paragraph">
-<p>A search client has several methods to search in different ways or different contexts.</p>
+<p>In the following example, a container is created in <em>arveo</em>. The container is stored in the type definition "test_containers" and has an attribute named "filename". The creation of meta data entities is done analogously. Which type of object is created in <em>arveo</em> depends only on the type definition used.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of a route uploading a container</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package scripts.routes
+
+import de.eitco.commons.integration.core.ExceptionProcessor
+import org.apache.camel.builder.RouteBuilder
+
+return new RouteBuilder() {
+
+    @Override
+    void configure() throws Exception {
+
+        onException(Exception.class)
+                .process(new ExceptionProcessor())
+                .handled(true)
+                .maximumRedeliveries(0)
+
+        from("file://directory/input?noop=true")
+                .routeId("test-route")
+                .setHeader("ecr-attribute:filename", simple('${file:onlyname}'))
+                .to("ecr://test_containers")
+                .to("file://directory/output")
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="create_relation"><a class="anchor" href="#create_relation"></a>Create relation</h3>
+<div class="paragraph">
+<p>In the following example, a document and a container are created first. Then a relation is created between the two. Note that after creating or updating an object, the <em>arveo</em> endpoint stores the object in the Camel Exchange as a property so that it can be accessed in the route. In the example, this procedure is used to define the parent and child of the relation to be created. The document, the container and the relation each contain exactly one attribute called "filename".</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of a route creating a relation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package scripts.routes
+
+import de.eitco.commons.integration.core.ExceptionProcessor
+import de.eitco.commons.integration.ecr.EcrComponent
+import de.eitco.commons.lang.Unsafe
+import de.eitco.ecr.common.meta.MetaDataEntity
+import de.eitco.ecr.common.search.EcrQueryLanguage
+import org.apache.camel.Exchange
+import org.apache.camel.Expression
+import org.apache.camel.builder.RouteBuilder
+
+return new RouteBuilder() {
+
+    @Override
+    void configure() throws Exception {
+
+        onException(Exception.class)
+                .process(new ExceptionProcessor())
+                .handled(true)
+                .maximumRedeliveries(0)
+
+        from("file://test-classes/input?noop=true")
+                .routeId("test-route")
+                .setHeader("ecr-attribute:filename", simple('${file:onlyname}'))
+
+        // create document
+                .setHeader(EcrComponent.HEADER_CONTENT_NAME, constant('content'))
+                .to("ecr://test_documents")
+                .log("Document created")
+                .setHeader(EcrComponent.HEADER_RELATION_CHILD, exchangeProperty(EcrComponent.PROPERTY_ENTITY))
+
+        // create container
+                .to("ecr://test_containers")
+                .log("Container created")
+                .setHeader(EcrComponent.HEADER_RELATION_PARENT, exchangeProperty(EcrComponent.PROPERTY_ENTITY))
+
+        // create relation document -&gt; container
+                .to("ecr://test_relation")
+                .log("Relation created")
+
+        // create meta entity
+                .to("ecr://test_meta_data")
+                .log("Meta data entity created.")
+
+        // copy file to output
+                .to("file://test-classes/output")
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="update_an_existing_object"><a class="anchor" href="#update_an_existing_object"></a>Update an existing object</h3>
+<div class="paragraph">
+<p>It is also possible to update existing objects. To do this, you just need to set the "ecr-entity-id" header. It can contain both the ID of an object and an EQL expression. The expression must identify exactly one object. It is important to remove the header after the update, so that later calls of the <em>arveo</em> Enpoint do not access the object again. The expression created in the header is an org.apache.camel.expression. The return value of the evaluate method is a de.eitco.commons.search.api.language.Expression.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of a route updating an entity</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">...
+// update container
+        .setHeader("ecr-attribute:filename", constant('updated'))
+        .setHeader(EcrComponent.HEADER_ENTITY_ID, exchangeProperty(EcrComponent.PROPERTY_ENTITY))
+        .to("ecr://test_containers")
+        .log("Container updated")
+        .setHeader("ecr-attribute:filename", simple('${file:onlyname}'))
+        .removeHeader(EcrComponent.HEADER_ENTITY_ID)
+
+// update meta entity
+        .setHeader("ecr-attribute:filename", constant('updated'))
+        .setHeader(EcrComponent.HEADER_ENTITY_ID, new Expression() {
+
+            @Override
+            def &lt;T&gt; T evaluate(Exchange exchange, Class&lt;T&gt; type) {
+
+                def entity = exchange.getProperty(EcrComponent.PROPERTY_ENTITY, MetaDataEntity.class)
+                return Unsafe.cast(EcrQueryLanguage.condition().field("counter").equalTo()
+                        .value(entity.getAttributes().get("counter")).holds())
+            }
+        })
+        .to("ecr://test_meta_data")
+        .log("Meta data entity updated")</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="aggregation_searches"><a class="anchor" href="#aggregation_searches"></a>Aggregation searches</h2>
+<h2 id="script_endpoint"><a class="anchor" href="#script_endpoint"></a>Script endpoint</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In some situations one needs to accumulate some values that are listed in a database. In SQL this is done using aggregate functions and the <code>group by</code> clause. For example in an invoice archive one might be interested in the number of invoices per customer, or the sum of their totals (per customer).
-Queries like this can be executed using the aggregated search. As opposed to the other search methods the result entity type of this search method is <code>Map&lt;String, Object&gt;</code>, since aggregating properties will potentially result in a different type - one that might not be specified. Thus, a more general return type is used.</p>
+<p>In addition to the generic URL endpoint, the <em>arveo</em> component also includes a script endpoint. This endpoint can be used to
+run Groovy scripts that use the <em>arveo</em> API. Each script is passed the following variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>typeDefinitionServiceClient</code>: Contains an instance of de.eitco.ecr.sdk.TypeDefinitionServiceClient</p>
+</li>
+<li>
+<p><code>systemManagementClient</code>: Contains an instance of de.eitco.ecr.sdk.SystemManagementClient,</p>
+</li>
+<li>
+<p><code>batchOperationServiceClient</code>: Contains an instance of de.eitco.ecr.sdk.BatchOperationServiceClient,</p>
+</li>
+<li>
+<p><code>searchClient</code>: Contains an instance of de.eitco.ecr.sdk.SearchClient,</p>
+</li>
+<li>
+<p><code>camelExchange</code>: Contains the current org.apache.camel.Exchange</p>
+</li>
+<li>
+<p><code>camelContext</code>: Contains the current org.apache.camel.CamelContext.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>To start an aggregated search query, you will need to build a search service for your aggregated search first. We will build a service for the example above: querying the number and total sum of invoices per user.</p>
-</div>
-<div class="paragraph">
-<p>Assume that we have a type <code>customer</code> defined by the class <code>Customer</code> and a type <code>invoice</code> defined by the class <code>Invoice</code>:</p>
+<p>The script endpoint can be used in a route like the following example. It provides two methods: execute and voidExecute. The <em>execute</em> method sets the return value of the script as the new body of the current Camel message. The <em>voidExecute</em> method ignores the return value of the script. The endpoint consists of a bean called <em>ecrScriptWrapper</em> that is able to execute Groovy scripts that perform the actual interaction with the <em>arveo</em> service.</p>
 </div>
 <div class="listingblock">
+<div class="title">Example of a route using a script endpoint</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
-@FilingEnabled
-public interface Customer {
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package scripts.routes
 
-    @SystemProperty(SystemPropertyName.ID)
-    DocumentId id();
+import de.eitco.commons.integration.core.ExceptionProcessor
+import org.apache.camel.builder.RouteBuilder
 
-    @Unique
-    String getName();
+...
+return new RouteBuilder() {
 
-    void setName(String name);
+    @Override
+    void configure() throws Exception {
 
-}
+        onException(Exception.class)
+                .process(new ExceptionProcessor())
+                .handled(true)
+                .maximumRedeliveries(0)
 
-@Type(ObjectType.DOCUMENT)
-@FilingEnabled
-public interface Invoice {
-
-    @ForeignKey(name = "fk_invoice_customer", target = Customer.class, targetProperty = "id")
-    long getCustomerNumber();
-    
-    void setCustomerNumber(long number);
-
-    @Optional
-    String getCustomerName();
-    void setCustomerName(String customerName);
-
-    @Optional
-    String getName();
-
-    void setName(String name);
-
-    @Optional
-    Integer getTotal();
-
-    void setTotal(Integer total);
-
-    @Optional
-    Boolean getOpen();
-
-    void setOpen(Boolean open);
+        from("file://test-classes/input?noop=true")
+                .routeId("test-route")
+                .to("bean://ecrScriptWrapper?method=voidExecute('common/EcrScript.groovy')")
+                .to("file://test-classes/output")
+    }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>As you can see, the invoice references the customer with the property <code>customer_number</code> defined by the method <code>getCustomerNumber()</code>. Now we can build a search service as follows:</p>
+<p>The script used in the example creates a new document with the contents of the read file. The return value of the script is a DocumentClient for the new document:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of a script being used by the route described above</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package scripts.common
+
+import de.eitco.commons.integration.ecr.EcrProducer
+import de.eitco.ecr.common.document.DocumentInput
+import de.eitco.ecr.sdk.TypeDefinitionServiceClient
+import org.apache.camel.Exchange
+import org.apache.camel.component.file.GenericFile
+
+LOG.info("ecr script started...")
+
+TypeDefinitionServiceClient typeServiceClient = typeDefinitionServiceClient
+Exchange exchange = camelExchange
+
+def serviceClient = typeServiceClient.getDocumentServiceClient().byName("test_documents2")
+
+def documentInput = new DocumentInput(
+Map.of("filename", ((GenericFile) exchange.getIn().getBody()).fileNameOnly),
+Map.of("content", EcrProducer.getContentUploadFromBody(exchange.getIn().getBody())))
+)
+
+serviceClient.create(documentInput)</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="authentication"><a class="anchor" href="#authentication"></a>Authentication</h3>
+<div class="paragraph">
+<p>The arveo endpoint can log into the ECR using either OAuth2 or x509.</p>
+</div>
+<div class="sect3">
+<h4 id="oauth2"><a class="anchor" href="#oauth2"></a>Oauth2</h4>
+<div class="paragraph">
+<p>Using OAuth2, the ECR endpoint logs in to the <em>arveo</em> as a concrete user. The user&#8217;s credentials must be specified in the integration service configuration file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        final EcrSearchService&lt;Map&lt;String, Object&gt;&gt; aggregationSearchService = searchClient.aggregate() <i class="conum" data-value="1"></i><b>(1)</b>
-            .count("i", "id").as("invoice_count") <i class="conum" data-value="2"></i><b>(2)</b>
-            .sum("i", "total").as("invoice_total")
-            .groupedBy("c", "name").as("customer")
-            .from().type(ProtectedInvoice.class).as("i").join().type(ProtectedCustomer.class).as("c")  <i class="conum" data-value="3"></i><b>(3)</b>
-            .on().alias("i").field("customer_number").equalTo().alias("c").id() <i class="conum" data-value="4"></i><b>(4)</b>
-            .holds().build();</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr-endpoint:
+  oauth2:
+    user-name: "username"
+    password: "password"</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Calling <code>SearchClient.aggregate()</code> is the entry point to the fluent api to build a search service for aggregation search requests.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>At first, we need to specify what to aggregate and what to group by: In our case we want to get the count (of the invoice ids) and the sum of the invoice totals grouped by customer name (which is  unique). Every field that is grouped by will also be part of the result.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Now we need to specify from where the data to aggregate comes from. We join the type <code>Invoice</code> with the type <code>Customer</code>. Note that we specify aliases for the types <code>"i"</code> and <code>"c"</code>, which we used in the step before to reference the types fields.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Now we specify the condition for the join. The condition is that the invoices <code>customer_number</code> must equal the customers' id - as the foreign key <code>fk_invoice_customer</code> above specifies.</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>Now we can query for the aggregated data:</p>
+<p>Additionally, the Spring Security OAuth2 framework used must be configured:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        final List&lt;Map&lt;String, Object&gt;&gt; all = aggregationSearchService.where().alwaysTrue().holds().unpaged();</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-password:
+            provider: keycloak
+            client-id: "testclient"
+            client-secret: "yx7n6di3kXZ4p3Kj2oY1Js9NW7hbOCjh"
+            authorization-grant-type: "password"
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: "http://localhost:8180/realms/TestRealm"</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="x509"><a class="anchor" href="#x509"></a>x509</h4>
 <div class="paragraph">
-<p>This will result in a list of maps - one map per customer - where every map contains the keys <code>"customer"</code>, <code>"invoice_count"</code> and <code>"invoice_total"</code>. Holding the customers name, the number of their invoices and their total sum, respectively´.</p>
-</div>
-<div class="paragraph">
-<p>Additionally, we can query specific customers and invoices using the same search service. In this scenario for example we could query every customers <code>"invoice_count"</code> and <code>"invoice_total"</code> of invoices that are open i.e. that they haven&#8217;t paid, yet:</p>
+<p>For x509, the certificate to be used by the HTTP client must be configured. Since Oauth2 is the default, it must be turned off and x509 must be turned on:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        final List&lt;Map&lt;String, Object&gt;&gt; open = aggregationSearchService.where()
-            .alias("i").field("open").equalTo().value(true)
-            .holds().unpaged();</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  security:
+    oauth2:
+      client:
+        enabled: false
+
+security:
+  x509:
+    client:
+      enabled: true
+
+http:
+  client:
+    ssl:
+      key-store: /path/service-user.p12
+      key-store-type: PKCS12
+      key-store-password: changeit
+      client-auth: true</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>This will also result in a list of maps - one map per customer - where every map contains the keys <code>"customer"</code>, <code>"invoice_count"</code> and <code>"invoice_total"</code>. Holding the customers name, the number of their invoices and their total sum, respectively´ - only counting open invoices.</p>
 </div>
-<div class="paragraph">
-<p>Note that we can reference the invoices field <code>open</code> by using the alias <code>i</code> we provided earlier, even though it is not part of the result.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="versioning.html">Versioning</a></span>
-  <span class="next"><a href="enterprise-search-nosql.html">NoSQL Document database</a></span>
+  <span class="prev"><a href="events.html">Events</a></span>
+  <span class="next"><a href="system-tables.html">System Tables</a></span>
 </nav>
 </article>
   </div>

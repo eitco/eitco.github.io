@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Java SDK :: arveo Documentation</title>
+    <title>Java SDK for Spring applications :: arveo Documentation</title>
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/sdk-and-batch-operations.html">
     <link rel="prev" href="client-sdks-json-serialization.html">
-    <link rel="next" href="system-tables.html">
+    <link rel="next" href="non-spring-sdk.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
   </head>
@@ -276,13 +276,28 @@
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">REST API</span>
+    <span class="nav-text">SDKs</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="client-sdks-json-serialization.html">Client SDKs</a>
   </li>
   <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="sdk-and-batch-operations.html">Java SDK</a>
+    <a class="nav-link" href="sdk-and-batch-operations.html">Java SDK for Spring applications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="non-spring-sdk.html">Java SDK for non-Spring applications</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Events and messaging</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="events.html">Events</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="integration-service.html">Enterprise Integration Service</a>
   </li>
 </ul>
   </li>
@@ -335,8 +350,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>REST API</li>
-    <li><a href="sdk-and-batch-operations.html">Java SDK</a></li>
+    <li>SDKs</li>
+    <li><a href="sdk-and-batch-operations.html">Java SDK for Spring applications</a></li>
   </ul>
 </nav>
 </div>
@@ -345,11 +360,11 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Java SDK</h1>
+<h1 class="page">Java SDK for Spring applications</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The SDK contains the general API for accessing the <em>arveo</em>. The SDK can be used both
+<p>The SDK contains the general API for accessing <em>arveo</em>. The SDK can be used both
 to access the <em>arveo</em> via HTTP and to use the <em>arveo</em> as an embedded library.</p>
 </div>
 <div class="listingblock">
@@ -358,7 +373,7 @@ to access the <em>arveo</em> via HTTP and to use the <em>arveo</em> as an embedd
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
    &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
    &lt;artifactId&gt;ecr-sdk-http&lt;/artifactId&gt;
-   &lt;version&gt;${ecr.version}&lt;/version&gt;
+   &lt;version&gt;17.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -368,7 +383,7 @@ to access the <em>arveo</em> via HTTP and to use the <em>arveo</em> as an embedd
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
    &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
    &lt;artifactId&gt;ecr-embedded-all&lt;/artifactId&gt;
-   &lt;version&gt;${ecr.version}&lt;/version&gt;
+   &lt;version&gt;17.0.0-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -402,6 +417,10 @@ can be obtained using Spring Dependency Injection. With the methods</p>
 can then be used to create new objects or load existing objects. For created or loaded objects, one in turn receives an
 entity client that offers methods for accessing the object. Special version clients are also available for concrete
 versions of entities.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="../arveo-getting-started/getting-started.html" class="xref page">getting started guide</a> contains an example that demonstrates
+how to use the typed API in a Spring application.</p>
 </div>
 </div>
 </div>
@@ -815,7 +834,7 @@ List&lt;EcrId&gt; ids = batchOperationServiceClient.performTypedBatchOperations(
 </div>
 <nav class="pagination">
   <span class="prev"><a href="client-sdks-json-serialization.html">Client SDKs</a></span>
-  <span class="next"><a href="system-tables.html">System Tables</a></span>
+  <span class="next"><a href="non-spring-sdk.html">Java SDK for non-Spring applications</a></span>
 </nav>
 </article>
   </div>
