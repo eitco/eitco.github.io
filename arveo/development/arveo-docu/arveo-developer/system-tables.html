@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>System Tables :: arveo Documentation</title>
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/system-tables.html">
-    <link rel="prev" href="integration-service.html">
+    <link rel="prev" href="full-featured-archetype.html">
     <link rel="next" href="../arveo-commons/compatibility-list.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
@@ -301,6 +301,18 @@
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Archetypes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="slim-archetype.html">The Types archetype</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="full-featured-archetype.html">The full-featured archetype</a>
+  </li>
+</ul>
+  </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="system-tables.html">System Tables</a>
   </li>
@@ -384,20 +396,11 @@ used:</p>
 </li>
 </ul>
 </div>
-<div class="literalblock">
-<div class="title">ERD of type system tables</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre>         +---------------+                     +----------------------------+
-         |   ecr_types   |                     | ecr_types_content_elements |
-         +---------------+                     +----------------------------+
-         | id            |&lt;----+               | ce_name                    |
-         |---------------|     +---------------+ ce_type_id                 |
-         | creation_date |                     |----------------------------|
-         | ecr_version   |                     | ce_content_type            |
-         | object_type   |                     | ce_profile                 |
-         | type_name     |                     | ce_store_json              |
-         +---------------+                     +----------------------------+</pre>
+<img src="_images/b3599a974f80c06ef20fc206fe0309964f01960f.svg" alt="type-system-tables">
 </div>
+<div class="title">Figure 1. ERD of type system tables</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Columns of ecr_types</caption>
@@ -488,21 +491,11 @@ used:</p>
 stored in the <em>ecr_folder_structure</em> table. The table <em>ecr_folder_structure_closure</em> contains a transitive hull of the
 parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
-<div class="literalblock">
-<div class="title">ERD of folder structure tables</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre>         +----------------------+         +------------------------------+
-         | ecr_folder_structure |         | ecr_folder_structure_closure |
-         +----------------------+         +------------------------------+
-         | child_id             |         | id                           |
-         |----------------------|         |------------------------------|
-         | child_name           |         | child_id                     |
-         | child_type_id        |         | child_type_id                |
-         | parent_id            |         | depth                        |
-         | parent_type_id       |         | parent_id                    |
-         +----------------------+         | parent_type_id               |
-                                          +------------------------------+</pre>
+<img src="_images/5f189dcb1f708ca392ba6deec8409ce2215c42b2.svg" alt="folder-structure-tables">
 </div>
+<div class="title">Figure 2. ERD of folder structure tables</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Columns of ecr_folder_structure</caption>
@@ -596,20 +589,11 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 <div class="paragraph">
 <p>The recovery table <em>ecr_recovery</em> is used for the <a href="../arveo-general/data-deletion.html#_recovery_log" class="xref page">recovery</a> feature.</p>
 </div>
-<div class="literalblock">
-<div class="title">ERD of ecr_recovery</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre>         +----------------+
-         |  ecr_recovery  |
-         +----------------+
-         | deleted_date   |
-         | entity         |
-         | entity_id      |
-         | keep_until     |
-         | type_id        |
-         | version_id     |
-         +----------------+</pre>
+<img src="_images/6e7397513b1f0f6f597483ff5b86e5b27797740f.svg" alt="ecr-recovery-table">
 </div>
+<div class="title">Figure 3. ERD of ecr_recovery</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Columns of <em>ecr_recovery</em></caption>
@@ -669,17 +653,11 @@ profile-specific database tables. For each encrypted profile, a table called <co
 <code>ecr_keys_assoc</em>&lt;profile&gt;</code> is created. The ecr_keys_&lt;profile&gt; table contains the generated keys, and the
 ecr_keys_assoc_&lt;profile&gt; table contains the associations between content elements and keys.</p>
 </div>
-<div class="literalblock">
-<div class="title">ERD of keystore tables</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre>         +--------------------+           +------------------------+
-         |  ecr_keys_profile  |           | ecr_keys_assoc_profile |
-         +--------------------+           +------------------------+
-         | id                 |&lt;--+       | content_id             |
-         |--------------------|   +-------+ id                     |
-         | key                |           +------------------------+
-         +--------------------+</pre>
+<img src="_images/8da1ef57823993117387e8cffa24bb6a4c68dd99.svg" alt="ecr-keystore-tables">
 </div>
+<div class="title">Figure 4. ERD of keystore tables</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Columns of ecr_keys_&lt;profile&gt;</caption>
@@ -738,7 +716,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="integration-service.html">Enterprise Integration Service</a></span>
+  <span class="prev"><a href="full-featured-archetype.html">The full-featured archetype</a></span>
   <span class="next"><a href="../arveo-commons/compatibility-list.html">Compatibility List</a></span>
 </nav>
 </article>
