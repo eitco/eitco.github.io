@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Client SDKs :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/client-sdks-json-serialization.html">
-    <link rel="prev" href="retention.html">
-    <link rel="next" href="sdk-and-batch-operations.html">
+    <title>Delete an object :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/repo-service-delete-objects.html">
+    <link rel="prev" href="repo-service-download-data.html">
+    <link rel="next" href="repo-service-locking.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
   </head>
@@ -266,7 +266,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="repo-service-download-data.html">Download Data</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="repo-service-delete-objects.html">Delete Data</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -290,7 +290,7 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">SDKs</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="client-sdks-json-serialization.html">Client SDKs</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -374,8 +374,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>SDKs</li>
-    <li><a href="client-sdks-json-serialization.html">Client SDKs</a></li>
+    <li>Repository Service</li>
+    <li><a href="repo-service-delete-objects.html">Delete Data</a></li>
   </ul>
 </nav>
 </div>
@@ -384,220 +384,106 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Client SDKs</h1>
+<h1 class="page">Delete an object</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The client SDKs provide APIs for applications using <em>arveo</em>. SDKs exist for both Java and TypeScript. Client applications
-should not use the REST API of <em>arveo</em> directly but instead use one of the provided SDKs.</p>
+<p>Documents contain one or more content elements which are not stored in the database but in the storage system. When a document is deleted using one of the delete-calls, the content elements will remain on the storage. To delete both the database entries and all content elements (including those referenced from older versions), a client can use the purge
+methods provided by the document clients.</p>
 </div>
 <div class="paragraph">
-<p>Currently, three different SDKs are available:</p>
+<p>A type definition can use the optional <em>recycle bin</em> feature. If it is enabled, entities in the type definition can be moved to and restored from the recycle bin.
+The Delete-API allows you to execute the methods:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Java SDK for Spring applications</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Provides a typed API using the same interfaces as used for the type definitions</p>
+<p>MoveToRecycleBin(): to move an object to the recycle bin. The <em>DELETE</em>-property of the latest version is set to 1 and content and older versions are not affected.</p>
 </li>
 <li>
-<p>Spring autoconfiguration for dependency injection</p>
+<p>Delete() all the versions of the object are deleted from the database.</p>
+</li>
+<li>
+<p>Purge(): all the version of the objects are deleted from the database and the content objects or files are erased.</p>
+</li>
+<li>
+<p>RestoreFormRecycleBin(): restore an object from the recycle bin, the <em>DELETE</em>-property is set to 0</p>
 </li>
 </ul>
 </div>
-</li>
-<li>
-<p>Java SDK for non-spring applications</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Provides a generic API</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Typescript SDK</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="json_serialization"><a class="anchor" href="#json_serialization"></a>JSON serialization</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><em>arveo</em> uses a custom serialization for the JSON data in the REST API to support advanced features like polymorphism.
-Additionally, the custom serialization allows the <em>arveo</em> server and the client SDKs to pass type information. This way
-it is for example possible to differ between number types like short, int and long. The client SDKs take care of the
-serialization and the direct usage of the REST API is discouraged.</p>
-</div>
-<div class="paragraph">
-<p>If it is necessary to (de-) serialize the custom JSON data, use the already configured Jackson <em>ObjectMapper</em> that is
-used by the server and the SDKs. This <em>ObjectMapper</em> is equipped with mixin types that contain information about how
-to (de-) serialize the custom JSON content. The internal <em>ObjectMapper</em> can be obtained by injecting an instance of
-<code>de.eitco.commons.spring.web.json.AsdlObjectMapperHolder</code>.</p>
-</div>
-<div class="paragraph">
-<p>The service offers an overview page containing the REST resources and details about the models. It can generate examples
-for the models, too. The overview page is located at the root URL of the service.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="type_information"><a class="anchor" href="#type_information"></a>Type information</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Each object contains a type identifier in a json property called <code>@type</code>. The required value is listed in the API
-overview page for each model class. Example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"identifier": {
-  "@type": "container-id",
-  "identifier": {
-    "@long": "1"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="type_information_for_data_types"><a class="anchor" href="#type_information_for_data_types"></a>Type information for data types</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>There are some special type identifiers used to identify the type of JSON fields.</p>
-</div>
-<div class="paragraph">
-<p>The following table lists types and their corresponding identifiers.</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Types in Java and their Identifiers in <em>arveo</em></caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
+<div class="admonitionblock warning">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Type (Java)</th>
-<th class="tableblock halign-left valign-top">Identifier</th>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If an object has relations to other objects is related by other objects the delete or purge method will fail with a foreign key exception. The Relation API provides methods to delete the relations (<a href="#removing_all_relations_of_an_entity"><strong>Remove Relations</strong></a>)
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Byte</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@byte</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Short</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@short</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@long</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BigInteger</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@big-int</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Float</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@float</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@utc-date-time</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ZonedDateTime</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@zoned-date-time</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Class&lt;?&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@type-reference</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">UUID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@uuid</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">byte[]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@binary</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LocalDate</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@date</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LocalTime</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@time</p></td>
-</tr>
-</tbody>
 </table>
-<div class="paragraph">
-<p>Other data types do not require specific type identifiers.</p>
-</div>
-<div class="paragraph">
-<p>The following example shows a special type identifier:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"retentionDate": {
-  "@zoned-date-time": "2020-12-15T15:52:21.5193002+01:00[Europe/Berlin]"
-}</code></pre>
-</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="collections"><a class="anchor" href="#collections"></a>Collections</h2>
+<h2 id="filter_recycle_bin"><a class="anchor" href="#filter_recycle_bin"></a>Filter recycle bin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To distinguish between different types of collections (lists and sets) there are type identifiers for collection
-types.</p>
+<p>Entities in the recycle bin will be filtered from normal queries by default, but a client can compose search expressions that override this behavior. To do that it is sufficient to include a reference to the deleted system field in the expression. The following example shows a part of a query that will show only deleted entities:</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 55%;">
-<caption class="title">Identifiers for the Types List and Set</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Type (Java)</th>
-<th class="tableblock halign-left valign-top">Identifier</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@list</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@set</p></td>
-</tr>
-</tbody>
-</table>
+<div class="listingblock">
+<div class="title">Excerpt of an example query</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">....and().systemField(SystemFieldList.GeneralSystemField.Deleted.INSTANCE).equalTo().value(true)</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>The following is an example of the Type <em>List</em>:</p>
+<p>Note that the deleted system field can contain <em>null</em> values, which have the same meaning as <em>false</em>. When a client uses one of the <em>delete</em> calls to delete one or more entities, all database entries for those entities will be deleted (including all versions).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+There is no option to restore entities once they have been deleted.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If there are relations between entities that are to be deleted, the relations are not deleted. Instead, a <em>ForeignKeyException</em> is thrown - and has to be handled by the caller.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="removing_all_relations_of_an_entity"><a class="anchor" href="#removing_all_relations_of_an_entity"></a>Removing all relations of an entity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To delete all relations that originate from a certain entity, the method <em>removeAllRelations()</em> has to be used. The method returns the deleted relations:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"list": {
-  "@list": []
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;Relation&gt; removed = sourceContainerClient.removeAllRelations();</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can also delete all relations that point to a specific entity. For this, there is the method <em>removeAllIncomingRelations()</em>. This also returns the deleted relations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;Relation&gt; removed = targetContainerClient.removeAllIncomingRelations();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once all relations have been removed, the entity can also be deleted.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="retention.html">Retention periods</a></span>
-  <span class="next"><a href="sdk-and-batch-operations.html">Java SDK for Spring applications</a></span>
+  <span class="prev"><a href="repo-service-download-data.html">Download Data</a></span>
+  <span class="next"><a href="repo-service-locking.html">Locking</a></span>
 </nav>
 </article>
   </div>

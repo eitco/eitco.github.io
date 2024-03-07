@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document Service :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/document-service.html">
-    <link rel="prev" href="advanced-schema-changes.html">
-    <link rel="next" href="versioning.html">
+    <title>Upload data :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/repo-service-upload-data.html">
+    <link rel="prev" href="repo-service.html">
+    <link rel="next" href="repo-service-download-data.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
   </head>
@@ -255,19 +255,31 @@
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">Document Service</span>
+    <span class="nav-text">Repository Service</span>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="repo-service.html">Introduction</a>
+  </li>
   <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="document-service.html">Document Service</a>
+    <a class="nav-link" href="repo-service-upload-data.html">Upload Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="repo-service-download-data.html">Download Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="repo-service-delete-objects.html">Delete Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="repo-service-locking.html">Locking</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="repo-service-download-links-external-users.html">Download Links for External Users</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="versioning.html">Versioning</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="search-service.html">Search language</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="enterprise-search-nosql.html">NoSQL Document database</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="retention.html">Retention periods</a>
@@ -362,8 +374,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>Document Service</li>
-    <li><a href="document-service.html">Document Service</a></li>
+    <li>Repository Service</li>
+    <li><a href="repo-service-upload-data.html">Upload Data</a></li>
   </ul>
 </nav>
 </div>
@@ -372,19 +384,8 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Document Service</h1>
+<h1 class="page">Upload data</h1>
 <div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Document Service service is responsible for handling various repository entities such as documents and folders. The following entity types are supported: document, folder, container, relation and metadata.</p>
-</div>
-<div class="paragraph">
-<p>The service saves the binary data belonging to the documents and delivers them again. Various plugins are available for connecting storage devices and services. A plug-in is assigned to a profile and configured. When saving data, the client has to specify the profile to be used and thereby decides where the data will be saved.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_upload_data"><a class="anchor" href="#_upload_data"></a>Upload data</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Content, annotations (see below) and metadata can be uploaded as a coherent document. 0-n content elements of different content types are possible. Each content element is named. As a result, you get a globally unique ID (DocumentID), which can be used to reference content, annotations and / or just metadata of the latest version of the document. It is possible to clone content elements from one document to another, creating a copy of the content on the storage. For that, a ContentReference can be supplied when the document is created.</p>
@@ -470,13 +471,16 @@ serviceClient.create(new TypedDocumentInput&lt;&gt;(contentElements, document));
 </tr>
 </table>
 </div>
-<div class="sect2">
-<h3 id="validating_uploaded_content"><a class="anchor" href="#validating_uploaded_content"></a>Validating uploaded content</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="validating_uploaded_content"><a class="anchor" href="#validating_uploaded_content"></a>Validating uploaded content</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>There are several different ways to validate the content of an uploaded document. The method to use depends on the requirements of the client application. Some applications might already have computed a hash of the content while others might offload this to the server.</p>
 </div>
-<div class="sect3">
-<h4 id="validating_content_on_the_client_side"><a class="anchor" href="#validating_content_on_the_client_side"></a>Validating content on the client side</h4>
+<div class="sect2">
+<h3 id="validating_content_on_the_client_side"><a class="anchor" href="#validating_content_on_the_client_side"></a>Validating content on the client side</h3>
 <div class="paragraph">
 <p>When content is uploaded to a type definition that supports content metadata, the server computes an SHA-256 hash for the received data and returns it in the result of the upload request. The client can use this hash value to compare the data received by the server with the original data. The following example shows how to compare the hash values:</p>
 </div>
@@ -526,8 +530,8 @@ client.createAndValidate(input);</code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="validating_content_on_the_server_side"><a class="anchor" href="#validating_content_on_the_server_side"></a>Validating content on the server side</h4>
+<div class="sect2">
+<h3 id="validating_content_on_the_server_side"><a class="anchor" href="#validating_content_on_the_server_side"></a>Validating content on the server side</h3>
 <div class="paragraph">
 <p>It is also possible to pass a hex representation of an SHA-256 hash code of the uploaded content to the server. If such a hash is present, the server will compare the computed hash value with the one specified by the client. If the values do not match, the upload fails and the uploaded file will not be stored.</p>
 </div>
@@ -573,8 +577,8 @@ client.create(input);</code></pre>
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="validating_the_content_of_an_existing_document"><a class="anchor" href="#validating_the_content_of_an_existing_document"></a>Validating the content of an existing document</h4>
+<div class="sect2">
+<h3 id="validating_the_content_of_an_existing_document"><a class="anchor" href="#validating_the_content_of_an_existing_document"></a>Validating the content of an existing document</h3>
 <div class="paragraph">
 <p>The <code>TypedDocumentServiceClient</code> provides a method called <code>hashMatches</code> that can be used to check if the content of an existing document is valid. The client has to provide the expected hash, the document&#8217;s ID and the name of the content element to check. An additional parameter called <code>loadContent</code> defines if the server should use the hash value stored in the database or if it should load the content from the storage and compute a new hash value to compare. It is possible to check the content of a specific version of a document, too.</p>
 </div>
@@ -587,8 +591,10 @@ boolean hashMatches = documentServiceClient.hashMatches(documentId, "content", h
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="resumable_uploads"><a class="anchor" href="#resumable_uploads"></a>Resumable uploads</h3>
+</div>
+<div class="sect1">
+<h2 id="resumable_uploads"><a class="anchor" href="#resumable_uploads"></a>Resumable uploads</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>In some situations uploading large files might fail because of timeouts or an unstable network connection. For these
 situations, arveo supports resumable uploads using the <a href="http://tus.io">tus</a> protocol. On the server side, an
@@ -654,214 +660,9 @@ TypedDocumentClient&lt;Files&gt; typedDocumentClient =
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="download_data"><a class="anchor" href="#download_data"></a>Download data</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Content, annotations and metadata of a document can be downloaded via API. It is possible to load the entire document as a multipart or a structure of the document that includes all metadata, annotations and a list of content elements with their IDs, types and identifiers. Each content element can then be loaded using the document ID / content ID or the
-document ID / content type. Access to individual content elements without a document ID is not possible for reasons of access control. Access control based on the document ID is ensured with every access.</p>
-</div>
-<div class="sect2">
-<h3 id="update_metadata_without_a_version"><a class="anchor" href="#update_metadata_without_a_version"></a>Update metadata without a version</h3>
-<div class="paragraph">
-<p>The meta information of a document can be changed. The changes can be persisted in the database without creating a version. It is possible, to maintain frequently changing information on the document quickly without creating the overhead of a version. However, in the event of an audit, the changes are not traceable.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_document_service_recycle_bin"><a class="anchor" href="#_document_service_recycle_bin"></a>Delete an object</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Documents contain one or more content elements which are not stored in the database but in the storage system. When a document is deleted using one of the delete-calls, the content elements will remain on the storage. To delete both the database entries and all content elements (including those referenced from older versions), a client can use the purge
-methods provided by the document clients.</p>
-</div>
-<div class="paragraph">
-<p>A type definition can use the optional <em>recycle bin</em> feature. If it is enabled, entities in the type definition can be moved to and restored from the recycle bin.
-The Delete-API allows you to execute the methods:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>MoveToRecycleBin(): to move an object to the recycle bin. The <em>DELETE</em>-property of the latest version is set to 1 and content and older versions are not affected.</p>
-</li>
-<li>
-<p>Delete() all the versions of the object are deleted from the database.</p>
-</li>
-<li>
-<p>Purge(): all the version of the objects are deleted from the database and the content objects or files are erased.</p>
-</li>
-<li>
-<p>RestoreFormRecycleBin(): restore an object from the recycle bin, the <em>DELETE</em>-property is set to 0</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-If an object has relations to other objects is related by other objects the delete or purge method will fail with a foreign key exception. The Relation API provides methods to delete the relations (<a href="#removing_all_relations_of_an_entity"><strong>Remove Relations</strong></a>)
-</td>
-</tr>
-</table>
-</div>
-<div class="sect2">
-<h3 id="filter_recycle_bin"><a class="anchor" href="#filter_recycle_bin"></a>Filter recycle bin</h3>
-<div class="paragraph">
-<p>Entities in the recycle bin will be filtered from normal queries by default, but a client can compose search expressions that override this behavior. To do that it is sufficient to include a reference to the deleted system field in the expression. The following example shows a part of a query that will show only deleted entities:</p>
-</div>
-<div class="listingblock">
-<div class="title">Excerpt of an example query</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">....and().systemField(SystemFieldList.GeneralSystemField.Deleted.INSTANCE).equalTo().value(true)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note that the deleted system field can contain <em>null</em> values, which have the same meaning as <em>false</em>. When a client uses one of the <em>delete</em> calls to delete one or more entities, all database entries for those entities will be deleted (including all versions).</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-There is no option to restore entities once they have been deleted.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>If there are relations between entities that are to be deleted, the relations are not deleted. Instead, a <em>ForeignKeyException</em> is thrown - and has to be handled by the caller.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="removing_all_relations_of_an_entity"><a class="anchor" href="#removing_all_relations_of_an_entity"></a>Removing all relations of an entity</h3>
-<div class="paragraph">
-<p>To delete all relations that originate from a certain entity, the method <em>removeAllRelations()</em> has to be used. The method returns the deleted relations:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;Relation&gt; removed = sourceContainerClient.removeAllRelations();</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can also delete all relations that point to a specific entity. For this, there is the method <em>removeAllIncomingRelations()</em>. This also returns the deleted relations:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;Relation&gt; removed = targetContainerClient.removeAllIncomingRelations();</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Once all relations have been removed, the entity can also be deleted.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="locking"><a class="anchor" href="#locking"></a>Locking</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>If your applications want to update objects from different processes at the same time you must decide if you want to use no locking or optimistic locking.
-No locking means that the latest update wins and overwrites the concurrent update. Depending on the database configuration it might happen that one update becomes a deadlock victim and an exception is thrown.
-If optimistic locking is enabled for the document type the API ensures that updates do not overwrite changes made by other clients by accident. The feature is disabled by default and can be enabled by annotating a type class with <em>@OptimisticLocking</em>.
-e.g. two processes A and B load the same object including content and versions at the same time and get the same version of the document. Now both processes process the document and some metadata and add additional content. A is faster than B. With No Locking B overwrites the changes made by A. With optimistic locking B cannot save the changes and receives a Locking exception. Process B has to load the changes made by A and retry the operation.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="download_links_for_external_users"><a class="anchor" href="#download_links_for_external_users"></a>Download links for external users</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You can create download links for content elements that can be used by external users. Such a link has an expiration date and can be used to download a single content element. The links are digitally signed using a configurable certificate, so that the receiver cannot alter the
-referenced content element or the expiration date of the link. The <em>arveo</em> service provides a special HTTP endpoint to process download links. This endpoint does not require authentication. Instead, the download link contains credentials that allow the user to access the referenced content element.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-This feature must be activated by configuring a keystore containing an RSA keypair that will be used to sign the links.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The configuration options are listed <a href="../commons/configuration-properties.html#_ecr_server_content-access-tokens" class="xref page">here</a>.</p>
-</div>
-<div class="paragraph">
-<p>Download links (or content access tokens), can be created using the Java SDK as shown in the following exaple:</p>
-</div>
-<div class="listingblock">
-<div class="title">Injecting and instance of the ContentAccessTokenResourceClient</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
-private ContentAccessTokenResourceClient contentAccessTokenResourceClient;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Creating a new content access token</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ContentAccessTokenInput input = new ContentAccessTokenInput(
-    documentId,<i class="conum" data-value="1"></i><b>(1)</b>
-    "content",<i class="conum" data-value="2"></i><b>(2)</b>
-    ZonedDateTime.now().plusHours(3)<i class="conum" data-value="3"></i><b>(3)</b>
-);
-
-String token = contentAccessTokenResourceClient.createToken(input);</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The ID of the document containing the content element to download</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The name of the content element</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The expiration date of the link (can be omitted)</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The returned token can then be used to download the content by performing a GET request to the following endpoint:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">GET http://my-arveo-instance/api/streaming/&lt;token&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Download links can only be created for content elements that are accessible to the user creating the link. When the client does not define an expiration date when the content access token is created, the configured maximum lifetime is used.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The creation of new tokens will fail when the client specifies an expiration date that would exceed the configured maximum lifetime.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
 <nav class="pagination">
-  <span class="prev"><a href="advanced-schema-changes.html">Advanced database schema changes</a></span>
-  <span class="next"><a href="versioning.html">Versioning</a></span>
+  <span class="prev"><a href="repo-service.html">Introduction</a></span>
+  <span class="next"><a href="repo-service-download-data.html">Download Data</a></span>
 </nav>
 </article>
   </div>

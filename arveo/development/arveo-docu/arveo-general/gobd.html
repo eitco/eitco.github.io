@@ -255,19 +255,31 @@
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">Document Service</span>
+    <span class="nav-text">Repository Service</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../arveo-developer/document-service.html">Document Service</a>
+    <a class="nav-link" href="../arveo-developer/repo-service.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-upload-data.html">Upload Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-data.html">Download Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-delete-objects.html">Delete Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-locking.html">Locking</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-links-external-users.html">Download Links for External Users</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-developer/versioning.html">Versioning</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-developer/search-service.html">Search language</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../arveo-developer/enterprise-search-nosql.html">NoSQL Document database</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-developer/retention.html">Retention periods</a>
@@ -403,7 +415,7 @@ Add the <em>@Autoincrement</em> annotation if a simple sequential Long id meets 
 <p>If you need a more sophisticated unique identifier you can use the annotation _@FormattedCounter which allows you to create e.g. String identifiers like &lt;year&gt;-&lt;sequence&gt; (<a href="../arveo-developer/entity-annotations.html#_formatted_counters_example" class="xref page">Unique Identifier Example</a>)</p>
 </div>
 <div class="paragraph">
-<p>List data types allow you to store more than String or long value for a property. You can search for each value using the array search operation of the <em>arveo</em> query language (<a href="../arveo-developer/data-types.html#data_types" class="xref page">Data Types</a>).</p>
+<p>List data types allow you to store more than String or long value for a property. You can search for each value using the array search operation of the <em>arveo</em> query language (<a href="../arveo-developer/data-types.html#_data_types" class="xref page">Data Types</a>).</p>
 </div>
 <div class="paragraph">
 <p>Enumeration data types allow you to set one or more values from a fixed set of values.</p>
@@ -467,7 +479,7 @@ Save the dumps as an <em>arveo</em> document with a 10-year retention period. If
 </div>
 <div class="paragraph">
 <p>In the event that data has to be migrated, <em>arveo</em> offers an extensive export API that enables content and metadata to be exported.
-<em>arveo</em> saves the hash value (<a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" class="bare" target="blank">https://en.wikipedia.org/wiki/Cryptographic_hash_function</a>) in the database that was determined when the content was first uploaded (<a href="../arveo-developer/document-service.html#<em>upload_data" class="xref page">Upload Data</a>). This hash value can be used as a checksum to detect accidental or intentionally corruption of data. If the hash value of the content after the migration is identical to the original hash the migration report proves the correctness of the migration process. To report the completeness of the migration process  the _arveo</em> API allows you to export a list of all records, cases and documents in a document type.</p>
+<em>arveo</em> saves the hash value (<a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" class="bare" target="blank">https://en.wikipedia.org/wiki/Cryptographic_hash_function</a>) in the database that was determined when the content was first uploaded (<a href="../arveo-developer/repo-service-upload-data.html#<em>upload_data" class="xref page">Upload Data</a>). This hash value can be used as a checksum to detect accidental or intentionally corruption of data. If the hash value of the content after the migration is identical to the original hash the migration report proves the correctness of the migration process. To report the completeness of the migration process  the _arveo</em> API allows you to export a list of all records, cases and documents in a document type.</p>
 </div>
 </div>
 </div>
@@ -540,7 +552,7 @@ Depending on your retention policy you can create separate reports for a retenti
 </div>
 <div class="paragraph">
 <p>Enable the verify option for all clients and integrations. The upload API optionally can verify the uploaded content. The content service downloads the just uploaded stream from the
-content storage and compares the hash once again with the expected value (<a href="../arveo-developer/document-service.html#<em>upload_data" class="xref page">Upload content</a>). _arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
+content storage and compares the hash once again with the expected value (<a href="../arveo-developer/repo-service-upload-data.html#<em>upload_data" class="xref page">Upload content</a>). _arveo</em> stores the hash value in a system property and persists the value in the document type metadata table.</p>
 </div>
 <div class="paragraph">
 <p>In case of very sensible data you can enable transparent <a href="../arveo-administration/encryption.html#_encryption" class="xref page">encryption</a> to follow the data protection rules and prevent your administrators from access of document content.</p>
