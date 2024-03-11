@@ -255,11 +255,8 @@
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">Repository Service</span>
+    <a class="nav-link" href="repo-service.html">Repository Service</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="repo-service.html">Introduction</a>
-  </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="repo-service-upload-data.html">Upload Data</a>
   </li>
@@ -374,7 +371,7 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>Repository Service</li>
+    <li><a href="repo-service.html">Repository Service</a></li>
     <li><a href="repo-service-locking.html">Locking</a></li>
   </ul>
 </nav>
@@ -386,9 +383,13 @@
 <article class="doc">
 <h1 class="page">Locking</h1>
 <div class="paragraph">
-<p>If your applications want to update objects from different processes at the same time you must decide if you want to use no locking or optimistic locking.
-No locking means that the latest update wins and overwrites the concurrent update. Depending on the database configuration it might happen that one update becomes a deadlock victim and an exception is thrown.
-If optimistic locking is enabled for the document type the API ensures that updates do not overwrite changes made by other clients by accident. The feature is disabled by default and can be enabled by annotating a type class with <em>@OptimisticLocking</em>.
+<p>If your applications want to update objects from different processes at the same time you must decide if you want to use no locking or optimistic locking.</p>
+</div>
+<div class="paragraph">
+<p>No locking means that the latest update wins and overwrites the concurrent update. Depending on the database configuration it might happen that one update becomes a deadlock victim and an exception is thrown.</p>
+</div>
+<div class="paragraph">
+<p>If optimistic locking is enabled for the document type the API ensures that updates do not overwrite changes made by other clients by accident. The feature is disabled by default and can be enabled by annotating a type class with <em>@OptimisticLocking</em>.
 e.g. two processes A and B load the same object including content and versions at the same time and get the same version of the document. Now both processes process the document and some metadata and add additional content. A is faster than B. With No Locking B overwrites the changes made by A. With optimistic locking B cannot save the changes and receives a Locking exception. Process B has to load the changes made by A and retry the operation.</p>
 </div>
 <nav class="pagination">
