@@ -997,32 +997,51 @@ attributes will not be added when <em>arveo</em> is used embedded. In this case,
 <h2 id="open_telemetry"><a class="anchor" href="#open_telemetry"></a>Open Telemetry</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>arveo</em> supports using <a href="https://opentelemetry.io/">Open Telemetry</a> to monitor the system&#8217;s behavior. Most notably
+<p><em>arveo</em> supports using <a href="https://opentelemetry.io/" target="_blank" rel="noopener">Open Telemetry</a> to monitor the system&#8217;s behavior. Most notably
 it is possible to view traces of requests across the different services using a tracing backend like
-<a href="https://www.jaegertracing.io/">Jaeger</a> or <a href="https://zipkin.io/">Zipkin</a>. The outermost span of a trace that was started by
-a user&#8217;s request will contain the <code>ecr.user-id</code> attribute containing the user&#8217;s ID.
+<a href="https://www.jaegertracing.io/" target="_blank" rel="noopener">Jaeger</a> or <a href="https://zipkin.io/" target="_blank" rel="noopener">Zipkin</a> as well as metrics and logs. The outermost span of
+a trace that was started by a user&#8217;s request will contain the <code>ecr.user-id</code> attribute containing the user&#8217;s ID.
 This is done by the same mechanism as described above for the <a href="#_attributes_in_mdc">MDC</a>.</p>
 </div>
 <div class="paragraph">
 <p>Because <em>arveo</em> is based on several widely used open source libraries, the automatic instrumentation mode of
 Open Telemetry can be used to record traces. This is done by the Open Telemetry java agent as described in the
-<a href="https://opentelemetry.io/docs/instrumentation/java/automatic/">Open Telemetry documentation</a>.</p>
+<a href="https://opentelemetry.io/docs/instrumentation/java/automatic/" target="_blank" rel="noopener">Open Telemetry documentation</a>.</p>
 </div>
 <div class="paragraph">
-<p>The following example shows the required parameters to use Open Telemetry with Jaeger for the repository service.</p>
+<p>With Open Telemetry it is possible to collect logs, metrics and traces of each <em>arveo</em> service. It is
+recommended to use an <a href="https://opentelemetry.io/docs/collector/" target="_blank" rel="noopener">Open Telemetry Collector</a> on the same server, VM or
+Kubernetes node as the service to avoid network performance issues. The Collector is able to forward the collected data
+to suitable observability backends like <a href="https://prometheus.io/docs/prometheus/latest/" target="_blank" rel="noopener">Prometheus</a> (metrics),
+<a href="https://grafana.com/docs/loki/latest/" target="_blank" rel="noopener">Loki</a> (logs) or <a href="https://www.jaegertracing.io/" target="_blank" rel="noopener">Jaeger</a> (traces). Open Telemetry uses the
+OTLP protocol to send data to the Collector.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows the required parameters to use Open Telemetry for the repository service assuming
+a Collector instance is running on the same machine:</p>
 </div>
 <div class="listingblock">
 <div class="title">Start parameters for Open Telemetry</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">-Dotel.traces.exporter=jaeger
--Dotel.metrics.exporter=none
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">-Dotel.logs.exporter=otlp
+-Dotel.metrics.exporter=otlp
+-Dotel.traces.exporter=otlp
 -Dotel.service.name=repository-service
 -javaagent:&lt;path&gt;/opentelemetry-javaagent.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The metrics export is disabled in the above example. As described in the sections above, metrics can be collected using
-the actuator endpoints.</p>
+<p>The following diagram shows the basic setup:</p>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/42dc8e203214d21599acc99e4e32444dc2502441.svg" alt="relation-type-model">
+</div>
+<div class="title">Figure 1. Open Telemetry Collector</div>
+</div>
+<div class="paragraph">
+<p>The required configuration properties for the Collector to forward collected data to observability backends is described
+in detail in the Open Telemetry documentation.</p>
 </div>
 </div>
 </div>
