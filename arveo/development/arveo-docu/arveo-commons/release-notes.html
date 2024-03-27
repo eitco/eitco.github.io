@@ -392,7 +392,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <details>
-<summary class="title">Release notes 17.0.0 (March 26, 2024)</summary>
+<summary class="title">Release notes 17.0.0 (March 27, 2024)</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">Finished stories and bugs</strong></p>
@@ -420,6 +420,12 @@ with CHANGE_ACCESS_RIGHTS authority.</p>
 <p>The integrated tenant separation by a system defined user attribute and database column was removed. Tenants can still be
 separated by a custom attribute using ABAC, by separate type definitions or by separate service instances using a
 different database.</p>
+</dd>
+<dt class="hdlist1">ECR-1344: Added support for text similarity indexes</dt>
+<dd>
+<p>Support for special indexes to speed up text similarity determination was added. On Postgres, GIN indexes with trigram
+ops can be created automatically unsing the new <code>@IndexedForTextMatching</code> annotation. An <code>EndsWithExpression</code> was added
+to the EQL to provide a convenient way to match strings with a leading wildcard.</p>
 </dd>
 </dl>
 </div>
@@ -456,6 +462,13 @@ in the spring security context. Other members of the class were removed.</p>
 <li>
 <p>The system property name <code>INITIAL_CREATION_USER</code> was renamed to <code>INITIAL_CREATION_USER_ID</code> to avoid problems when using
 generated JOOQ records as type definitions.</p>
+</li>
+<li>
+<p>The annotation <code>GenerateNameConstants</code> was moved to the package <code>de.eitco.ecr.type.definition.processor</code> in the new
+module <code>ecr-type-definition-processor</code>.</p>
+</li>
+<li>
+<p>The unused annotation <code>AttributeDefinitionName</code> was removed. Use <code>Name</code> instead.</p>
 </li>
 </ul>
 </div>

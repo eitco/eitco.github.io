@@ -392,286 +392,375 @@
 <article class="doc">
 <h1 class="page">Annotations</h1>
 <div class="sect1">
-<h2 id="type_annotations"><a class="anchor" href="#type_annotations"></a>Type annotations</h2>
+<h2 id="type_annotations"><a class="anchor" href="#type_annotations"></a>General annotations</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Type annotations</caption>
+<caption class="title">General annotations</caption>
 <colgroup>
-<col>
 <col>
 <col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Annotation</th>
-<th class="tableblock halign-left valign-top">Parameter</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Type</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ObjectType</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define the entity type of your class by setting a valid ObjectType: DOCUMENT, FOLDER, RELATION,
-  CONTAINER, META: <a href="entity-types.html#_document_type_example" class="xref page"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@AccessChecks</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies whether type-based access-checking will be enabled on a type.
-  Default = false. See <a href="permissions.html#_permissions_on_type_definitions" class="xref page">permissions on type definitions</a> for details.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies whether type-based access-checking will be enabled on a type.  Default = false. See <a href="permissions.html#_permissions_on_type_definitions" class="xref page">permissions on type definitions</a> for details.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@FilingEnabled</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The filing feature makes it possible to assign a document to a folder. The feature is disabled by default and can be
-  activated on typ classes of type DOCUMENT by annotating the class with .</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@RetentionProtected</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The retention and litigation hold feature is disabled by default and can be enabled by annotating a type class with.
-  Meta types do not support retention. <a href="retention-annotations.html#_annotations_retentionprotected" class="xref page"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@OptimisticLocking</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The optimistic locking feature makes it possible for clients to ensure that updates do not overwrite changes made by
-  other clients by accident. The feature is disabled by default and can be enabled by annotating a type class with</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@RecycleBin</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The recycle bin feature makes it possible to move entities to the recycle bin and restore them again if required.
-  The feature is disabled by default but can be enabled by annotating a type class with. <a href="../arveo-general/data-deletion.html#_recycle_bin" class="xref page"><strong>Recycle Bin</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Recovery</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the recovery log. Content objects or files are deleted after configurable time: <a href="../arveo-general/data-deletion.html#_recovery_log" class="xref page"><strong>Recovery Log</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@AttributeType</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation sets the type of an attribute. When given, this overrides the return type of the annotated getter. In such a case a corresponding <code>AttributeMapper</code> must be registered.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@ContentElement</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define the allowed content types:  <a href="../arveo-administration/content-elements-storage.html#_types_of_content_elements" class="xref page"><strong>Example</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines a content element for a type definition. A content element is named and contains one binary content. Note that this annotation can only be used for type definitions of type DOCUMENT. See <a href="../arveo-administration/content-elements-storage.html#_types_of_content_elements" class="xref page">content elements</a> for details.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Audit</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables auditing of create-, update- and delete-operations on the type definition.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Versioned</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines if all properties of a type are versioned or not. If the annotation
-  is present on a type and on a getter in the type, the annotation on the getter wins.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@OverwriteAllowed</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">By default, <em>arveo</em> creates a new version if the content object of a document
-  is changed. You can always read and restore all older versions of a content element. If overwrite is allowed you can
-  replace a content element and overwrite it on the content store. The old version is lost.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@View</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The metadata type is a database view: <a href="#_define_a_view"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Tablename</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set the real database table name of a system column which is not camel case but snake case:
-  <a href="#_external_views"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@SourceType</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a setter method to be setting a property that is part of an update or
-  create call and not a member of the entity itself. Examples are revision commentary or the update counter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@TargetType</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the class being the target of a foreign key or relation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@InheritedProperty</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a property as an inherited property.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Enumeration</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation can be used to configure a registered enumeration type.You must pass the
-database snake case name of the enumeration type: <a href="entity-types.html#enumeration_example" class="xref page"><strong>Example</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@ContentType</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation can be used to mark a getter as the source of the content element&#8217;s media type. This is especially useful when a content element is stored in a separate field and is not restricted to a specific type. The content type information is used internally for fulltext extraction and rendition creation. The annotated getter must return a string containing a valid mime type definition. This annotation is ignored when the referenced content element persists its content type in the database.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@EcrIgnore</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ignore Property</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a method to be ignored as property or a class to be ignored as
-type.The property is not stored in the database table.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a method to be ignored as property or a class to be ignored as a type.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@NOSql</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables full-text support for all columns of the document types. By default,
-the full-text support is disabled: <a href="#nosql_example"><strong>Example</strong></a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Enumeration</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation can be used to configure a registered enumeration type. An example can be found <a href="entity-types.html#enumeration_example" class="xref page">here</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Variables</em></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the support for schema-independent properties stored in a generic map.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@FilingEnabled</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation is used to enable or disable the filing feature of document type definitions. If it is enabled, documents can be associated to folders.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@FormattedCounter</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks an attribute of type String as a <a href="#_formatted_counters_example">formatted counter</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@OptimisticLocking</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables the optimistic locking feature for a type definition. When optimistic locking is enabled, an entity can be updated only if the entity has not been updated since it was loaded by the updating client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@OverwriteAllowed</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables the possibility to overwrite an existing version of an entity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@RelationCounter</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a field of type Int as a counter for a specific relation type. More details can be found <a href="relation-types.html#relation_counters" class="xref page">here</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Rendition</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines a special kind of <code>ContentElement</code> that contains a <a href="../arveo-administration/renditions.html" class="xref page">rendition</a> of another content element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@RenditionCreationCondition</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a default method as a callback used to decide whether a rendition should be created. The methods' return type must be boolean. It may have up to two parameters of type RenditionInfo: The first one being the source type and the second one being the target type. If only one parameter is given it is assumed to be the source type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Type</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a class to be a TypeDefinition used in a <code>TypeDefinitionRegistration</code>.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="sect1">
-<h2 id="property_annotations"><a class="anchor" href="#property_annotations"></a>Property annotations</h2>
+<h2 id="constraint_annotations"><a class="anchor" href="#constraint_annotations"></a>Constraint annotations</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all fit-content">
-<caption class="title">Property annotations</caption>
+<caption class="title">Constraint annotations</caption>
 <colgroup>
 <col>
 <col>
-<col>
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Annotation</th>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@AutoIncrement</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The annotation <em>AutoIncrement</em> indicates that the value of an attribute will be auto-incremented by the database.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@Indexed</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The annotation ensures, that an index will be created for one or more properties. You must pass the index name as a parameter.
-  When several attributes are annotated to use an index with the same name, a multi-column-index will be created for
-  these columns. Use {@link Index} to configure additional properties of the index.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Unique</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a unique column. If you try to create an entity with a duplicate value an unique
-  constraint violation is thrown. <em>arveo</em> creates an unique index or an unique constraint on the database and
-  ensures the integrity of the documents. <a href="#_annotation_examples"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Mandatory</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a mandatory column. Default = false, the create operation fails with an exception if the property is not set.
-  <a href="#_default_values"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Readonly</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The property must be set when the entity is created (like <em>@Mandatory</em>) and cannot be changed afterwards. If a column
-  has the annotations <em>@Readonly</em> and <em>@Unique</em> you have an immutable index value that can be used as business primary
-  key. This ensures that users and third-party systems can clearly identify and find a document. <a href="#_annotation_examples"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Versioned</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines if an attribute of a type is versioned or not (when placed on a getter).
-  If the annotation is present on a type and on a getter in the type, the annotation on the getter wins.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@AutoIncrement</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation indicates that the value of an attribute will be auto-incremented by the database. Currently only attributes of type short, int and long support auto-incrementing.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Length</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the length of a string or binary attribute</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the length of a string or binary attribute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Mandatory</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks an attribute as mandatory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Optional</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks an attribute as optional as opposed to <code>Mandatory</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Precision</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Long<br>
-  Long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the precision of a decimal, parameter: digits before and after comma</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Casesensitive</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a field of type String as case-sensitive. This effects how searches on this field will be
-  performed. The value itself will always be stored preserving the case.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@DefaultValue</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String<br>
-  default&lt;T&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">It is possible to specify default values for properties. Pass the database name of the property (camel vs. snake case!)
-  and define a function returning the required type. If an instance of a type  with a field that has a default value
-  specified is created, and a value for that field is not defined, the default value will be used instead. However,
-  if the field is explicitly set to null, then null will be used instead. <a href="#_default_values"><strong>Example</strong></a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@DefaultSystemPropertyValue</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String<br>
-  ZonedDateTime</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">It is possible to calculate the initial value of the retention period and set it as a default value for <em>RETENTION_DATE</em>
-  system column. Pass the database column name "retention_date" and a function returning a ZonedDateTime value.
-  <a href="retention-annotations.html#_retention_examples" class="xref page"><strong>Example</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the precision of a decimal data type.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@PrimaryKey</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a custom property as part of the elements primary key. The primary key will be combined of every
-  custom property annotated with this annotation and the system property id. The property will be mandatory.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a custom property as part of the elements primary key. The primary key will be combined of every custom property annotated with this annotation and the system property id. The property will be mandatory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@ReadOnly</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks an attribute as a read-only attribute. Read-only attributes have to be set to a non-null value when an entity is created and cannot be changed when the entity is updated.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@SecondaryKey</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a property as secondary. The property is mandatory and unique.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a property as secondary key i.e. it is mandatory and unique.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@ForeignKey</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a foreign key. You must pass the class name and the column for the foreign key. _arveo creates the
-  foreign key on the database and ensures the data integrity of your entities. <a href="entity-types.html#_entity_types_examples" class="xref page"><strong>Example</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Unique</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks an attribute as unique.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="default_value_annotations"><a class="anchor" href="#default_value_annotations"></a>Default value annotations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<caption class="title">Default value annotations</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@DefaultSystemPropertyValue</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a default method as <a href="#_default_values">default value supplier</a> for a system property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@DefaultValue</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a default method as default value supplier for a property (either a property-like system property or a custom property).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index_annotations"><a class="anchor" href="#index_annotations"></a>Index annotations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<caption class="title">Index annotations</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Index</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation is used to configure properties of an index. The indexed columns have to be annotated with <code>Indexed</code> using the same index name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Indexed</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines that an index will be created for an attribute. When several attributes are annotated to use an index with the same name, a multi-column-index will be created for these columns. Use <code>Index</code> to configure additional properties of the index.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@IndexedForTextMatching</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation tells the system to create a special index for an attribute to speed up text matching operations. More specifically, a GIN index using trigram operators will be created. Such an index should be used to speed up text matching operations like 'LIKE', especially when the expressions use a leading wildcard. These indexes can only be used on String fields. More information can be found <a href="#_index_for_text_matching">here</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="naming_annotations"><a class="anchor" href="#naming_annotations"></a>Naming annotations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<caption class="title">Naming annotations</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@EnumerationTypeName</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the name of the enumeration-type of an attribute. Only used when the attribute is an enum type. If not set, the name of the enum type (in snake-case) will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@EnumerationValue</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation con be used to configure an enumeration value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Name</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the name of an attribute, type definition, foreign key, index or partial view.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@TableName</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the table name of a type definition.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reference_annotations"><a class="anchor" href="#reference_annotations"></a>Reference annotations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<caption class="title">Reference annotations</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@CascadeDelete</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">It is possible to define foreign keys that cascade a delete operation to the referencing entity.
-  <a href="#_foreign_keys_with_on_delete_cascade_example"><strong>Example</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables cascading deletes on a property acting as a foreign key. This could be a system attribute or any custom attribute annotated with <code>ForeignKey</code>. Note that cascading delete is only supported for foreign keys in entities that do not support retention.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Systemproperty</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SystemPropertyName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">To access system properties you can use the annotation <em>@SystemProperty</em> and
-  pass one of the following names (<a href="retention-annotations.html#_retention_examples" class="xref page"><strong>Example</strong></a>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@ForeignKey</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a custom property as a foreign key to the type definition the given class defines. The property must have the same type and name as the referenced type definition&#8217;s primary key (or one part of it should it be combined). If the referenced type definition&#8217;s primary key is combined the custom property&#8217;s type definition needs to define custom properties for every part of the referenced type definition&#8217;s primary key which need to have the same name. More information can be found <a href="foreign-keys.html" class="xref page">here</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@FormattedCounter</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks an attribute of type String as a formatted counter. Formatted
-  counters can be used to generate string valued attributes with a counter backed by a sequence as well as a
-  prefix and a suffix. The name of the sequence can be user defined, or it can be auto-generated by the system. Prefix,
-  suffix, and the name of the sequence can contain placeholders. Currently, the only supported placeholder is
-  <code>$date(&lt;format&gt;)</code>. The format string is a simple date format string as supported by
-  <code>DateTimeFormatter.ofPattern</code>. <a href="#_formatted_counters_example"><strong>Example</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@InheritedProperty</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a property as an inherited property. More information can be found <a href="inheritance.html" class="xref page">here</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@RelationCounter</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Class</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a property of type Int as a counter for a specific relation type
-  identified by the type definition class.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@NOSqlResolvedRelations</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation can be used to define which relations should be resolved when an entity is written to the NoSQL database. The NoSQL database entry for the entity will contain an array containing the IDs of the targets of the relation(s) of the entity.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@EcrIgnore</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a method to be ignored as property or a class to be ignored as type.
-  The property is not stored in the database table.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@SourceType</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the class being the source of a relation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@TargetType</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies the class being the target of a relation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="system_annotations"><a class="anchor" href="#system_annotations"></a>System annotations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<caption class="title">System annotations</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Audit</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables auditing of create-, update- and delete-operations on the type definition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@CaseSensitive</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a field of type String as case-sensitive. This effects how searches on this field will be performed. The value itself will always be stored preserving the case.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Id</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation is used to define a getter for the ID system property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@InputProperty</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a setter method to be setting a property that is part of an update or create call and not a member of the entity itself. Examples are revision commentary or the update counter.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@NOSql</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables or disables full-text support for this property.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation controls the usage of the NoSQL database for a type definition. If placed on an interface, all attributes of the type definition will be available in the NqSQL database. If placed on a getter, only the annotated attribute will be available in the NoSQL database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@PostSchemaInitialization</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines a liquibase changelog that will be executed after the database schema for this type definition is created or updated. The value must be a valid URI pointing to a classpath resource or a file. Examples: <code>classpath:liquibase/type-definition-changelog.xml</code>
+or <code>file:/C:/changelogs/type-definition-changelog.xml</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@PreSchemaInitialization</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines a liquibase changelog that will be executed before the database schema for this type definition is created or updated. The value must be a valid URI pointing to a classpath resource or a file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Recovery</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables the recovery feature for a type definition. When it is enabled, deleted (or purged) entities will be deleted from the database table for the type definition but kept in a special system table for the defined time to make it possible to restore them manually. The content of documents will not be removed from the storage until the entity is removed from the recovery table. This feature is not available for meta data types.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@RecycleBin</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables the recycle bin feature on a type definition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@RetentionProtected</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a type to have retention protection applied. That means it will be equipped with additional system properties <code>RETENTION_DATE</code> and <code>LITIGATION_HOLD</code> and objects of objects will be prevented from being deleted according to the values of these properties. More information can be found <a href="retention.html" class="xref page">here</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Security</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a static method as an evaluator for <a href="attribute-based-security.html" class="xref page">attribute based access control</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@SecurityProperty</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Values of attributes annotated with this annotation can only be changed by users with the <code>CHANGE_ACCESS_RIGHTS</code> authority.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@SkipAutomaticSchemaCreation</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation declares that no automatic creation of the database schema should be done for the annotated type. This means that the application programmers themselves are responsible to create the database tables, constraints, etc. needed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@SystemProperty</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation is used to define a getter for a system property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@TypeId</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation manually specifies the id of the type annotated. Will be ignored on internal views since they potentially specify several types.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Variables</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation enables variables for a type definition. Unlike attributes, variables are not stored in individual database columns, but in a JSONB column, making it possible to add variables without changing the database schema or the type interface. More information can be found <a href="entity-types.html#variables" class="xref page">here</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Versioned</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines if an attribute of a type is versioned or not (when placed on a getter) or if all attributes of a type are versioned or not (when placed on a type). When the annotation is present on a type and on a getter in the type, the annotation on the getter wins.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="view_annotations"><a class="anchor" href="#view_annotations"></a>View annotations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<caption class="title">View annotations</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@PartialView</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation marks a class to be a partial view of the type definition created by another class via the <code>Type</code> annotation. Partial views can be used for updates and select clauses. No type definitions will be created for classes annotated this way.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@View</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This annotation specifies whether the defined type is a view i.e. whether the system should create the tables for it.</p></td>
 </tr>
 </tbody>
 </table>
@@ -778,6 +867,28 @@ public interface BookIndex {
 </div>
 <div class="paragraph">
 <p>The above-mentioned properties are thus marked with the annotation <em>@Indexed</em>, which ensures, that an index will be created for these attributes.Here, the annotation <em>@Index</em> on the type is an example of an annotation on a type, described above.</p>
+</div>
+<div class="sect3">
+<h4 id="_index_for_text_matching"><a class="anchor" href="#_index_for_text_matching"></a>Index for text matching</h4>
+<div class="paragraph">
+<p>Text matching operations, especially when using leading wildcards, usually cannot use regular database indexes which causes poor query performance.
+PostgreSQL provides a special kind of index using <a href="https://www.postgresql.org/docs/current/pgtrgm.html" target="_blank" rel="noopener">trigrams</a>. Using a trigram bases index, a query using an expression like <code>where column like '%value'</code> will show a much better performance.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+To use trigram based indexes, the <code>pg_trgm</code> extension must be available in the installed PostgreSQL database.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>arveo</em> can automatically create a trigram index (or, more specifically, a GIN index using trigram operators) on a string attribute when it is annotated with <code>@IndexedForTextMatching</code>. The EQL provides an <code>endswith</code> and a <code>like</code> expression. Both will be able to use the index.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -997,7 +1108,7 @@ public interface PersonSimple {
 <div class="sect3">
 <h4 id="systemproperty_annotation"><a class="anchor" href="#systemproperty_annotation"></a><em>@SystemProperty</em> annotation</h4>
 <div class="paragraph">
-<p>To access system properties you can use the annotation <em>@SystemProperty</em> and pass one of the following names (<a href="retention-annotations.html#_document_type_10_year_retention_period" class="xref page"><strong>Retention Information Getter</strong></a>)</p>
+<p>To access system properties you can use the annotation <em>@SystemProperty</em> and pass one of the names defined in the <code>SystemPropertyName</code> enumeration.</p>
 </div>
 <div class="paragraph">
 <p><em>general system fields:</em></p>

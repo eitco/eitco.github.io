@@ -553,8 +553,8 @@ values (defined in <code>de.eitco.ecr.type.definition.annotations.reference.Supp
 <h2 id="unique_relations"><a class="anchor" href="#unique_relations"></a>Unique relations</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A single relation always has exactly one parent and one child. However, by default a single entity can be the parent or
-child of multiple relations (many-to-many). By adding unique constraints to the <code>parentId</code> and/or <code>childId</code> system
+<p>A single relation always has exactly one parent and one child.However, by default a single entity can be the parent or
+child of multiple relations (many-to-many).By adding unique constraints to the <code>parentId</code> and/or <code>childId</code> system
 properties of the relation type, it is possible to define one-to-many, many-to-one or one-to-one relations.</p>
 </div>
 <div class="listingblock">
@@ -572,17 +572,17 @@ ContainerId getChildId();</code></pre>
 <div class="sectionbody">
 <div class="paragraph">
 <p>By using the <code>@RelationCounter</code> annotation it is possible to create counters on the parent- and child-entities for both
-incoming and outgoing relations. The counters are persisted in the database and are updated automatically when relations
+incoming and outgoing relations.The counters are persisted in the database and are updated automatically when relations
 are added or removed.</p>
 </div>
 <div class="paragraph">
 <p>The <code>@RelationCounter</code> annotation contains two attributes: The <code>relationType</code> attribute
 defines the type of relation to count and the <code>direction</code> attribute defines whether to count incoming (the entity is
-the child or target of the relation) or outgoing (the entity is the parent or source of the relation). By annotating
+the child or target of the relation) or outgoing (the entity is the parent or source of the relation).By annotating
 the relation counter attribute with <code>@Versioned</code> it is possible to control whether the counter attribute is stored
-in the version table for each version or in the main table for all versions. When the counter is stored in the version
-table it will contain the count for a single version of the entity. If it is stored in the main table it will contain
-the count for all versions of the entity. The following example shows how to define relation counter attributes. The
+in the version table for each version or in the main table for all versions.When the counter is stored in the version
+table it will contain the count for a single version of the entity.If it is stored in the main table it will contain
+the count for all versions of the entity.The following example shows how to define relation counter attributes.The
 <code>@Name</code> annotation is used because the attribute name is too long for a database column name.</p>
 </div>
 <div class="listingblock">
