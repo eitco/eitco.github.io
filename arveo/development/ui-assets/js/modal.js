@@ -6,10 +6,12 @@ var imgArr = document.getElementsByTagName("img");
 var modalImg = document.getElementById("img01");
 var captionText = document.getElementById("caption");
 for (var i = 0, len = imgArr.length; i < len; i += 1) {
-  imgArr[i].onclick = function() {
-        modal.style.display = "block";
-        modalImg.src = this.src;
-        captionText.innerHTML = this.alt;
+  if(imgArr[i].id != "arveoLogo"){
+    imgArr[i].onclick = function() {
+      modal.style.display = "block";
+      modalImg.src = this.src;
+      captionText.innerHTML = this.alt;
+    }
   }
 }
   
