@@ -514,7 +514,7 @@ Page&lt;Object&gt; objectPage = searchService.where()
 <div class="paragraph">
 <p>Using the ecr sdk you will be able to obtain a <code>SearchClient</code> by spring injection.</p>
 </div>
-<div class="listingblock">
+<div id="search-client-injection" class="listingblock">
 <div class="title">Injecting a search client</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">    @Autowired
@@ -524,11 +524,516 @@ Page&lt;Object&gt; objectPage = searchService.where()
 <div class="paragraph">
 <p>A search client has several methods to search in different ways or different contexts.</p>
 </div>
+<div class="sect2">
+<h3 id="union_search_and_reference_evaluation"><a class="anchor" href="#union_search_and_reference_evaluation"></a>Union Search and Reference Evaluation</h3>
+<div class="paragraph">
+<p>A powerful search end-point is the union search. It searches entities that are part of unions of different joins.</p>
+</div>
+<div class="paragraph">
+<p>For example, consider the following types:</p>
+</div>
+<div class="listingblock">
+<div class="title">union search example types</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
+public interface DocumentA {
+
+    @ForeignKey(target = ContainerA.class, targetProperty = "id")
+    Long getContainer(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+    String getProperty1(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    String getProperty3(); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    String getProperty4(); <i class="conum" data-value="5"></i><b>(5)</b>
+
+    String getProperty7(); <i class="conum" data-value="7"></i><b>(7)</b>
+}
+@Type(ObjectType.CONTAINER)
+public interface ContainerA {
+
+    String getProperty1(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    String getProperty2(); <i class="conum" data-value="3"></i><b>(3)</b>
+
+    String getProperty4();  <i class="conum" data-value="5"></i><b>(5)</b>
+
+}
+@Type(ObjectType.DOCUMENT)
+public interface DocumentB {
+
+    @ForeignKey(target = ContainerB.class, targetProperty = "id")
+    Long getContainer(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+    Integer getProperty1();  <i class="conum" data-value="2"></i><b>(2)</b>
+
+    String getProperty3();  <i class="conum" data-value="4"></i><b>(4)</b>
+
+    String getProperty4(); <i class="conum" data-value="5"></i><b>(5)</b>
+
+    String getProperty5(); <i class="conum" data-value="6"></i><b>(6)</b>
+}
+@Type(ObjectType.CONTAINER)
+public interface ContainerB {
+
+    String getProperty1(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    String getProperty2();  <i class="conum" data-value="3"></i><b>(3)</b>
+
+    String getProperty4();  <i class="conum" data-value="5"></i><b>(5)</b>
+
+    String getProperty7(); <i class="conum" data-value="7"></i><b>(7)</b>
+}</code></pre>
 </div>
 </div>
-<div class="sect1">
-<h2 id="aggregation_searches"><a class="anchor" href="#aggregation_searches"></a>Aggregation searches</h2>
-<div class="sectionbody">
+<div class="paragraph">
+<p>note that:</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>These are two pairs of types that are each related to each other by a foreign key in the Document type both using the property <code>container</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Every type has a property named <code>property1</code>, however in <code>DocumentB</code> its type is <code>Integer</code> while in the other types it is <code>String</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Only the container types have a property named <code>property2</code>, in both cases of type <code>String</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Only the document types have a property named <code>property3</code>, also both of type <code>String</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>All types have a property named <code>property4</code> in all cases it is of type <code>String</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Only the type <code>DocumentB</code> has a property <code>property5</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Only the types <code>ContainerB</code> and <code>DocumentA</code> contain the property <code>property7</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now, using the <code>SearchClient.genericUnionSearch()</code> method, it is possible to search on a union like the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">sql equivalent of a union search</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">            document_a as document
+                left join container_a as container
+                on document.container = container.id
+            union all
+            document_b as document
+                left join container_b as container
+                on document.container = container.id</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+the sql query <em>arveo</em> will actually generate will be more complex. We stick to a simpler variant
+here for ease of understanding.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This is done as follows:</p>
+</div>
+<div id="aliases" class="listingblock">
+<div class="title">corresponding union search service</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        Alias DOCUMENT = Alias.byName("document");
+        Alias CONTAINER = Alias.byName("container");
+
+        EcrSearchService&lt;JoinedEntities&lt;Object&gt;&gt; unionSearchService = searchClient. <i class="conum" data-value="1"></i><b>(1)</b>
+                genericUnionSearch() <i class="conum" data-value="2"></i><b>(2)</b>
+                .type(DocumentA.class).as(DOCUMENT).leftJoin().type(ContainerA.class).as(CONTAINER) <i class="conum" data-value="3"></i><b>(3)</b>
+                .on().alias(DOCUMENT).field("container").equalTo().alias(CONTAINER).id().holds() <i class="conum" data-value="4"></i><b>(4)</b>
+                .unionAll() <i class="conum" data-value="5"></i><b>(5)</b>
+                .type(DocumentB.class).as(DOCUMENT).leftJoin().type(ContainerB.class).as(CONTAINER) <i class="conum" data-value="6"></i><b>(6)</b>
+                .on().alias(DOCUMENT).field("container").equalTo().alias(CONTAINER).id().holds()
+                .build();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>assume we have a search client already injected (<a href="#search-client-injection">see above</a>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>using the method <code>genericUnionSearch</code> &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>&#8230;&#8203; we can define a left join between <code>DocumentA</code> and <code>ContainerA</code> &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>&#8230;&#8203; using the foreign key of the field <code>container</code> as join condition.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This join can now be unified with another join.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The other join being a left join between <code>DocumentB</code> and <code>ContainerB</code> with basically the same join condition. Note that both joins use the same aliases for the document type and the container type respectively.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now the <code>unionSearchService</code> can be used to search elements of the defined union:</p>
+</div>
+<div class="listingblock">
+<div class="title">A simple search on the union</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        Stream&lt;JoinedEntities&lt;Object&gt;&gt; stream =
+                unionSearchService. <i class="conum" data-value="1"></i><b>(1)</b>
+                        all().order(). <i class="conum" data-value="2"></i><b>(2)</b>
+                        stream(200); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Using the union search service &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>&#8230;&#8203; we can now obtain every element of this union in no specified order &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>&#8230;&#8203; as stream that will page with a size of 200 elements.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+the resulting stream will contain up to 200 elements. If the search resulted in more elements, the stream will invoke a search call transparently each 200 elements. The size of these pages can - of course - be specified by the parameter to  the <code>stream()</code> method seen above.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since we used analogous aliases in the different elements of the union we can filter on the common elements of the types:</p>
+</div>
+<div class="sect3">
+<h4 id="filtering_with_conditions"><a class="anchor" href="#filtering_with_conditions"></a>Filtering with conditions</h4>
+<div class="listingblock">
+<div class="title">A simple filtered search</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        unionSearchService.where()
+                .alias(DOCUMENT).field("property4").equalTo().value("target")
+                .or()
+                .alias(CONTAINER).field("property4").equalTo().value("target")
+                .holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This call would result in a stream containing all joined elements of the union where the document types or the container types property <code>property4</code> has the value <code>target</code></p>
+</div>
+<div class="paragraph">
+<p>We do not need to filter on properties of both types of a join. Consider the following query:</p>
+</div>
+<div class="listingblock">
+<div class="title">A simple filtered search</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        unionSearchService.where()
+                .alias(CONTAINER).field("property2").equalTo().value("target")
+                .holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This query will return a stream containing all the joined elements of the union where the container types property <code>property2</code> has the value <code>target</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Keep in mind that these filters are working since we used the same <a href="#aliases">aliases</a> in both elements of the union.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If we want to filter on properties however that are not part of every union element, there arise some difficulties. In that case, references to these properties will not be valid for every join.
+<em>arveo</em> solves these issues by preprocessing the search filter in the context of every element of the union being able to simplify some references.</p>
+</div>
+<div class="paragraph">
+<p>For example, the following query will not work:</p>
+</div>
+<div class="listingblock">
+<div class="title">A query with a reference to a property that is not valid in every part of the union</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        // will throw exception
+        unionSearchService.where()
+                .alias(DOCUMENT).field("property5")
+                .equalTo().value("target")
+                .holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As seen earlier the property <code>property5</code> is only defined on the type <code>DocumentB</code>. Because of that, the query above will throw an exception, since
+the filter cannot be applied to the first element of the join (where the <code>DOCUMENT</code> alias refers to <code>DocumentA</code> where this property is not defined).</p>
+</div>
+<div class="paragraph">
+<p>The query can be fixed in several ways. One can be to check the validity of the property inside the query using an is-null
+check and thus guarding the reference to the property:</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="explicit_guards"><a class="anchor" href="#explicit_guards"></a>Explicit Guards</h4>
+<div class="listingblock">
+<div class="title">explicitly guarding a reference to a field</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        unionSearchService.where()
+                .not().alias(DOCUMENT).field("property5").isNull() <i class="conum" data-value="1"></i><b>(1)</b>
+                .and().alias(DOCUMENT).field("property5")
+                .equalTo().value("target") <i class="conum" data-value="2"></i><b>(2)</b>
+                .holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Adding the further condition to the property to not be null (note the <code>not()</code> at the start of the line) &#8230;&#8203;</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>&#8230;&#8203; the reference to the field is explicitly guarded and will not throw an exception.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>How does that work? <em>arveo</em> will <strong>not</strong> simply add the given filter to the union query:</p>
+</div>
+<div class="listingblock">
+<div class="title">naive sql query <em>arveo</em> does <strong>not</strong> generate</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">        select * from (
+            document_a as document
+                left join container_a as container
+                on document.container = container.id
+            union all
+            document_b as document
+                left join container_b as container
+                on document.container = container.id
+        ) where &lt;filter-condition&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>instead it will preprocess the filter in the context of every element of the union and add the resulting condition to their corresponding element of the union:</p>
+</div>
+<div class="listingblock">
+<div class="title">conceptual sql query <em>arveo</em> actually generates</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">        select * from (
+            document_a as document
+                left join container_a as container
+                on document.container = container.id
+                where &lt;filter-condition preprocessed in the
+                        context of document_a join container_a&gt;
+            union all
+            document_b as document
+                left join container_b as container
+                on document.container = container.id
+                where &lt;filter-condition preprocessed in the
+                        context of document_b join container_b&gt;
+        )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specifically in the given example <em>arveo</em> can simplify the condition in the context of the first element as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">    not document.property5 is null and document.property5 = 'target'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since in the context of <code>DocumentA</code> the property does not exist, <em>arveo</em> can reduce this query to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">    false and document.property5 = 'target'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since <code>false and &lt;any condition&gt;</code> always results in false this can be further simplified to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">    false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that this simple condition does not contain a reference to <code>property5</code> and may thus be evaluated.
+In the context of the second element the condition cannot be simplified anymore. Since <code>property5</code> does exist
+on <code>DocumentB</code> the property may not be <code>null</code> so the first part of the condition cannot be simplified. However
+the condition can be evaluated on this part of the union. Thus, it will result in a query like the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">simplified sql query</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">        select * from (
+            document_a as document
+                left join container_a as container
+                on document.container = container.id
+                where false
+            union all
+            document_b as document
+                left join container_b as container
+                on document.container = container.id
+                where
+                    not document.property5 is null
+                    and document.property5 = 'target'
+        )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since the condition simplified to <code>false</code> in the first case <em>arveo</em> will actually drop the first part of the union resulting in a query like that:</p>
+</div>
+<div class="listingblock">
+<div class="title">even more simplified sql query</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">        select * from (
+            document_b as document
+                left join container_b as container
+                on document.container = container.id
+                where
+                    not document.property5 is null
+                    and document.property5 = 'target'
+        )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can obviously see that the resulting query will never yield any result from the first part of the union. That may
+be the desired effect. However, should you want to have results from the first element of the union you can guard the
+context reference with an <code>or</code> operator, also:</p>
+</div>
+<div class="listingblock">
+<div class="title">explicitly guarding a reference to a field using the or operator</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        unionSearchService.where()
+                .alias(DOCUMENT).field("property5").isNull() <i class="conum" data-value="1"></i><b>(1)</b>
+                .or().alias(DOCUMENT).field("property5")
+                .equalTo().value("target") <i class="conum" data-value="2"></i><b>(2)</b>
+                .holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case <em>arveo</em> will simplify the query to</p>
+</div>
+<div class="listingblock">
+<div class="title">simplified sql query guarding a reference using the or-operator</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">        select * from (
+            document_a as document
+                left join container_a as container
+                on document.container = container.id
+                where true
+            union all
+            document_b as document
+                left join container_b as container
+                on document.container = container.id
+                where
+                    document.property5 is null
+                    or document.property5 = 'target'
+        )</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Thus returning all entities of the first union element and the entities of the second union element where the property <code>property5</code> is null or <code>target</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implicit_guards"><a class="anchor" href="#implicit_guards"></a>Implicit Guards</h4>
+<div class="paragraph">
+<p>Another option is to refer to the type containing the property not by its alias but by its type name, thus guarding the property implicitly:</p>
+</div>
+<div class="listingblock">
+<div class="title">implicitly guarding a reference</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        unionSearchService.where()
+                .alias("document_b").field("property5")
+                .equalTo().value("target")
+                .holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here <em>arveo</em> will preprocess making the assumption that any relational operator where at least one of the
+operands is a reference to a type that is not part of the current union element (but of another union element) will
+simply yield <code>false</code>. Since the join</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">            document_a as document
+                left join container_a as container
+                on document.container = container.id</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>does not contain the type <code>document_b</code> the condition <code>document_b.property5 = 'target'</code> will be simplified to <code>false</code> in the context of this union element.
+This will result in the same query as above, where the reference to the property was explicitly guarded with an <code>and</code> operator.</p>
+</div>
+<div class="paragraph">
+<p>Be aware that searches will still fail if a property is referenced that does not exist at all:</p>
+</div>
+<div class="listingblock">
+<div class="title">querying a non existent property</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        // will throw exception
+        unionSearchService.where()
+                .alias(DOCUMENT).field("property6")
+                .equalTo().value("target")
+                .holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since none of the document types contain a property <code>property6</code> this query will fail. Additionally, this property can not be guarded not even explicitly:</p>
+</div>
+<div class="listingblock">
+<div class="title">querying a non existent property</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        unionSearchService.where()
+                .not().alias(DOCUMENT).field("property6").isNull()
+                .and().alias(DOCUMENT).field("property6")
+                .equalTo().value("target").holds().order().stream(200).findFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This query will also fail. Only properties that are valid in at least one element of a union may be guarded.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="aggregation_searches"><a class="anchor" href="#aggregation_searches"></a>Aggregation searches</h3>
 <div class="paragraph">
 <p>In some situations one needs to accumulate some values that are listed in a database. In SQL this is done using aggregate functions and the <code>group by</code> clause. For example in an invoice archive one might be interested in the number of invoices per customer, or the sum of their totals (per customer).
 Queries like this can be executed using the aggregated search. As opposed to the other search methods the result entity type of this search method is <code>Map&lt;String, Object&gt;</code>, since aggregating properties will potentially result in a different type - one that might not be specified. Thus, a more general return type is used.</p>
@@ -645,6 +1150,7 @@ public interface Invoice {
 </div>
 <div class="paragraph">
 <p>Note that we can reference the invoices field <code>open</code> by using the alias <code>i</code> we provided earlier, even though it is not part of the result.</p>
+</div>
 </div>
 </div>
 </div>
