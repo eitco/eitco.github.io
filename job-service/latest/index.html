@@ -164,7 +164,7 @@ window.onload = function() {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO Job Service 6.0.0</div>
+<div id="toctitle">EITCO Job Service 7.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_clustering"><strong>Clustering</strong></a>
 <ul class="sectlevel2">
@@ -287,16 +287,13 @@ All JobService instances in a cluster will compete for executing all pending job
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class SampleJob implements Job {
 
-    // just an arbitrary object to test if Autowired dependency injection works for Job's
+    // just an arbitrary object to test if Autowired dependency injection works for Jobs
     @Autowired <i class="conum" data-value="1"></i><b>(1)</b>
-    private Tenants tenants;
+    private ApplicationContext context;
 
     public void execute(JobExecutionContext context) throws JobExecutionException { <i class="conum" data-value="2"></i><b>(2)</b>
 
-        System.out.println( "SampleJob - Tenant List:" );
-        tenants.forEach( (tenant) -&gt;{
-            System.out.println( tenant );
-        });
+        System.out.println("SampleJob");
     }
 }</code></pre>
 </div>
@@ -510,7 +507,7 @@ The script defines a custom table prefix for all the QUARTZ tables to prevent ta
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-23 10:00:31 UTC
+Last updated 2024-04-22 16:25:34 UTC
 </div>
 </div>
 </body>
