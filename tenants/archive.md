@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO tenant library deployed so far
 
+ * [6.0.0](archive/6.0.0)
  * [5.0.0](archive/5.0.0)
  * [4.0.2](archive/4.0.2)
  * [4.0.1](archive/4.0.1)
