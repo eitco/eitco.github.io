@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>EITCO ArchiveLink 6.0.4</title>
+<title>EITCO ArchiveLink 7.0.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -16,9 +16,9 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO ArchiveLink 6.0.4</div>
+<div id="toctitle">EITCO ArchiveLink 7.0.0</div>
 <ul class="sectlevel1">
-<li><a href="#_eitco_archivelink_6_0_4">EITCO ArchiveLink 6.0.4</a>
+<li><a href="#_eitco_archivelink_7_0_0">EITCO ArchiveLink 7.0.0</a>
 <ul class="sectlevel2">
 <li><a href="#_arveo_repository"><em>arveo</em> repository</a></li>
 <li><a href="#_vault_certificate_storage">Vault certificate storage</a></li>
@@ -32,7 +32,7 @@
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_eitco_archivelink_6_0_4">EITCO ArchiveLink 6.0.4</h2>
+<h2 id="_eitco_archivelink_7_0_0">EITCO ArchiveLink 7.0.0</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The EITCO ArchiveLink Service is a plugin-based implementation of the SAP ArchiveLink interface. The actual repository
@@ -194,6 +194,27 @@ can be used as long as it matches the requirements listed above. Example type de
 <div class="paragraph">
 <p>Certificates are stored as secrets in Vault&#8217;s KV engine. Each secret is stored in a separate path consisting of the
 content repository ID, the authId and the certificate&#8217;s serial number:</p>
+</div>
+<div class="paragraph">
+<div class="title">Vault permissions</div>
+<p>To store the certificates in vault, the vault certificate storage logic needs to have proper access rights to adjust
+the vault data below the storage root path. The required access rights need to be granted by an access policy as  shown
+below.</p>
+</div>
+<div class="listingblock">
+<div class="title">Storage root path</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>secret/eitco-archive-link/certificates</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Policy to grant access rights to storage root path</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>  vault policy write archive-link-service -&lt;&lt;EOF
+    path &quot;secret/data/eitco-archive-link/certificates/*&quot; {capabilities = [&quot;create&quot;, &quot;read&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;, &quot;list&quot;] }
+    path &quot;secret/metadata/eitco-archive-link/certificates/*&quot; {capabilities = [&quot;list&quot;] }
+EOF</code></pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="title">Example path</div>
@@ -429,7 +450,7 @@ The approval process and everything else take place without further use of the {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-24 16:32:16 UTC
+Last updated 2024-04-23 14:10:28 UTC
 </div>
 </div>
 <style>
