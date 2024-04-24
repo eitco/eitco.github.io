@@ -421,6 +421,7 @@ require dead letter queues in ActiveMQ. See <a href="renditions.html#error_handl
 dead letter queues must be activated by adding the following policy entries to <em>activemq.xml</em>.</p>
 </div>
 <div class="listingblock">
+<div class="title">policy-entries</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;policyEntry queue="ecr-queue-create-renditions"&gt;
     &lt;deadLetterStrategy&gt;
@@ -428,6 +429,11 @@ dead letter queues must be activated by adding the following policy entries to <
     &lt;/deadLetterStrategy&gt;
 &lt;/policyEntry&gt;
 &lt;policyEntry queue="ecr-queue-delete-audit-entries"&gt;
+    &lt;deadLetterStrategy&gt;
+        &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
+    &lt;/deadLetterStrategy&gt;
+&lt;/policyEntry&gt;
+&lt;policyEntry queue="ecr-queue-rdb-fulltext-extraction"&gt;
     &lt;deadLetterStrategy&gt;
         &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
     &lt;/deadLetterStrategy&gt;
