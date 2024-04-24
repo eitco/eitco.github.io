@@ -435,6 +435,12 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.database-id-resolver.external-id-claim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the claim in the access token that contains the external ID of the user. The value of this claim will be stored in the database together with the generated internal ID. It must be unique and non-null. If not configured, the subject claim will be used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.oidc.authorities-claim</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the claim that contains the user&#8217;s authorities. Must be a JSON list of strings or a single string.</p></td>
@@ -473,7 +479,7 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">external-user-management.token-id-resolver.id-claim</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the claim used to get the internal ID from. The claim must contain either a long value or a string that can be parsed to long.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the name of the claim used to get the internal ID from. The claim must contain either a long value or a string that can be parsed to long. The default is 'user-id'.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -1555,6 +1561,95 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If true, the scheduler will not start to process events until the {@link StartSchedulerEvent} is sent.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_security_general"><a class="anchor" href="#_security_general"></a>security.general</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.allow-credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.allow-private-network</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.allowed-headers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.allowed-methods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.allowed-origin-patterns</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.allowed-origins</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.exposed-headers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cors-configuration.max-age</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">open-ant-matchers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ant matcher expressions for API endpoints that do not require authentication.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">role-for-secured-access</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional authority required to access the service.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">secured-ant-matchers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List&lt;java.lang.String&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ant matcher expressions for API endpoints that require authentication.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
