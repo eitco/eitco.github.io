@@ -386,6 +386,8 @@
 </aside>
 <article class="doc">
 <h1 class="page">Data Types</h1>
+<div id="preamble">
+<div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Property Data Types</caption>
 <colgroup>
@@ -404,7 +406,7 @@
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unlimited unicode text. Limit the length with <em>@Length</em> annotation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unlimited unicode text. More information can be found <a href="#_string_data_type">here</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">Integer or int</p></td>
@@ -478,19 +480,6 @@
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-By default, postgreSQL 16.2 does not limit the length of String values. Typically, it is not necessary to define a length using the <em>@Length</em> annotation because postgreSQL 16.2 does handle Strings of all length very well.<br>
-Your strings should have a length up to 4 kByte. Even larger strings are allowed, but you should take care that you do not inadvertently consume too much data space if you store very large strings.
-</td>
-</tr>
-</table>
-</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -514,6 +503,83 @@ Enumeration data types allow you to set one or more values from a fixed set of v
 </td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_string_data_type"><a class="anchor" href="#_string_data_type"></a>String data type</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, postgreSQL 16.2 does not limit the length of String values. Typically, it is not necessary to define a length using the <em>@Length</em> annotation because postgreSQL 16.2 does handle Strings of all length very well.<br>
+Your strings should have a length up to 4 kByte. Even larger strings are allowed, but you should take care that you do not inadvertently consume too much data space if you store very large strings.</p>
+</div>
+<div class="paragraph">
+<p>By default, searches on String attributes are performed in a case-insensitive manner. Note that the actual values are stored case sensitively in the database, which means that a unique constraint will treat "example" as a different value then "Example". The case-insensitive searches are performed by converting the value stored in the database and the value to search for to lower-case in the SQL-query. This is done automatically by <em>arveo</em>. If searches are to be performed in a case-sensitive manner, add the <code>@CaseSensitive</code> annotation to the attribute.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Because the way a query is performed is defined by the setting on the attribute, it is not possible to perform case-insensitive and case-sensitive queries on the same attribute except for like, ends-with and starts-with queries.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Adding indexes to the database column has a huge impact on search performance, especially for large tables. This table gives an overview of the available indexes. An example of an index on multiple columns can be found <a href="entity-annotations.html#index_example" class="xref page">here</a>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Query</th>
+<th class="tableblock halign-left valign-top">Annotations</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+<th class="tableblock halign-left valign-top">Operations still causing a table-scan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Equality (case-sensitive)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@CaseSensitive</code>, <code>@Indexed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>arveo</em> will create a regular b-tree index on the column</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ends-with (like with leading wildcard), all case-insensitive comparisons</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Equality (case-insensitive)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Indexed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>arveo</em> will create a functional index on the column for the lower-function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ends-with (like with leading wildcard), all case-sensitive comparisons</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Like, ends-with, starts-with</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@IndexedForTextMatching</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>arveo</em> will create a trigram index for text matching, which will be used for both case-sensitive and case-insensitive operations.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Equality</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It is possible to use both <code>@Indexed</code> and <code>@IndexedForTextMatching</code> on one attribute.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="entity-annotations.html">Entity annotations</a></span>
