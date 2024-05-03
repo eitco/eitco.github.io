@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of EQL deployed so far
 
+ * [4.1.0](archive/4.1.0)
  * [4.0.0](archive/4.0.0)
  * [3.1.4](archive/3.1.4)
  * [3.1.3](archive/3.1.3)
