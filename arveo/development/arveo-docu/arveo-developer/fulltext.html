@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Types archetype :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/slim-archetype.html">
-    <link rel="prev" href="integration-service.html">
-    <link rel="next" href="full-featured-archetype.html">
+    <title>Using full text features of the relational database :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/fulltext.html">
+    <link rel="prev" href="search-service.html">
+    <link rel="next" href="retention-introduction.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../ui-assets/css/custom.css">
@@ -278,7 +278,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="search-service.html">Search language</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="fulltext.html">Full text search in relational database</a>
   </li>
 </ul>
@@ -326,7 +326,7 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Archetypes</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="slim-archetype.html">The Types archetype</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -378,8 +378,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>Archetypes</li>
-    <li><a href="slim-archetype.html">The Types archetype</a></li>
+    <li><a href="repo-service.html">Repository Service</a></li>
+    <li><a href="fulltext.html">Full text search in relational database</a></li>
   </ul>
 </nav>
 </div>
@@ -388,114 +388,206 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Types archetype</h1>
+<h1 class="page">Using full text features of the relational database</h1>
 <div id="preamble">
 <div class="sectionbody">
-<div id="_archetype_overview" class="paragraph">
-<p>This archetype creates a rather small project. It consists of an arveo scenario and tests for that.</p>
-</div>
 <div class="paragraph">
-<p>The maven coordinate of this archetype are:</p>
+<p><em>arveo</em> can make use of the full text support of the PostgreSQL database. Extracted full text
+data can be stored in the database and used in queries in combination with all entity attributes and system properties.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
-&lt;artifactId&gt;ecr-types-archetype&lt;/artifactId&gt;
-&lt;version&gt;18.0.0-SNAPSHOT&lt;/version&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To create an arveo scenario project use the maven archetype plugin:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion={project-technical-version}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Here, the variable {project-technical-version} must be replaced with the actual version, f.e. 5.0.1.</p>
-</div>
-<div class="paragraph">
-<p>Also, you have to remember, that this will generate a project structure into a project folder. So before you type this command in your command line, make sure you have prepared a folder where your project structure is going to be and you have switched into this folder on your command line.</p>
-</div>
-<div class="paragraph">
-<p>This will start a process that will ask for some parameters and then generate a maven project according to the parameters. The following parameters will be asked for:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<tbody>
+<div class="admonitionblock important">
+<table>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven groupId of the new project</p></td>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Extracted full text data can be stored either in the PostgreSQL database or in SOLR. It is not possible
+to use both simultaneously.
+</td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>artifactId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven artifactId of the new project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>version</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven version of the new project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>class-name-prefix</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A prefix for the names of the generated classes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scm-locator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The location in the eitco bitbucket server where the sources are (or will be). For a project located in <a href="https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git" class="bare">https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git</a>, this would be <code>&lt;project&gt;/&lt;repository&gt;.git</code>. This configures the maven release plugin. If this is omitted (or set to a wrong value) the project will work for now - however the release process will not work - unless it is fixed.</p></td>
-</tr>
-</tbody>
 </table>
-<div class="paragraph">
-<p>Some or all of these parameters can also be given on the commandline via <code>-D</code>. The process will not ask for parameters given by command line. So the command</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion={project-technical-version} -DgroupId=my.group.id -DartifactId=my-artifact-id -Dversion=0.0.1-SNAPSHOT -Dclass-name-prefix=My -Dscm-locator=prj/repo.git</code></pre>
-</div>
 </div>
 <div class="paragraph">
-<p>would not ask for any parameters and just create the project.</p>
+<p>The <a href="https://www.postgresql.org/docs/current/textsearch.html">PostgreSQL documentation</a> contains an in-depth explanation
+of the database&#8217;s text search capabilities.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="overview_of_the_generated_project"><a class="anchor" href="#overview_of_the_generated_project"></a>Overview of the generated project</h2>
+<h2 id="store_extracted_full_text_data_in_the_relational_database"><a class="anchor" href="#store_extracted_full_text_data_in_the_relational_database"></a>Store extracted full text data in the relational database</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The project generated by the archetype will consist of two modules:</p>
-</div>
-<div class="sect2">
-<h3 id="implementationtypes"><a class="anchor" href="#implementationtypes"></a>implementation\types</h3>
-<div class="paragraph">
-<p>This module contains your arveo scenario. An example type will be created with the name &lt;class-name-prefix&gt;Model. You can define more types here, but you will need to register them in register in &lt;class-name-prefix&gt;TypeRegistration. The chapter <a href="entity-types.html#_objects_types_definitions" class="xref page"><strong>arveo type definitions</strong></a> describes how to define types.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="testsystem_test"><a class="anchor" href="#testsystem_test"></a>test\system-test</h3>
-<div class="paragraph">
-<p>This module contains tests for your scenario. These tests will be executed in the build. For that a complete arveo environment will be created, so you can add tests, that simply connect to arveo by the http client and can assume that your scenario is deployed.</p>
-</div>
-<div class="paragraph">
-<p>This module can also be used to set up an arveo environment with your scenario on which you can then run tests manually. In the module run</p>
+<p>Full text extraction and storage is configured in the type definition using annotations. The following example shows
+how to define a content element for which full text data will be extracted automatically and stored in
+PostgreSQL.</p>
 </div>
 <div class="listingblock">
+<div class="title">type definition with full text in relational database</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn -Denv</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
+@ContentElement(
+    name = ContentElement.CONTENT, <i class="conum" data-value="1"></i><b>(1)</b>
+    fulltextExtraction = true, <i class="conum" data-value="2"></i><b>(2)</b>
+    fullTextStorage = FullTextStorage.RDB, <i class="conum" data-value="3"></i><b>(3)</b>
+    fullTextLanguage = FullTextLanguage.ENGLISH <i class="conum" data-value="4"></i><b>(4)</b>
+)
+public interface DocumentWithRdbFullText {
+
+    @Optional
+    String getDocumentName();
+
+    void setDocumentName(String documentName);
+}</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines the name of the content element, using the default name "content" from the constant</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Activates automatic full text extraction</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Tells the system to store the extracted full text data in the relational database</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The language (or configuration) used for the full text index on the database</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="indexes_and_configuration"><a class="anchor" href="#indexes_and_configuration"></a>Indexes and configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The system will create a full text index for each content element for that full text data is stored in the database.
+Because full text operations are language specific, the language for the index must be defined in the content element
+of the type definition. PostgreSQL provides a number of predefined language configurations, which are
+contained in the <code>FullTextLanguage</code> class as constants. It is possible to create custom configurations. More information
+can be found in the <a href="https://www.postgresql.org/docs/current/textsearch-intro.html#TEXTSEARCH-INTRO-CONFIGURATIONS">Postgres documentation</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="searching"><a class="anchor" href="#searching"></a>Searching</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The EQL provides support for full text searching. Search expressions are formulated like a query in a web search
+engine:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Unquoted text: Text without quotes will be treated as individual terms combined by an AND operator.</p>
+</li>
+<li>
+<p>Quoted text: Text within quotes will be treated as a phrase (individual terms combined by a FOLLOWED-BY operator).</p>
+</li>
+<li>
+<p>OR: The word "or" will be treated like the logical OR operator.</p>
+</li>
+<li>
+<p>Dash: A dash ("-") will be treated like a NOT operator.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>to set up the environment. It will be torn down when you press &lt;enter&gt; in the console.</p>
+<p>Examples:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>'the green ball'</code>: Will find documents that contain the words "green" and "ball". The word "the" will be ignored
+because it is a stop-word.</p>
+</li>
+<li>
+<p><code>'"the green ball"'</code>: Will find documents that contain the word "green" followed by the word "ball". Again, the word
+"the" will be ignored.</p>
+</li>
+<li>
+<p><code>'blue -red'</code>: Will find documents containing the word "blue" but not the word "red".</p>
+</li>
+<li>
+<p><code>'blue or red'</code>: Will find documents containing the word "blue" or the word "red".</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The fluent API can be used to formulate queries as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">formulating queries</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
+    .contextReference("content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .fullTextMatches() <i class="conum" data-value="2"></i><b>(2)</b>
+    .webSearch("the cake is a lie") <i class="conum" data-value="3"></i><b>(3)</b>
+    .holds().unpaged();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines the content element from which the full text data was extracted</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Perform full text query</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Define the web search expression as described above</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In queries using more than one type definition it is necessary to qualify the context reference to the content element
+by the name of the type definition:</p>
+</div>
+<div class="listingblock">
+<div class="title">qualified context reference</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
+    .contextReference(DocumentWithRdbFullTextNames.getTypeDefinitionName(), "content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .fullTextMatches()
+    .webSearch("the cake is a lie")
+    .holds().unpaged();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Qualify the reference to the content element by using the name of the type definition</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The extracted full text data is stored in a separate table (with the postfix "_ft"). This table is automatically joined
+when a full text query is performed. Queries without full text will not contain a join for this table.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="integration-service.html">Enterprise Integration Service</a></span>
-  <span class="next"><a href="full-featured-archetype.html">The full-featured archetype</a></span>
+  <span class="prev"><a href="search-service.html">Search language</a></span>
+  <span class="next"><a href="retention-introduction.html">Retention</a></span>
 </nav>
 </article>
   </div>
