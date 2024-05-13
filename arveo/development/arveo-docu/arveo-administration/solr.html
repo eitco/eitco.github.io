@@ -801,16 +801,11 @@ the Solr index. A value of <code>0</code> means no limit.</p>
 resolved in the relational database, NoSQL databases like Solr are not designed to support a relational data model as
 shown in the following diagram:</p>
 </div>
-<div class="literalblock kroki-error">
-<div class="title">A model using a relation table</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre> +------------+               +--------+-----+              +------------+
- |   Parent   |               +   Relation   +              |   Child    |
- |------------|      source   |--------------|  target      |------------|
- |            |&lt;--------------|              |-------------&gt;|            |
- |            |               |              |              |            |
- +---+--------+               +--------------+              +------------+</pre>
+<img src="_images/3077d084ea9c6e6e4c75a114d20709c822a1bc9d.svg" alt="relation-type-model">
 </div>
+<div class="title">Figure 1. A model using a relation table</div>
 </div>
 <div class="paragraph">
 <p>It is still possible to search for <em>Parent</em> entities by the IDs of the related <em>Child</em> entities in Solr using
