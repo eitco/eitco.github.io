@@ -404,9 +404,41 @@ the <em>arveo</em> service using the default configuration properties of the Spr
 </div>
 </div>
 <div class="paragraph">
-<p>ActiveMQ&#8217;s OpenWire protocol is used to connect to the broker. The queues and topics used by the <em>arveo</em> can be identified
-by <em>arveo</em>- name-prefix. The <em>arveo</em> uses text messages containing JSON data to make it possible to consume messages in
-components not implemented in Java. The JSON data uses the same serialization mechanism as the REST API.</p>
+<p>ActiveMQ&#8217;s OpenWire protocol is used to connect to the broker. The names of the queues and topics used by <em>arveo</em>
+are prefixed with the system ID of the <em>arveo</em> system. <em>arveo</em> uses text messages containing JSON data
+to make it possible to consume messages in components not implemented in Java. The JSON data uses the same serialization
+mechanism as the REST API.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When several <em>arveo</em> systems, that use different type definitions, are supposed to use one
+ActiveMQ cluster, it is required to configure separate system IDs for each <em>arveo</em> system.
+Otherwise, messages might get handled by the wrong system.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">configuring the system ID</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    system:
+      system-id: 1 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The number must be between 1 and 32767.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><em>arveo</em> uses ActiveMQ&#8217;s scheduler support for features like automated deletion of entities in the recycle bin after a
@@ -421,19 +453,19 @@ dead letter queues must be activated by adding the following policy entries to <
 <div class="listingblock">
 <div class="title">policy-entries</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;policyEntry queue="ecr-queue-create-renditions"&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;policyEntry queue="*.ecr-queue-create-renditions"&gt;
     &lt;deadLetterStrategy&gt;
-        &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
+        &lt;individualDeadLetterStrategy queuePrefix="" queueSuffix=".DLQ" useQueueForQueueMessages="true"/&gt;
     &lt;/deadLetterStrategy&gt;
 &lt;/policyEntry&gt;
-&lt;policyEntry queue="ecr-queue-delete-audit-entries"&gt;
+&lt;policyEntry queue="*.ecr-queue-delete-audit-entries"&gt;
     &lt;deadLetterStrategy&gt;
-        &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
+        &lt;individualDeadLetterStrategy queuePrefix="" queueSuffix=".DLQ" useQueueForQueueMessages="true"/&gt;
     &lt;/deadLetterStrategy&gt;
 &lt;/policyEntry&gt;
-&lt;policyEntry queue="ecr-queue-rdb-fulltext-extraction"&gt;
+&lt;policyEntry queue="*.ecr-queue-rdb-fulltext-extraction"&gt;
     &lt;deadLetterStrategy&gt;
-        &lt;individualDeadLetterStrategy queuePrefix="DLQ." useQueueForQueueMessages="true"/&gt;
+        &lt;individualDeadLetterStrategy queuePrefix="" queueSuffix=".DLQ" useQueueForQueueMessages="true"/&gt;
     &lt;/deadLetterStrategy&gt;
 &lt;/policyEntry&gt;</code></pre>
 </div>

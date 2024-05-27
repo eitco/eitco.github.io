@@ -422,6 +422,10 @@
 <dd>
 <p>The system can now generate a headline for each query result that highlights matches words (for the Postgres database).</p>
 </dd>
+<dt class="hdlist1">ECR-1380: System separation in ActiveMQ</dt>
+<dd>
+<p>It is now possible to use one ActiveMQ cluster for multiple arveo systems.</p>
+</dd>
 <dt class="hdlist1">added code generator for types safe eql extension</dt>
 <dd>
 <p><strong class="big">Interface breaking changes</strong></p>
@@ -430,6 +434,30 @@
 </div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p>The naming of the queues in ActiveMQ was changed to support the usage of one ActiveMQ cluster with multiple arveo systems.
+Each queue is now prefixed with a system ID. The dead letter queue names now use the DLQ suffix instead of the DLQ prefix.
+Therefore, the policy entries for the dead letter queue stategies have to be changed. The new policies can be found in the
+<a href="https://eitco.github.io/arveo/latest/arveo-docu/arveo-administration/messaging.html">documentation</a>. The system will create
+the new queues automatically. The old queues can be deleted manually.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Make sure that the queues are empty before updating the system. Otherwise, queued jobs like automatic rendition creation
+might be lost.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The property <code>ecr.server.system.migration.main-migrated-tenant-numerical-id</code> has been deprecated and will be removed in a
+future version. The system ID can now be configured using the property <code>ecr.server.system.system-id</code>.</p>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
