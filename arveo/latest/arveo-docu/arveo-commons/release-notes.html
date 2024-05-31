@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Release Notes :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/17.0.0/arveo-commons/release-notes.html">
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-commons/release-notes.html">
     <link rel="prev" href="compatibility-list.html">
     <link rel="next" href="glossary.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
@@ -56,7 +56,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component="arveo-docu" data-version="17.0.0">
+<div class="nav-container" data-component="arveo-docu" data-version="">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -278,6 +278,9 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-developer/search-service.html">Search language</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/fulltext.html">Full text search in relational database</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -357,16 +360,11 @@
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
     <span class="title">arveo Documentation</span>
-    <span class="version">17.0.0</span>
+    <span class="version"></span>
   </div>
   <ul class="components">
     <li class="component is-current">
       <div class="title"><a href="../arveo-general/product-summary.html">arveo Documentation</a></div>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="../arveo-general/product-summary.html">17.0.0</a>
-        </li>
-      </ul>
     </li>
   </ul>
 </div>
@@ -389,8 +387,87 @@
 </aside>
 <article class="doc">
 <h1 class="page">Release Notes</h1>
-<div id="preamble">
+<div class="sect1">
+<h2 id="release_notes_18_0_0_may_31_2024"><a class="anchor" href="#release_notes_18_0_0_may_31_2024"></a>Release notes 18.0.0 (May 31, 2024)</h2>
 <div class="sectionbody">
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1342: Added ability to store extracted full text data in Postgres database</dt>
+<dd>
+<p>It is now possible to store extracted full text data in the Postgres database.</p>
+</dd>
+<dt class="hdlist1">ECR-1343: EQL now supports searching for full text in Postgres database</dt>
+<dd>
+<p>The EQL can now be used to search for full text matches in the Postgres database using Postgres' web search feature.</p>
+</dd>
+<dt class="hdlist1">ECR-1358: Performance optimizations for like, startsWith and endsWith queries</dt>
+<dd>
+<p>Case-insensitive like-, startsWith- and endsWith-queries can now use text matching indexes on the database.</p>
+</dd>
+<dt class="hdlist1">ECR-1360: Added missing not-null constraint on latest_version_id column</dt>
+<dd>
+<p>A missing not-null constraint was added to the latest_version_id column and the existing unique index for this column was replaced by a unique constraint.</p>
+</dd>
+<dt class="hdlist1">ECR-1361: Ranking full text search results</dt>
+<dd>
+<p>The rank of full text search results can now be calculated and used for ordering (for the Postgres database).</p>
+</dd>
+<dt class="hdlist1">ECR-1345: Highlighting full text search results</dt>
+<dd>
+<p>The system can now generate a headline for each query result that highlights matches words (for the Postgres database).</p>
+</dd>
+<dt class="hdlist1">ECR-1380: System separation in ActiveMQ</dt>
+<dd>
+<p>It is now possible to use one ActiveMQ cluster for multiple arveo systems.</p>
+</dd>
+<dt class="hdlist1">ECR-1388: Fixed SOLR health indicator</dt>
+<dd>
+<p>The SOLR health indicator was fixed.</p>
+</dd>
+<dt class="hdlist1">added code generator for types safe eql extension</dt>
+<dd>
+<p><strong class="big">Interface breaking changes</strong></p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p>The naming of the queues in ActiveMQ was changed to support the usage of one ActiveMQ cluster with multiple arveo systems.
+Each queue is now prefixed with a system ID. The dead letter queue names now use the DLQ suffix instead of the DLQ prefix.
+Therefore, the policy entries for the dead letter queue stategies have to be changed. The new policies can be found in the
+<a href="https://eitco.github.io/arveo/latest/arveo-docu/arveo-administration/messaging.html">documentation</a>. The system will create
+the new queues automatically. The old queues can be deleted manually.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Make sure that the queues are empty before updating the system. Otherwise, queued jobs like automatic rendition creation
+might be lost.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The property <code>ecr.server.system.migration.main-migrated-tenant-numerical-id</code> has been deprecated and will be removed in a
+future version. The system ID can now be configured using the property <code>ecr.server.system.system-id</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+</div>
+</details>
 <details>
 <summary class="title">Release notes 17.0.0 (April 23, 2024)</summary>
 <div class="content">

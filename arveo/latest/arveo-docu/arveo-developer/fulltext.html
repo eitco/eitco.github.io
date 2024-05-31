@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Document type :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/document-types.html">
-    <link rel="prev" href="system-fields.html">
-    <link rel="next" href="container-types.html">
+    <title>Using full text features of the relational database :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/fulltext.html">
+    <link rel="prev" href="search-service.html">
+    <link rel="next" href="retention-introduction.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../ui-assets/css/custom.css">
@@ -224,7 +224,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="system-fields.html">System fields</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="document-types.html">Document types</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -278,7 +278,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="search-service.html">Search language</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="fulltext.html">Full text search in relational database</a>
   </li>
 </ul>
@@ -378,8 +378,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>Data Modelling</li>
-    <li><a href="document-types.html">Document types</a></li>
+    <li><a href="repo-service.html">Repository Service</a></li>
+    <li><a href="fulltext.html">Full text search in relational database</a></li>
   </ul>
 </nav>
 </div>
@@ -388,44 +388,357 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Document type</h1>
+<h1 class="page">Using full text features of the relational database</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>The following chapter provides a more detailed overview of the type <code>Document</code>.</p>
+<p><em>arveo</em> can make use of the full text support of the PostgreSQL database. Extracted full text
+data can be stored in the database and used in queries in combination with all entity attributes and system properties.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Extracted full text data can be stored either in the PostgreSQL database or in SOLR. It is not possible
+to use both simultaneously.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>A <code>Document</code> is one of five entity types supported by the <em>arveo</em> system. Unlike the other entity types, documents are always versioned too keep track of changes of the binary content.</p>
+<p>The <a href="https://www.postgresql.org/docs/current/textsearch.html">PostgreSQL documentation</a> contains an in-depth explanation
+of the database&#8217;s text search capabilities.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="store_extracted_full_text_data_in_the_relational_database"><a class="anchor" href="#store_extracted_full_text_data_in_the_relational_database"></a>Store extracted full text data in the relational database</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>A <code>Document</code> consists of the following components:</p>
+<p>Full text extraction and storage is configured in the type definition using annotations. The following example shows
+how to define a content element for which full text data will be extracted automatically and stored in
+PostgreSQL.</p>
+</div>
+<div class="listingblock">
+<div class="title">type definition with full text in relational database</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
+@ContentElement(
+    name = ContentElement.CONTENT, <i class="conum" data-value="1"></i><b>(1)</b>
+    fulltextExtraction = true, <i class="conum" data-value="2"></i><b>(2)</b>
+    fullTextStorage = FullTextStorage.RDB, <i class="conum" data-value="3"></i><b>(3)</b>
+    fullTextLanguage = FullTextLanguage.ENGLISH <i class="conum" data-value="4"></i><b>(4)</b>
+)
+public interface DocumentWithRdbFullText {
+
+    @Optional
+    String getDocumentName();
+
+    void setDocumentName(String documentName);
+
+    @SystemProperty(SystemPropertyName.QUERY_ATTRIBUTES)
+    QueryAttributes getQueryAttributes();
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines the name of the content element, using the default name "content" from the constant</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Activates automatic full text extraction</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Tells the system to store the extracted full text data in the relational database</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The language (or configuration) used for the full text index on the database</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="indexes_and_configuration"><a class="anchor" href="#indexes_and_configuration"></a>Indexes and configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The system will create a full text index for each content element for that full text data is stored in the database.
+Because full text operations are language specific, the language for the index must be defined in the content element
+of the type definition. PostgreSQL provides a number of predefined language configurations, which are
+contained in the <code>FullTextLanguage</code> class as constants. It is possible to create custom configurations. More information
+can be found in the <a href="https://www.postgresql.org/docs/current/textsearch-intro.html#TEXTSEARCH-INTRO-CONFIGURATIONS">Postgres documentation</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="searching"><a class="anchor" href="#searching"></a>Searching</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The EQL provides support for full text searching. Search expressions are formulated like a query in a web search
+engine:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Technical metadata, which is filled by <em>arveo</em> and cannot be changed, see <a href="system-fields.html" class="xref page"><strong>System properties</strong></a></p>
+<p>Unquoted text: Text without quotes will be treated as individual terms combined by an AND operator.</p>
 </li>
 <li>
-<p>Typed metadata as defined in the annotated interface (the type definition)</p>
+<p>Quoted text: Text within quotes will be treated as a phrase (individual terms combined by a FOLLOWED-BY operator).</p>
 </li>
 <li>
-<p>0-n content objects: A content object has a content type that is freely configured in the system.A maximum of one
-element can be inserted per content type.Examples of content types are: original object, rendition, full text,
-text notes, XML properties, etc.</p>
+<p>OR: The word "or" will be treated like the logical OR operator.</p>
 </li>
 <li>
-<p>content metadata like content size, mime-type and hash</p>
-</li>
-<li>
-<p>0-n annotations per content object: Only for image objects (TIFF, JPEG, PNG, BMP, PDF/A) annotations can be created
-in a layer independent of the document.</p>
+<p>Dash: A dash ("-") will be treated like a NOT operator.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Any number of versions can be created for a <code>Document</code>. All the versions are traceable in the repository and can be referenced via independent system-wide unique IDs.</p>
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>'the green ball'</code>: Will find documents that contain the words "green" and "ball". The word "the" will be ignored
+because it is a stop-word.</p>
+</li>
+<li>
+<p><code>'"the green ball"'</code>: Will find documents that contain the word "green" followed by the word "ball". Again, the word
+"the" will be ignored.</p>
+</li>
+<li>
+<p><code>'blue -red'</code>: Will find documents containing the word "blue" but not the word "red".</p>
+</li>
+<li>
+<p><code>'blue or red'</code>: Will find documents containing the word "blue" or the word "red".</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The fluent API can be used to formulate queries as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">formulating queries</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
+    .contextReference("content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .fullTextMatches() <i class="conum" data-value="2"></i><b>(2)</b>
+    .webSearch("the cake is a lie") <i class="conum" data-value="3"></i><b>(3)</b>
+    .holds().unpaged();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines the content element from which the full text data was extracted</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Perform full text query</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Define the web search expression as described above</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In queries using more than one type definition it is necessary to qualify the context reference to the content element
+by the name of the type definition:</p>
+</div>
+<div class="listingblock">
+<div class="title">qualified context reference</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
+    .contextReference(DocumentWithRdbFullTextNames.getTypeDefinitionName(), "content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .fullTextMatches()
+    .webSearch("the cake is a lie")
+    .holds().unpaged();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Qualify the reference to the content element by using the name of the type definition</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The extracted full text data is stored in a separate table (with the postfix "_ft"). This table is automatically joined
+when a full text query is performed. Queries without full text will not contain a join for this table.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="ranking_search_results"><a class="anchor" href="#ranking_search_results"></a>Ranking search results</h3>
+<div class="paragraph">
+<p>In full text queries ranking is used to measure the relevance of each query result in regard of the full text matching
+expression. <em>arveo</em> can return a rank value for each element in a query result. The value is of type float in
+the range 0-1. The rank value might be null if ranking was not applicable for the specific element.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The rank is calculated for one specific content element, which means that the query must contain exactly one full text
+match expression for this content element. It is not possible to calculate more than one rank in a query.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The calculated value can be used to order the returned result.</p>
+</div>
+<div class="paragraph">
+<p>The concrete rank of each returned element can be accessed using the <code>QueryAttributes</code> property of an entity.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ranking is an expensive operation on the database and should be used with care.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Ranking is enabled in the <code>SearchOptions</code> given to the <code>SearchRequest</code> as shown in the following example.</p>
+</div>
+<div class="listingblock">
+<div class="title">ranking</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
+    .contextReference("content")
+    .fullTextMatches()
+    .webSearch("the cake is a lie")
+    .holds()
+    .withOptions()
+    .withRankingByReference("content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .asOptions()
+    .order().descendingByRank() <i class="conum" data-value="2"></i><b>(2)</b>
+    .unpaged();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Calculate the rank for the full text match expression on the content element named "content"</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Use the calculated rank to order the result on the database</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The rank value can be accessed as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">accessing the rank value</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">QueryAttributes queryAttributes = documentClient.getEntity().getQueryAttributes();
+Float rank = queryAttributes.getRank();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="highlighting"><a class="anchor" href="#highlighting"></a>Highlighting</h3>
+<div class="paragraph">
+<p><em>arveo</em> offers the possibility to generate a headline that can be used to highlight words that matched a full
+text query in a document. A client might use this feature to show a short preview of the document in a query result
+list so that the user can see why the document was considered relevant.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The headline is generated for one specific content element, which means that the query must contain exactly one full text
+match expression for this content element. It is not possible to generate more than one headline in a query.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The generation of the headline is done by the database and must therefore be enabled in the <code>SearchOptions</code> as shown
+in the following example.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Generating headlines is an expensive operation on the database and should be used with care.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">headline</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
+    .contextReference("content")
+    .fullTextMatches()
+    .webSearch("the cake is a lie")
+    .holds()
+    .withOptions()
+    .withHeadlineForReference("content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .asOptions()
+    .unpaged();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Generate a headline for the extracted full text data of the content element called "content".</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The headline value can be accessed as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">accessing the headline value</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">QueryAttributes queryAttributes = documentClient.getEntity().getQueryAttributes();
+@Nullable String headline = queryAttributes.getHeadline();</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="system-fields.html">System fields</a></span>
-  <span class="next"><a href="container-types.html">Container types</a></span>
+  <span class="prev"><a href="search-service.html">Search language</a></span>
+  <span class="next"><a href="retention-introduction.html">Retention</a></span>
 </nav>
 </article>
   </div>

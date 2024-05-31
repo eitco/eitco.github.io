@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>OAuth2.0 authentication and authorization :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/17.0.0/arveo-administration/authentication-oauth2.html">
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-administration/authentication-oauth2.html">
     <link rel="prev" href="system-requirements.html">
     <link rel="next" href="db-access.html">
     <meta name="generator" content="Antora 3.2.0-alpha.4">
@@ -56,7 +56,7 @@
   </nav>
 </header>
 <div class="body">
-<div class="nav-container" data-component="arveo-docu" data-version="17.0.0">
+<div class="nav-container" data-component="arveo-docu" data-version="">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -278,6 +278,9 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-developer/search-service.html">Search language</a>
   </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/fulltext.html">Full text search in relational database</a>
+  </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
@@ -357,16 +360,11 @@
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
     <span class="title">arveo Documentation</span>
-    <span class="version">17.0.0</span>
+    <span class="version"></span>
   </div>
   <ul class="components">
     <li class="component is-current">
       <div class="title"><a href="../arveo-general/product-summary.html">arveo Documentation</a></div>
-      <ul class="versions">
-        <li class="version is-current is-latest">
-          <a href="../arveo-general/product-summary.html">17.0.0</a>
-        </li>
-      </ul>
     </li>
   </ul>
 </div>
@@ -539,7 +537,10 @@ An arveo service can take the role of an OAuth2.0 <em>resource server</em> and/o
 </tbody>
 </table>
 <div class="paragraph">
-<p>User rights are read from a custom claim called <code>authorities</code>. Some services require specific authorities for some features. The required authorities are listed in the service&#8217;s documentation.</p>
+<p>User rights are read from the <code>scope</code> claim and from a custom claim called <code>authorities</code>. Some services require specific authorities for some features. The required authorities are listed in the service&#8217;s documentation.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to limit the access to a specific service by defining an additional mandatory user right. This can be enabled using the property <code>security.general.role-for-secured-access</code>.</p>
 </div>
 <div class="paragraph">
 <p>The information read from the access token can be used in ABAC security methods to check a user&#8217;s access rights. Sometimes the information in the access tokens might not be sufficient. For example, information about a user&#8217;s group memberships might be too big to be stored in an access token. For situations like this, the OpenID Connect (OIDC) user information endpoint can be used to load additional information about a user. Information loaded using OIDC is added to the security context and is available in ABAC security methods, too. To activate this feature, the following configuration parameter must be set:</p>
@@ -579,7 +580,22 @@ An arveo service can take the role of an OAuth2.0 <em>resource server</em> and/o
 <h2 id="user_ids"><a class="anchor" href="#user_ids"></a>User IDs</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Services that require a unique ID of a user use the value of the subject (<em>sub</em>) claim of a JWT or the name attribute of the token introspection response in case opaque tokens are used. The content repository service requires a unique 64 bit integer ID for each user. There are different ways of how to assign these internal IDs to a user. By default, the content repository service assumes that the authentication service is not able to assign numerical IDs and assigns a unique numerical ID to each user when the user performs the first request to the service. The assigned IDs are stored in a database table called <code>cmn_external_users</code>. This behavior can be deactivated as shown below:</p>
+<p>Services that require a unique ID of a user use the value of the subject (<em>sub</em>) claim of a JWT or the name attribute of the token introspection response in case opaque tokens are used. The content repository service requires a unique 64 bit integer ID for each user. There are different ways of how to assign these internal IDs to a user. By default, the content repository service assumes that the authentication service is not able to assign numerical IDs and assigns a unique numerical ID to each user when the user performs the first request to the service. The assigned IDs are stored in a database table called <code>cmn_external_users</code>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The external ID used in the mapping is read from the subject claim of the token by default. If another claim contains the external ID, the name of this claim must be configured using the property <code>commons.security.oauth2.external-user-management.database-id-resolver.external-id-claim</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The automatic assignment of internal IDs can be deactivated as shown below:</p>
 </div>
 <div class="listingblock">
 <div class="title">deactivating automatic internal ID assignment</div>
@@ -593,7 +609,36 @@ An arveo service can take the role of an OAuth2.0 <em>resource server</em> and/o
 </div>
 </div>
 <div class="paragraph">
-<p>The service will then try to get a numeric ID for the user from the access token by checking for a claim called <em>user-id</em>.</p>
+<p>The service will then try to get a numeric ID for the user from the access token by checking for the claim configured in <code>commons.security.oauth2.external-user-management.token-id-resolver.id-claim</code>. By default, the claim <code>user-id</code> will be used. It must contain a value that can be parsed to <code>java.lang.Long</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="keycloak"><a class="anchor" href="#keycloak"></a>Keycloak</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak is the recommended authentication and authorization service to be used for <em>arveo</em>. Setup and configuration is covered by the <a href="https://www.keycloak.org/documentation">Keycloak documentation</a>. This section contains some best practices and recommendations.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak uses realms to separate environments. It is recommended to create a separate realm for <em>arveo</em>. The signature algorithm used for the tokens should be RS256, which currently is the default value in Keycloak.</p>
+</div>
+<div class="paragraph">
+<p>Access to the services and client applications can be controlled by Keycloak clients. Each client should be used for one service or client application. For example, a separate client for service-to-service communication should be created. This must be a confidential client (requiring a client secret) that does only support the <code>client_credentials</code> flow. A client for application-to-service communication does not need to be confidential and should support the <code>authorization_code</code> and/or the <code>resource_owner_password</code> flow.</p>
+</div>
+<div class="paragraph">
+<p>By default, Keycloak will add several attributes of a user to an issed token like the user&#8217;s unique ID in the <code>sub</code> claim. Additional required claims like <code>aud</code> (audience) can be set using token mappers.</p>
+</div>
+<div class="sect2">
+<h3 id="using_active_directory_or_entra_id"><a class="anchor" href="#using_active_directory_or_entra_id"></a>Using Active Directory or Entra ID</h3>
+<div class="paragraph">
+<p>Keycloak can act as an intermediate between Microsoft Active Directory (using user federation) and Azure Entra ID (using an identity provider). User data will be managed in Active Directory or Entra ID while Keycloak will issue tokens for the services and client applications.</p>
+</div>
+<div class="paragraph">
+<p>User federation with Active Directory can be achieved by setting up an LDAP synchronization. Single sign on using the Windows credentials is possible using Kerberos.</p>
+</div>
+<div class="paragraph">
+<p>Azure Entra ID must be added as a generic OpenID Connect 1.0 provider. The predefined social login template for Microsoft Azure does not offer the required customization options. All that is required in Entra ID is an app registration for Keycloak with the redirect URI shown in the Keycloak admin UI. By default, Keycloak will use it&#8217;s internal UUID of an imported user for the <code>sub</code> claim in the issued tokens. It is recommended to use the object ID of the user in Azure instead. Add a mapper of type <em>Attribute Importer</em> to the identity provider that maps the <code>oid</code> claim to a user attribute called <code>oid</code>. To get access to the <code>oid</code> claim, the <em>Scopes</em> setting of the identity provider must be set to <code>openid profile</code>. Then configure a token mapper to add this user attribute to a token claim called <code>oid</code>. Using the property <code>commons.security.oauth2.external-user-management.database-id-resolver.external-id-claim=oid</code> will tell <em>arveo</em> to use this claim as the user&#8217;s external ID.</p>
+</div>
 </div>
 </div>
 </div>
