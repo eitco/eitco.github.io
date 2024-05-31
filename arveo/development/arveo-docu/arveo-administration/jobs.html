@@ -472,6 +472,19 @@ The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external&lt;version
 Simply extract the contents of the ZIP file to a directory (e.g. <em>libs</em>) and start the Job Service with the following parameter:
 <code>-Dloader.path=libs</code>.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The jobs running in the external Job Service have to use the same system ID as the Content Repository Service to receive
+messages from the correct queues. Use the property <code>ecr.jobs.external.system-id</code> (default=1) to set the correct ID.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The configuration parameters for the jobs are already configured in the database. No further configuration parameters
 for the jobs are required in the Job Service&#8217;s configuration. However, the service must be able to authenticate to
