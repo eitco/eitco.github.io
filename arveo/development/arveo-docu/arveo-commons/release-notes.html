@@ -388,7 +388,7 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_19_0_1_june_05_2024"><a class="anchor" href="#release_notes_19_0_1_june_05_2024"></a>Release notes 19.0.1 (June 05, 2024)</h2>
+<h2 id="release_notes_19_0_1_june_06_2024"><a class="anchor" href="#release_notes_19_0_1_june_06_2024"></a>Release notes 19.0.1 (June 06, 2024)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -403,7 +403,24 @@
 <p>The creation of the tables, indexes, sequences etc. for type definitions now uses JOOQ to access the database. The system
 will no longer generate Liquibase scripts for type definitions.</p>
 </dd>
+<dt class="hdlist1">ECR-1282: Upgrade to Java 21</dt>
+<dd>
+<p>arveo now uses Java version 21 and can use virtual threads to improve the performance in situations with many parallel
+requests.</p>
+</dd>
 </dl>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Java versions prior to 21 can no longer be used to run arveo.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
