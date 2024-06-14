@@ -6,7 +6,7 @@ var imgArr = document.getElementsByTagName("img");
 var modalImg = document.getElementById("img01");
 var captionText = document.getElementById("caption");
 for (var i = 0, len = imgArr.length; i < len; i += 1) {
-  if(imgArr[i].id != "arveoLogo"){
+  if(imgArr[i].id != "arveoLogo" && imgArr[i].className != "copy-icon"){
     imgArr[i].onclick = function() {
       modal.style.display = "block";
       modalImg.src = this.src;
