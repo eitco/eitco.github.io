@@ -744,7 +744,8 @@ person.setProcedureDate(ZonedDateTime.now());
 
 TypedContainerClient&lt;Person&gt; client = serviceClient.createOrUpdate(
     EcrQueryLanguage.condition().entity().field(PersonNames.FIRST_NAME).equalTo().value("John").holds(), <i class="conum" data-value="1"></i><b>(1)</b>
-    person
+    person,
+    Set.of(PersonNames.PROCEDURE_DATE) <i class="conum" data-value="2"></i><b>(2)</b>
 );</code></pre>
 </div>
 </div>
@@ -753,6 +754,11 @@ TypedContainerClient&lt;Person&gt; client = serviceClient.createOrUpdate(
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>The selector that uniquely identifies the entity to update</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>(Optional) names of attributes that will not be updated in case the entity already exists. All other attributes
+(excluding read only attributes) will be updated.</td>
 </tr>
 </table>
 </div>
