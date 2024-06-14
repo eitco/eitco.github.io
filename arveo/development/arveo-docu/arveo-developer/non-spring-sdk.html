@@ -495,7 +495,38 @@ try (Authentication.Switch ignored = Authentication.change(passwordFlowInput)) {
 </table>
 </div>
 <div class="paragraph">
-<p>To authenticate requests using the <em>client-credentials</em> flow, use a <code>ClientCredentialsFlowInput</code> instead.</p>
+<p>To authenticate requests using the <em>client-credentials</em> flow, use a <code>ClientCredentialsFlowInput</code> instead:</p>
+</div>
+<div class="listingblock">
+<div class="title">using the client credentials flow</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ClientCredentialsFlowInput clientCredentialsFlowInput = new ClientCredentialsFlowInput(
+    "your-client-id", <i class="conum" data-value="1"></i><b>(1)</b>
+    "your-client-secret", <i class="conum" data-value="2"></i><b>(2)</b>
+    null, <i class="conum" data-value="3"></i><b>(3)</b>
+    "your-issuer-uri" <i class="conum" data-value="4"></i><b>(4)</b>
+);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The client ID</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The client secret</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An optional collection of scopes or null if not required</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The issuer URI used to retrieve information about endpoints and token settings using the <em>.well-known</em> endpoint of the IDP</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The obtained client instance can then be used to access the <em>arveo</em> service. The following example shows how
@@ -549,6 +580,59 @@ InputStream stream = documentResourceClient.readContent(typeDefinitionName, newD
 <td>Use the client to access the previously uploaded document</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The same client can also be used to search for existing documents as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">searching documents</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">SearchRequest searchRequest = SearchRequest
+    .from(0, 100) <i class="conum" data-value="1"></i><b>(1)</b>
+    .ascendingBy("id") <i class="conum" data-value="2"></i><b>(2)</b>
+    .matching(
+        Eql.condition() <i class="conum" data-value="3"></i><b>(3)</b>
+            .contextReference(BasicDocumentNames.CUSTOMER_NAME) <i class="conum" data-value="4"></i><b>(4)</b>
+            .equalTo().value("eitco") <i class="conum" data-value="5"></i><b>(5)</b>
+            .holds() <i class="conum" data-value="6"></i><b>(6)</b>
+    );
+
+Page&lt;Document&gt; page = documentResourceClient.find(typeDefinitionName, searchRequest);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines offset and maximum number of results for paging</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Defines the ordering for paging. The ID system field can be used for ordering as it&#8217;s value is created from a sequence.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Opens a builder for the condition</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Defines the alias and field name ("entity"."customer_name") of the condition. The class <code>BasicDocumentNames</code> is generated
+automatically for the type definition <code>BasicDocument</code> and contains the names of all fields.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Defines the value to search for</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Finishes the condition builder</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>More information and examples for conditions can be found in the <a href="https://eitco.github.io/eql/latest/">EQL documentation</a>.
+The <code>EcrQueryLanguage</code> class used in the example above is an extension of the <em>EQL</em> that adds some specifics for the
+Content Repository Service.</p>
 </div>
 </div>
 </div>

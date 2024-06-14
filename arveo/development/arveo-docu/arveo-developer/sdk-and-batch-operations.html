@@ -453,6 +453,142 @@ how to use the typed API in a Spring application.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="accessing_the_content_repository_service"><a class="anchor" href="#accessing_the_content_repository_service"></a>Accessing the content repository service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The client SDK must be able to find an instance of the content repository service and it must authenticate requests it
+sends to the service instance.</p>
+</div>
+<div class="sect2">
+<h3 id="service_discovery"><a class="anchor" href="#service_discovery"></a>Service discovery</h3>
+<div class="paragraph">
+<p>The SDK uses service discovery to find an instance of the content repository service. By default, the Eureka Service Registry
+is used for service discovery. Each service registers itself in Eureka, and clients (or other services) can retrieve a list
+of available instances from Eureka. When the Eureka Service Registry is not running on the same machine as the client
+application, it&#8217;s URL must be configured:</p>
+</div>
+<div class="listingblock">
+<div class="title">Eureka Service URL</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
+  client:
+    serviceUrl:
+      defaultZone: "http://service-registry-host:8761/eureka/"</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When more than one instance of a service is returned from the service registry, the clients automatically perform load
+balancing and failover.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In scenarios where the Eureka Service Registry is not used (like Kubernetes), the available service instance(s) must be
+configured manually.</p>
+</div>
+<div class="listingblock">
+<div class="title">manually configuring service instances</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
+  client:
+    enabled: false
+
+spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            content-repository-service:
+              - uri: "http://server1:12345"
+              - uri: "http://server2:12345"</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In Kubernetes installations only one instance of the Content Repository Service using the Kubernetes service name must
+be configured. Failover and load balancing is performed by Kubernetes. Alternatively, the Kubernetes Discovery Client
+can be enabled using <code>spring.cloud.kubernetes.enabled=true</code>. Note that additional RBAC privileges are required to use the
+Kubernetes Discovery Client.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="authentication"><a class="anchor" href="#authentication"></a>Authentication</h3>
+<div class="paragraph">
+<p>The service uses OAuth2 to authenticate requests. A client application must retrieve a token from the IDP and send it
+as a bearer token in the Authentication header of each request. The client SDK automatically retrieves tokens from
+the IDP. It also automatically refreshes expired tokens. To be able to retrieve tokens from the IDP, the SDK must
+either authenticate using a username and password or using a client secret. Both ways are configured as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">OAuth2 configuration (username and password)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-password:
+            provider: keycloak
+            client-id: "your-client-id"
+            client-secret: "your-client-secret"
+            authorization-grant-type: "password"
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: "http://localhost:${keycloak.port}/realms/TestRealm"</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The client secret can be omitted for public clients. The actual username and password are set in the application
+code as shown in the <a href="../arveo-getting-started/getting-started.html#implementing_the_tool" class="xref page">getting started guide</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">OAuth2 configuration (client secret)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-secret:
+            provider: keycloak
+            client-id: "your-client-id"
+            client-secret: "your-client-secret"
+            authorization-grant-type: "client_credentials"
+        provider:
+          keycloak:
+            issuer-uri: "http://localhost:${keycloak.port}/realms/TestRealm"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="using_the_sdk_in_a_non_web_application"><a class="anchor" href="#using_the_sdk_in_a_non_web_application"></a>Using the SDK in a non-web application</h2>
 <div class="sectionbody">
 <div class="paragraph">
