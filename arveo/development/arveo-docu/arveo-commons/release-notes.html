@@ -388,7 +388,7 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_19_0_1_june_19_2024"><a class="anchor" href="#release_notes_19_0_1_june_19_2024"></a>Release notes 19.0.1 (June 19, 2024)</h2>
+<h2 id="release_notes_19_0_0_june_21_2024"><a class="anchor" href="#release_notes_19_0_0_june_21_2024"></a>Release notes 19.0.0 (June 21, 2024)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -422,6 +422,15 @@ Java versions prior to 21 can no longer be used to run arveo.
 </tr>
 </table>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1393: Fixed quoting of enum type names</dt>
+<dd>
+<p>Enumeration type names were not quoted correctly when the database schema is created. This caused enum types with custom
+names using upper and lower case letters to be created even when they already existed.</p>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
 </div>
@@ -445,6 +454,15 @@ can now use the interface <code>StoragePluginSchemaModifier</code> to modify the
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1393</dt>
+<dd>
+<p>Enum definitions using custom names (<code>@Enumeration</code> annotation) with upper case letters must either be changed to an
+all lower case name or the name of the type on the database must be changed manually before the update.</p>
+</dd>
+</dl>
 </div>
 </div>
 </details>
