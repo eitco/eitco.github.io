@@ -388,7 +388,7 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_19_0_0_june_24_2024"><a class="anchor" href="#release_notes_19_0_0_june_24_2024"></a>Release notes 19.0.0 (June 24, 2024)</h2>
+<h2 id="release_notes_19_0_0_june_25_2024"><a class="anchor" href="#release_notes_19_0_0_june_25_2024"></a>Release notes 19.0.0 (June 25, 2024)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -424,6 +424,11 @@ Java versions prior to 21 can no longer be used to run arveo.
 </div>
 <div class="dlist">
 <dl>
+<dt class="hdlist1">ECR-1329: Simplified security configuration</dt>
+<dd>
+<p>The configuration property <code>security.general.open-ant-matchers</code> was removed. From now on, all paths not matched by the
+matchers configured in <code>security.general.secured-ant-matchers</code> do not require authentication.</p>
+</dd>
 <dt class="hdlist1">ECR-1393: Fixed quoting of enum type names</dt>
 <dd>
 <p>Enumeration type names were not quoted correctly when the database schema is created. This caused enum types with custom
@@ -440,6 +445,9 @@ names using upper and lower case letters to be created even when they already ex
 <p>The <code>FileSystemPluginChangeSetSupplier</code> interface was removed. Storage plugins, that need to modify the database schema,
 can now use the interface <code>StoragePluginSchemaModifier</code> to modify the schema using JOOQ.</p>
 </li>
+<li>
+<p>The <code>streaming</code> endpoint&#8217;s URL was change from <code>/api/streaming</code> to <code>/streaming</code>.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -449,6 +457,9 @@ can now use the interface <code>StoragePluginSchemaModifier</code> to modify the
 <ul>
 <li>
 <p>The property <code>liquibase.initializer.enabled</code> was renamed to <code>schema.initializer.enabled</code>.</p>
+</li>
+<li>
+<p>The configuration property <code>security.general.open-ant-matchers</code> was removed.</p>
 </li>
 </ul>
 </div>
