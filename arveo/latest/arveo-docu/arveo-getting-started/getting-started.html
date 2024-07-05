@@ -7,7 +7,7 @@
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-getting-started/getting-started.html">
     <link rel="prev" href="../arveo-general/data-deletion.html">
     <link rel="next" href="../arveo-administration/installation.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.4">
+    <meta name="generator" content="Antora 3.2.0-alpha.5">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../ui-assets/css/custom.css">
   </head>
@@ -404,7 +404,7 @@ document type, that represents documents used in a project.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>JDK 17 (<a href="https://adoptium.net" class="bare" target="_blank" rel="noopener">https://adoptium.net</a>).</p>
+<p>JDK 21 (<a href="https://adoptium.net" class="bare" target="_blank" rel="noopener">https://adoptium.net</a>).</p>
 </li>
 <li>
 <p>Apache Maven (<a href="https://maven.apache.org" class="bare" target="_blank" rel="noopener">https://maven.apache.org</a>)</p>
@@ -629,11 +629,11 @@ directory and perform the following operation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=18.0.0</code></pre>
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=19.0.0</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 18.0.0.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 19.0.0.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -1082,7 +1082,7 @@ use the Spring Initializer to generate a maven project with the required depende
 <p>Under "Language", select "Java"</p>
 </li>
 <li>
-<p>Select Spring Boot version 3.2.5. If your required version is not available, select the most
+<p>Select Spring Boot version 3.3.1. If your required version is not available, select the most
 compatible one in terms of major.minor.patch.</p>
 </li>
 <li>
@@ -1093,7 +1093,7 @@ Package name = de.eitco.demo.tool</p>
 <p>Select "Jar" Packaging</p>
 </li>
 <li>
-<p>Select Java version 17 or newer</p>
+<p>Select Java version 21 or newer</p>
 </li>
 <li>
 <p>Add a dependency to "Spring Shell"</p>
@@ -1123,7 +1123,7 @@ and open the project in your IDE. Delete the <code>src/test</code> directory.</p
             &lt;dependency&gt; <i class="conum" data-value="1"></i><b>(1)</b>
                 &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
                 &lt;artifactId&gt;ecr-bom&lt;/artifactId&gt;
-                &lt;version&gt;18.0.0&lt;/version&gt;
+                &lt;version&gt;19.0.0&lt;/version&gt;
                 &lt;type&gt;pom&lt;/type&gt;
                 &lt;scope&gt;import&lt;/scope&gt;
             &lt;/dependency&gt;
@@ -1215,11 +1215,11 @@ The <em>arveo</em> version used in the demo-types project must be the same as th
 <h3 id="implementing_the_tool"><a class="anchor" href="#implementing_the_tool"></a>Implementing the tool</h3>
 <div class="paragraph">
 <p>The tool will use the Spring Shell library to make it easy to write a command line application with features like
-usage help and simple parameter binding. You can read more about Spring Shell <a href="https://spring.io/projects/spring-shell" target="_blank" rel="noopener">here</a>.</p>
+usage help and simple parameter binding.You can read more about Spring Shell <a href="https://spring.io/projects/spring-shell" target="_blank" rel="noopener">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>At first, you have to configure the Spring application and add a custom shutdown handler so that the application will
-shut down all background tasks on exit. Add the following class:</p>
+shut down all background tasks on exit.Add the following class:</p>
 </div>
 <div class="listingblock">
 <div class="title">ShutdownHandler.java</div>

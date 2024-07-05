@@ -7,7 +7,7 @@
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-commons/release-notes.html">
     <link rel="prev" href="compatibility-list.html">
     <link rel="next" href="glossary.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.4">
+    <meta name="generator" content="Antora 3.2.0-alpha.5">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../ui-assets/css/custom.css">
   </head>
@@ -388,6 +388,98 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
+<h2 id="release_notes_19_0_0_july_05_2024"><a class="anchor" href="#release_notes_19_0_0_july_05_2024"></a>Release notes 19.0.0 (July 05, 2024)</h2>
+<div class="sectionbody">
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">Finished stories and bugs</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1385: Schema creation using JOOQ</dt>
+<dd>
+<p>The creation of the tables, indexes, sequences etc. for type definitions now uses JOOQ to access the database. The system
+will no longer generate Liquibase scripts for type definitions.</p>
+</dd>
+<dt class="hdlist1">ECR-1282: Upgrade to Java 21</dt>
+<dd>
+<p>arveo now uses Java version 21 and can use virtual threads to improve the performance in situations with many parallel
+requests.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Java versions prior to 21 can no longer be used to run arveo.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1329: Simplified security configuration</dt>
+<dd>
+<p>The configuration property <code>security.general.open-ant-matchers</code> was removed. From now on, all paths not matched by the
+matchers configured in <code>security.general.secured-ant-matchers</code> do not require authentication.</p>
+</dd>
+<dt class="hdlist1">ECR-1393: Fixed quoting of enum type names</dt>
+<dd>
+<p>Enumeration type names were not quoted correctly when the database schema is created. This caused enum types with custom
+names using upper and lower case letters to be created even when they already existed.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>FileSystemPluginChangeSetSupplier</code> interface was removed. Storage plugins, that need to modify the database schema,
+can now use the interface <code>StoragePluginSchemaModifier</code> to modify the schema using JOOQ.</p>
+</li>
+<li>
+<p>The <code>streaming</code> endpoint&#8217;s URL was change from <code>/api/streaming</code> to <code>/streaming</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The property <code>liquibase.initializer.enabled</code> was renamed to <code>schema.initializer.enabled</code>.</p>
+</li>
+<li>
+<p>The configuration property <code>security.general.open-ant-matchers</code> was removed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ECR-1393</dt>
+<dd>
+<p>Enum definitions using custom names (<code>@Enumeration</code> annotation) with upper case letters must either be changed to an
+all lower case name or the name of the type on the database must be changed manually before the update.</p>
+</dd>
+</dl>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
 <h2 id="release_notes_18_0_0_may_31_2024"><a class="anchor" href="#release_notes_18_0_0_may_31_2024"></a>Release notes 18.0.0 (May 31, 2024)</h2>
 <div class="sectionbody">
 <details>
@@ -468,8 +560,13 @@ future version. The system ID can now be configured using the property <code>ecr
 </div>
 </div>
 </details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="release_notes_17_0_0_april_23_2024"><a class="anchor" href="#release_notes_17_0_0_april_23_2024"></a>Release notes 17.0.0 (April 23, 2024)</h2>
+<div class="sectionbody">
 <details>
-<summary class="title">Release notes 17.0.0 (April 23, 2024)</summary>
+<summary class="title">Details</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">Finished stories and bugs</strong></p>

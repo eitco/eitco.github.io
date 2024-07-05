@@ -7,7 +7,7 @@
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/attribute-based-security.html">
     <link rel="prev" href="access-rights.html">
     <link rel="next" href="permissions.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.4">
+    <meta name="generator" content="Antora 3.2.0-alpha.5">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../ui-assets/css/custom.css">
   </head>
@@ -842,9 +842,9 @@ An owner group must be given Documents are linked to their container with a fore
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.CONTAINER)
 public interface OwnedContainer {
 
-    long getOwnerGroup(); <i class="conum" data-value="1"></i><b>(1)</b>
+    String getOwnerGroup(); <i class="conum" data-value="1"></i><b>(1)</b>
 
-    void setOwnerGroup(long ownerGroup);
+    void setOwnerGroup(String ownerGroup);
 
 
     // ...
@@ -867,7 +867,7 @@ public interface OwnedDocument {
     @Security
     static Expression&lt;Boolean&gt; calculateAccess(Alias alias, AuthenticationContext authenticationContext) {
 
-        Collection&lt;Long&gt; groupIds = authenticationContext.getCommonUserDetails().getCollectionAttribute("group-ids", Long.class, List.of()); <i class="conum" data-value="3"></i><b>(3)</b>
+        Collection&lt;String&gt; groupIds = authenticationContext.getCommonUserDetails().getCollectionAttribute("group-memberships", String.class, List.of()); <i class="conum" data-value="3"></i><b>(3)</b>
 
         return EcrQueryLanguage.condition().alias(alias).field("contained_in").in() <i class="conum" data-value="4"></i><b>(4)</b>
             .select("id").from("owned_container").as("container").where().
@@ -891,8 +891,8 @@ public interface OwnedDocument {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The <code>AuthenticationContext</code> is used to obtain the ids of every group the current user is a member of.
-The <em>group-ids</em> attribute was added to the user info response by the authentication service and loaded by the repository service using OpenId Connect.</td>
+<td>The <code>AuthenticationContext</code> is used to obtain the names of every group the current user is a member of.
+The <em>group-memberships</em> attribute was added to the user info response by the authentication service and loaded by the repository service using OpenId Connect.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -1027,7 +1027,7 @@ public interface MedicalRecordCase {
     static Expression&lt;Boolean&gt; access(Alias alias, AuthenticationContext authenticationContext) {
 
         Collection&lt;String&gt; groupNames = authenticationContext.getCommonUserDetails()
-            .getCollectionAttribute("group-names", String.class, List.of()); <i class="conum" data-value="3"></i><b>(3)</b>
+            .getCollectionAttribute("group-memberships", String.class, List.of()); <i class="conum" data-value="3"></i><b>(3)</b>
 
         Expression&lt;Boolean&gt; result = null;
 
@@ -1075,7 +1075,7 @@ This attribute is also mandatory.</td>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>When computing access, the groups - and thus the wards - of the current user are obtained from the <code>AuthenticationContext</code>.
-The <em>group-names</em> attribute was added to the user info response by the authentication service and loaded by the repository service using OpenId Connect.</td>
+The <em>group-memberships</em> attribute was added to the user info response by the authentication service and loaded by the repository service using OpenId Connect.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
