@@ -454,7 +454,7 @@ the <em>resource-owner-password</em> flow. The following example shows how to pe
 try (Authentication.Switch ignored = Authentication.change(passwordFlowInput)) { <i class="conum" data-value="8"></i><b>(8)</b>
 
     Map&lt;TypeDefinitionId, TypeDefinition&gt; allDefinitions = client.getTypeDefinitionResourceClient().getAllDefinitions();
-    Assert.assertEquals(allDefinitions.size(), 7);
+    Assert.assertTrue(allDefinitions.size() &gt; 3);
 }</code></pre>
 </div>
 </div>
