@@ -7,7 +7,7 @@
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/arveo-developer/fulltext.html">
     <link rel="prev" href="search-service.html">
     <link rel="next" href="retention-introduction.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.5">
+    <meta name="generator" content="Antora 3.2.0-alpha.6">
     <link rel="stylesheet" href="../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../ui-assets/css/custom.css">
   </head>
@@ -427,10 +427,18 @@ PostgreSQL.</p>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
 @ContentElement(
-    name = ContentElement.CONTENT, <i class="conum" data-value="1"></i><b>(1)</b>
+    name = "content1", <i class="conum" data-value="1"></i><b>(1)</b>
     fulltextExtraction = true, <i class="conum" data-value="2"></i><b>(2)</b>
     fullTextStorage = FullTextStorage.RDB, <i class="conum" data-value="3"></i><b>(3)</b>
-    fullTextLanguage = FullTextLanguage.ENGLISH <i class="conum" data-value="4"></i><b>(4)</b>
+    fullTextLanguage = FullTextLanguage.ENGLISH, <i class="conum" data-value="4"></i><b>(4)</b>
+    reversedFullTextIndex = true <i class="conum" data-value="5"></i><b>(5)</b>
+)
+@ContentElement(
+    name = "content2",
+    fulltextExtraction = true,
+    fullTextStorage = FullTextStorage.RDB_WITH_VECTOR_COLUMN, <i class="conum" data-value="6"></i><b>(6)</b>
+    fullTextLanguage = FullTextLanguage.ENGLISH,
+    reversedFullTextIndex = true
 )
 public interface DocumentWithRdbFullText {
 
@@ -448,7 +456,7 @@ public interface DocumentWithRdbFullText {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Defines the name of the content element, using the default name "content" from the constant</td>
+<td>Defines the name of the content element</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -461,6 +469,15 @@ public interface DocumentWithRdbFullText {
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>The language (or configuration) used for the full text index on the database</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>If this property is set to true, an additional index is created that contains full text data of the reversed original
+content. This is a requirement for suffix-searches. If suffix searches are not required, this setting should not be enabled.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Activates an additional column on the database that will contain the parsed full text vector data. See below for details.</td>
 </tr>
 </table>
 </div>
@@ -475,6 +492,34 @@ Because full text operations are language specific, the language for the index m
 of the type definition. PostgreSQL provides a number of predefined language configurations, which are
 contained in the <code>FullTextLanguage</code> class as constants. It is possible to create custom configurations. More information
 can be found in the <a href="https://www.postgresql.org/docs/current/textsearch-intro.html#TEXTSEARCH-INTRO-CONFIGURATIONS">Postgres documentation</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using_vector_columns"><a class="anchor" href="#using_vector_columns"></a>Using vector columns</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The parsed full text data can be kept in indexes and optionally in a separate database column (vector column). To store
+full text data in a vector column, set the <code>fullTextStorage</code> attribute to <code>RDB_WITH_VECTOR_COLUMN</code>. If storing the full
+text data in an index is sufficient, set this attribute to <code>RDB</code>.</p>
+</div>
+<div class="paragraph">
+<p>Whether to use a vector column depends on the usage of the archived data. Storing the data in a vector column provides
+faster search performance but slower write performance. Keeping the data in an index provides slower search performance
+but faster write performance. Another thing to consider is the possibility to change the language used to parse the
+full text data. If it is changed, both the index and the vector column must be re-created.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="suffix_ends_with_searches"><a class="anchor" href="#suffix_ends_with_searches"></a>Suffix (ends-with) searches</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To allow suffix or "ends-with" searches, an additional index or vector column that stores reversed full text data can
+be activated using the property <code>reversedFullTextIndex</code>. Such an index (or vector column) is required to perform suffix
+searches. Prefix and web searches are always possible. Keep in mind that enabling the storage of reversed full text data
+will double the amount of storage required for full text data, so this should only be enabled when suffix searches are
+required.</p>
 </div>
 </div>
 </div>
@@ -500,6 +545,20 @@ engine:</p>
 <p>Dash: A dash ("-") will be treated like a NOT operator.</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Whether the full text data is stored in an index or a vector column does not matter when formulating queries.
+The system will automatically reference the correct database entity. Providing the name of the content element is
+sufficient.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Examples:</p>
@@ -529,7 +588,7 @@ because it is a stop-word.</p>
 <div class="title">formulating queries</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
-    .contextReference("content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .contextReference("content1") <i class="conum" data-value="1"></i><b>(1)</b>
     .fullTextMatches() <i class="conum" data-value="2"></i><b>(2)</b>
     .webSearch("the cake is a lie") <i class="conum" data-value="3"></i><b>(3)</b>
     .holds().unpaged();</code></pre>
@@ -559,7 +618,7 @@ by the name of the type definition:</p>
 <div class="title">qualified context reference</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
-    .contextReference(DocumentWithRdbFullTextNames.getTypeDefinitionName(), "content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .contextReference(DocumentWithRdbFullTextNames.getTypeDefinitionName(), "content1") <i class="conum" data-value="1"></i><b>(1)</b>
     .fullTextMatches()
     .webSearch("the cake is a lie")
     .holds().unpaged();</code></pre>
@@ -572,6 +631,19 @@ by the name of the type definition:</p>
 <td>Qualify the reference to the content element by using the name of the type definition</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>In addition to web searches, <em>arveo</em> supports prefix and suffix searches (or starts-with and ends-with) queries.</p>
+</div>
+<div class="listingblock">
+<div class="title">prefix search</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
+    .contextReference("content2")
+    .fullTextMatches()
+    .prefix("search")
+    .holds().unpaged();</code></pre>
+</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -631,12 +703,12 @@ Ranking is an expensive operation on the database and should be used with care.
 <div class="title">ranking</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
-    .contextReference("content")
+    .contextReference("content1")
     .fullTextMatches()
     .webSearch("the cake is a lie")
     .holds()
     .withOptions()
-    .withRankingByReference("content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .withRankingByReference("content1") <i class="conum" data-value="1"></i><b>(1)</b>
     .asOptions()
     .order().descendingByRank() <i class="conum" data-value="2"></i><b>(2)</b>
     .unpaged();</code></pre>
@@ -705,12 +777,12 @@ Generating headlines is an expensive operation on the database and should be use
 <div class="title">headline</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;DocumentWithRdbFullText&gt;&gt; list = serviceClient.where()
-    .contextReference("content")
+    .contextReference("content1")
     .fullTextMatches()
     .webSearch("the cake is a lie")
     .holds()
     .withOptions()
-    .withHeadlineForReference("content") <i class="conum" data-value="1"></i><b>(1)</b>
+    .withHeadlineForReference("content1") <i class="conum" data-value="1"></i><b>(1)</b>
     .asOptions()
     .unpaged();</code></pre>
 </div>
@@ -732,6 +804,18 @@ Generating headlines is an expensive operation on the database and should be use
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">QueryAttributes queryAttributes = documentClient.getEntity().getQueryAttributes();
 @Nullable String headline = queryAttributes.getHeadline();</code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+It is not possible to retrieve a headline when a suffix search is performed.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
