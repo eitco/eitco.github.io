@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NpmPackageMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">typescript-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.typescript.maven.plugin</a> &gt; <span class="el_source">NpmPackageMojo.java</span></div><h1>NpmPackageMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2022 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 04.03.2022
+ *
+ */
+package de.eitco.cicd.typescript.maven.plugin;
+
+
+import com.github.eirslett.maven.plugins.frontend.lib.FrontendException;
+import com.github.eirslett.maven.plugins.frontend.lib.FrontendPluginFactory;
+import com.github.eirslett.maven.plugins.frontend.mojo.RepositoryCacheResolver;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.shared.utils.io.FileUtils;
+import org.eclipse.aether.RepositorySystemSession;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * This goal packages the npm package by calling {@code npm pack}. Additionally, this attaches
+ * the package created, the `package.json` file and the `package-lock.json` file to the project so
+ * that the maven default install and deploy plugins will install/deploy them.
+ */
+@Mojo(name = &quot;package&quot;, threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
+<span class="fc" id="L41">public class NpmPackageMojo extends DistributionDirectoryNpmExecutionMojo {</span>
+
+    public static final String MODULES_SUB_DIRECTORY = &quot;node_modules&quot;;
+
+    @Component
+    private MavenProjectHelper projectHelper;
+
+    protected String getArguments() {
+<span class="fc" id="L49">        return &quot;pack &quot;;</span>
+    }
+
+    @Override
+    public void execute() throws MojoFailureException {
+
+        try {
+<span class="fc" id="L56">            File moduleDirectory = new File(workingDirectory, MODULES_SUB_DIRECTORY);</span>
+
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">            if (moduleDirectory.isDirectory()) {</span>
+
+<span class="fc" id="L60">                final Path targetDirectory = Path.of(distributionDirectory.getAbsolutePath(), MODULES_SUB_DIRECTORY);</span>
+
+                try {
+
+<span class="nc" id="L64">                    Files.createLink(targetDirectory, moduleDirectory.toPath());</span>
+
+<span class="fc" id="L66">                } catch (IOException e) {</span>
+
+<span class="fc" id="L68">                    final List&lt;NpmDependency&gt; bundledDependencies = allDependencies()</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                            .filter(it -&gt; it.getType() == DependencyType.BUNDLED).collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                    for (NpmDependency bundledDependency : bundledDependencies) {</span>
+
+<span class="fc" id="L73">                        FileUtils.copyDirectoryStructure(new File(moduleDirectory, bundledDependency.getName()), new File(targetDirectory.toFile(), bundledDependency.getName()));</span>
+<span class="fc" id="L74">                    }</span>
+<span class="nc" id="L75">                }</span>
+            }
+
+<span class="fc" id="L78">            super.execute();</span>
+
+<span class="fc" id="L80">            Artifact projectArtifact = project.getArtifact();</span>
+
+<span class="fc" id="L82">            projectArtifact.setFile(getPackageFile());</span>
+
+<span class="fc" id="L84">            getLog().info(&quot;artifact file is &quot; + project.getArtifact().getFile());</span>
+
+<span class="fc" id="L86">            projectHelper.attachArtifact(project, &quot;package&quot;, new File(distributionDirectory, &quot;package.json&quot;));</span>
+
+<span class="fc" id="L88">            final File packageLock = new File(project.getBasedir(), &quot;package-lock.json&quot;);</span>
+
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if (packageLock.isFile()) {</span>
+
+<span class="fc" id="L92">                projectHelper.attachArtifact(project, &quot;package-lock&quot;, packageLock);</span>
+            }
+
+<span class="nc" id="L95">        } catch (IOException e) {</span>
+
+<span class="nc" id="L97">            throw new MojoFailureException(e.getMessage(), e);</span>
+<span class="fc" id="L98">        }</span>
+<span class="fc" id="L99">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompilerOptions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">typescript-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.typescript.maven.plugin</a> &gt; <span class="el_source">CompilerOptions.java</span></div><h1>CompilerOptions.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2022 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 04.03.2022
+ *
+ */
+package de.eitco.cicd.typescript.maven.plugin;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.List;
+import java.util.Map;
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+<span class="fc" id="L16">public class CompilerOptions {</span>
+
+    private Boolean allowUnreachableCode;
+    private Boolean allowUnusedLabels;
+    private Boolean alwaysStrict;
+    private Boolean exactOptionalPropertyTypes;
+    private Boolean noFallthroughCasesInSwitch;
+    private Boolean noImplicitAny;
+    private Boolean noImplicitOverride;
+    private Boolean noImplicitReturns;
+    private Boolean noImplicitThis;
+    private Boolean noPropertyAccessFromIndexSignature;
+    private Boolean noUncheckedIndexedAccess;
+    private Boolean noUnusedLocals;
+    private Boolean noUnusedParameters;
+    private Boolean strict;
+    private Boolean strictBindCallApply;
+    private Boolean strictFunctionTypes;
+    private Boolean strictNullChecks;
+    private Boolean strictPropertyInitialization;
+    private Boolean useUnknownInCatchVariables;
+    private Boolean allowUmdGlobalAccess;
+    private String baseUrl;
+    private String module;
+    private String moduleResolution;
+    private Boolean noResolve;
+    private Map&lt;String, PathList&gt; paths;
+    private Boolean resolveJsonModule;
+    private String rootDir;
+    private List&lt;String&gt; rootDirs;
+    private List&lt;String&gt; typeRoots;
+    private List&lt;String&gt; types;
+    private Boolean declaration;
+    private String declarationDir;
+    private Boolean declarationMap;
+    private Boolean downlevelIteration;
+    private Boolean emitBOM;
+    private Boolean emitDeclarationOnly;
+    private Boolean importHelpers;
+    private String importsNotUsedAsValues;
+    private Boolean inlineSourceMap;
+    private Boolean inlineSources;
+    private String mapRoot;
+    private String newLine;
+    private Boolean noEmit;
+    private Boolean noEmitHelpers;
+    private Boolean noEmitOnError;
+    private String outDir;
+    private String outFile;
+    private Boolean preserveConstEnums;
+    private Boolean preserveValueImports;
+    private Boolean removeComments;
+    private Boolean sourceMap;
+    private String sourceRoot;
+    private Boolean stripInternal;
+    private Boolean allowJs;
+    private Boolean checkJs;
+    private Integer maxNodeModuleJsDepth;
+    private Boolean disableSizeLimit;
+    private Boolean allowSyntheticDefaultImports;
+    private Boolean esModuleInterop;
+    private Boolean forceConsistentCasingInFileNames;
+    private Boolean isolatedModules;
+    private Boolean preserveSymlinks;
+    private Boolean keyofStringsOnly;
+    private Boolean noImplicitUseStrict;
+    private Boolean noStrictGenericChecks;
+    private Boolean suppressExcessPropertyErrors;
+    private Boolean suppressImplicitAnyIndexErrors;
+    private Boolean emitDecoratorMetadata;
+    private Boolean experimentalDecorators;
+    private String jsx;
+    private String jsxFactory;
+    private String jsxFragmentFactory;
+    private String jsxImportSource;
+    private List&lt;String&gt; lib;
+    private Boolean noLib;
+    private String reactNamespace;
+    private String target;
+    private Boolean useDefineForClassFields;
+    private Boolean diagnostics;
+    private Boolean explainFiles;
+    private Boolean extendedDiagnostics;
+    private Boolean listEmittedFiles;
+    private Boolean listFiles;
+    private Boolean traceResolution;
+    private Boolean composite;
+    private Boolean disableReferencedProjectLoad;
+    private Boolean disableSolutionSearching;
+    private Boolean disableSourceOfProjectReferenceRedirect;
+    private Boolean incremental;
+    private String tsBuildInfoFile;
+    private Boolean noErrorTruncation;
+    private Boolean preserveWatchOutput;
+    private Boolean pretty;
+    private Boolean skipDefaultLibCheck;
+    private Boolean skipLibCheck;
+
+    public Boolean getAllowUnreachableCode() {
+<span class="fc" id="L115">        return allowUnreachableCode;</span>
+    }
+
+    public CompilerOptions setAllowUnreachableCode(Boolean allowUnreachableCode) {
+<span class="nc" id="L119">        this.allowUnreachableCode = allowUnreachableCode;</span>
+<span class="nc" id="L120">        return this;</span>
+    }
+
+    public Boolean getAllowUnusedLabels() {
+<span class="fc" id="L124">        return allowUnusedLabels;</span>
+    }
+
+    public CompilerOptions setAllowUnusedLabels(Boolean allowUnusedLabels) {
+<span class="nc" id="L128">        this.allowUnusedLabels = allowUnusedLabels;</span>
+<span class="nc" id="L129">        return this;</span>
+    }
+
+    public Boolean getAlwaysStrict() {
+<span class="fc" id="L133">        return alwaysStrict;</span>
+    }
+
+    public CompilerOptions setAlwaysStrict(Boolean alwaysStrict) {
+<span class="nc" id="L137">        this.alwaysStrict = alwaysStrict;</span>
+<span class="nc" id="L138">        return this;</span>
+    }
+
+    public Boolean getExactOptionalPropertyTypes() {
+<span class="fc" id="L142">        return exactOptionalPropertyTypes;</span>
+    }
+
+    public CompilerOptions setExactOptionalPropertyTypes(Boolean exactOptionalPropertyTypes) {
+<span class="nc" id="L146">        this.exactOptionalPropertyTypes = exactOptionalPropertyTypes;</span>
+<span class="nc" id="L147">        return this;</span>
+    }
+
+    public Boolean getNoFallthroughCasesInSwitch() {
+<span class="fc" id="L151">        return noFallthroughCasesInSwitch;</span>
+    }
+
+    public CompilerOptions setNoFallthroughCasesInSwitch(Boolean noFallthroughCasesInSwitch) {
+<span class="nc" id="L155">        this.noFallthroughCasesInSwitch = noFallthroughCasesInSwitch;</span>
+<span class="nc" id="L156">        return this;</span>
+    }
+
+    public Boolean getNoImplicitAny() {
+<span class="fc" id="L160">        return noImplicitAny;</span>
+    }
+
+    public CompilerOptions setNoImplicitAny(Boolean noImplicitAny) {
+<span class="nc" id="L164">        this.noImplicitAny = noImplicitAny;</span>
+<span class="nc" id="L165">        return this;</span>
+    }
+
+    public Boolean getNoImplicitOverride() {
+<span class="fc" id="L169">        return noImplicitOverride;</span>
+    }
+
+    public CompilerOptions setNoImplicitOverride(Boolean noImplicitOverride) {
+<span class="nc" id="L173">        this.noImplicitOverride = noImplicitOverride;</span>
+<span class="nc" id="L174">        return this;</span>
+    }
+
+    public Boolean getNoImplicitReturns() {
+<span class="fc" id="L178">        return noImplicitReturns;</span>
+    }
+
+    public CompilerOptions setNoImplicitReturns(Boolean noImplicitReturns) {
+<span class="nc" id="L182">        this.noImplicitReturns = noImplicitReturns;</span>
+<span class="nc" id="L183">        return this;</span>
+    }
+
+    public Boolean getNoImplicitThis() {
+<span class="fc" id="L187">        return noImplicitThis;</span>
+    }
+
+    public CompilerOptions setNoImplicitThis(Boolean noImplicitThis) {
+<span class="nc" id="L191">        this.noImplicitThis = noImplicitThis;</span>
+<span class="nc" id="L192">        return this;</span>
+    }
+
+    public Boolean getNoPropertyAccessFromIndexSignature() {
+<span class="fc" id="L196">        return noPropertyAccessFromIndexSignature;</span>
+    }
+
+    public CompilerOptions setNoPropertyAccessFromIndexSignature(Boolean noPropertyAccessFromIndexSignature) {
+<span class="nc" id="L200">        this.noPropertyAccessFromIndexSignature = noPropertyAccessFromIndexSignature;</span>
+<span class="nc" id="L201">        return this;</span>
+    }
+
+    public Boolean getNoUncheckedIndexedAccess() {
+<span class="fc" id="L205">        return noUncheckedIndexedAccess;</span>
+    }
+
+    public CompilerOptions setNoUncheckedIndexedAccess(Boolean noUncheckedIndexedAccess) {
+<span class="nc" id="L209">        this.noUncheckedIndexedAccess = noUncheckedIndexedAccess;</span>
+<span class="nc" id="L210">        return this;</span>
+    }
+
+    public Boolean getNoUnusedLocals() {
+<span class="fc" id="L214">        return noUnusedLocals;</span>
+    }
+
+    public CompilerOptions setNoUnusedLocals(Boolean noUnusedLocals) {
+<span class="nc" id="L218">        this.noUnusedLocals = noUnusedLocals;</span>
+<span class="nc" id="L219">        return this;</span>
+    }
+
+    public Boolean getNoUnusedParameters() {
+<span class="fc" id="L223">        return noUnusedParameters;</span>
+    }
+
+    public CompilerOptions setNoUnusedParameters(Boolean noUnusedParameters) {
+<span class="nc" id="L227">        this.noUnusedParameters = noUnusedParameters;</span>
+<span class="nc" id="L228">        return this;</span>
+    }
+
+    public Boolean getStrict() {
+<span class="fc" id="L232">        return strict;</span>
+    }
+
+    public CompilerOptions setStrict(Boolean strict) {
+<span class="nc" id="L236">        this.strict = strict;</span>
+<span class="nc" id="L237">        return this;</span>
+    }
+
+    public Boolean getStrictBindCallApply() {
+<span class="fc" id="L241">        return strictBindCallApply;</span>
+    }
+
+    public CompilerOptions setStrictBindCallApply(Boolean strictBindCallApply) {
+<span class="nc" id="L245">        this.strictBindCallApply = strictBindCallApply;</span>
+<span class="nc" id="L246">        return this;</span>
+    }
+
+    public Boolean getStrictFunctionTypes() {
+<span class="fc" id="L250">        return strictFunctionTypes;</span>
+    }
+
+    public CompilerOptions setStrictFunctionTypes(Boolean strictFunctionTypes) {
+<span class="nc" id="L254">        this.strictFunctionTypes = strictFunctionTypes;</span>
+<span class="nc" id="L255">        return this;</span>
+    }
+
+    public Boolean getStrictNullChecks() {
+<span class="fc" id="L259">        return strictNullChecks;</span>
+    }
+
+    public CompilerOptions setStrictNullChecks(Boolean strictNullChecks) {
+<span class="nc" id="L263">        this.strictNullChecks = strictNullChecks;</span>
+<span class="nc" id="L264">        return this;</span>
+    }
+
+    public Boolean getStrictPropertyInitialization() {
+<span class="fc" id="L268">        return strictPropertyInitialization;</span>
+    }
+
+    public CompilerOptions setStrictPropertyInitialization(Boolean strictPropertyInitialization) {
+<span class="nc" id="L272">        this.strictPropertyInitialization = strictPropertyInitialization;</span>
+<span class="nc" id="L273">        return this;</span>
+    }
+
+    public Boolean getUseUnknownInCatchVariables() {
+<span class="fc" id="L277">        return useUnknownInCatchVariables;</span>
+    }
+
+    public CompilerOptions setUseUnknownInCatchVariables(Boolean useUnknownInCatchVariables) {
+<span class="nc" id="L281">        this.useUnknownInCatchVariables = useUnknownInCatchVariables;</span>
+<span class="nc" id="L282">        return this;</span>
+    }
+
+    public Boolean getAllowUmdGlobalAccess() {
+<span class="fc" id="L286">        return allowUmdGlobalAccess;</span>
+    }
+
+    public CompilerOptions setAllowUmdGlobalAccess(Boolean allowUmdGlobalAccess) {
+<span class="nc" id="L290">        this.allowUmdGlobalAccess = allowUmdGlobalAccess;</span>
+<span class="nc" id="L291">        return this;</span>
+    }
+
+    public String getBaseUrl() {
+<span class="fc" id="L295">        return baseUrl;</span>
+    }
+
+    public CompilerOptions setBaseUrl(String baseUrl) {
+<span class="nc" id="L299">        this.baseUrl = baseUrl;</span>
+<span class="nc" id="L300">        return this;</span>
+    }
+
+    public String getModule() {
+<span class="fc" id="L304">        return module;</span>
+    }
+
+    public CompilerOptions setModule(String module) {
+<span class="fc" id="L308">        this.module = module;</span>
+<span class="fc" id="L309">        return this;</span>
+    }
+
+    public String getModuleResolution() {
+<span class="fc" id="L313">        return moduleResolution;</span>
+    }
+
+    public CompilerOptions setModuleResolution(String moduleResolution) {
+<span class="fc" id="L317">        this.moduleResolution = moduleResolution;</span>
+<span class="fc" id="L318">        return this;</span>
+    }
+
+    public Boolean getNoResolve() {
+<span class="fc" id="L322">        return noResolve;</span>
+    }
+
+    public CompilerOptions setNoResolve(Boolean noResolve) {
+<span class="nc" id="L326">        this.noResolve = noResolve;</span>
+<span class="nc" id="L327">        return this;</span>
+    }
+
+    public Map&lt;String, PathList&gt; getPaths() {
+<span class="fc" id="L331">        return paths;</span>
+    }
+
+    public void setPaths(Map&lt;String, PathList&gt; paths) {
+<span class="nc" id="L335">        this.paths = paths;</span>
+<span class="nc" id="L336">    }</span>
+
+    public Boolean getResolveJsonModule() {
+<span class="fc" id="L339">        return resolveJsonModule;</span>
+    }
+
+    public CompilerOptions setResolveJsonModule(Boolean resolveJsonModule) {
+<span class="nc" id="L343">        this.resolveJsonModule = resolveJsonModule;</span>
+<span class="nc" id="L344">        return this;</span>
+    }
+
+    public String getRootDir() {
+<span class="fc" id="L348">        return rootDir;</span>
+    }
+
+    public CompilerOptions setRootDir(String rootDir) {
+<span class="nc" id="L352">        this.rootDir = rootDir;</span>
+<span class="nc" id="L353">        return this;</span>
+    }
+
+    public List&lt;String&gt; getRootDirs() {
+<span class="fc" id="L357">        return rootDirs;</span>
+    }
+
+    public CompilerOptions setRootDirs(List&lt;String&gt; rootDirs) {
+<span class="nc" id="L361">        this.rootDirs = rootDirs;</span>
+<span class="nc" id="L362">        return this;</span>
+    }
+
+    public List&lt;String&gt; getTypeRoots() {
+<span class="fc" id="L366">        return typeRoots;</span>
+    }
+
+    public CompilerOptions setTypeRoots(List&lt;String&gt; typeRoots) {
+<span class="nc" id="L370">        this.typeRoots = typeRoots;</span>
+<span class="nc" id="L371">        return this;</span>
+    }
+
+    public List&lt;String&gt; getTypes() {
+<span class="fc" id="L375">        return types;</span>
+    }
+
+    public CompilerOptions setTypes(List&lt;String&gt; types) {
+<span class="nc" id="L379">        this.types = types;</span>
+<span class="nc" id="L380">        return this;</span>
+    }
+
+    public Boolean getDeclaration() {
+<span class="fc" id="L384">        return declaration;</span>
+    }
+
+    public CompilerOptions setDeclaration(Boolean declaration) {
+<span class="fc" id="L388">        this.declaration = declaration;</span>
+<span class="fc" id="L389">        return this;</span>
+    }
+
+    public String getDeclarationDir() {
+<span class="fc" id="L393">        return declarationDir;</span>
+    }
+
+    public CompilerOptions setDeclarationDir(String declarationDir) {
+<span class="nc" id="L397">        this.declarationDir = declarationDir;</span>
+<span class="nc" id="L398">        return this;</span>
+    }
+
+    public Boolean getDeclarationMap() {
+<span class="fc" id="L402">        return declarationMap;</span>
+    }
+
+    public CompilerOptions setDeclarationMap(Boolean declarationMap) {
+<span class="nc" id="L406">        this.declarationMap = declarationMap;</span>
+<span class="nc" id="L407">        return this;</span>
+    }
+
+    public Boolean getDownlevelIteration() {
+<span class="fc" id="L411">        return downlevelIteration;</span>
+    }
+
+    public CompilerOptions setDownlevelIteration(Boolean downlevelIteration) {
+<span class="nc" id="L415">        this.downlevelIteration = downlevelIteration;</span>
+<span class="nc" id="L416">        return this;</span>
+    }
+
+    public Boolean getEmitBOM() {
+<span class="fc" id="L420">        return emitBOM;</span>
+    }
+
+    public CompilerOptions setEmitBOM(Boolean emitBOM) {
+<span class="nc" id="L424">        this.emitBOM = emitBOM;</span>
+<span class="nc" id="L425">        return this;</span>
+    }
+
+    public Boolean getEmitDeclarationOnly() {
+<span class="fc" id="L429">        return emitDeclarationOnly;</span>
+    }
+
+    public CompilerOptions setEmitDeclarationOnly(Boolean emitDeclarationOnly) {
+<span class="nc" id="L433">        this.emitDeclarationOnly = emitDeclarationOnly;</span>
+<span class="nc" id="L434">        return this;</span>
+    }
+
+    public Boolean getImportHelpers() {
+<span class="fc" id="L438">        return importHelpers;</span>
+    }
+
+    public CompilerOptions setImportHelpers(Boolean importHelpers) {
+<span class="nc" id="L442">        this.importHelpers = importHelpers;</span>
+<span class="nc" id="L443">        return this;</span>
+    }
+
+    public String getImportsNotUsedAsValues() {
+<span class="fc" id="L447">        return importsNotUsedAsValues;</span>
+    }
+
+    public CompilerOptions setImportsNotUsedAsValues(String importsNotUsedAsValues) {
+<span class="nc" id="L451">        this.importsNotUsedAsValues = importsNotUsedAsValues;</span>
+<span class="nc" id="L452">        return this;</span>
+    }
+
+    public Boolean getInlineSourceMap() {
+<span class="fc" id="L456">        return inlineSourceMap;</span>
+    }
+
+    public CompilerOptions setInlineSourceMap(Boolean inlineSourceMap) {
+<span class="nc" id="L460">        this.inlineSourceMap = inlineSourceMap;</span>
+<span class="nc" id="L461">        return this;</span>
+    }
+
+    public Boolean getInlineSources() {
+<span class="fc" id="L465">        return inlineSources;</span>
+    }
+
+    public CompilerOptions setInlineSources(Boolean inlineSources) {
+<span class="nc" id="L469">        this.inlineSources = inlineSources;</span>
+<span class="nc" id="L470">        return this;</span>
+    }
+
+    public String getMapRoot() {
+<span class="fc" id="L474">        return mapRoot;</span>
+    }
+
+    public CompilerOptions setMapRoot(String mapRoot) {
+<span class="nc" id="L478">        this.mapRoot = mapRoot;</span>
+<span class="nc" id="L479">        return this;</span>
+    }
+
+    public String getNewLine() {
+<span class="fc" id="L483">        return newLine;</span>
+    }
+
+    public CompilerOptions setNewLine(String newLine) {
+<span class="nc" id="L487">        this.newLine = newLine;</span>
+<span class="nc" id="L488">        return this;</span>
+    }
+
+    public Boolean getNoEmit() {
+<span class="fc" id="L492">        return noEmit;</span>
+    }
+
+    public CompilerOptions setNoEmit(Boolean noEmit) {
+<span class="nc" id="L496">        this.noEmit = noEmit;</span>
+<span class="nc" id="L497">        return this;</span>
+    }
+
+    public Boolean getNoEmitHelpers() {
+<span class="fc" id="L501">        return noEmitHelpers;</span>
+    }
+
+    public CompilerOptions setNoEmitHelpers(Boolean noEmitHelpers) {
+<span class="nc" id="L505">        this.noEmitHelpers = noEmitHelpers;</span>
+<span class="nc" id="L506">        return this;</span>
+    }
+
+    public Boolean getNoEmitOnError() {
+<span class="fc" id="L510">        return noEmitOnError;</span>
+    }
+
+    public CompilerOptions setNoEmitOnError(Boolean noEmitOnError) {
+<span class="nc" id="L514">        this.noEmitOnError = noEmitOnError;</span>
+<span class="nc" id="L515">        return this;</span>
+    }
+
+    public String getOutDir() {
+<span class="fc" id="L519">        return outDir;</span>
+    }
+
+    public CompilerOptions setOutDir(String outDir) {
+<span class="fc" id="L523">        this.outDir = outDir;</span>
+<span class="fc" id="L524">        return this;</span>
+    }
+
+    public String getOutFile() {
+<span class="fc" id="L528">        return outFile;</span>
+    }
+
+    public CompilerOptions setOutFile(String outFile) {
+<span class="nc" id="L532">        this.outFile = outFile;</span>
+<span class="nc" id="L533">        return this;</span>
+    }
+
+    public Boolean getPreserveConstEnums() {
+<span class="fc" id="L537">        return preserveConstEnums;</span>
+    }
+
+    public CompilerOptions setPreserveConstEnums(Boolean preserveConstEnums) {
+<span class="nc" id="L541">        this.preserveConstEnums = preserveConstEnums;</span>
+<span class="nc" id="L542">        return this;</span>
+    }
+
+    public Boolean getPreserveValueImports() {
+<span class="fc" id="L546">        return preserveValueImports;</span>
+    }
+
+    public CompilerOptions setPreserveValueImports(Boolean preserveValueImports) {
+<span class="nc" id="L550">        this.preserveValueImports = preserveValueImports;</span>
+<span class="nc" id="L551">        return this;</span>
+    }
+
+    public Boolean getRemoveComments() {
+<span class="fc" id="L555">        return removeComments;</span>
+    }
+
+    public CompilerOptions setRemoveComments(Boolean removeComments) {
+<span class="nc" id="L559">        this.removeComments = removeComments;</span>
+<span class="nc" id="L560">        return this;</span>
+    }
+
+    public Boolean getSourceMap() {
+<span class="fc" id="L564">        return sourceMap;</span>
+    }
+
+    public CompilerOptions setSourceMap(Boolean sourceMap) {
+<span class="fc" id="L568">        this.sourceMap = sourceMap;</span>
+<span class="fc" id="L569">        return this;</span>
+    }
+
+    public String getSourceRoot() {
+<span class="fc" id="L573">        return sourceRoot;</span>
+    }
+
+    public CompilerOptions setSourceRoot(String sourceRoot) {
+<span class="nc" id="L577">        this.sourceRoot = sourceRoot;</span>
+<span class="nc" id="L578">        return this;</span>
+    }
+
+    public Boolean getStripInternal() {
+<span class="fc" id="L582">        return stripInternal;</span>
+    }
+
+    public CompilerOptions setStripInternal(Boolean stripInternal) {
+<span class="nc" id="L586">        this.stripInternal = stripInternal;</span>
+<span class="nc" id="L587">        return this;</span>
+    }
+
+    public Boolean getAllowJs() {
+<span class="fc" id="L591">        return allowJs;</span>
+    }
+
+    public CompilerOptions setAllowJs(Boolean allowJs) {
+<span class="nc" id="L595">        this.allowJs = allowJs;</span>
+<span class="nc" id="L596">        return this;</span>
+    }
+
+    public Boolean getCheckJs() {
+<span class="fc" id="L600">        return checkJs;</span>
+    }
+
+    public CompilerOptions setCheckJs(Boolean checkJs) {
+<span class="nc" id="L604">        this.checkJs = checkJs;</span>
+<span class="nc" id="L605">        return this;</span>
+    }
+
+    public Integer getMaxNodeModuleJsDepth() {
+<span class="fc" id="L609">        return maxNodeModuleJsDepth;</span>
+    }
+
+    public CompilerOptions setMaxNodeModuleJsDepth(Integer maxNodeModuleJsDepth) {
+<span class="nc" id="L613">        this.maxNodeModuleJsDepth = maxNodeModuleJsDepth;</span>
+<span class="nc" id="L614">        return this;</span>
+    }
+
+    public Boolean getDisableSizeLimit() {
+<span class="fc" id="L618">        return disableSizeLimit;</span>
+    }
+
+    public CompilerOptions setDisableSizeLimit(Boolean disableSizeLimit) {
+<span class="nc" id="L622">        this.disableSizeLimit = disableSizeLimit;</span>
+<span class="nc" id="L623">        return this;</span>
+    }
+
+    public Boolean getAllowSyntheticDefaultImports() {
+<span class="fc" id="L627">        return allowSyntheticDefaultImports;</span>
+    }
+
+    public CompilerOptions setAllowSyntheticDefaultImports(Boolean allowSyntheticDefaultImports) {
+<span class="nc" id="L631">        this.allowSyntheticDefaultImports = allowSyntheticDefaultImports;</span>
+<span class="nc" id="L632">        return this;</span>
+    }
+
+    public Boolean getEsModuleInterop() {
+<span class="fc" id="L636">        return esModuleInterop;</span>
+    }
+
+    public CompilerOptions setEsModuleInterop(Boolean esModuleInterop) {
+<span class="fc" id="L640">        this.esModuleInterop = esModuleInterop;</span>
+<span class="fc" id="L641">        return this;</span>
+    }
+
+    public Boolean getForceConsistentCasingInFileNames() {
+<span class="fc" id="L645">        return forceConsistentCasingInFileNames;</span>
+    }
+
+    public CompilerOptions setForceConsistentCasingInFileNames(Boolean forceConsistentCasingInFileNames) {
+<span class="nc" id="L649">        this.forceConsistentCasingInFileNames = forceConsistentCasingInFileNames;</span>
+<span class="nc" id="L650">        return this;</span>
+    }
+
+    public Boolean getIsolatedModules() {
+<span class="fc" id="L654">        return isolatedModules;</span>
+    }
+
+    public CompilerOptions setIsolatedModules(Boolean isolatedModules) {
+<span class="nc" id="L658">        this.isolatedModules = isolatedModules;</span>
+<span class="nc" id="L659">        return this;</span>
+    }
+
+    public Boolean getPreserveSymlinks() {
+<span class="fc" id="L663">        return preserveSymlinks;</span>
+    }
+
+    public CompilerOptions setPreserveSymlinks(Boolean preserveSymlinks) {
+<span class="nc" id="L667">        this.preserveSymlinks = preserveSymlinks;</span>
+<span class="nc" id="L668">        return this;</span>
+    }
+
+    public Boolean getKeyofStringsOnly() {
+<span class="fc" id="L672">        return keyofStringsOnly;</span>
+    }
+
+    public CompilerOptions setKeyofStringsOnly(Boolean keyofStringsOnly) {
+<span class="nc" id="L676">        this.keyofStringsOnly = keyofStringsOnly;</span>
+<span class="nc" id="L677">        return this;</span>
+    }
+
+    public Boolean getNoImplicitUseStrict() {
+<span class="fc" id="L681">        return noImplicitUseStrict;</span>
+    }
+
+    public CompilerOptions setNoImplicitUseStrict(Boolean noImplicitUseStrict) {
+<span class="nc" id="L685">        this.noImplicitUseStrict = noImplicitUseStrict;</span>
+<span class="nc" id="L686">        return this;</span>
+    }
+
+    public Boolean getNoStrictGenericChecks() {
+<span class="fc" id="L690">        return noStrictGenericChecks;</span>
+    }
+
+    public CompilerOptions setNoStrictGenericChecks(Boolean noStrictGenericChecks) {
+<span class="nc" id="L694">        this.noStrictGenericChecks = noStrictGenericChecks;</span>
+<span class="nc" id="L695">        return this;</span>
+    }
+
+    public Boolean getSuppressExcessPropertyErrors() {
+<span class="fc" id="L699">        return suppressExcessPropertyErrors;</span>
+    }
+
+    public CompilerOptions setSuppressExcessPropertyErrors(Boolean suppressExcessPropertyErrors) {
+<span class="nc" id="L703">        this.suppressExcessPropertyErrors = suppressExcessPropertyErrors;</span>
+<span class="nc" id="L704">        return this;</span>
+    }
+
+    public Boolean getSuppressImplicitAnyIndexErrors() {
+<span class="fc" id="L708">        return suppressImplicitAnyIndexErrors;</span>
+    }
+
+    public CompilerOptions setSuppressImplicitAnyIndexErrors(Boolean suppressImplicitAnyIndexErrors) {
+<span class="nc" id="L712">        this.suppressImplicitAnyIndexErrors = suppressImplicitAnyIndexErrors;</span>
+<span class="nc" id="L713">        return this;</span>
+    }
+
+    public Boolean getEmitDecoratorMetadata() {
+<span class="fc" id="L717">        return emitDecoratorMetadata;</span>
+    }
+
+    public CompilerOptions setEmitDecoratorMetadata(Boolean emitDecoratorMetadata) {
+<span class="nc" id="L721">        this.emitDecoratorMetadata = emitDecoratorMetadata;</span>
+<span class="nc" id="L722">        return this;</span>
+    }
+
+    public Boolean getExperimentalDecorators() {
+<span class="fc" id="L726">        return experimentalDecorators;</span>
+    }
+
+    public CompilerOptions setExperimentalDecorators(Boolean experimentalDecorators) {
+<span class="fc" id="L730">        this.experimentalDecorators = experimentalDecorators;</span>
+<span class="fc" id="L731">        return this;</span>
+    }
+
+    public String getJsx() {
+<span class="fc" id="L735">        return jsx;</span>
+    }
+
+    public CompilerOptions setJsx(String jsx) {
+<span class="nc" id="L739">        this.jsx = jsx;</span>
+<span class="nc" id="L740">        return this;</span>
+    }
+
+    public String getJsxFactory() {
+<span class="fc" id="L744">        return jsxFactory;</span>
+    }
+
+    public CompilerOptions setJsxFactory(String jsxFactory) {
+<span class="nc" id="L748">        this.jsxFactory = jsxFactory;</span>
+<span class="nc" id="L749">        return this;</span>
+    }
+
+    public String getJsxFragmentFactory() {
+<span class="fc" id="L753">        return jsxFragmentFactory;</span>
+    }
+
+    public CompilerOptions setJsxFragmentFactory(String jsxFragmentFactory) {
+<span class="nc" id="L757">        this.jsxFragmentFactory = jsxFragmentFactory;</span>
+<span class="nc" id="L758">        return this;</span>
+    }
+
+    public String getJsxImportSource() {
+<span class="fc" id="L762">        return jsxImportSource;</span>
+    }
+
+    public CompilerOptions setJsxImportSource(String jsxImportSource) {
+<span class="nc" id="L766">        this.jsxImportSource = jsxImportSource;</span>
+<span class="nc" id="L767">        return this;</span>
+    }
+
+    public List&lt;String&gt; getLib() {
+<span class="fc" id="L771">        return lib;</span>
+    }
+
+    public CompilerOptions setLib(List&lt;String&gt; lib) {
+<span class="fc" id="L775">        this.lib = lib;</span>
+<span class="fc" id="L776">        return this;</span>
+    }
+
+    public Boolean getNoLib() {
+<span class="fc" id="L780">        return noLib;</span>
+    }
+
+    public CompilerOptions setNoLib(Boolean noLib) {
+<span class="nc" id="L784">        this.noLib = noLib;</span>
+<span class="nc" id="L785">        return this;</span>
+    }
+
+    public String getReactNamespace() {
+<span class="fc" id="L789">        return reactNamespace;</span>
+    }
+
+    public CompilerOptions setReactNamespace(String reactNamespace) {
+<span class="nc" id="L793">        this.reactNamespace = reactNamespace;</span>
+<span class="nc" id="L794">        return this;</span>
+    }
+
+    public String getTarget() {
+<span class="fc" id="L798">        return target;</span>
+    }
+
+    public CompilerOptions setTarget(String target) {
+<span class="fc" id="L802">        this.target = target;</span>
+<span class="fc" id="L803">        return this;</span>
+    }
+
+    public Boolean getUseDefineForClassFields() {
+<span class="fc" id="L807">        return useDefineForClassFields;</span>
+    }
+
+    public CompilerOptions setUseDefineForClassFields(Boolean useDefineForClassFields) {
+<span class="nc" id="L811">        this.useDefineForClassFields = useDefineForClassFields;</span>
+<span class="nc" id="L812">        return this;</span>
+    }
+
+    public Boolean getDiagnostics() {
+<span class="fc" id="L816">        return diagnostics;</span>
+    }
+
+    public CompilerOptions setDiagnostics(Boolean diagnostics) {
+<span class="nc" id="L820">        this.diagnostics = diagnostics;</span>
+<span class="nc" id="L821">        return this;</span>
+    }
+
+    public Boolean getExplainFiles() {
+<span class="fc" id="L825">        return explainFiles;</span>
+    }
+
+    public CompilerOptions setExplainFiles(Boolean explainFiles) {
+<span class="nc" id="L829">        this.explainFiles = explainFiles;</span>
+<span class="nc" id="L830">        return this;</span>
+    }
+
+    public Boolean getExtendedDiagnostics() {
+<span class="fc" id="L834">        return extendedDiagnostics;</span>
+    }
+
+    public CompilerOptions setExtendedDiagnostics(Boolean extendedDiagnostics) {
+<span class="nc" id="L838">        this.extendedDiagnostics = extendedDiagnostics;</span>
+<span class="nc" id="L839">        return this;</span>
+    }
+
+    public Boolean getListEmittedFiles() {
+<span class="fc" id="L843">        return listEmittedFiles;</span>
+    }
+
+    public CompilerOptions setListEmittedFiles(Boolean listEmittedFiles) {
+<span class="nc" id="L847">        this.listEmittedFiles = listEmittedFiles;</span>
+<span class="nc" id="L848">        return this;</span>
+    }
+
+    public Boolean getListFiles() {
+<span class="fc" id="L852">        return listFiles;</span>
+    }
+
+    public CompilerOptions setListFiles(Boolean listFiles) {
+<span class="nc" id="L856">        this.listFiles = listFiles;</span>
+<span class="nc" id="L857">        return this;</span>
+    }
+
+    public Boolean getTraceResolution() {
+<span class="fc" id="L861">        return traceResolution;</span>
+    }
+
+    public CompilerOptions setTraceResolution(Boolean traceResolution) {
+<span class="nc" id="L865">        this.traceResolution = traceResolution;</span>
+<span class="nc" id="L866">        return this;</span>
+    }
+
+    public Boolean getComposite() {
+<span class="fc" id="L870">        return composite;</span>
+    }
+
+    public CompilerOptions setComposite(Boolean composite) {
+<span class="nc" id="L874">        this.composite = composite;</span>
+<span class="nc" id="L875">        return this;</span>
+    }
+
+    public Boolean getDisableReferencedProjectLoad() {
+<span class="fc" id="L879">        return disableReferencedProjectLoad;</span>
+    }
+
+    public CompilerOptions setDisableReferencedProjectLoad(Boolean disableReferencedProjectLoad) {
+<span class="nc" id="L883">        this.disableReferencedProjectLoad = disableReferencedProjectLoad;</span>
+<span class="nc" id="L884">        return this;</span>
+    }
+
+    public Boolean getDisableSolutionSearching() {
+<span class="fc" id="L888">        return disableSolutionSearching;</span>
+    }
+
+    public CompilerOptions setDisableSolutionSearching(Boolean disableSolutionSearching) {
+<span class="nc" id="L892">        this.disableSolutionSearching = disableSolutionSearching;</span>
+<span class="nc" id="L893">        return this;</span>
+    }
+
+    public Boolean getDisableSourceOfProjectReferenceRedirect() {
+<span class="fc" id="L897">        return disableSourceOfProjectReferenceRedirect;</span>
+    }
+
+    public CompilerOptions setDisableSourceOfProjectReferenceRedirect(Boolean disableSourceOfProjectReferenceRedirect) {
+<span class="nc" id="L901">        this.disableSourceOfProjectReferenceRedirect = disableSourceOfProjectReferenceRedirect;</span>
+<span class="nc" id="L902">        return this;</span>
+    }
+
+    public Boolean getIncremental() {
+<span class="fc" id="L906">        return incremental;</span>
+    }
+
+    public CompilerOptions setIncremental(Boolean incremental) {
+<span class="nc" id="L910">        this.incremental = incremental;</span>
+<span class="nc" id="L911">        return this;</span>
+    }
+
+    public String getTsBuildInfoFile() {
+<span class="fc" id="L915">        return tsBuildInfoFile;</span>
+    }
+
+    public CompilerOptions setTsBuildInfoFile(String tsBuildInfoFile) {
+<span class="nc" id="L919">        this.tsBuildInfoFile = tsBuildInfoFile;</span>
+<span class="nc" id="L920">        return this;</span>
+    }
+
+    public Boolean getNoErrorTruncation() {
+<span class="fc" id="L924">        return noErrorTruncation;</span>
+    }
+
+    public CompilerOptions setNoErrorTruncation(Boolean noErrorTruncation) {
+<span class="nc" id="L928">        this.noErrorTruncation = noErrorTruncation;</span>
+<span class="nc" id="L929">        return this;</span>
+    }
+
+    public Boolean getPreserveWatchOutput() {
+<span class="fc" id="L933">        return preserveWatchOutput;</span>
+    }
+
+    public CompilerOptions setPreserveWatchOutput(Boolean preserveWatchOutput) {
+<span class="nc" id="L937">        this.preserveWatchOutput = preserveWatchOutput;</span>
+<span class="nc" id="L938">        return this;</span>
+    }
+
+    public Boolean getPretty() {
+<span class="fc" id="L942">        return pretty;</span>
+    }
+
+    public CompilerOptions setPretty(Boolean pretty) {
+<span class="nc" id="L946">        this.pretty = pretty;</span>
+<span class="nc" id="L947">        return this;</span>
+    }
+
+    public Boolean getSkipDefaultLibCheck() {
+<span class="fc" id="L951">        return skipDefaultLibCheck;</span>
+    }
+
+    public CompilerOptions setSkipDefaultLibCheck(Boolean skipDefaultLibCheck) {
+<span class="nc" id="L955">        this.skipDefaultLibCheck = skipDefaultLibCheck;</span>
+<span class="nc" id="L956">        return this;</span>
+    }
+
+    public Boolean getSkipLibCheck() {
+<span class="fc" id="L960">        return skipLibCheck;</span>
+    }
+
+    public CompilerOptions setSkipLibCheck(Boolean skipLibCheck) {
+<span class="nc" id="L964">        this.skipLibCheck = skipLibCheck;</span>
+<span class="nc" id="L965">        return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

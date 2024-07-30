@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTypescriptMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">typescript-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.typescript.maven.plugin</a> &gt; <span class="el_source">AbstractTypescriptMojo.java</span></div><h1>AbstractTypescriptMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2022 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 04.03.2022
+ *
+ */
+package de.eitco.cicd.typescript.maven.plugin;
+
+import com.github.eirslett.maven.plugins.frontend.mojo.AbstractFrontendMojo;
+import com.google.common.base.Strings;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectDependenciesResolver;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResolver;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResolverException;
+import org.eclipse.aether.RepositorySystemSession;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+<span class="fc" id="L31">public abstract class AbstractTypescriptMojo extends AbstractFrontendMojo {</span>
+
+    public static final String PACKAGE_FILE_NAME = &quot;package.json&quot;;
+<span class="fc" id="L34">    public static final Pattern DISALLOWED_VERSION_CHARACTERS = Pattern.compile(&quot;[^A-Za-z0-9-.+]&quot;);</span>
+
+    /**
+     * This parameter holds the name of a package json file that will be merged with the package configuration given by
+     * the maven parameters
+     */
+<span class="fc" id="L40">    @Parameter(property = &quot;typescript.default.package.json&quot;)</span>
+    protected File defaultValues = null;
+
+    /**
+     * This parameter specifies whether the typescript plugin goals should be executed or not.
+     */
+    @Parameter(defaultValue = &quot;false&quot;, property = &quot;ts.skip&quot;)
+    private boolean skip;
+
+    /**
+     * This parameter specifies a directory where distribution package should be compiled to and be packaged from.
+     */
+    @Parameter(
+        defaultValue = &quot;${project.build.directory}/dist&quot;,
+        required = false
+    )
+    protected File distributionDirectory;
+
+    /**
+     * This parameter specifies the name of the project. This is the unique name the generated package will
+     * be referenced with.
+     */
+    @Parameter(
+        defaultValue = &quot;${project.artifactId}&quot;,
+        property = &quot;typescript.project.name&quot;
+    )
+    protected String projectName;
+
+    /**
+     * This parameter specifies the version of the package deployed.
+     */
+    @Parameter(
+        defaultValue = &quot;${project.version}&quot;,
+        property = &quot;typescript.project.version&quot;
+    )
+    protected String projectVersion;
+
+    /**
+     * This parameter specifies the npm registry to load dependencies from. If left empty the default
+     * registry (https://registry.npmjs.org/) will be used.
+     */
+    @Parameter(
+        property = &quot;npmRegistryURL&quot;,
+        required = false,
+        defaultValue = &quot;&quot;
+    )
+    protected String npmRegistryURL;
+
+    /**
+     * This parameter specifies the npm registry to publish the generated package to. If left empty,
+     * the value of {@code npmRegistryURL} will be used instead.
+     */
+    @Parameter(
+        property = &quot;typescript.publish.registry.url&quot;,
+        required = false,
+        defaultValue = &quot;&quot;
+    )
+    protected String publishRegistryURL;
+
+    /**
+     * This parameter specifies the name of the file implementing the entry point to the package. Omit the
+     * file suffix.
+     */
+    @Parameter(
+        defaultValue = &quot;import&quot;
+    )
+    protected String typescriptEntryPoint;
+
+    /**
+     * This parameter specifies a list of npm dependencies to add to the package compiled.
+     */
+<span class="fc" id="L111">    @Parameter</span>
+    private List&lt;NpmDependency&gt; dependencies = new ArrayList&lt;&gt;();
+
+    /**
+     * This parameter specifies a list of npm dependencies to add to the package compiled. The difference to
+     * the parameter {@code {@link #dependencies}} is that this property is intended as a list of default
+     * dependencies specified in a common super pom, so that individual projects may add their dependencies
+     * without overwriting the default dependencies
+     */
+<span class="fc" id="L120">    @Parameter</span>
+    private List&lt;NpmDependency&gt; defaultDependencies = new ArrayList&lt;&gt;();
+
+    private Map&lt;String, NpmDependency&gt; allDependencies;
+
+    /**
+     * This parameter specifies the compile options to the typescript compiler.
+     */
+<span class="fc" id="L128">    @Parameter</span>
+    protected CompilerOptions compileOptions = new CompilerOptions();
+
+    /**
+     * This parameter specifies the compile options to the typescript compiler when compiling test sources.
+     * This options will be used when generating the {@code tsconfig.spec.json}, which will always derive from
+     * {@code tsconfig.json} generated from the {@code {@link #compileOptions compile options parameter}}.
+     */
+<span class="fc" id="L136">    @Parameter</span>
+    protected CompilerOptions testCompileOptions = new CompilerOptions();
+
+
+    /**
+     * This parameter specifies the {@code angularCompilerOptions} element of the generated {@code tsconfig.json} file.
+     */
+<span class="fc" id="L143">    @Parameter</span>
+    protected AngularCompilerOptions angularCompilerOptions = new AngularCompilerOptions();
+
+    /**
+     * This parameter specifies the location of the typescript source files to compile.
+     */
+<span class="fc" id="L149">    @Parameter</span>
+<span class="fc" id="L150">    protected List&lt;String&gt; sources = List.of(&quot;src/main/ts/**.ts&quot;, &quot;target/generated-sources/main/ts/**.ts&quot;);</span>
+
+    /**
+     * This parameter specifies the sources to exclude from compiling.
+     */
+<span class="fc" id="L155">    @Parameter</span>
+<span class="fc" id="L156">    protected  List&lt;String&gt; sourceExcludes = List.of();</span>
+
+    /**
+     * This parameter specifies the location of the test source files.
+     */
+<span class="fc" id="L161">    @Parameter</span>
+<span class="fc" id="L162">    protected List&lt;String&gt; testSources = List.of(&quot;src/test/ts/**.ts&quot;, &quot;target/generated-sources/test/ts/**.ts&quot;);</span>
+
+    /**
+     * This parameter specifies sources to exclude from test compiling.
+     */
+<span class="fc" id="L167">    @Parameter</span>
+<span class="fc" id="L168">    protected List&lt;String&gt; testSourceExcludes = List.of();</span>
+
+    /**
+     * This parameter specifies the typescript version
+     */
+    @Parameter(property = &quot;typescript.version&quot;, defaultValue = &quot;4.6.2&quot;)
+    protected String typeScriptVersion;
+
+    /**
+     * This parameter specifies a set of keywords to add to the projects {@code package.json} file.
+     */
+<span class="fc" id="L179">    @Parameter</span>
+    protected List&lt;String&gt; keywords = new ArrayList&lt;&gt;();
+
+    @Parameter(defaultValue = &quot;${project}&quot;, readonly = true)
+    protected MavenProject project;
+
+    @Parameter(defaultValue = &quot;${session}&quot;, readonly = true)
+    protected MavenSession session;
+
+    @Parameter(defaultValue = &quot;${repositorySystemSession}&quot;, readonly = true)
+    protected RepositorySystemSession repoSession;
+
+    @Parameter(defaultValue = &quot;${project.remoteArtifactRepositories}&quot;, readonly = true, required = true)
+    protected List&lt;ArtifactRepository&gt; remoteRepositories;
+
+    @Component
+    protected ProjectDependenciesResolver projectDependenciesResolver;
+
+    @Component
+    protected ArtifactResolver artifactResolver;
+
+    /**
+     * This parameter specifies a suffix appended to the projects' version if and only if this version ends with &quot;-SNAPSHOT&quot;
+     */
+    @Parameter(property = &quot;typescript.snapshot.version.suffix&quot;)
+    private String snapshotVersionSuffix;
+
+    /**
+     * This parameter specifies additional scripts to be written to the {@code package.json}. Those scripts can be
+     * executed using the frontend-maven-plugin.
+     */
+<span class="fc" id="L210">    @Parameter</span>
+    private Map&lt;String, String&gt; additionalScripts = new LinkedHashMap&lt;&gt;();
+
+    /**
+     * This parameter specifies the name of a schematic to be added to the {@code package.json}.
+     */
+<span class="fc" id="L216">    @Parameter</span>
+    private String schematics = null;
+
+    @Override
+    protected boolean skipExecution() {
+<span class="fc" id="L221">        return skip;</span>
+    }
+
+    @NotNull
+    protected File getPackageFile() {
+<span class="fc" id="L226">        return new File(</span>
+                distributionDirectory,
+<span class="fc" id="L228">                projectName.replaceAll(&quot;/&quot;, &quot;-&quot;)</span>
+<span class="fc" id="L229">                        .replaceAll(&quot;@&quot;, &quot;&quot;) + &quot;-&quot; +</span>
+<span class="fc" id="L230">                        makeProjectVersion() +</span>
+                        &quot;.tgz&quot;
+        );
+    }
+
+    protected Stream&lt;NpmDependency&gt; allDependencies() {
+
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">        if (allDependencies != null) {</span>
+
+<span class="nc" id="L239">            return allDependencies.values().stream();</span>
+        }
+
+<span class="fc" id="L242">        Map&lt;String, NpmDependency&gt; result = new LinkedHashMap&lt;&gt;();</span>
+
+<span class="pc" id="L244">        defaultDependencies.forEach(it -&gt; result.put(it.getName(), it));</span>
+<span class="fc" id="L245">        dependencies.forEach(it -&gt; {</span>
+
+            // assures that all dependencies are listed after the default dependencies
+<span class="fc" id="L248">            result.remove(it.getName());</span>
+
+<span class="fc" id="L250">            result.put(it.getName(), it);</span>
+<span class="fc" id="L251">        });</span>
+
+<span class="fc" id="L253">        allDependencies = result;</span>
+
+<span class="fc" id="L255">        return allDependencies.values().stream();</span>
+    }
+
+    protected String makeProjectVersion() {
+<span class="fc" id="L259">        String projectVersion = this.projectVersion;</span>
+
+<span class="pc bpc" id="L261" title="2 of 4 branches missed.">        if (projectVersion.endsWith(&quot;-SNAPSHOT&quot;) &amp;&amp; snapshotVersionSuffix != null) {</span>
+
+<span class="nc" id="L263">            projectVersion = projectVersion + snapshotVersionSuffix;</span>
+        }
+
+<span class="fc" id="L266">        Matcher matcher = DISALLOWED_VERSION_CHARACTERS.matcher(projectVersion);</span>
+<span class="fc" id="L267">        projectVersion = matcher.replaceAll(&quot;-&quot;);</span>
+<span class="fc" id="L268">        return projectVersion;</span>
+    }
+
+    @NotNull
+    protected NpmProjectBuilder makeProjectBuilder() throws DependencyResolutionException, ArtifactResolverException, IOException {
+
+<span class="fc" id="L274">        String projectVersion = makeProjectVersion();</span>
+
+<span class="fc" id="L276">        NpmProjectBuilder projectBuilder = NpmProjectBuilder.identifiedBy(projectName, projectVersion);</span>
+
+<span class="fc" id="L278">        projectBuilder.fromProject(project);</span>
+
+<span class="pc bpc" id="L280" title="1 of 2 branches missed.">        String targetRepo = Strings.isNullOrEmpty(publishRegistryURL) ? npmRegistryURL : publishRegistryURL;</span>
+
+<span class="pc bpc" id="L282" title="1 of 2 branches missed.">        if (!Strings.isNullOrEmpty(targetRepo)) {</span>
+
+<span class="nc" id="L284">            projectBuilder.publishedTo(targetRepo);</span>
+        }
+
+<span class="fc" id="L287">        projectBuilder.withKeyWords(keywords);</span>
+<span class="fc" id="L288">        projectBuilder.withEntryPoint(typescriptEntryPoint);</span>
+<span class="fc" id="L289">        projectBuilder.withSchematics(schematics);</span>
+
+<span class="fc" id="L291">        additionalScripts.forEach(projectBuilder::addScript);</span>
+
+<span class="fc" id="L293">        final NpmDependency typeScript = new NpmDependency();</span>
+<span class="fc" id="L294">        typeScript.setName(&quot;typescript&quot;);</span>
+<span class="fc" id="L295">        typeScript.setVersion(typeScriptVersion);</span>
+<span class="fc" id="L296">        typeScript.setType(DependencyType.DEV);</span>
+
+<span class="fc" id="L298">        projectBuilder.addDependency(typeScript);</span>
+
+<span class="fc" id="L300">        allDependencies().forEach(projectBuilder::addDependency);</span>
+
+<span class="fc" id="L302">        final NpmDependencyMetaDataReader metaDataReader = new NpmDependencyMetaDataReader(</span>
+                session,
+                remoteRepositories,
+                artifactResolver,
+                project,
+                repoSession,
+                projectDependenciesResolver
+        );
+
+<span class="fc" id="L311">        metaDataReader.forEachDependency((dependency, packaj) -&gt; {</span>
+
+<span class="pc bpc" id="L313" title="1 of 2 branches missed.">            String version = packaj.getVersion().endsWith(&quot;-SNAPSHOT&quot;)</span>
+<span class="fc" id="L314">                    ? '~' + packaj.getVersion()</span>
+<span class="pc" id="L315">                    : packaj.getVersion();</span>
+
+<span class="fc" id="L317">            projectBuilder.addPeerDependency(</span>
+<span class="fc" id="L318">                    packaj.getName(),</span>
+<span class="fc" id="L319">                    dependency.getArtifact().getFile().toURI().toString(),</span>
+                    version
+            );
+<span class="fc" id="L322">        });</span>
+<span class="fc" id="L323">        return projectBuilder;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

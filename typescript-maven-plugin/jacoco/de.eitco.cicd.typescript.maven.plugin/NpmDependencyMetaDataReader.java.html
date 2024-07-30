@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NpmDependencyMetaDataReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">typescript-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.typescript.maven.plugin</a> &gt; <span class="el_source">NpmDependencyMetaDataReader.java</span></div><h1>NpmDependencyMetaDataReader.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2022 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 04.03.2022
+ *
+ */
+package de.eitco.cicd.typescript.maven.plugin;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import de.eitco.cicd.maven.plugin.utility.JsonDependencyMetaDataReader;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectDependenciesResolver;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResolver;
+import org.eclipse.aether.RepositorySystemSession;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public class NpmDependencyMetaDataReader extends JsonDependencyMetaDataReader&lt;Package&gt; {
+
+    public static final String NPM_ARTIFACT_EXTENSION = &quot;tgz&quot;;
+    public static final String NPM_METADATA_EXTENSION = &quot;package&quot;;
+
+    public NpmDependencyMetaDataReader(
+        MavenSession session,
+        List&lt;ArtifactRepository&gt; remoteRepositories,
+        ArtifactResolver artifactResolver,
+        MavenProject project,
+        RepositorySystemSession repoSession,
+        ProjectDependenciesResolver projectDependenciesResolver
+    ) {
+<span class="fc" id="L37">        super(</span>
+            session,
+            remoteRepositories,
+            artifactResolver,
+            project,
+            repoSession,
+            projectDependenciesResolver,
+            NPM_METADATA_EXTENSION,
+            NPM_ARTIFACT_EXTENSION,
+            Package.class,
+<span class="fc" id="L47">            makeObjectMapper()</span>
+        );
+<span class="fc" id="L49">    }</span>
+
+    @NotNull
+    public static ObjectMapper makeObjectMapper() {
+
+<span class="fc" id="L54">        final ObjectMapper result = new ObjectMapper();</span>
+
+<span class="fc" id="L56">        result.registerModule(new ParameterNamesModule());</span>
+<span class="fc" id="L57">        result.enable(SerializationFeature.INDENT_OUTPUT);</span>
+
+<span class="fc" id="L59">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

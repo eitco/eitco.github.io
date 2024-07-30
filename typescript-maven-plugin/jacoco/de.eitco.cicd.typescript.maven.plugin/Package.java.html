@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Package.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">typescript-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.typescript.maven.plugin</a> &gt; <span class="el_source">Package.java</span></div><h1>Package.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2022 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 03.03.2022
+ *
+ */
+package de.eitco.cicd.typescript.maven.plugin;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class Package {
+
+    // see https://docs.npmjs.com/cli/v8/configuring-npm/package-json
+
+    private final String name;
+    private final String version;
+    private final String description;
+    private final List&lt;String&gt; keywords;
+    private final String homepage;
+    private final String license;
+    private final Person author;
+    private final List&lt;Person&gt; contributors;
+    @JsonProperty(&quot;private&quot;)
+    private final boolean isPrivate;
+    private final String types;
+    private final String main;
+    private final List&lt;String&gt; files;
+    private final Map&lt;String, String&gt; scripts;
+    private final Map&lt;String, String&gt; dependencies;
+    private final Map&lt;String, String&gt; devDependencies;
+    private final Map&lt;String, String&gt; peerDependencies;
+    private final Map&lt;String, String&gt; publishConfig;
+    private final List&lt;String&gt; bundledDependencies;
+
+    private final String schematics;
+
+
+    @JsonCreator
+    public Package(
+            String name,
+            String version,
+            String description,
+            List&lt;String&gt; keywords,
+            String homepage,
+            String license,
+            Person author, List&lt;Person&gt; contributors,
+            @JsonProperty(&quot;private&quot;) boolean isPrivate,
+            String types,
+            String main,
+            List&lt;String&gt; files,
+            Map&lt;String, String&gt; scripts,
+            Map&lt;String, String&gt; dependencies,
+            Map&lt;String, String&gt; devDependencies,
+            Map&lt;String, String&gt; peerDependencies,
+            Map&lt;String, String&gt; publishConfig,
+            List&lt;String&gt; bundledDependencies,
+<span class="fc" id="L68">            String schematics) {</span>
+<span class="fc" id="L69">        this.name = name;</span>
+<span class="fc" id="L70">        this.version = version;</span>
+<span class="fc" id="L71">        this.description = description;</span>
+<span class="fc" id="L72">        this.keywords = keywords;</span>
+<span class="fc" id="L73">        this.homepage = homepage;</span>
+<span class="fc" id="L74">        this.license = license;</span>
+<span class="fc" id="L75">        this.author = author;</span>
+<span class="fc" id="L76">        this.contributors = contributors;</span>
+<span class="fc" id="L77">        this.isPrivate = isPrivate;</span>
+<span class="fc" id="L78">        this.types = types;</span>
+<span class="fc" id="L79">        this.main = main;</span>
+<span class="fc" id="L80">        this.files = files;</span>
+<span class="fc" id="L81">        this.scripts = scripts;</span>
+<span class="fc" id="L82">        this.dependencies = dependencies;</span>
+<span class="fc" id="L83">        this.devDependencies = devDependencies;</span>
+<span class="fc" id="L84">        this.peerDependencies = peerDependencies;</span>
+<span class="fc" id="L85">        this.publishConfig = publishConfig;</span>
+<span class="fc" id="L86">        this.bundledDependencies = bundledDependencies;</span>
+<span class="fc" id="L87">        this.schematics = schematics;</span>
+<span class="fc" id="L88">    }</span>
+
+    public String getName() {
+<span class="fc" id="L91">        return name;</span>
+    }
+
+    public String getVersion() {
+<span class="fc" id="L95">        return version;</span>
+    }
+
+    @JsonProperty(&quot;private&quot;)
+    public boolean isPrivate() {
+<span class="fc" id="L100">        return isPrivate;</span>
+    }
+
+    public String getTypes() {
+<span class="fc" id="L104">        return types;</span>
+    }
+
+    public String getMain() {
+<span class="fc" id="L108">        return main;</span>
+    }
+
+    public List&lt;String&gt; getFiles() {
+<span class="fc" id="L112">        return files;</span>
+    }
+
+    public Map&lt;String, String&gt; getScripts() {
+<span class="fc" id="L116">        return scripts;</span>
+    }
+
+    public Map&lt;String, String&gt; getDependencies() {
+<span class="fc" id="L120">        return dependencies;</span>
+    }
+
+    public Map&lt;String, String&gt; getDevDependencies() {
+<span class="fc" id="L124">        return devDependencies;</span>
+    }
+
+    public Map&lt;String, String&gt; getPeerDependencies() {
+<span class="fc" id="L128">        return peerDependencies;</span>
+    }
+
+    public Map&lt;String, String&gt; getPublishConfig() {
+<span class="fc" id="L132">        return publishConfig;</span>
+    }
+
+    public List&lt;String&gt; getBundledDependencies() {
+<span class="fc" id="L136">        return bundledDependencies;</span>
+    }
+
+    public String getDescription() {
+<span class="fc" id="L140">        return description;</span>
+    }
+
+    public List&lt;String&gt; getKeywords() {
+<span class="fc" id="L144">        return keywords;</span>
+    }
+
+    public String getHomepage() {
+<span class="fc" id="L148">        return homepage;</span>
+    }
+
+    public String getLicense() {
+<span class="fc" id="L152">        return license;</span>
+    }
+
+    public Person getAuthor() {
+<span class="fc" id="L156">        return author;</span>
+    }
+
+    public List&lt;Person&gt; getContributors() {
+<span class="fc" id="L160">        return contributors;</span>
+    }
+
+    public String getSchematics() {
+<span class="fc" id="L164">        return schematics;</span>
+    }
+
+    @NotNull
+    @Contract(&quot;null -&gt; this&quot;)
+    public Package merge(@Nullable Package secondary) {
+
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        if (secondary == null) {</span>
+
+<span class="nc" id="L173">            return this;</span>
+        }
+
+<span class="fc" id="L176">        return new Package(</span>
+<span class="fc" id="L177">                merge(name, secondary.name),</span>
+<span class="fc" id="L178">                merge(version, secondary.version),</span>
+<span class="fc" id="L179">                merge(description, secondary.description),</span>
+<span class="fc" id="L180">                mergeCollection(keywords, secondary.keywords),</span>
+<span class="fc" id="L181">                merge(homepage, secondary.homepage),</span>
+<span class="fc" id="L182">                merge(license, secondary.license),</span>
+<span class="fc" id="L183">                merge(author, secondary.author),</span>
+<span class="fc" id="L184">                mergeCollection(contributors, secondary.contributors),</span>
+<span class="fc" id="L185">                merge(isPrivate, secondary.isPrivate),</span>
+<span class="fc" id="L186">                merge(types, secondary.types),</span>
+<span class="fc" id="L187">                merge(main, secondary.main),</span>
+<span class="fc" id="L188">                mergeCollection(files, secondary.files),</span>
+<span class="fc" id="L189">                mergeMap(scripts, secondary.scripts),</span>
+<span class="fc" id="L190">                mergeMap(dependencies, secondary.dependencies),</span>
+<span class="fc" id="L191">                mergeMap(devDependencies, secondary.devDependencies),</span>
+<span class="fc" id="L192">                mergeMap(peerDependencies, secondary.peerDependencies),</span>
+<span class="fc" id="L193">                mergeMap(publishConfig, secondary.publishConfig),</span>
+<span class="fc" id="L194">                mergeCollection(bundledDependencies, secondary.bundledDependencies),</span>
+<span class="fc" id="L195">                merge(schematics, secondary.schematics)</span>
+        );
+    }
+
+    @Nullable
+    @Contract(&quot;null, null -&gt; null; !null, _ -&gt; !null; _, !null -&gt; !null&quot;)
+    private static &lt;Type&gt; Type merge(@Nullable Type a, @Nullable Type b) {
+
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        if (a != null) {</span>
+
+<span class="fc" id="L205">            return a;</span>
+        }
+
+<span class="fc" id="L208">        return b;</span>
+    }
+
+    @NotNull
+    private static &lt;KeyType, ValueType&gt; Map&lt;KeyType, ValueType&gt; mergeMap(@Nullable Map&lt;KeyType, ValueType&gt; a, @Nullable Map&lt;KeyType, ValueType&gt; b) {
+
+<span class="fc" id="L214">        LinkedHashMap&lt;KeyType, ValueType&gt; result = new LinkedHashMap&lt;&gt;();</span>
+
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        if (a != null) result.putAll(a);</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">        if (b != null) result.putAll(b);</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        if (a != null) result.putAll(a);</span>
+
+<span class="fc" id="L220">        return result;</span>
+    }
+
+    @NotNull
+    private static &lt;Type&gt; List&lt;Type&gt; mergeCollection(@Nullable Collection&lt;Type&gt; a, @Nullable Collection&lt;Type&gt; b) {
+
+<span class="fc" id="L226">        ArrayList&lt;Type&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L228" title="All 2 branches covered.">        if (a != null) result.addAll(a);</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">        if (b != null) result.addAll(b);</span>
+
+<span class="fc" id="L231">        return result;</span>
+    }
+
+    @Nullable
+    public Package diff(@Nullable Package expectedPackage) {
+
+<span class="nc bnc" id="L237" title="All 2 branches missed.">        if (expectedPackage == null) {</span>
+
+<span class="nc" id="L239">            return this;</span>
+        }
+
+<span class="nc" id="L242">        return new Package(</span>
+                expectedPackage.name,
+                expectedPackage.version,
+                expectedPackage.description,
+<span class="nc" id="L246">                minus(keywords, expectedPackage.keywords),</span>
+                expectedPackage.homepage,
+                expectedPackage.license,
+                expectedPackage.author,
+<span class="nc" id="L250">                minus(contributors, expectedPackage.contributors),</span>
+<span class="nc" id="L251">                expectedPackage.isPrivate(),</span>
+                expectedPackage.types,
+                expectedPackage.main,
+<span class="nc" id="L254">                minus(files, expectedPackage.files),</span>
+<span class="nc" id="L255">                minus(scripts, expectedPackage.scripts),</span>
+<span class="nc" id="L256">                minus(dependencies, expectedPackage.dependencies),</span>
+<span class="nc" id="L257">                minus(devDependencies, expectedPackage.devDependencies),</span>
+<span class="nc" id="L258">                minus(peerDependencies, expectedPackage.peerDependencies),</span>
+<span class="nc" id="L259">                minus(publishConfig, expectedPackage.publishConfig),</span>
+<span class="nc" id="L260">                minus(bundledDependencies, expectedPackage.bundledDependencies),</span>
+                expectedPackage.schematics
+        );
+    }
+
+    @NotNull
+    public &lt;ElementType&gt; List&lt;ElementType&gt; minus(@Nullable List&lt;ElementType&gt; minuend, @Nullable List&lt;ElementType&gt; subtrahend) {
+
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (minuend == null) return List.of();</span>
+
+<span class="nc" id="L270">        ArrayList&lt;ElementType&gt; difference = new ArrayList&lt;&gt;(minuend);</span>
+
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (subtrahend != null) difference.removeAll(subtrahend);</span>
+
+<span class="nc" id="L274">        return difference;</span>
+    }
+
+    @NotNull
+    public &lt;KeyType, ValueType&gt; Map&lt;KeyType, ValueType&gt; minus(@Nullable Map&lt;KeyType, ValueType&gt; minuend, @Nullable Map&lt;KeyType, ValueType&gt; subtrahend) {
+
+<span class="nc bnc" id="L280" title="All 2 branches missed.">        if (minuend == null) return Map.of();</span>
+
+<span class="nc" id="L282">        Map&lt;KeyType, ValueType&gt; difference = new LinkedHashMap&lt;&gt;(minuend);</span>
+
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        if (subtrahend != null) subtrahend.keySet().forEach(difference::remove);</span>
+
+<span class="nc" id="L286">        return difference;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

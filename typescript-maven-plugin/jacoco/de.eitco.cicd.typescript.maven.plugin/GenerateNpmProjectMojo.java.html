@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GenerateNpmProjectMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">typescript-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.typescript.maven.plugin</a> &gt; <span class="el_source">GenerateNpmProjectMojo.java</span></div><h1>GenerateNpmProjectMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2022 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 03.03.2022
+ *
+ */
+package de.eitco.cicd.typescript.maven.plugin;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.eirslett.maven.plugins.frontend.lib.FrontendPluginFactory;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResolverException;
+import org.apache.maven.shared.utils.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+
+
+/**
+ * This goal generates the files `package.json`, `ts-config.json`
+ * and `tsconfig.spec.json` from its configuration. It also generates a second `package.json` file inside the distribution
+ * directory. The second file will be the one distributed with the package. It contains only the basic project information
+ * needed in a package, omitting build specific information.
+ */
+@Mojo(name = &quot;generate-project&quot;, threadSafe = true, defaultPhase = LifecyclePhase.INITIALIZE)
+<span class="fc" id="L30">public class GenerateNpmProjectMojo extends AbstractTypescriptMojo {</span>
+
+    @Override
+    protected void execute(FrontendPluginFactory factory) {
+        // will never be called since Mojo#execute() is overridden
+        // this mojo only derives from the frontend abstract mojo for all npm mojos to share a same parent class
+<span class="nc" id="L36">    }</span>
+
+    @Override
+    public void execute() throws MojoFailureException {
+
+        try {
+
+<span class="fc" id="L43">            NpmProjectBuilder projectBuilder = makeProjectBuilder();</span>
+
+<span class="fc" id="L45">            final ObjectMapper mapper = NpmDependencyMetaDataReader.makeObjectMapper();</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (defaultValues != null) {</span>
+
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                if (!defaultValues.isFile()) {</span>
+
+<span class="nc bnc" id="L51" title="All 2 branches missed.">                    if (defaultValues.isDirectory()) {</span>
+
+<span class="nc" id="L53">                        getLog().warn(&quot;ignoring defaultValues &quot; + defaultValues + &quot; being a directory&quot;);</span>
+                    }
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">                    if (!defaultValues.exists()) {</span>
+
+<span class="nc" id="L58">                        getLog().warn(&quot;ignoring defaultValues &quot; + defaultValues + &quot; since the file does not exist&quot;);</span>
+                    }
+
+                } else {
+
+<span class="fc" id="L63">                    Package defaultPackageJson = mapper.readValue(defaultValues, Package.class);</span>
+
+<span class="fc" id="L65">                    projectBuilder.withDefaultValues(defaultPackageJson);</span>
+                }
+            }
+
+<span class="fc" id="L69">            final Package buildPackage = projectBuilder.makeBuildPackage();</span>
+
+<span class="fc" id="L71">            mapper.writeValue(new File(workingDirectory, PACKAGE_FILE_NAME), buildPackage);</span>
+
+<span class="fc" id="L73">            final Package deployPackage = projectBuilder.makeDeployPackage();</span>
+
+<span class="fc" id="L75">            FileUtils.forceMkdir(distributionDirectory);</span>
+<span class="fc" id="L76">            mapper.writeValue(new File(distributionDirectory, PACKAGE_FILE_NAME), deployPackage);</span>
+
+<span class="fc" id="L78">            TsConfig tsConfig = TsConfig.mainConfig(compileOptions, sources);</span>
+<span class="fc" id="L79">            tsConfig.setExclude(sourceExcludes);</span>
+<span class="fc" id="L80">            tsConfig.setAngularCompilerOptions(angularCompilerOptions);</span>
+<span class="fc" id="L81">            tsConfig.getCompilerOptions().setOutDir(distributionDirectory.getPath());</span>
+
+<span class="fc" id="L83">            mapper.writeValue(new File(workingDirectory, TsConfig.COMPILE_CONFIG_FILE), tsConfig);</span>
+
+<span class="fc" id="L85">            TsConfig testTsConfig = TsConfig.testConfig(testCompileOptions, testSources);</span>
+<span class="fc" id="L86">            testTsConfig.setAngularCompilerOptions(angularCompilerOptions);</span>
+<span class="fc" id="L87">            testTsConfig.setExclude(testSourceExcludes);</span>
+<span class="fc" id="L88">            mapper.writeValue(new File(workingDirectory, TsConfig.TEST_COMPILE_CONFIG_FILE), testTsConfig);</span>
+
+<span class="nc" id="L90">        } catch (DependencyResolutionException | ArtifactResolverException | IOException e) {</span>
+
+<span class="nc" id="L92">            throw new MojoFailureException(e.getMessage(), e);</span>
+<span class="fc" id="L93">        }</span>
+
+<span class="fc" id="L95">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

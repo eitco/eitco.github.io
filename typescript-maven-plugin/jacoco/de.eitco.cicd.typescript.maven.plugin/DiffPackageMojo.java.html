@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DiffPackageMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">typescript-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.typescript.maven.plugin</a> &gt; <span class="el_source">DiffPackageMojo.java</span></div><h1>DiffPackageMojo.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.typescript.maven.plugin;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.eirslett.maven.plugins.frontend.lib.FrontendException;
+import com.github.eirslett.maven.plugins.frontend.lib.FrontendPluginFactory;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResolverException;
+
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * This goal compares the build configuration specified by the current project object model and compares it to the
+ * current {@code package.json} - any difference is written to the json file specified by {@code defaultValues} so that
+ * any other execution of different goals of the typescript-maven-plugin will honour those differences.
+ */
+@Mojo(name = &quot;diff-package&quot;, threadSafe = true, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+<span class="nc" id="L21">public class DiffPackageMojo extends AbstractTypescriptMojo {</span>
+
+    @Override
+    protected void execute(FrontendPluginFactory factory) throws FrontendException {
+
+        try {
+
+<span class="nc bnc" id="L28" title="All 2 branches missed.">            if (skipExecution()) {</span>
+
+<span class="nc" id="L30">                return;</span>
+            }
+
+<span class="nc" id="L33">            File packageJson = new File(project.getBasedir(), PACKAGE_FILE_NAME);</span>
+
+<span class="nc" id="L35">            getLog().info(&quot;generating diff of &quot; + packageJson + &quot; in &quot; + defaultValues);</span>
+
+<span class="nc" id="L37">            Package expectedPackage = makeProjectBuilder().makeBuildPackage();</span>
+
+<span class="nc" id="L39">            final ObjectMapper mapper = NpmDependencyMetaDataReader.makeObjectMapper();</span>
+
+
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            if (!packageJson.getAbsoluteFile().exists()) {</span>
+
+<span class="nc" id="L44">                getLog().info(packageJson.getAbsolutePath() + &quot; does not exist&quot;);</span>
+
+<span class="nc" id="L46">                return;</span>
+            }
+
+<span class="nc" id="L49">            Package actualPackageJson = mapper.readValue(packageJson, Package.class);</span>
+
+<span class="nc" id="L51">            Package differencePackage = actualPackageJson.diff(expectedPackage);</span>
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (differencePackage != null) {</span>
+
+<span class="nc" id="L55">                getLog().debug(&quot;diff is\n&quot; + mapper.writeValueAsString(differencePackage));</span>
+
+<span class="nc" id="L57">                mapper.writeValue(defaultValues, differencePackage);</span>
+
+            } else {
+
+<span class="nc" id="L61">                getLog().info(&quot;no difference found&quot;);</span>
+            }
+
+<span class="nc" id="L64">        } catch (DependencyResolutionException | ArtifactResolverException | IOException e) {</span>
+
+<span class="nc" id="L66">            throw new RuntimeException(e);</span>
+<span class="nc" id="L67">        }</span>
+<span class="nc" id="L68">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
