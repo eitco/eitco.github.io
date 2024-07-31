@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebResourcesMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">html-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.html.maven.plugin</a> &gt; <span class="el_source">WebResourcesMojo.java</span></div><h1>WebResourcesMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 12.03.2021
+ *
+ */
+package de.eitco.commons.html.maven.plugin;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This goal collects the web resources (images etc.) and adds them to the generated web page directory.
+ */
+@Mojo(name = &quot;web-resources&quot;, defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+<span class="fc" id="L26">public class WebResourcesMojo extends AbstractHtmlMojo {</span>
+
+    /**
+     * This parameter specifies the directory where the resources are expected.
+     */
+    @Parameter(defaultValue = &quot;${project.basedir}/src/main/web-resources&quot;)
+    protected File resourceDirectory;
+
+    /**
+     * This parameter specifies a list of regular expressions. Only file matching one of the expressions
+     * are collected. If this list is left empty, every file is considered to match.
+     */
+<span class="fc" id="L38">    @Parameter</span>
+    protected List&lt;String&gt; includes = new ArrayList&lt;&gt;();
+
+    /**
+     * This parameter specifies a list of regular expressions. Only file matching none of the expressions
+     * are collected. If this list is left empty, no file is excluded.
+     */
+<span class="fc" id="L45">    @Parameter</span>
+    protected List&lt;String&gt; excludes = new ArrayList&lt;&gt;();
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+<span class="fc" id="L51">        forEachFile(resourceDirectory, new OrderedFileHandler() {</span>
+            @Override
+            public void beforeDirectory(OrderedFile orderedFile) throws IOException {
+
+<span class="nc" id="L55">                FileUtils.forceMkdir(orderedFile.file);</span>
+<span class="nc" id="L56">            }</span>
+
+            @Override
+            public void afterDirectory(OrderedFile orderedFile) {
+
+<span class="nc" id="L61">            }</span>
+
+            @Override
+            public void onFile(OrderedFile orderedFile) throws IOException {
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                if (!isSelected(orderedFile.file)) {</span>
+
+<span class="nc" id="L68">                    return;</span>
+                }
+
+<span class="nc" id="L71">                File targetFile = outputDirectory.toPath().resolve(resourceDirectory.toPath().relativize(orderedFile.file.toPath())).toFile();</span>
+<span class="nc" id="L72">                FileUtils.copyFile(orderedFile.file, targetFile);</span>
+
+<span class="nc" id="L74">                htmlArtifactRegistry.attachArtifact(project, targetFile);</span>
+<span class="nc" id="L75">            }</span>
+        });
+<span class="fc" id="L77">    }</span>
+
+    private boolean isSelected(File file) {
+
+<span class="nc bnc" id="L81" title="All 4 branches missed.">        return isIncluded(file) &amp;&amp; !isExcluded(file);</span>
+    }
+
+    private boolean isIncluded(File file) {
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (includes.isEmpty()) {</span>
+
+<span class="nc" id="L88">            return true;</span>
+        }
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        for (String include : includes) {</span>
+
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            if (file.getPath().matches(include)) {</span>
+
+<span class="nc" id="L95">                return true;</span>
+            }
+<span class="nc" id="L97">        }</span>
+
+<span class="nc" id="L99">        return false;</span>
+    }
+
+    private boolean isExcluded(File file) {
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (excludes.isEmpty()) {</span>
+
+<span class="nc" id="L106">            return false;</span>
+        }
+
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        for (String exclude : excludes) {</span>
+
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (file.getPath().matches(exclude)) {</span>
+
+<span class="nc" id="L113">                return true;</span>
+            }
+<span class="nc" id="L115">        }</span>
+
+<span class="nc" id="L117">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

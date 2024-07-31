@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MarkdownToHtmlMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">html-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.html.maven.plugin</a> &gt; <span class="el_source">MarkdownToHtmlMojo.java</span></div><h1>MarkdownToHtmlMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 08.03.2021
+ *
+ */
+package de.eitco.commons.html.maven.plugin;
+
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.xwiki.macros.MacroExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.util.data.MutableDataSet;
+import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.util.IOUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
+import java.nio.file.Path;
+import java.util.Arrays;
+
+/**
+ * This goal generates html from markdown files.
+ */
+@Mojo(name = &quot;from-markdown&quot;, defaultPhase = LifecyclePhase.COMPILE)
+<span class="fc" id="L33">public class MarkdownToHtmlMojo extends AbstractHtmlGenerationMojo {</span>
+
+    /**
+     * This parameter specifies the directory where the markdown files are located.
+     */
+    @Parameter(defaultValue = &quot;${project.basedir}/src/main/markdown&quot;, property = &quot;freemarker.target.directory&quot;)
+    protected File markdownDirectory;
+
+    public void convert(InputStream source, OutputStream target) throws IOException {
+
+<span class="fc" id="L43">        MutableDataSet options = new MutableDataSet();</span>
+
+        //TODO: check available options
+<span class="fc" id="L46">        options.set(Parser.EXTENSIONS, Arrays.asList(</span>
+<span class="fc" id="L47">                TablesExtension.create(),</span>
+<span class="fc" id="L48">                StrikethroughExtension.create(),</span>
+<span class="fc" id="L49">                MacroExtension.create()</span>
+        ));
+
+<span class="fc" id="L52">        Parser parser = Parser.builder(options).build();</span>
+<span class="fc" id="L53">        HtmlRenderer renderer = HtmlRenderer.builder(options).build();</span>
+
+<span class="fc" id="L55">        String markdown = new String(IOUtil.toByteArray(source), getSourceEncoding());</span>
+
+<span class="fc" id="L57">        Node document = parser.parse(markdown);</span>
+
+<span class="fc" id="L59">        writeHtml(target, renderer.render(document));</span>
+<span class="fc" id="L60">    }</span>
+
+
+    @Override
+    public void execute() throws MojoFailureException {
+
+        try {
+
+<span class="fc" id="L68">            traverseDirectory(markdownDirectory);</span>
+
+<span class="nc" id="L70">        } catch (IOException e) {</span>
+
+<span class="nc" id="L72">            throw new MojoFailureException(e.getMessage(), e);</span>
+<span class="fc" id="L73">        }</span>
+<span class="fc" id="L74">    }</span>
+
+    private void traverseDirectory(File currentDirectory) throws IOException {
+
+<span class="fc" id="L78">        traverseDirectory(currentDirectory, currentDirectory.toPath());</span>
+<span class="fc" id="L79">    }</span>
+
+    private void traverseDirectory(File currentDirectory, Path rootDirectory) throws IOException {
+
+<span class="fc" id="L83">        File[] files = currentDirectory.listFiles();</span>
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (files == null) {</span>
+
+<span class="fc" id="L87">            return;</span>
+        }
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (File file : files) {</span>
+
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">            if (file.isDirectory()) {</span>
+
+<span class="nc" id="L94">                traverseDirectory(file, rootDirectory);</span>
+            }
+
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">            if (!file.getName().matches(&quot;.*\\.(md|markdown)\\z&quot;)) {</span>
+
+<span class="nc" id="L99">                continue;</span>
+            }
+
+<span class="fc" id="L102">            String relativePath = rootDirectory.relativize(currentDirectory.toPath()).toString();</span>
+
+<span class="fc" id="L104">            File targetFile = new File(new File(outputDirectory, relativePath), changeExtension(file.getName(), &quot;html&quot;));</span>
+
+<span class="fc" id="L106">            FileUtils.forceMkdir(targetFile.getParentFile());</span>
+
+            try (
+<span class="fc" id="L109">                    InputStream source = new FileInputStream(file);</span>
+<span class="fc" id="L110">                    OutputStream target = new FileOutputStream(targetFile)</span>
+            ) {
+
+<span class="fc" id="L113">                convert(source, target);</span>
+
+<span class="fc" id="L115">                htmlArtifactRegistry.attachArtifact(project, targetFile);</span>
+            }
+        }
+<span class="fc" id="L118">    }</span>
+
+    @NotNull
+    private String changeExtension(String name, final String newExtension) {
+
+<span class="fc" id="L123">        int pos = name.indexOf('.');</span>
+
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (pos &lt; 0) {</span>
+
+<span class="nc" id="L127">            return name + &quot;.&quot; + newExtension;</span>
+        }
+
+<span class="fc" id="L130">        return name.substring(0, pos) + &quot;.&quot; + newExtension;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

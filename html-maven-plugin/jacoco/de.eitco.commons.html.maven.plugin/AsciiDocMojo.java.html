@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AsciiDocMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">html-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.html.maven.plugin</a> &gt; <span class="el_source">AsciiDocMojo.java</span></div><h1>AsciiDocMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 07.03.2021
+ *
+ */
+package de.eitco.commons.html.maven.plugin;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.OptionsBuilder;
+import org.asciidoctor.maven.AsciidoctorMaven;
+import org.asciidoctor.maven.AsciidoctorMojo;
+import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+/**
+ * This goal generates html files from asciidoc source files. It is built on top of the
+ * {@code AsciidoctorMojo} from the &lt;a href=&quot;https://github.com/asciidoctor/asciidoctor-maven-plugin&quot;&gt;asciidoctor maven plugin&lt;/a&gt;
+ * and adapts it to align with the defined build lifecycle.
+ */
+@Mojo(name = &quot;from-asciidoc&quot;, defaultPhase = LifecyclePhase.COMPILE)
+<span class="fc" id="L32">public class AsciiDocMojo extends AsciidoctorMojo {</span>
+
+    @Parameter(defaultValue = &quot;${project}&quot;, readonly = true)
+    private MavenProject project;
+
+    /**
+     * This parameter specifies where to put the generated html file(s).
+     */
+    @Parameter(property = AsciidoctorMaven.PREFIX + &quot;outputDirectory&quot;, defaultValue = AbstractHtmlGenerationMojo.DEFAULT_TARGET_DIRECTORY)
+    protected File outputDirectory;
+
+    /**
+     * This parameter specifies whether to preserve the directory structure in the output.
+     */
+<span class="fc" id="L46">    @Parameter(property = AsciidoctorMaven.PREFIX + &quot;preserveDirectories&quot;, defaultValue = &quot;true&quot;)</span>
+    protected boolean preserveDirectories = true;
+
+
+    private File currentTargetFile;
+
+    @Component
+    private HtmlArtifactRegistry htmlArtifactRegistry;
+
+    @Override
+    public File setDestinationPaths(File sourceFile, OptionsBuilder optionsBuilder, File sourceDirectory, AsciidoctorMojo configuration) throws MojoExecutionException {
+
+<span class="fc" id="L58">        File result = super.setDestinationPaths(sourceFile, optionsBuilder, sourceDirectory, configuration);</span>
+
+<span class="fc" id="L60">        String extension = FileUtils.getExtension(result.getName());</span>
+
+<span class="fc" id="L62">        currentTargetFile = new File(result.getParentFile(), result.getName().replaceAll(Pattern.quote(extension) + &quot;\\z&quot;, &quot;html&quot;));</span>
+
+<span class="fc" id="L64">        return result;</span>
+    }
+
+    @Override
+    protected void convertFile(Asciidoctor asciidoctor, Map&lt;String, Object&gt; options, File f) {
+
+<span class="fc" id="L70">        super.convertFile(asciidoctor, options, f);</span>
+
+<span class="fc" id="L72">        getLog().info(&quot;attaching artifact &quot; + currentTargetFile);</span>
+<span class="fc" id="L73">        htmlArtifactRegistry.attachArtifact(project, currentTargetFile);</span>
+<span class="fc" id="L74">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

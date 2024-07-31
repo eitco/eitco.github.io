@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractHtmlGenerationMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">html-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.html.maven.plugin</a> &gt; <span class="el_source">AbstractHtmlGenerationMojo.java</span></div><h1>AbstractHtmlGenerationMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 12.03.2021
+ *
+ */
+package de.eitco.commons.html.maven.plugin;
+
+import com.google.common.base.Strings;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.util.IOUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L20">public abstract class AbstractHtmlGenerationMojo extends AbstractHtmlMojo {</span>
+
+    public static final String DEFAULT_TARGET_DIRECTORY = &quot;${project.build.directory}/html&quot;;
+
+    public static final String STYLE_SHEET_REFERENCE_PRE = &quot;\t\t&lt;link rel=\&quot;stylesheet\&quot; href=\&quot;&quot;;
+    public static final String STYLE_SHEET_REFERENCE_POST = &quot;\&quot;&gt;\n&quot;;
+    public static final char ORDERING_SEPARATOR = '.';
+    protected static final String HTML_HEADER = &quot;&lt;!DOCTYPE html PUBLIC \&quot;-//W3C//DTD XHTML 1.1//EN\&quot; \&quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\&quot;&gt;\n&lt;html&gt;\t\n&lt;head&gt;\t\t\n&lt;meta charset=\&quot;UTF-8\&quot;&gt;\n&quot;;
+    protected static final String HTML_CLOSE_HEAD_PRE = &quot;\t&lt;/head&gt;\n\t&lt;body class=\&quot;&quot;;
+    protected static final String HTML_CLOSE_HEAD_POST = &quot;\&quot;&gt;\n&quot;;
+    protected static final String STYLE_OPEN = &quot;\t\t&lt;style&gt;\n&quot;;
+    protected static final String STYLE_CLOSE = &quot;\n\t\t&lt;/style&gt;\n&quot;;
+    protected static final String HTML_FOOTER = &quot;\n\t&lt;/body&gt;\n&lt;/html&gt;&quot;;
+    public static final String SCRIPT_PRE = &quot;&lt;script src=\&quot;&quot;;
+    public static final String SCRIPT_POST = &quot;\&quot;&gt;&lt;/script&gt;\n&quot;;
+
+    /**
+     * This parameter specifies inline css code to be added to generated html files.
+     */
+<span class="fc" id="L39">    @Parameter</span>
+    protected String defaultStyle = null;
+
+    /**
+     * This parameter specifies a list of style sheet references to be added to be added to generated html files.
+     */
+<span class="fc" id="L45">    @Parameter</span>
+    protected List&lt;String&gt; styleSheetReferences = new ArrayList&lt;&gt;();
+
+    /**
+     * This parameter specifies a list of script references to be added to generated html files.
+     */
+<span class="fc" id="L51">    @Parameter</span>
+    protected List&lt;String&gt; scriptReferences = new ArrayList&lt;&gt;();
+
+    /**
+     * This parameter specifies a list of classes to be added to the bodies of generated html files.
+     */
+<span class="fc" id="L57">    @Parameter</span>
+    protected List&lt;String&gt; bodyClasses = new ArrayList&lt;&gt;();
+
+    protected void writeHtml(OutputStream target, @NotNull String htmlBody) throws IOException {
+
+<span class="fc" id="L62">        StringBuilder html = new StringBuilder();</span>
+
+<span class="fc" id="L64">        html.append(HTML_HEADER);</span>
+
+<span class="fc" id="L66">        scriptReferences.forEach(reference -&gt; {</span>
+
+<span class="nc" id="L68">            html.append(SCRIPT_PRE);</span>
+<span class="nc" id="L69">            html.append(reference);</span>
+<span class="nc" id="L70">            html.append(SCRIPT_POST);</span>
+<span class="nc" id="L71">        });</span>
+
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (defaultStyle == null) {</span>
+
+<span class="fc" id="L75">            defaultStyle = loadDefaultStyle();</span>
+        }
+
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (!Strings.isNullOrEmpty(defaultStyle)) {</span>
+
+<span class="fc" id="L80">            html.append(STYLE_OPEN);</span>
+
+<span class="fc" id="L82">            html.append(defaultStyle);</span>
+
+<span class="fc" id="L84">            html.append(STYLE_CLOSE);</span>
+        }
+
+<span class="fc" id="L87">        styleSheetReferences.forEach(link -&gt; {</span>
+
+<span class="nc" id="L89">            html.append(STYLE_SHEET_REFERENCE_PRE);</span>
+<span class="nc" id="L90">            html.append(link);</span>
+<span class="nc" id="L91">            html.append(STYLE_SHEET_REFERENCE_POST);</span>
+<span class="nc" id="L92">        });</span>
+
+<span class="fc" id="L94">        html.append(HTML_CLOSE_HEAD_PRE);</span>
+
+<span class="fc" id="L96">        html.append(String.join(&quot; &quot;, bodyClasses));</span>
+
+<span class="fc" id="L98">        html.append(HTML_CLOSE_HEAD_POST);</span>
+
+<span class="fc" id="L100">        html.append(htmlBody);</span>
+
+<span class="fc" id="L102">        html.append(HTML_FOOTER);</span>
+
+<span class="fc" id="L104">        byte[] htmlBytes = html.toString().getBytes(getSourceEncoding());</span>
+
+<span class="fc" id="L106">        IOUtil.copy(htmlBytes, target);</span>
+<span class="fc" id="L107">    }</span>
+
+<span class="fc" id="L109">    private Charset sourcCharset = null;</span>
+
+    protected Charset getSourceEncoding() {
+
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (sourcCharset != null) {</span>
+
+<span class="fc" id="L115">            return sourcCharset;</span>
+        }
+
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        return sourcCharset = Charset.forName(sourceEncoding != null ? sourceEncoding : &quot;UTF-8&quot;);</span>
+    }
+
+    private String loadDefaultStyle() throws IOException {
+
+<span class="fc" id="L123">        try (InputStream resourceAsStream = AbstractHtmlGenerationMojo.class.getClassLoader().getResourceAsStream(&quot;default.css&quot;)) {</span>
+
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            if (resourceAsStream == null) {</span>
+
+<span class="nc" id="L127">                try (InputStream resourceAsStream2 = AbstractHtmlGenerationMojo.class.getClassLoader().getResourceAsStream(&quot;/default.css&quot;)) {</span>
+
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                    if (resourceAsStream2 == null) {</span>
+
+<span class="nc" id="L131">                        throw new IOException(&quot;default.css not found&quot;);</span>
+                    }
+
+<span class="nc" id="L134">                    return IOUtil.toString(resourceAsStream2);</span>
+                }
+            }
+
+<span class="fc" id="L138">            return IOUtil.toString(resourceAsStream);</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        }</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
