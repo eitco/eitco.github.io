@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HelmDependencyDeclaration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">helm-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.helm.maven.plugin</a> &gt; <span class="el_source">HelmDependencyDeclaration.java</span></div><h1>HelmDependencyDeclaration.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 18.05.2021
+ *
+ */
+package de.eitco.commons.helm.maven.plugin;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public class HelmDependencyDeclaration {
+
+    @NotNull
+    private final String name;
+
+    @Nullable
+    private final String alias;
+
+    @NotNull
+    private final String version;
+
+    @Nullable
+    private final String repository;
+
+<span class="nc" id="L27">    public HelmDependencyDeclaration(@NotNull String name, @Nullable String alias, @NotNull String version, @Nullable String repository) {</span>
+<span class="nc" id="L28">        this.name = name;</span>
+<span class="nc" id="L29">        this.alias = alias;</span>
+<span class="nc" id="L30">        this.version = version;</span>
+<span class="nc" id="L31">        this.repository = repository;</span>
+<span class="nc" id="L32">    }</span>
+
+    @NotNull
+    public String getName() {
+<span class="nc" id="L36">        return name;</span>
+    }
+
+    @Nullable
+    public String getAlias() {
+<span class="nc" id="L41">        return alias;</span>
+    }
+
+    @NotNull
+    public String getVersion() {
+<span class="nc" id="L46">        return version;</span>
+    }
+
+    @Nullable
+    public String getRepository() {
+<span class="nc" id="L51">        return repository;</span>
+    }
+
+    public void writeDeclaration(@NotNull StringBuilder builder) {
+
+<span class="nc" id="L56">        builder.append(&quot;  - name: \&quot;&quot;).append(name.replaceAll(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;)).append(&quot;\n&quot;)</span>
+<span class="nc" id="L57">            .append(&quot;    version: \&quot;&quot;).append(version.replaceAll(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;)).append(&quot;\n&quot;);</span>
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (repository != null) {</span>
+
+<span class="nc" id="L61">            builder.append(&quot;    repository: &quot;).append(repository).append(&quot;\n&quot;);</span>
+        }
+
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (alias != null) {</span>
+
+<span class="nc" id="L66">            builder.append(&quot;    alias: \&quot;&quot;).append(alias.replaceAll(&quot;\&quot;&quot;, &quot;\\\&quot;&quot;)).append(&quot;\n&quot;);</span>
+        }
+
+<span class="nc" id="L69">        builder.append(&quot;\n&quot;);</span>
+<span class="nc" id="L70">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

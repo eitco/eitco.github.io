@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DownloadDependenciesMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">helm-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.helm.maven.plugin</a> &gt; <span class="el_source">DownloadDependenciesMojo.java</span></div><h1>DownloadDependenciesMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 06.05.2021
+ *
+ */
+package de.eitco.commons.helm.maven.plugin;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.google.common.base.Strings;
+import de.eitco.commons.helm.maven.plugin.repository.index.HelmRepositoryIndex;
+import de.eitco.commons.helm.maven.plugin.repository.index.HelmRepositoryInfo;
+import de.eitco.commons.helm.maven.plugin.repository.index.IndexEntry;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectDependenciesResolver;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResolver;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResolverException;
+import org.apache.maven.wagon.ResourceDoesNotExistException;
+import org.apache.maven.wagon.TransferFailedException;
+import org.apache.maven.wagon.authorization.AuthorizationException;
+import org.eclipse.aether.RepositorySystemSession;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * This goal downloads the helm dependencies configured to the {@code charts} directory.
+ */
+@Mojo(name = &quot;dependency-update&quot;, defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+<span class="fc" id="L52">public class DownloadDependenciesMojo extends AbstractHelmWagonMojo {</span>
+
+    /**
+     * This parameter specifies a list of helm dependencies. These dependencies identify their remote
+     * location by a server id, referring to the keys of the map {@link AbstractHelmWagonMojo#helmRepositories}
+     */
+<span class="fc" id="L58">    @Parameter</span>
+    private List&lt;HelmDependency&gt; helmDependencies = new ArrayList&lt;&gt;();
+
+<span class="fc" id="L61">    private List&lt;HelmDependencyDeclaration&gt; dependencyDeclarations = new ArrayList&lt;&gt;();</span>
+
+    @Parameter(defaultValue = &quot;${repositorySystemSession}&quot;, readonly = true)
+    private RepositorySystemSession repoSession;
+
+    @Parameter(defaultValue = &quot;${project.remoteArtifactRepositories}&quot;, readonly = true, required = true)
+    private List&lt;ArtifactRepository&gt; remoteRepositories;
+
+    @Component
+    private ProjectDependenciesResolver projectDependenciesResolver;
+
+    @Component
+    private ArtifactResolver artifactResolver;
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (skip) {</span>
+
+<span class="nc" id="L80">            getLog().info(&quot;Skip execution.&quot;);</span>
+<span class="nc" id="L81">            return;</span>
+        }
+
+        try {
+
+<span class="fc" id="L86">            File chartDirectory = getChartDirectory();</span>
+<span class="fc" id="L87">            File dependencyDirectory = new File(chartDirectory, &quot;charts&quot;);</span>
+
+<span class="fc" id="L89">            FileUtils.forceMkdir(dependencyDirectory);</span>
+
+<span class="fc" id="L91">            YAMLMapper mapper = new YAMLMapper();</span>
+
+<span class="fc" id="L93">            HashMap&lt;String, HelmRepositoryInfo&gt; helmRepositoryInfoCache = new HashMap&lt;&gt;();</span>
+
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">            for (HelmDependency helmDependency : helmDependencies) {</span>
+
+<span class="nc bnc" id="L97" title="All 2 branches missed.">                String repositoryId = !Strings.isNullOrEmpty(helmDependency.getRepositoryId()) ? helmDependency.getRepositoryId() : defaultRepository;</span>
+
+                /*
+                 * get helm repository 'index.yaml', download if not already cached
+                 */
+<span class="nc" id="L102">                HelmRepositoryInfo helmRepositoryInfo = helmRepositoryInfoCache.get(repositoryId);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">                if (helmRepositoryInfo == null) {</span>
+<span class="nc" id="L104">                    try (ClosableWagon wagon = newWagon(repositoryId)) {</span>
+<span class="nc" id="L105">                        final File helmRepoIndexTmpFile = File.createTempFile(&quot;helmRepoIndex&quot;, &quot;.yaml&quot;);</span>
+<span class="nc" id="L106">                        wagon.get(HelmRepositoryInfo.INDEX_YAML_RESOURCE_NAME, helmRepoIndexTmpFile);</span>
+
+<span class="nc" id="L108">                        HelmRepositoryIndex helmRepositoryIndex = mapper.readValue(helmRepoIndexTmpFile, HelmRepositoryIndex.class);</span>
+<span class="nc" id="L109">                        helmRepositoryInfo = new HelmRepositoryInfo(repositoryId, wagon.getTargetUrl(), helmRepositoryIndex);</span>
+<span class="nc" id="L110">                        helmRepositoryInfoCache.put(repositoryId, helmRepositoryInfo);</span>
+
+<span class="nc" id="L112">                    } catch (WagonDisconnectionException e) {</span>
+
+<span class="nc" id="L114">                        getLog().debug(&quot;Error disconnecting wagon - ignored&quot;, e);</span>
+
+<span class="nc" id="L116">                    } catch (AuthorizationException | TransferFailedException | ResourceDoesNotExistException e) {</span>
+
+                        // maybe fall back to maven dependency resolution here if reactorArtifact != null
+
+<span class="nc" id="L120">                        throw new MojoExecutionException(&quot;Error handling resource&quot;, e);</span>
+
+<span class="nc" id="L122">                    } catch (JsonParseException | JsonMappingException e) {</span>
+
+<span class="nc" id="L124">                        throw new MojoExecutionException(&quot;Invalid index.yaml file in repository &quot; + repositoryId, e);</span>
+<span class="nc" id="L125">                    }</span>
+                }
+
+                /*
+                 * select the download URL &amp; create the Wagon for fetching the dependent helm chart archive
+                 */
+<span class="nc" id="L131">                final String helmDependencyChartName = helmDependency.getName();</span>
+<span class="nc" id="L132">                final List&lt;IndexEntry&gt; indexEntriesForChartName = helmRepositoryInfo.findIndexEntriesByChartName(helmDependencyChartName);</span>
+                // use latest version if no version specified
+<span class="nc bnc" id="L134" title="All 2 branches missed.">                String finalVersion = StringUtils.isBlank(helmDependency.getVersion()) ? helmRepositoryInfo.findLatestVersion(indexEntriesForChartName) : helmDependency.getVersion();</span>
+<span class="nc" id="L135">                final List&lt;String&gt; dependencyDownloadUrls = helmRepositoryInfo.resolveReferenceUrls(helmRepositoryInfo.findUrlsByVersion(indexEntriesForChartName, finalVersion));</span>
+<span class="nc bnc" id="L136" title="All 4 branches missed.">                if (dependencyDownloadUrls == null || dependencyDownloadUrls.isEmpty()) {</span>
+<span class="nc" id="L137">                    throw new IllegalArgumentException(&quot;Could not find download URL for Helm chart with name &quot; + helmDependencyChartName);</span>
+                }
+<span class="nc bnc" id="L139" title="All 2 branches missed.">                if (dependencyDownloadUrls.size() &gt; 1) {</span>
+<span class="nc" id="L140">                    getLog().warn(&quot;Found multiple download URL's for Helm chart with name &quot; + helmDependencyChartName + &quot; - Will only try a single URL preferably a URL on the server that hosts the repository's 'index.yaml'! - Candidate dependencyDownloadUrls: &quot; + StringUtils.join(dependencyDownloadUrls, &quot; &quot;));</span>
+                }
+
+<span class="nc" id="L143">                String dependencyFileName = helmDependencyChartName + &quot;-&quot; + finalVersion + HELM_PACKAGE_SUFFIX;</span>
+<span class="nc" id="L144">                String dependencyOriginResourceName = helmRepositoryInfo.findOriginRelativeResource(dependencyDownloadUrls);</span>
+
+                ClosableWagon closableWagon;
+<span class="nc bnc" id="L147" title="All 2 branches missed.">                if (dependencyOriginResourceName != null) {</span>
+
+<span class="nc" id="L149">                    getLog().info(&quot;Found &quot; + dependencyDownloadUrls.size() + &quot; download URL's for Helm chart with name &quot; + helmDependencyChartName + &quot; - Will try to download this resource from origin server: &quot; + dependencyOriginResourceName);</span>
+<span class="nc" id="L150">                    closableWagon = newWagon(helmRepositoryInfo.getRepositoryId());</span>
+
+                } else {
+
+<span class="nc" id="L154">                    final URL dependencyDownloadUrl = new URL(dependencyDownloadUrls.get(0));</span>
+<span class="nc" id="L155">                    getLog().info(&quot;Found &quot; + dependencyDownloadUrls.size() + &quot; download URL's for Helm chart with name &quot; + helmDependencyChartName + &quot; - Selected download URL: &quot; + dependencyDownloadUrl);</span>
+
+<span class="nc" id="L157">                    final URL dependencyDownloadBaseUrl = new URL(dependencyDownloadUrl.getProtocol(), dependencyDownloadUrl.getHost(), dependencyDownloadUrl.getPort(), &quot;/&quot;);</span>
+
+<span class="nc" id="L159">                    dependencyOriginResourceName = dependencyDownloadUrl.getFile();</span>
+<span class="nc" id="L160">                    closableWagon = newChartDownloadWagon(helmRepositoryInfo.getRepositoryId(), dependencyDownloadBaseUrl);</span>
+                }
+
+                /*
+                 * download the dependent helm chart archive
+                 */
+<span class="nc" id="L166">                try (ClosableWagon wagon = closableWagon) {</span>
+
+<span class="nc" id="L168">                    downLoadFromHelmRepository(wagon, dependencyDirectory, dependencyFileName, dependencyOriginResourceName);</span>
+
+<span class="nc" id="L170">                    dependencyDeclarations.add(helmDependency.toDeclaration(helmRepositoryInfo.getRepositoryBaseUrl(), finalVersion));</span>
+
+<span class="nc" id="L172">                } catch (WagonDisconnectionException e) {</span>
+
+<span class="nc" id="L174">                    getLog().debug(&quot;Error disconnecting wagon - ignored&quot;, e);</span>
+
+<span class="nc" id="L176">                } catch (AuthorizationException | TransferFailedException | ResourceDoesNotExistException e) {</span>
+
+                    // maybe fall back to maven dependency resolution here if reactorArtifact != null
+
+<span class="nc" id="L180">                    throw new MojoExecutionException(&quot;Error handling resource&quot;, e);</span>
+<span class="nc" id="L181">                }</span>
+<span class="nc" id="L182">            }</span>
+
+<span class="fc" id="L184">            HelmDependencyMetaDataReader metaDataReader = new HelmDependencyMetaDataReader(</span>
+                session,
+                remoteRepositories,
+                artifactResolver,
+                project,
+                repoSession,
+                projectDependenciesResolver,
+                mapper
+            );
+
+
+
+<span class="fc" id="L196">            metaDataReader.forEachDependency((dependency, dependencyChart) -&gt; {</span>
+
+<span class="nc" id="L198">                File dependencyFile = dependency.getArtifact().getFile();</span>
+
+<span class="nc" id="L200">                File dependencyChartTargetFile = new File(</span>
+                    dependencyDirectory,
+<span class="nc" id="L202">                    dependencyChart.getName() + &quot;-&quot; + dependencyChart.getVersion() + HELM_PACKAGE_SUFFIX</span>
+                );
+
+<span class="nc" id="L205">                Files.copy(dependencyFile.toPath(), dependencyChartTargetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);</span>
+
+<span class="nc" id="L207">                dependencyDeclarations.add(new HelmDependencyDeclaration(dependencyChart.getName(), null, dependencyChart.getVersion(), null));</span>
+<span class="nc" id="L208">            });</span>
+
+<span class="fc" id="L210">            Files.write(getChartDescriptor().toPath(), mapper.writeValueAsBytes(getChart()), StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);</span>
+
+<span class="nc" id="L212">        } catch (IOException | DependencyResolutionException | ArtifactResolverException e) {</span>
+
+<span class="nc" id="L214">            throw new MojoExecutionException(e.getMessage(), e);</span>
+<span class="fc" id="L215">        }</span>
+<span class="fc" id="L216">    }</span>
+
+    private void appendProperty(StringBuilder builder, String propertyName, String propertyValue) {
+
+<span class="nc" id="L220">        builder.append(propertyName).append(&quot;: &quot;).append(propertyValue).append(&quot;\n&quot;);</span>
+<span class="nc" id="L221">    }</span>
+
+    @Nullable
+    private Artifact searchArtifactInReactor(@Nullable MavenArtifact mavenArtifact) {
+
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        if (mavenArtifact == null) {</span>
+
+<span class="nc" id="L228">            return null;</span>
+        }
+
+<span class="nc" id="L231">        List&lt;Artifact&gt; attachedArtifacts = session.getProjects().stream().filter(reactorProject -&gt;</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">            reactorProject.getArtifactId().equals(mavenArtifact.getArtifactId()) &amp;&amp;</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">                reactorProject.getVersion().equals(mavenArtifact.getVersion()) &amp;&amp;</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">                reactorProject.getGroupId().equals(mavenArtifact.getGroupId())</span>
+<span class="nc" id="L235">        ).map(MavenProject::getAttachedArtifacts).reduce(new ArrayList&lt;&gt;(), (x, y) -&gt; {</span>
+<span class="nc" id="L236">            x.addAll(y);</span>
+<span class="nc" id="L237">            return x;</span>
+        });
+
+<span class="nc" id="L240">        return attachedArtifacts.stream()</span>
+<span class="nc bnc" id="L241" title="All 4 branches missed.">            .filter(artifact -&gt; nullOrEqual(artifact.getClassifier(), mavenArtifact.getClassifier()) &amp;&amp; artifact.getType().equals(mavenArtifact.getType())).findFirst().orElse(null);</span>
+    }
+
+    private boolean nullOrEqual(String classifier1, String classifier2) {
+
+<span class="nc bnc" id="L246" title="All 4 branches missed.">        if (Strings.isNullOrEmpty(classifier1) &amp;&amp; Strings.isNullOrEmpty(classifier2)) {</span>
+
+<span class="nc" id="L248">            return true;</span>
+        }
+
+<span class="nc bnc" id="L251" title="All 2 branches missed.">        if (classifier1 == null) {</span>
+
+<span class="nc" id="L253">            return false;</span>
+        }
+
+<span class="nc" id="L256">        return classifier1.equals(classifier2);</span>
+    }
+
+    private void downLoadFromHelmRepository(ClosableWagon wagon, File chartDirectory, String dependencyFileName, String dependencyResourceName) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+
+<span class="nc" id="L261">        File chartFile = new File(chartDirectory, dependencyFileName);</span>
+
+<span class="nc" id="L263">        wagon.get(dependencyResourceName, chartFile);</span>
+<span class="nc" id="L264">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

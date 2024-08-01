@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractHelmMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">helm-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.helm.maven.plugin</a> &gt; <span class="el_source">AbstractHelmMojo.java</span></div><h1>AbstractHelmMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 20.05.2021
+ *
+ */
+package de.eitco.commons.helm.maven.plugin;
+
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.util.regex.Pattern;
+
+<span class="fc" id="L19">public abstract class AbstractHelmMojo extends AbstractMojo {</span>
+
+    public static final String HELM_PACKAGE_SUFFIX = &quot;.tgz&quot;;
+    public static final String HELM_ARTIFACT_EXTENSION = &quot;helm&quot;;
+    public static final String HELM_CHART_EXTENSION = &quot;chart&quot;;
+    public static final String CHART_FILE_NAME = &quot;Chart.yaml&quot;;
+
+<span class="fc" id="L26">    public static final Pattern DISALLOWED_VERSION_CHARACTERS = Pattern.compile(&quot;[^A-Za-z0-9-.+]&quot;);</span>
+
+    /**
+     * This parameter specifies the name of the helm chart.
+     */
+    @Parameter(defaultValue = &quot;${project.artifactId}&quot;, property = &quot;helm.chart.name&quot;)
+    private String chartName;
+
+    /**
+     * This parameter specifies the version of the helm chart.
+     */
+    @Parameter(defaultValue = &quot;${project.version}&quot;, property = &quot;helm.chart.version&quot;)
+    private String chartVersion;
+
+    /**
+     * This parameter specifies the version of the application contained in the helm chart.
+     */
+    @Parameter(defaultValue = &quot;${project.version}&quot;, property = &quot;helm.app.version&quot;)
+    private String appVersion;
+
+    /**
+     * This parameter specifies the type of the helm chart.
+     */
+    @Parameter(defaultValue = &quot;application&quot;, property = &quot;helm.chart.type&quot;)
+    private String chartType;
+
+    /**
+     * This parameter specifies the description of the helm chart.
+     */
+    @Parameter(defaultValue = &quot;${project.description}&quot;, property = &quot;helm.chart.description&quot;)
+    private String chartDescription;
+
+    @Parameter(readonly = true, defaultValue = &quot;${project.build.directory}/helm&quot;)
+    protected File buildDirectory;
+
+    @Parameter(readonly = true, defaultValue = &quot;${project.build.directory}&quot;)
+    protected File targetDirectory;
+
+    /**
+     * This parameter specifies the directory where to put the sources of the helm chart.
+     */
+    @Parameter(defaultValue = &quot;src/main/helm&quot;, property = &quot;helm.source.directory&quot;)
+    protected File sourceDirectory;
+
+    @Parameter(defaultValue = &quot;${project}&quot;, readonly = true)
+    protected MavenProject project;
+
+    @Parameter(defaultValue = &quot;${session}&quot;, readonly = true)
+    protected MavenSession session;
+
+<span class="fc" id="L76">    private Chart chart = null;</span>
+
+    public Chart getChart() {
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (chart == null) {</span>
+
+<span class="fc" id="L82">            chart = new Chart();</span>
+
+<span class="fc" id="L84">            chart.setName(chartName);</span>
+
+<span class="fc" id="L86">            chart.setVersion(DISALLOWED_VERSION_CHARACTERS.matcher(chartVersion).replaceAll(&quot;-&quot;));</span>
+
+<span class="fc" id="L88">            chart.setAppVersion(appVersion);</span>
+
+<span class="fc" id="L90">            chart.setType(chartType);</span>
+
+<span class="fc" id="L92">            chart.setDescription(chartDescription);</span>
+        }
+
+<span class="fc" id="L95">        return chart;</span>
+    }
+
+    @NotNull
+    public String getChartFileName(Chart chart) {
+<span class="fc" id="L100">        return chart.getName() + &quot;-&quot; + chart.getVersion() + HELM_PACKAGE_SUFFIX;</span>
+    }
+
+    public String getChartFileName() {
+
+<span class="fc" id="L105">        return getChartFileName(getChart());</span>
+    }
+
+    public File getChartDirectory(Chart chart) {
+
+<span class="fc" id="L110">        return new File(buildDirectory, chart.getName());</span>
+    }
+
+    public File getChartDirectory() {
+
+<span class="fc" id="L115">        return getChartDirectory(getChart());</span>
+    }
+
+    public File getChartDescriptor() {
+
+<span class="fc" id="L120">        return new File(getChartDirectory(), CHART_FILE_NAME);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

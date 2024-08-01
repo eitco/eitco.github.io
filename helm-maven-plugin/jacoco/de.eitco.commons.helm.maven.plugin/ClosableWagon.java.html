@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClosableWagon.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">helm-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.helm.maven.plugin</a> &gt; <span class="el_source">ClosableWagon.java</span></div><h1>ClosableWagon.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 06.05.2021
+ *
+ */
+package de.eitco.commons.helm.maven.plugin;
+
+import org.apache.maven.wagon.ConnectionException;
+import org.apache.maven.wagon.ResourceDoesNotExistException;
+import org.apache.maven.wagon.TransferFailedException;
+import org.apache.maven.wagon.Wagon;
+import org.apache.maven.wagon.authentication.AuthenticationException;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import org.apache.maven.wagon.authorization.AuthorizationException;
+import org.apache.maven.wagon.events.SessionListener;
+import org.apache.maven.wagon.events.TransferListener;
+import org.apache.maven.wagon.proxy.ProxyInfo;
+import org.apache.maven.wagon.proxy.ProxyInfoProvider;
+import org.apache.maven.wagon.repository.Repository;
+
+import java.io.File;
+import java.util.List;
+
+public class ClosableWagon implements Wagon, AutoCloseable {
+
+    private final Wagon delegate;
+<span class="nc" id="L29">    private boolean open = true;</span>
+    private String targetUrl;
+
+<span class="nc" id="L32">    public ClosableWagon(Wagon delegate, String targetUrl) {</span>
+<span class="nc" id="L33">        this.delegate = delegate;</span>
+<span class="nc" id="L34">        this.targetUrl = targetUrl;</span>
+<span class="nc" id="L35">    }</span>
+
+    public String getTargetUrl() {
+<span class="nc" id="L38">        return targetUrl;</span>
+    }
+
+    @Override
+    public void get(String s, File file) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+<span class="nc" id="L43">        delegate.get(s, file);</span>
+<span class="nc" id="L44">    }</span>
+
+    @Override
+    public boolean getIfNewer(String s, File file, long l) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+<span class="nc" id="L48">        return delegate.getIfNewer(s, file, l);</span>
+    }
+
+    @Override
+    public void put(File file, String s) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+<span class="nc" id="L53">        delegate.put(file, s);</span>
+<span class="nc" id="L54">    }</span>
+
+    @Override
+    public void putDirectory(File file, String s) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+<span class="nc" id="L58">        delegate.putDirectory(file, s);</span>
+<span class="nc" id="L59">    }</span>
+
+    @Override
+    public boolean resourceExists(String s) throws TransferFailedException, AuthorizationException {
+<span class="nc" id="L63">        return delegate.resourceExists(s);</span>
+    }
+
+    @Override
+    public List&lt;String&gt; getFileList(String s) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+<span class="nc" id="L68">        return delegate.getFileList(s);</span>
+    }
+
+    @Override
+    public boolean supportsDirectoryCopy() {
+<span class="nc" id="L73">        return delegate.supportsDirectoryCopy();</span>
+    }
+
+    @Override
+    public Repository getRepository() {
+<span class="nc" id="L78">        return delegate.getRepository();</span>
+    }
+
+    @Override
+    public void connect(Repository repository) throws ConnectionException, AuthenticationException {
+<span class="nc" id="L83">        delegate.connect(repository);</span>
+<span class="nc" id="L84">    }</span>
+
+    @Override
+    public void connect(Repository repository, ProxyInfo proxyInfo) throws ConnectionException, AuthenticationException {
+<span class="nc" id="L88">        delegate.connect(repository, proxyInfo);</span>
+<span class="nc" id="L89">    }</span>
+
+    @Override
+    public void connect(Repository repository, ProxyInfoProvider proxyInfoProvider) throws ConnectionException, AuthenticationException {
+<span class="nc" id="L93">        delegate.connect(repository, proxyInfoProvider);</span>
+<span class="nc" id="L94">    }</span>
+
+    @Override
+    public void connect(Repository repository, AuthenticationInfo authenticationInfo) throws ConnectionException, AuthenticationException {
+<span class="nc" id="L98">        delegate.connect(repository, authenticationInfo);</span>
+<span class="nc" id="L99">    }</span>
+
+    @Override
+    public void connect(Repository repository, AuthenticationInfo authenticationInfo, ProxyInfo proxyInfo) throws ConnectionException, AuthenticationException {
+<span class="nc" id="L103">        delegate.connect(repository, authenticationInfo, proxyInfo);</span>
+<span class="nc" id="L104">    }</span>
+
+    @Override
+    public void connect(Repository repository, AuthenticationInfo authenticationInfo, ProxyInfoProvider proxyInfoProvider) throws ConnectionException, AuthenticationException {
+<span class="nc" id="L108">        delegate.connect(repository, authenticationInfo, proxyInfoProvider);</span>
+<span class="nc" id="L109">    }</span>
+
+    @Override
+    public void openConnection() throws ConnectionException, AuthenticationException {
+<span class="nc" id="L113">        delegate.openConnection();</span>
+<span class="nc" id="L114">    }</span>
+
+    @Override
+    public void disconnect() throws ConnectionException {
+<span class="nc" id="L118">        delegate.disconnect();</span>
+<span class="nc" id="L119">    }</span>
+
+    @Override
+    public void setTimeout(int i) {
+<span class="nc" id="L123">        delegate.setTimeout(i);</span>
+<span class="nc" id="L124">    }</span>
+
+    @Override
+    public int getTimeout() {
+<span class="nc" id="L128">        return delegate.getTimeout();</span>
+    }
+
+    @Override
+    public void setReadTimeout(int i) {
+<span class="nc" id="L133">        delegate.setReadTimeout(i);</span>
+<span class="nc" id="L134">    }</span>
+
+    @Override
+    public int getReadTimeout() {
+<span class="nc" id="L138">        return delegate.getReadTimeout();</span>
+    }
+
+    @Override
+    public void addSessionListener(SessionListener sessionListener) {
+<span class="nc" id="L143">        delegate.addSessionListener(sessionListener);</span>
+<span class="nc" id="L144">    }</span>
+
+    @Override
+    public void removeSessionListener(SessionListener sessionListener) {
+<span class="nc" id="L148">        delegate.removeSessionListener(sessionListener);</span>
+<span class="nc" id="L149">    }</span>
+
+    @Override
+    public boolean hasSessionListener(SessionListener sessionListener) {
+<span class="nc" id="L153">        return delegate.hasSessionListener(sessionListener);</span>
+    }
+
+    @Override
+    public void addTransferListener(TransferListener transferListener) {
+<span class="nc" id="L158">        delegate.addTransferListener(transferListener);</span>
+<span class="nc" id="L159">    }</span>
+
+    @Override
+    public void removeTransferListener(TransferListener transferListener) {
+<span class="nc" id="L163">        delegate.removeTransferListener(transferListener);</span>
+<span class="nc" id="L164">    }</span>
+
+    @Override
+    public boolean hasTransferListener(TransferListener transferListener) {
+<span class="nc" id="L168">        return delegate.hasTransferListener(transferListener);</span>
+    }
+
+    @Override
+    public boolean isInteractive() {
+<span class="nc" id="L173">        return delegate.isInteractive();</span>
+    }
+
+    @Override
+    public void setInteractive(boolean b) {
+<span class="nc" id="L178">        delegate.setInteractive(b);</span>
+<span class="nc" id="L179">    }</span>
+
+    @Override
+    public void close() {
+        try {
+
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            if (open) {</span>
+
+<span class="nc" id="L187">                disconnect();</span>
+<span class="nc" id="L188">                open = false;</span>
+            }
+
+<span class="nc" id="L191">        } catch (ConnectionException e) {</span>
+
+<span class="nc" id="L193">            throw new WagonDisconnectionException(e);</span>
+<span class="nc" id="L194">        }</span>
+<span class="nc" id="L195">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

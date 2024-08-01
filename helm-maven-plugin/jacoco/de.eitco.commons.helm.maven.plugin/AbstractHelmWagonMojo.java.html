@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractHelmWagonMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">helm-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.helm.maven.plugin</a> &gt; <span class="el_source">AbstractHelmWagonMojo.java</span></div><h1>AbstractHelmWagonMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 06.05.2021
+ *
+ */
+package de.eitco.commons.helm.maven.plugin;
+
+import com.google.common.base.Strings;
+import org.apache.maven.model.RepositoryBase;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Settings;
+import org.apache.maven.wagon.Wagon;
+import org.codehaus.mojo.wagon.shared.WagonFactory;
+import org.codehaus.mojo.wagon.shared.WagonFileSet;
+import org.codehaus.mojo.wagon.shared.WagonUtils;
+
+import java.net.URL;
+import java.util.Map;
+
+
+<span class="fc" id="L26">public abstract class AbstractHelmWagonMojo extends AbstractHelmMojo {</span>
+
+    @Component
+    protected WagonFactory wagonFactory;
+
+    /**
+     * The current user system settings for use in Maven.
+     */
+    @Parameter(defaultValue = &quot;${settings}&quot;, readonly = true)
+    protected Settings settings;
+
+    /**
+     * Internal Maven's project.
+     */
+    @Parameter(defaultValue = &quot;${project}&quot;, readonly = true)
+    protected MavenProject project;
+
+    /**
+     * When &lt;code&gt;true&lt;/code&gt;, skip the execution.
+     *
+     * @since 2.0.0
+     */
+<span class="fc" id="L48">    @Parameter(property = &quot;wagon.skip&quot;)</span>
+    protected boolean skip = false;
+
+    /**
+     * This parameter specifies a map of helm repositories to read from and write to. To add credentials specify a
+     * {@link server} element in your maven {@code settings.xml} with the same id as the key in this map.
+     */
+<span class="fc" id="L55">    @Parameter</span>
+<span class="fc" id="L56">    protected Map&lt;String, String&gt; helmRepositories = Map.of(&quot;charts.helm.sh&quot;, &quot;https://charts.helm.sh/stable&quot;);</span>
+
+    /**
+     * The id of the default repository in the map {@link #helmRepositories}.
+     */
+    @Parameter(defaultValue = &quot;charts.helm.sh&quot;)
+    protected String defaultRepository;
+
+    protected Wagon createWagon(String id, String url)
+        throws MojoExecutionException {
+        try {
+<span class="nc" id="L67">            return wagonFactory.create(url, id, settings);</span>
+<span class="nc" id="L68">        } catch (Exception e) {</span>
+<span class="nc" id="L69">            throw new MojoExecutionException(&quot;Unable to create a Wagon instance for &quot; + url, e);</span>
+        }
+
+    }
+
+    protected WagonFileSet getWagonFileSet(String fromDir, String includes, String excludes, boolean caseSensitive,
+        String toDir) {
+<span class="nc" id="L76">        return WagonUtils.getWagonFileSet(fromDir, includes, excludes, caseSensitive, toDir);</span>
+    }
+
+    protected ClosableWagon newWagon(String id) throws MojoExecutionException {
+
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (Strings.isNullOrEmpty(id)) {</span>
+
+<span class="nc" id="L83">            id = defaultRepository;</span>
+        }
+
+<span class="nc" id="L86">        String url = getRepositoryUrl(id);</span>
+
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (url == null) {</span>
+
+<span class="nc" id="L90">            throw new MojoExecutionException(&quot;no url defined for repository &quot; + id);</span>
+        }
+
+<span class="nc" id="L93">        return new ClosableWagon(createWagon(id, url), url);</span>
+    }
+
+    protected ClosableWagon newChartDownloadWagon(String repositoryServerId, URL dependencyDownloadServerBaseUrl)
+        throws MojoExecutionException {
+
+<span class="nc" id="L99">        String id = repositoryServerId + &quot;--&quot; + dependencyDownloadServerBaseUrl.getHost().replace(&quot;.&quot;, &quot;-&quot;);</span>
+
+<span class="nc" id="L101">        final String repositoryUrlForServerId = getRepositoryUrl(id);</span>
+<span class="nc bnc" id="L102" title="All 4 branches missed.">        if( repositoryUrlForServerId != null  &amp;&amp; !repositoryUrlForServerId.equals(dependencyDownloadServerBaseUrl)) {</span>
+<span class="nc" id="L103">            getLog().warn(&quot;Url mismatch for wagon serverId '&quot; + id + &quot;' configured URL: '&quot; + repositoryUrlForServerId + &quot;' assumed/expected URL: '&quot; + dependencyDownloadServerBaseUrl + &quot;'.&quot;);</span>
+        }
+
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if( repositoryUrlForServerId == null ) {</span>
+<span class="nc" id="L107">            getLog().info(&quot;No configuration found for (synthetic) wagon serverId '&quot; + id + &quot;' assumed/expected URL: '&quot; + dependencyDownloadServerBaseUrl + &quot;'.&quot;);</span>
+        }
+
+<span class="nc" id="L110">        final String chartDownloadUrlString = dependencyDownloadServerBaseUrl.toExternalForm();</span>
+
+<span class="nc" id="L112">        return new ClosableWagon(createWagon(id, chartDownloadUrlString), chartDownloadUrlString);</span>
+    }
+
+
+
+    protected String getRepositoryUrl(String repositoryId) {
+
+<span class="nc" id="L119">        String result = helmRepositories.get(repositoryId);</span>
+
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (result != null) {</span>
+
+<span class="nc" id="L123">            return result;</span>
+        }
+
+<span class="nc" id="L126">        return project.getRepositories().stream()</span>
+<span class="nc" id="L127">            .filter(repository -&gt; repository.getId().equals(repositoryId)).map(RepositoryBase::getUrl).findFirst()</span>
+<span class="nc" id="L128">            .orElse(null);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GenerateHelmSourcesMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">helm-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.helm.maven.plugin</a> &gt; <span class="el_source">GenerateHelmSourcesMojo.java</span></div><h1>GenerateHelmSourcesMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2021 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 19.05.2021
+ *
+ */
+package de.eitco.commons.helm.maven.plugin;
+
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.filtering.MavenFilteringException;
+import org.apache.maven.shared.filtering.MavenResourcesExecution;
+import org.apache.maven.shared.filtering.MavenResourcesFiltering;
+
+import java.util.List;
+
+/**
+ * This goal generates the helm sources.
+ */
+@Mojo(name = &quot;generate-helm-sources&quot;, threadSafe = true, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+<span class="fc" id="L29">public class GenerateHelmSourcesMojo extends AbstractHelmMojo {</span>
+
+
+    /**
+     * This parameter specifies the encoding to use.
+     */
+    @Parameter(defaultValue = &quot;${project.build.sourceEncoding}&quot;)
+    protected String encoding;
+
+    @Parameter(defaultValue = &quot;${project}&quot;, readonly = true, required = true)
+    protected MavenProject project;
+
+    @Component(role = MavenResourcesFiltering.class, hint = &quot;default&quot;)
+    protected MavenResourcesFiltering mavenResourcesFiltering;
+
+    @Parameter(defaultValue = &quot;${session}&quot;, readonly = true, required = true)
+    protected MavenSession session;
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+        try {
+
+<span class="fc" id="L52">            Resource resource = new Resource();</span>
+
+<span class="fc" id="L54">            resource.setFiltering(true);</span>
+<span class="fc" id="L55">            resource.setDirectory(sourceDirectory.getAbsolutePath());</span>
+
+
+<span class="fc" id="L58">            MavenResourcesExecution mavenResourcesExecution =</span>
+<span class="fc" id="L59">                new MavenResourcesExecution(List.of(resource), getChartDirectory(), project, encoding, List.of(), List.of(), session);</span>
+
+<span class="fc" id="L61">            mavenResourcesFiltering.filterResources(mavenResourcesExecution);</span>
+
+<span class="nc" id="L63">        } catch (MavenFilteringException e) {</span>
+<span class="nc" id="L64">            throw new MojoExecutionException(e.getMessage(), e);</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

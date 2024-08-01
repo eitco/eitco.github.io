@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HelmRepositoryInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">helm-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.commons.helm.maven.plugin.repository.index</a> &gt; <span class="el_source">HelmRepositoryInfo.java</span></div><h1>HelmRepositoryInfo.java</h1><pre class="source lang-java linenums">package de.eitco.commons.helm.maven.plugin.repository.index;
+
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.versioning.ComparableVersion;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Inspired by
+ * https://github.com/spinnaker/clouddriver/blob/master/clouddriver-artifacts/src/main/java/com/netflix/spinnaker/clouddriver/artifacts/helm/IndexParser.java
+ * https://github.com/spinnaker/spinnaker/issues/4078
+ */
+public class HelmRepositoryInfo {
+<span class="nc" id="L21">    public static String INDEX_YAML_RESOURCE_NAME = &quot;/index.yaml&quot;;</span>
+
+    private final String repositoryId;
+    private final String repositoryBaseUrl;
+    private final HelmRepositoryIndex helmRepositoryIndex;
+
+<span class="nc" id="L27">    public HelmRepositoryInfo(String repositoryId, String repositoryBaseUrl, HelmRepositoryIndex helmRepositoryIndex) {</span>
+<span class="nc" id="L28">        this.repositoryId = repositoryId;</span>
+<span class="nc" id="L29">        this.repositoryBaseUrl = repositoryBaseUrl;</span>
+<span class="nc" id="L30">        this.helmRepositoryIndex = helmRepositoryIndex;</span>
+<span class="nc" id="L31">    }</span>
+
+    public String getRepositoryId() {
+<span class="nc" id="L34">        return repositoryId;</span>
+    }
+
+    public String getRepositoryBaseUrl() {
+<span class="nc" id="L38">        return repositoryBaseUrl;</span>
+    }
+
+    public String findOriginRelativeResource(List&lt;String&gt; dependencyDownloadUrls) {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        for (String dependencyDownloadUrl : dependencyDownloadUrls) {</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            if( dependencyDownloadUrl.startsWith(repositoryBaseUrl) ) {</span>
+<span class="nc" id="L44">                final String relativeResourceName = dependencyDownloadUrl.substring(repositoryBaseUrl.length());</span>
+<span class="nc bnc" id="L45" title="All 4 branches missed.">                if( relativeResourceName.startsWith(&quot;/&quot;) || repositoryBaseUrl.endsWith(&quot;/&quot;) ) {</span>
+<span class="nc" id="L46">                    return relativeResourceName;</span>
+                }
+            }
+<span class="nc" id="L49">        }</span>
+<span class="nc" id="L50">        return null;</span>
+    }
+
+    public List&lt;String&gt; findUrls(String name, String version) throws IOException {
+<span class="nc" id="L54">        final List&lt;IndexEntry&gt; indexEntriesForChartName = findIndexEntriesByChartName(name);</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        String validVersion = StringUtils.isBlank(version) ? findLatestVersion(indexEntriesForChartName) : version;</span>
+
+<span class="nc" id="L58">        return resolveReferenceUrls(findUrlsByVersion(indexEntriesForChartName, validVersion));</span>
+    }
+
+
+    public List&lt;String&gt; findNames()  {
+<span class="nc" id="L63">        return new ArrayList&lt;&gt;(helmRepositoryIndex.getEntries().keySet());</span>
+    }
+
+    public List&lt;String&gt; findVersions(String name) throws IOException {
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (name == null || name.isEmpty()) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(&quot;Helm chart name should not be empty&quot;);</span>
+        }
+<span class="nc" id="L70">        List&lt;IndexEntry&gt; configs = findIndexEntriesByChartName(name);</span>
+<span class="nc" id="L71">        List&lt;String&gt; versions = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L72">        configs.forEach(e -&gt; versions.add(e.getVersion()));</span>
+<span class="nc" id="L73">        return versions;</span>
+    }
+
+    public List&lt;String&gt; findUrls(InputStream in, String name, String version) throws IOException {
+<span class="nc bnc" id="L77" title="All 4 branches missed.">        if (name == null || name.isEmpty()) {</span>
+<span class="nc" id="L78">            throw new IllegalArgumentException(&quot;Helm chart name should not be empty&quot;);</span>
+        }
+<span class="nc" id="L80">        List&lt;IndexEntry&gt; configs = findIndexEntriesByChartName(name);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        String validVersion = StringUtils.isBlank(version) ? findLatestVersion(configs) : version;</span>
+<span class="nc" id="L82">        return resolveReferenceUrls(findUrlsByVersion(configs, validVersion));</span>
+    }
+
+    public List&lt;String&gt; resolveReferenceUrls(List&lt;String&gt; urls) {
+<span class="nc" id="L86">        return urls.stream().map(this::resolveReferenceUrl).collect(Collectors.toList());</span>
+    }
+
+    private String resolveReferenceUrl(String ref) {
+<span class="nc" id="L90">        String resolvedRef = ref;</span>
+<span class="nc" id="L91">        String base = repositoryBaseUrl;</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (!base.endsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L93">            base = base.concat(&quot;/&quot;);</span>
+        }
+        try {
+<span class="nc" id="L96">            URL baseUrl = new URL(base);</span>
+<span class="nc" id="L97">            URL resolvedUrl = new URL(baseUrl, ref);</span>
+<span class="nc" id="L98">            resolvedRef = resolvedUrl.toExternalForm();</span>
+<span class="nc" id="L99">        } catch (MalformedURLException e) {</span>
+<span class="nc" id="L100">            throw new IllegalArgumentException(&quot;Failed to resolve reference url:&quot; + ref, e);</span>
+<span class="nc" id="L101">        }</span>
+<span class="nc" id="L102">        return resolvedRef;</span>
+    }
+
+    public List&lt;String&gt; findUrlsByVersion(List&lt;IndexEntry&gt; configs, String version) {
+<span class="nc" id="L106">        List&lt;String&gt; urls = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L107">        configs.forEach(</span>
+            e -&gt; {
+<span class="nc bnc" id="L109" title="All 2 branches missed.">                if (e.getVersion().equals(version)) {</span>
+<span class="nc" id="L110">                    urls.addAll(e.getUrls());</span>
+                }
+<span class="nc" id="L112">            });</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (urls.isEmpty()) {</span>
+<span class="nc" id="L114">            throw new IllegalArgumentException(</span>
+                &quot;Could not find correct Helm chart entry with artifact version &quot; + version);
+        }
+<span class="nc" id="L117">        return urls;</span>
+    }
+
+    public String findLatestVersion(List&lt;IndexEntry&gt; indexEntries) {
+<span class="nc" id="L121">        return indexEntries.stream()</span>
+<span class="nc" id="L122">            .map(c -&gt; new ComparableVersion(c.getVersion()))</span>
+<span class="nc" id="L123">            .max(ComparableVersion::compareTo)</span>
+<span class="nc" id="L124">            .orElseGet(() -&gt; new ComparableVersion(&quot;&quot;))</span>
+<span class="nc" id="L125">            .toString();</span>
+    }
+
+    public List&lt;IndexEntry&gt; findIndexEntriesByChartName(String name) {
+<span class="nc bnc" id="L129" title="All 4 branches missed.">        if (name == null || name.isEmpty()) {</span>
+<span class="nc" id="L130">            throw new IllegalArgumentException(&quot;Helm chart name should not be empty&quot;);</span>
+        }
+
+<span class="nc" id="L133">        final List&lt;IndexEntry&gt; indexEntriesForChartName = helmRepositoryIndex.getEntries().get(name);</span>
+<span class="nc bnc" id="L134" title="All 4 branches missed.">        if (indexEntriesForChartName == null || indexEntriesForChartName.isEmpty()) {</span>
+<span class="nc" id="L135">            throw new IllegalArgumentException(&quot;Could not find Helm chart with name &quot; + name);</span>
+        }
+
+<span class="nc" id="L138">        return indexEntriesForChartName;</span>
+    }
+
+}
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
