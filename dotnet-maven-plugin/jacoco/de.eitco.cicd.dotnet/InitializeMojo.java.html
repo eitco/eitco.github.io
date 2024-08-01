@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InitializeMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">dotnet-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.dotnet</a> &gt; <span class="el_source">InitializeMojo.java</span></div><h1>InitializeMojo.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.dotnet;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.settings.Server;
+
+import java.io.File;
+import java.util.Map;
+
+/**
+ * This goal registers nuget source repositories. A special one that helps mimic mavens local repository
+ * and additionally all repositories that are configured.
+ */
+@Mojo(name = &quot;initialize&quot;, defaultPhase = LifecyclePhase.INITIALIZE)
+<span class="fc" id="L16">public class InitializeMojo extends AbstractDotnetMojo {</span>
+
+    @Override
+    public void execute() throws MojoExecutionException {
+
+<span class="fc" id="L21">        DotnetExecutor dotnetExecutor = newExecutor();</span>
+
+<span class="fc" id="L23">        createLocalNugetRepositoryDirectory();</span>
+
+<span class="fc" id="L25">        File localNugetRepository = getUnresolvedLocalNugetRepositoryDirectory();</span>
+
+<span class="fc" id="L27">        dotnetExecutor.upsertNugetSource(localNugetRepository.getPath(), localMavenNugetRepositoryName, null, null, DotnetExecutor.NugetConfigLocation.USER);</span>
+
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : nugetSources.entrySet()) {</span>
+<span class="nc" id="L30">            String key = entry.getKey();</span>
+<span class="nc" id="L31">            String value = entry.getValue();</span>
+
+<span class="nc" id="L33">            Server server = settings.getServer(key);</span>
+
+<span class="nc bnc" id="L35" title="All 2 branches missed.">            if (server == null) {</span>
+
+<span class="nc" id="L37">                dotnetExecutor.upsertNugetSource(value, key, null, null, null);</span>
+
+            } else {
+
+<span class="nc" id="L41">                dotnetExecutor.upsertNugetSource(value, key, decrypt(server.getUsername()), decrypt(server.getPassword()), null);</span>
+            }
+<span class="nc" id="L43">        }</span>
+<span class="fc" id="L44">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

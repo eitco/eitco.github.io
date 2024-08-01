@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstallMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">dotnet-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.dotnet</a> &gt; <span class="el_source">InstallMojo.java</span></div><h1>InstallMojo.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.dotnet;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
+/**
+ * This goal assumes the builds delivery artifacts to be located in the directory denoted by the goals
+ * `targetDirectory` parameter. It will simply copy all *.nupkg files located there to directory configured
+ * to be the local nuget directory.
+ */
+@Mojo(name = &quot;install&quot;, defaultPhase = LifecyclePhase.INSTALL)
+<span class="fc" id="L19">public class InstallMojo extends AbstractDotnetMojo {</span>
+
+    public static final String NUPKG_SUFFIX = &quot;.nupkg&quot;;
+
+    private static File globalsCacheDirectory;
+
+    @Override
+    public void execute() throws MojoExecutionException {
+
+<span class="fc" id="L28">        File[] files = targetDirectory.listFiles(file -&gt; file.getName().endsWith(NUPKG_SUFFIX));</span>
+
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if (files == null) {</span>
+
+<span class="nc" id="L32">            getLog().debug(&quot;target directory does not exist&quot;);</span>
+<span class="nc" id="L33">            return;</span>
+        }
+
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (files.length == 0) {</span>
+
+<span class="nc" id="L38">            getLog().debug(&quot;target directory is empty&quot;);</span>
+        }
+
+<span class="fc" id="L41">        File localNugetRepository = createLocalNugetRepositoryDirectory();</span>
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (File file : files) {</span>
+
+            try {
+
+<span class="fc" id="L47">                File targetFile = new File(localNugetRepository, file.getName());</span>
+
+<span class="fc" id="L49">                getLog().info(&quot;installing &quot; + targetFile.getAbsolutePath());</span>
+<span class="fc" id="L50">                Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);</span>
+
+
+<span class="fc" id="L53">                getLog().debug(&quot;get package id for  &quot; + file.getName() + &quot; project version is &quot; + projectVersion);</span>
+<span class="fc" id="L54">                String packageId = file.getName().substring(0, file.getName().length() - NUPKG_SUFFIX.length() - projectVersion.length() - 1);</span>
+
+<span class="fc" id="L56">                File cacheDirectory = getGlobalsCacheDirectory();</span>
+
+<span class="fc" id="L58">                File cacheEntry = new File(new File(cacheDirectory, packageId), projectVersion);</span>
+<span class="fc" id="L59">                getLog().debug(&quot;cache entry for &quot; + file.getName() + &quot; is &quot; + cacheEntry.getAbsolutePath());</span>
+
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">                if (cacheEntry.isDirectory()) {</span>
+
+<span class="nc" id="L63">                    getLog().debug(&quot;deleting cache entry &quot; + cacheEntry.getAbsolutePath());</span>
+
+<span class="nc" id="L65">                    FileUtils.deleteDirectory(cacheEntry);</span>
+                }
+
+<span class="nc" id="L68">            } catch (IOException e) {</span>
+
+<span class="nc" id="L70">                throw new MojoExecutionException(e);</span>
+<span class="fc" id="L71">            }</span>
+        }
+<span class="fc" id="L73">    }</span>
+
+    private File getGlobalsCacheDirectory() throws MojoExecutionException {
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (globalsCacheDirectory != null) {</span>
+
+<span class="fc" id="L79">            return globalsCacheDirectory;</span>
+        }
+
+<span class="fc" id="L82">        return globalsCacheDirectory = new File(newExecutor().getLocalArtifactCache());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

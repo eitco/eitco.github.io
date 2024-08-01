@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractDotnetMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">dotnet-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.dotnet</a> &gt; <span class="el_source">AbstractDotnetMojo.java</span></div><h1>AbstractDotnetMojo.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.dotnet;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+
+<span class="fc" id="L17">public abstract class AbstractDotnetMojo extends AbstractMojo {</span>
+
+    /**
+     * This parameter specifies the directory where to execute {@code dotnet} and thus where the
+     * project files are located
+     */
+    @Parameter(defaultValue = &quot;${project.basedir}&quot;)
+    protected File workingDirectory;
+
+    /**
+     * This parameter specifies the location of the {@code dotnet} executable. If not set {@code dotnet} being
+     * available by the {@code PATH} environment variable is assumed.
+     */
+    @Parameter
+    protected File dotnetExecutable;
+
+    /**
+     * This parameter specifies the directory where {@code dotnet} writes its generated package(s) to.
+     */
+    @Parameter(defaultValue = &quot;${project.build.directory}/dotnet&quot;)
+    protected File targetDirectory;
+
+    /**
+     * This parameter specifies the version of this project given to {@code dotnet} by the {@code -p:Version=}
+     * command line parameter.
+     */
+    @Parameter(defaultValue = &quot;${project.version}&quot;)
+    protected String projectVersion;
+
+    /**
+     * This parameter specifies the assembly version of this project. Keep in mind that the assembly version needs to
+     * consist of up to 4 numeric values separated by '.' e.g.: {@code &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;.&lt;build&gt;}.
+     */
+    @Parameter
+    protected String assemblyVersion;
+
+    /**
+     * This parameter specifies the {@code Company} added to the compiles executables or libraries.
+     */
+    @Parameter(defaultValue = &quot;${project.organization.name}&quot;)
+    protected String vendor;
+
+    /**
+     * This parameter specifies nuget sources to be added to the project. These are the locations where {@code nuget}
+     * will read dependencies from. The value of each entry is the url of the remote repository. The key is a unique
+     * name {@code nuget} will use to identify the repository by. It can also be used to add
+     * &lt;a href=&quot;https://maven.apache.org/settings.html#servers&quot;&gt;credentials&lt;/a&gt; to using {@code &lt;server&gt;}
+     * elements in the {@code settings.xml}.
+     *
+     * Consider to &lt;a href=&quot;https://maven.apache.org/guides/mini/guide-encryption.html&quot;&gt;encrypt passwords&lt;/a&gt; in
+     * your {@code settings.xml}
+     *
+     * Note that crendentials added this way will be written to your nuget configuration file. On windows systems
+     * the credentials will be encrypted, however on linux systems password encryption is not supported by
+     * {@code nuget} - so the credentials will be written to the {code nuget} config way unencrypted.
+     */
+<span class="fc" id="L73">    @Parameter</span>
+<span class="fc" id="L74">    protected Map&lt;String, String&gt; nugetSources = Map.of();</span>
+
+    /**
+     * This parameter specifies custom properties given to dotnet via '-p:'. Keep in mind that the 'Version', 'Company',
+     * 'Description', 'RepositoryUrl' and 'AssemblyVersion' properties will be overwritten by their respective
+     * parameters, when specified.
+     */
+<span class="fc" id="L81">    @Parameter</span>
+<span class="fc" id="L82">    protected Map&lt;String, String&gt; customProperties = Map.of();</span>
+
+    /**
+     * This parameter specifies additional environment variables to be added to the {@code dotnet} process.
+     * &lt;br/&gt;
+     * Note that the {@code DOTNET_CLI_TELEMETRY_OPTOUT} will be set to {@code TRUE} if not overwritten with
+     * this parameter.
+     */
+<span class="fc" id="L90">    @Parameter</span>
+<span class="fc" id="L91">    protected Map&lt;String, String&gt; environmentVariables = Map.of();</span>
+
+    /**
+     * This parameter specifies the symbolic name of the local nuget repository. The local nuget repository is a
+     * special file system repository this plugin copies the generated packages in the {@code install} phase to.
+     * This simulates mavens local repository.
+     * &lt;br/&gt;
+     * The location of the local nuget repository can be configured by {@link #localMavenNugetRepositoryBaseDirectory}.
+     */
+    @Parameter(defaultValue = &quot;maven-nuget-local&quot;)
+    protected String localMavenNugetRepositoryName;
+
+    /**
+     * This parameter specifies the location of the local nuget repository. The local nuget repository is a
+     * special file system repository this plugin copies the generated packages in the {@code install} phase to.
+     * This simulates mavens local repository.
+     */
+    @Parameter(defaultValue = &quot;${settings.localRepository}&quot;)
+    protected String localMavenNugetRepositoryBaseDirectory;
+
+    @Parameter(defaultValue = &quot;${settings}&quot;, readonly = true)
+    protected Settings settings;
+
+    @Component(hint = &quot;dotnet-security&quot;)
+    private SecDispatcher securityDispatcher;
+
+    protected DotnetExecutor newExecutor() {
+
+<span class="fc" id="L119">        return newExecutor(false);</span>
+    }
+
+    protected DotnetExecutor newExecutor(boolean ignoreResult) {
+<span class="fc" id="L123">        return new DotnetExecutor(</span>
+                workingDirectory,
+                dotnetExecutable,
+                targetDirectory,
+                projectVersion,
+                customProperties,
+                environmentVariables,
+<span class="fc" id="L130">                getLog(),</span>
+                ignoreResult
+        );
+    }
+
+
+    protected String decrypt(String text) throws MojoExecutionException {
+        try {
+
+<span class="nc" id="L139">            return securityDispatcher.decrypt(text);</span>
+
+<span class="nc" id="L141">        } catch (SecDispatcherException e) {</span>
+
+<span class="nc" id="L143">            throw new MojoExecutionException(e);</span>
+        }
+    }
+
+    protected Server findServer(String serverId) throws MojoExecutionException {
+
+<span class="nc" id="L149">        Server server = settings.getServer(serverId);</span>
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (server == null) {</span>
+
+<span class="nc" id="L153">            throw new MojoExecutionException(&quot;server &quot; + serverId + &quot; not found&quot;);</span>
+        }
+<span class="nc" id="L155">        return server;</span>
+    }
+
+    protected File getResolvedNugetRepoDirectory() {
+
+<span class="fc" id="L160">        String baseDirectory = localMavenNugetRepositoryBaseDirectory;</span>
+
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        for (Map.Entry&lt;String, String&gt; entry : System.getenv().entrySet()) {</span>
+
+<span class="fc" id="L164">            String key = entry.getKey();</span>
+<span class="fc" id="L165">            String value = entry.getValue();</span>
+
+<span class="fc" id="L167">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
+<span class="fc" id="L168">        }</span>
+
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : environmentVariables.entrySet()) {</span>
+
+<span class="nc" id="L172">            String key = entry.getKey();</span>
+<span class="nc" id="L173">            String value = entry.getValue();</span>
+
+<span class="nc" id="L175">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
+<span class="nc" id="L176">        }</span>
+
+<span class="fc" id="L178">        return new File(baseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
+    }
+
+    protected File getUnresolvedLocalNugetRepositoryDirectory() {
+
+<span class="fc" id="L183">        return new File(localMavenNugetRepositoryBaseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
+    }
+
+    protected File createLocalNugetRepositoryDirectory() throws MojoExecutionException {
+
+        try {
+
+<span class="fc" id="L190">            File localNugetRepository = getResolvedNugetRepoDirectory();</span>
+
+<span class="fc" id="L192">            getLog().debug(&quot;creating directory &quot; + localNugetRepository.getAbsolutePath());</span>
+<span class="fc" id="L193">            FileUtils.forceMkdir(localNugetRepository);</span>
+
+<span class="fc" id="L195">            return localNugetRepository;</span>
+
+<span class="nc" id="L197">        } catch (IOException e) {</span>
+
+<span class="nc" id="L199">            throw new MojoExecutionException(e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

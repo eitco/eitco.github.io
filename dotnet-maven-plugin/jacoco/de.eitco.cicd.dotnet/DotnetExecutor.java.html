@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DotnetExecutor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">dotnet-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.dotnet</a> &gt; <span class="el_source">DotnetExecutor.java</span></div><h1>DotnetExecutor.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.dotnet;
+
+import com.google.common.base.Strings;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L20">public record DotnetExecutor(</span>
+        File workingDirectory,
+        File executable,
+        File targetDirectory,
+        String version,
+        Map&lt;String, String&gt; customProperties,
+        Map&lt;String, String&gt; environment,
+        Log log,
+        boolean ignoreResult
+) {
+
+    public static final String DEFAULT_NUGET_CONFIG = &quot;default.nuget.config&quot;;
+<span class="fc" id="L32">    public static final Pattern LOCALS_PATTERN = Pattern.compile(&quot;\\s*global-packages:\\s*(?&lt;directory&gt;.*)\\s*&quot;);</span>
+
+    public int execute(String... parameters) throws MojoExecutionException {
+
+<span class="fc" id="L36">        return execute(defaultOptions().mergeIgnoreResult(ignoreResult), List.of(parameters), Set.of(), Map.of());</span>
+    }
+
+<span class="fc" id="L39">    private static class ExecutionOptions {</span>
+<span class="fc" id="L40">        private boolean ignoreResult = false;</span>
+<span class="fc" id="L41">        private boolean inheritIo = true;</span>
+
+        public ExecutionOptions ignoreResult() {
+
+<span class="fc" id="L45">            ExecutionOptions result = new ExecutionOptions();</span>
+<span class="fc" id="L46">            result.inheritIo = inheritIo;</span>
+<span class="fc" id="L47">            result.ignoreResult = true;</span>
+<span class="fc" id="L48">            return result;</span>
+        }
+
+        public ExecutionOptions silent() {
+<span class="nc" id="L52">            ExecutionOptions result = new ExecutionOptions();</span>
+<span class="nc" id="L53">            result.inheritIo = false;</span>
+<span class="nc" id="L54">            result.ignoreResult = ignoreResult;</span>
+<span class="nc" id="L55">            return result;</span>
+        }
+
+        public ExecutionOptions mergeIgnoreResult(boolean ignoreResult) {
+<span class="fc" id="L59">            ExecutionOptions result = new ExecutionOptions();</span>
+<span class="fc" id="L60">            result.inheritIo = inheritIo;</span>
+<span class="pc bpc" id="L61" title="3 of 4 branches missed.">            result.ignoreResult = ignoreResult || this.ignoreResult;</span>
+
+<span class="fc" id="L63">            return result;</span>
+        }
+    }
+
+    private static ExecutionOptions defaultOptions() {
+
+<span class="fc" id="L69">        return new ExecutionOptions();</span>
+    }
+
+    private int execute(ExecutionOptions executionOptions, List&lt;String&gt; parameters, Set&lt;String&gt; obfuscation, Map&lt;String, String&gt; propertyOverrides) throws MojoExecutionException {
+
+<span class="fc" id="L74">        ProcessBuilder builder = new ProcessBuilder();</span>
+
+<span class="fc" id="L76">        builder.directory(workingDirectory);</span>
+
+<span class="fc" id="L78">        List&lt;String&gt; command = buildCommand(parameters, propertyOverrides);</span>
+
+<span class="fc" id="L80">        builder.command(command);</span>
+
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (executionOptions.inheritIo) {</span>
+
+<span class="fc" id="L84">            builder.inheritIO();</span>
+        }
+
+<span class="fc" id="L87">        optOut(builder);</span>
+
+<span class="pc" id="L89">        environment.forEach((key, value) -&gt; builder.environment().put(key, value));</span>
+
+        try {
+
+<span class="fc" id="L93">            log.info(&quot;Executing command: &quot; + presentCommand(command, obfuscation));</span>
+
+<span class="fc" id="L95">            Process process = builder.start();</span>
+
+<span class="fc" id="L97">            int returnCode = process.waitFor();</span>
+
+<span class="pc bpc" id="L99" title="3 of 4 branches missed.">            if (returnCode != 0 &amp;&amp; !executionOptions.ignoreResult) {</span>
+
+<span class="nc" id="L101">                throw new MojoExecutionException(&quot;process &quot; + presentCommand(command, obfuscation) + &quot; returned code &quot; + returnCode);</span>
+            }
+
+<span class="fc" id="L104">            return returnCode;</span>
+
+<span class="nc" id="L106">        } catch (IOException | InterruptedException e) {</span>
+<span class="nc" id="L107">            throw new MojoExecutionException(e);</span>
+        }
+    }
+
+    private static void optOut(ProcessBuilder builder) {
+<span class="fc" id="L112">        builder.environment().put(&quot;DOTNET_CLI_TELEMETRY_OPTOUT&quot;, &quot;TRUE&quot;);</span>
+<span class="fc" id="L113">    }</span>
+
+    private static String presentCommand(List&lt;String&gt; command, Set&lt;String&gt; obfuscation) {
+
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        return command.stream().map(x -&gt; obfuscation.contains(x) ? &quot;****&quot; : x).collect(Collectors.joining(&quot; &quot;));</span>
+    }
+
+    private List&lt;String&gt; buildCommand(List&lt;String&gt; parameters, Map&lt;String, String&gt; propertyOverrides) {
+
+<span class="fc" id="L122">        List&lt;String&gt; command = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L124">        prepareCommand(command);</span>
+
+<span class="fc" id="L126">        command.addAll(parameters);</span>
+
+        // propertyOverrides == null marks commands not supporting properties
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (propertyOverrides != null) {</span>
+
+<span class="fc" id="L131">            Map&lt;String, String&gt; properties = new HashMap&lt;&gt;(customProperties);</span>
+<span class="fc" id="L132">            properties.putAll(propertyOverrides);</span>
+
+<span class="fc" id="L134">            properties.forEach((key, value) -&gt; command.add(&quot;-p:&quot; + key + &quot;=&quot; + value));</span>
+        }
+
+<span class="fc" id="L137">        return command;</span>
+    }
+
+    private void prepareCommand(List&lt;String&gt; command) {
+<span class="pc bpc" id="L141" title="2 of 4 branches missed.">        command.add(executable == null ? (SystemUtils.IS_OS_WINDOWS ? &quot;dotnet.exe&quot; : &quot;dotnet&quot;) : executable.getPath());</span>
+<span class="fc" id="L142">    }</span>
+
+    private void retry(int times, ExecutionOptions executionOptions, List&lt;String&gt; parameters, Set&lt;String&gt; obfuscation, Map&lt;String, String&gt; propertyOverrides) throws MojoExecutionException {
+
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        for (int index = 0; index &lt; times; index++) {</span>
+
+<span class="fc" id="L148">            int returnCode = execute(executionOptions.ignoreResult(), parameters, obfuscation, propertyOverrides);</span>
+
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">            if (returnCode == 0) {</span>
+
+<span class="fc" id="L152">                return;</span>
+            }
+        }
+
+<span class="nc" id="L156">        execute(executionOptions, parameters, obfuscation, propertyOverrides);</span>
+<span class="nc" id="L157">    }</span>
+
+    public void build(String assemblyVersion, String vendor, String configuration) throws MojoExecutionException {
+
+<span class="fc" id="L161">        List&lt;String&gt; parameters = new ArrayList&lt;&gt;(List.of(&quot;build&quot;, &quot;-p:Version=&quot; + version));</span>
+
+<span class="fc" id="L163">        Map&lt;String, String&gt; propertyOverrides = new HashMap&lt;&gt;();</span>
+
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">        if (assemblyVersion != null) {</span>
+<span class="fc" id="L166">            propertyOverrides.put(&quot;AssemblyVersion&quot;, assemblyVersion);</span>
+        }
+
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (vendor != null) {</span>
+<span class="nc" id="L170">            propertyOverrides.put(&quot;Company&quot;, vendor);</span>
+        }
+
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (configuration != null) {</span>
+<span class="fc" id="L174">            parameters.add(&quot;--configuration=&quot; + configuration);</span>
+        }
+
+<span class="fc" id="L177">        retry(1, defaultOptions(), parameters, Set.of(), propertyOverrides);</span>
+<span class="fc" id="L178">    }</span>
+
+    public void pack(String vendor, String description, String repositoryUrl) throws MojoExecutionException {
+
+<span class="fc" id="L182">        List&lt;String&gt; parameters = new ArrayList&lt;&gt;(List.of(</span>
+                &quot;pack&quot;,
+                &quot;--no-build&quot;
+        ));
+
+<span class="fc" id="L187">        Map&lt;String, String&gt; propertyOverrides = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L189">        propertyOverrides.put(&quot;Version&quot;, version);</span>
+
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">        if (vendor != null) {</span>
+<span class="nc" id="L192">            propertyOverrides.put(&quot;Company&quot;, vendor);</span>
+        }
+
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        if (description != null) {</span>
+<span class="nc" id="L196">            propertyOverrides.put(&quot;Description&quot;, description);</span>
+        }
+
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">        if (repositoryUrl != null) {</span>
+<span class="nc" id="L200">            propertyOverrides.put(&quot;RepositoryUrl&quot;, repositoryUrl);</span>
+        }
+
+<span class="fc" id="L203">        parameters.add(&quot;--output&quot;);</span>
+<span class="fc" id="L204">        parameters.add(targetDirectory.getPath());</span>
+
+<span class="fc" id="L206">        execute(defaultOptions(), parameters, Set.of(), propertyOverrides);</span>
+<span class="fc" id="L207">    }</span>
+
+    public int test(String logger, String testResultDirectory) throws MojoExecutionException {
+
+<span class="fc" id="L211">        return execute(&quot;test&quot;, &quot;--no-build&quot;, &quot;--logger&quot;, logger, &quot;--results-directory&quot;, testResultDirectory);</span>
+    }
+
+    public void push(String apiKey, String repository) throws MojoExecutionException {
+
+<span class="nc" id="L216">        List&lt;String&gt; parameters = new ArrayList&lt;&gt;(List.of(&quot;nuget&quot;, &quot;push&quot;, targetDirectory.getPath() + &quot;/**.nupkg&quot;));</span>
+
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        if (apiKey != null) {</span>
+<span class="nc" id="L219">            parameters.add(&quot;--api-key&quot;);</span>
+<span class="nc" id="L220">            parameters.add(apiKey);</span>
+        }
+
+<span class="nc bnc" id="L223" title="All 2 branches missed.">        if (repository != null) {</span>
+<span class="nc" id="L224">            parameters.add(&quot;--source&quot;);</span>
+<span class="nc" id="L225">            parameters.add(repository);</span>
+        }
+
+<span class="nc" id="L228">        execute(defaultOptions().mergeIgnoreResult(ignoreResult), parameters, Optional.ofNullable(apiKey).stream().collect(Collectors.toSet()), null);</span>
+<span class="nc" id="L229">    }</span>
+
+<span class="fc" id="L231">    public enum NugetConfigLocation {</span>
+
+<span class="fc" id="L233">        PROJECT, USER, SYSTEM</span>
+    }
+
+    public void upsertNugetSource(String url, String sourceName, String username, String apiToken, NugetConfigLocation configLocation) throws MojoExecutionException {
+
+<span class="fc" id="L238">        Objects.requireNonNull(url);</span>
+<span class="fc" id="L239">        Objects.requireNonNull(sourceName);</span>
+
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">        Set&lt;String&gt; obfuscation = apiToken != null ? Set.of(apiToken) : Set.of();</span>
+
+<span class="fc" id="L243">        File configFile = getConfigFile(configLocation);</span>
+
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (configFile != null) {</span>
+
+<span class="fc" id="L247">            enforceConfigFileExists(configFile);</span>
+        }
+
+<span class="fc" id="L250">        List&lt;String&gt; updateParameters = getUpsertParameters(username, apiToken, configLocation, &quot;nuget&quot;, &quot;update&quot;, &quot;source&quot;, sourceName, &quot;--source&quot;, url);</span>
+
+<span class="fc" id="L252">        int result = execute(defaultOptions().ignoreResult(), updateParameters, obfuscation, null);</span>
+
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">        if (result != 0) {</span>
+
+<span class="nc" id="L256">            List&lt;String&gt; addParameters = getUpsertParameters(username, apiToken, configLocation, &quot;nuget&quot;, &quot;add&quot;, &quot;source&quot;, url, &quot;--name&quot;, sourceName);</span>
+<span class="nc" id="L257">            execute(defaultOptions(), addParameters, obfuscation, null);</span>
+        }
+<span class="fc" id="L259">    }</span>
+
+    private void enforceConfigFileExists(File configFile) throws MojoExecutionException {
+
+<span class="fc" id="L263">        log.debug(&quot;enforcing file &quot; + configFile);</span>
+
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">        if (configFile.exists()) {</span>
+
+<span class="fc" id="L267">            log.debug(configFile + &quot; exists&quot;);</span>
+<span class="fc" id="L268">            return;</span>
+        }
+
+<span class="nc" id="L271">        try (InputStream resourceAsStream = DotnetExecutor.class.getClassLoader().getResourceAsStream(DEFAULT_NUGET_CONFIG)) {</span>
+
+<span class="nc" id="L273">            FileUtils.forceMkdir(configFile.getParentFile());</span>
+
+<span class="nc" id="L275">            byte[] bytes = resourceAsStream.readAllBytes();</span>
+
+<span class="nc" id="L277">            log.debug(&quot;writing &quot; + new String(bytes, StandardCharsets.UTF_8) + &quot;\n to file &quot; + configFile);</span>
+
+<span class="nc" id="L279">            Files.write(configFile.toPath(), bytes);</span>
+
+<span class="nc" id="L281">        } catch (IOException e) {</span>
+
+<span class="nc" id="L283">            throw new MojoExecutionException(e);</span>
+<span class="nc" id="L284">        }</span>
+
+<span class="nc" id="L286">    }</span>
+
+    private static File getConfigFile(NugetConfigLocation configLocation) {
+
+<span class="pc bpc" id="L290" title="1 of 2 branches missed.">        if (configLocation == null) {</span>
+
+<span class="nc" id="L292">            return null;</span>
+        }
+
+<span class="pc bpc" id="L295" title="3 of 4 branches missed.">        switch (configLocation) {</span>
+            case PROJECT:
+<span class="nc" id="L297">                return new File(&quot;nuget.config&quot;);</span>
+            case USER:
+<span class="pc bpc" id="L299" title="1 of 2 branches missed.">                if (SystemUtils.IS_OS_WINDOWS) {</span>
+
+<span class="nc" id="L301">                    return new File(System.getenv(&quot;appdata&quot;) + &quot;\\NuGet\\NuGet.Config&quot;);</span>
+
+                } else {
+
+<span class="fc" id="L305">                    return new File(System.getenv(&quot;HOME&quot;) + &quot;/.nuget/NuGet/NuGet.Config&quot;);</span>
+                }
+            case SYSTEM:
+<span class="nc bnc" id="L308" title="All 2 branches missed.">                if (SystemUtils.IS_OS_WINDOWS) {</span>
+
+<span class="nc" id="L310">                    return new File(System.getenv(&quot;ProgramFiles(x86)&quot;) + &quot;\\NuGet\\Config\\Nuget.Config&quot;);</span>
+
+                } else {
+
+<span class="nc" id="L314">                    String customAppData = System.getenv(&quot;NUGET_COMMON_APPLICATION_DATA&quot;);</span>
+
+<span class="nc bnc" id="L316" title="All 2 branches missed.">                    if (Strings.isNullOrEmpty(customAppData)) {</span>
+
+<span class="nc bnc" id="L318" title="All 2 branches missed.">                        if (SystemUtils.IS_OS_LINUX) {</span>
+
+<span class="nc" id="L320">                            return new File(&quot;/etc/opt/NuGet/Config/NuGet.Config&quot;);</span>
+
+                        } else {
+
+<span class="nc" id="L324">                            return new File(&quot;/Library/Application Support/NuGet.Config&quot;);</span>
+                        }
+                    } else {
+
+<span class="nc" id="L328">                        return new File(customAppData + &quot;/NuGet/Config/NuGet.Config&quot;);</span>
+                    }
+                }
+        }
+
+<span class="nc" id="L333">        throw new IllegalStateException();</span>
+    }
+
+    private static List&lt;String&gt; getUpsertParameters(String userName, String apiToken, NugetConfigLocation configLocation, String... firstParameters) {
+
+<span class="fc" id="L338">        List&lt;String&gt; parameters = new ArrayList&lt;&gt;(List.of(firstParameters));</span>
+
+<span class="fc" id="L340">        File configFile = getConfigFile(configLocation);</span>
+
+<span class="pc bpc" id="L342" title="1 of 2 branches missed.">        if (configFile != null) {</span>
+
+<span class="fc" id="L344">            parameters.add(&quot;--configfile&quot;);</span>
+<span class="fc" id="L345">            parameters.add(configFile.getPath());</span>
+        }
+
+<span class="fc" id="L348">        appendCredentials(userName, apiToken, parameters);</span>
+
+<span class="fc" id="L350">        return parameters;</span>
+    }
+
+    private static void appendCredentials(String username, String apiToken, List&lt;String&gt; parameters) {
+<span class="pc bpc" id="L354" title="1 of 2 branches missed.">        if (username != null) {</span>
+<span class="nc" id="L355">            parameters.add(&quot;--username&quot;);</span>
+<span class="nc" id="L356">            parameters.add(username);</span>
+        }
+
+<span class="pc bpc" id="L359" title="1 of 2 branches missed.">        if (apiToken != null) {</span>
+<span class="nc" id="L360">            parameters.add(&quot;--password&quot;);</span>
+<span class="nc" id="L361">            parameters.add(apiToken);</span>
+
+<span class="nc bnc" id="L363" title="All 2 branches missed.">            if (!SystemUtils.IS_OS_WINDOWS) {</span>
+<span class="nc" id="L364">                parameters.add(&quot;--store-password-in-clear-text&quot;);</span>
+            }
+        }
+<span class="fc" id="L367">    }</span>
+
+    public void clean() throws MojoExecutionException {
+
+<span class="nc" id="L371">        retry(1, defaultOptions().ignoreResult(), List.of(&quot;clean&quot;), Set.of(), Map.of(&quot;Version&quot;, version));</span>
+<span class="nc" id="L372">    }</span>
+
+    public String getLocalArtifactCache() throws MojoExecutionException {
+
+<span class="fc" id="L376">        ProcessBuilder builder = new ProcessBuilder();</span>
+<span class="fc" id="L377">        optOut(builder);</span>
+
+<span class="fc" id="L379">        prepareCommand(builder.command());</span>
+<span class="fc" id="L380">        builder.command().addAll(List.of(&quot;nuget&quot;, &quot;locals&quot;, &quot;global-packages&quot;, &quot;--list&quot;));</span>
+
+        try {
+
+<span class="fc" id="L384">            Process process = builder.start();</span>
+
+<span class="fc" id="L386">            int exitCode = process.waitFor();</span>
+
+<span class="pc bpc" id="L388" title="1 of 2 branches missed.">            if (exitCode != 0) {</span>
+
+<span class="nc" id="L390">                String errorOut = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);</span>
+<span class="nc" id="L391">                String stdOut = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);</span>
+<span class="nc" id="L392">                log.error(stdOut + &quot;\n&quot; + errorOut);</span>
+
+<span class="nc" id="L394">                throw new MojoExecutionException(&quot;Cannot get nuget cache for global packages - process exited with code &quot; + exitCode);</span>
+            }
+
+<span class="fc" id="L397">            String stdOut = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);</span>
+
+<span class="fc" id="L399">            Matcher matcher = LOCALS_PATTERN.matcher(stdOut);</span>
+
+<span class="pc bpc" id="L401" title="1 of 2 branches missed.">            if (!matcher.matches()) {</span>
+
+<span class="nc" id="L403">                throw new MojoExecutionException(&quot;Cannot get nuget cache for global packages - output does not match expected pattern: &quot; + stdOut);</span>
+            }
+
+<span class="fc" id="L406">            return matcher.group(&quot;directory&quot;);</span>
+
+
+<span class="nc" id="L409">        } catch (IOException | InterruptedException e) {</span>
+
+<span class="nc" id="L411">            throw new MojoExecutionException(e);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

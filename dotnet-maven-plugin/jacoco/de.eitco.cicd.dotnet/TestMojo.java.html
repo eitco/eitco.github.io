@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">dotnet-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.dotnet</a> &gt; <span class="el_source">TestMojo.java</span></div><h1>TestMojo.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.dotnet;
+
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+
+
+/**
+ * This goal calls {@code dotnet test} to execute test. It will add the command line parameter {@code --no-build},
+ * since the {@code compile} phase will already be called before the {@code test} phase. It will always configure
+ * the {@code trx} logger and transform the results to a valid {@code junit} description - enabling ci servers to
+ * collect the test results in the default format for maven builds. The goal will honour the reactors failure behaviour.
+ */
+@Mojo(name = &quot;test&quot;, defaultPhase = LifecyclePhase.TEST)
+<span class="fc" id="L28">public class TestMojo extends AbstractDotnetMojo {</span>
+
+    public static final String REACTOR_FAILURE_BEHAVIOR_FAIL_NEVER = &quot;FAIL_NEVER&quot;;
+    public static final String TEST_RESULT_EXTENSION = &quot;trx&quot;;
+    public static final String XSL_TRANSFORMATION = &quot;xunit-to-junit.xsl&quot;;
+
+    /**
+     * This parameter specifies whether to skip the tests. Note that its property is the maven default property to
+     * skip tests.
+     */
+    @Parameter(defaultValue = &quot;false&quot;, property = &quot;skipTests&quot;)
+    private boolean skipTests;
+
+    /**
+     * This parameter specifies the directory where to write the test results to
+     */
+    @Parameter(defaultValue = &quot;target/test-results&quot;)
+    private File testResultDirectory;
+
+
+    @Component
+    private MavenSession session;
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (skipTests) {</span>
+
+<span class="nc" id="L56">            getLog().info(&quot;Skipping tests&quot;);</span>
+<span class="nc" id="L57">            return;</span>
+        }
+
+<span class="fc" id="L60">        int result = newExecutor(true).test(TEST_RESULT_EXTENSION, testResultDirectory.getPath());</span>
+
+<span class="fc" id="L62">        transformResultFiles();</span>
+
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (REACTOR_FAILURE_BEHAVIOR_FAIL_NEVER.equals(session.getReactorFailureBehavior())) {</span>
+
+<span class="nc" id="L66">            return;</span>
+        }
+
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (result == 0) {</span>
+
+<span class="fc" id="L71">            return;</span>
+        }
+
+<span class="nc" id="L74">        throw new MojoFailureException(&quot;c# test failed&quot;);</span>
+    }
+
+    private void transformResultFiles() throws MojoExecutionException {
+
+<span class="fc" id="L79">        File[] files = testResultDirectory.listFiles(file -&gt; file.getName().endsWith(&quot;.&quot; + TEST_RESULT_EXTENSION));</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (files != null) {</span>
+
+<span class="fc" id="L83">            try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(XSL_TRANSFORMATION)) {</span>
+
+<span class="pc" id="L85">                byte[] transformationBytes = Objects.requireNonNull(resourceAsStream, () -&gt; &quot;resource &quot; + XSL_TRANSFORMATION + &quot; not found&quot;).readAllBytes();</span>
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">                for (File file : files) {</span>
+
+<span class="fc" id="L89">                    StreamSource xsltSource = new StreamSource(new ByteArrayInputStream(transformationBytes));</span>
+<span class="fc" id="L90">                    transformToJUnit(file, xsltSource);</span>
+                }
+
+<span class="nc" id="L93">            } catch (IOException e) {</span>
+<span class="nc" id="L94">                throw new MojoExecutionException(e);</span>
+<span class="fc" id="L95">            }</span>
+        }
+<span class="fc" id="L97">    }</span>
+
+    private void transformToJUnit(File file, StreamSource xsltSource) throws MojoExecutionException {
+
+        try {
+
+<span class="fc" id="L103">            TransformerFactory transformerFactory = TransformerFactory.newInstance();</span>
+
+<span class="fc" id="L105">            Templates templates = transformerFactory.newTemplates(xsltSource);</span>
+<span class="fc" id="L106">            Transformer transformer = templates.newTransformer();</span>
+
+<span class="fc" id="L108">            Source xmlSource = new StreamSource(file);</span>
+<span class="fc" id="L109">            Result result = new StreamResult(new File(file.getAbsolutePath() + &quot;.xml&quot;));</span>
+
+<span class="fc" id="L111">            transformer.transform(xmlSource, result);</span>
+
+<span class="nc" id="L113">        } catch (TransformerException e) {</span>
+<span class="nc" id="L114">            throw new MojoExecutionException(e);</span>
+<span class="fc" id="L115">        }</span>
+
+<span class="fc" id="L117">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
