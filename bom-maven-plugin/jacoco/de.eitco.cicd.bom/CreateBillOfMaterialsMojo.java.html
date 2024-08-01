@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateBillOfMaterialsMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bom-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.bom</a> &gt; <span class="el_source">CreateBillOfMaterialsMojo.java</span></div><h1>CreateBillOfMaterialsMojo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2023 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 12.01.2023
+ *
+ */
+package de.eitco.cicd.bom;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import de.eitco.cicd.bom.xml.*;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * This goal scans the current project and creates a bill of materials (bom) pom containing the current project and
+ * all of its (sub-) modules with the current version as dependency management.
+ */
+@Mojo(name = &quot;create&quot;, defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+<span class="fc" id="L31">public class CreateBillOfMaterialsMojo extends AbstractBillOfMaterialsMojo {</span>
+
+<span class="fc" id="L33">    public static final Map&lt;String, String&gt; DEFAULT_TYPES_BY_PACKAGING = new HashMap&lt;&gt;() {</span>
+        {
+<span class="fc" id="L35">            put(&quot;pom&quot;, &quot;pom&quot;);</span>
+<span class="fc" id="L36">            put(&quot;jar&quot;, &quot;jar&quot;);</span>
+<span class="fc" id="L37">            put(&quot;war&quot;, &quot;war&quot;);</span>
+<span class="fc" id="L38">        }</span>
+    };
+
+    /**
+     * This parameter specifies a list of additional pom files whose dependency management will be included in the
+     * generated bom.
+     */
+<span class="fc" id="L45">    @Parameter</span>
+    private List&lt;File&gt; additionalBoms = new ArrayList&lt;&gt;();
+
+    /**
+     * This parameter holds a map of artifact types indexed by their packaging. The plugin needs this map to deduce
+     * the types of artifacts given their packaging. The default types (pom, jar, war) are always known. Use this
+     * parameter if you have some custom packaging to use in your bom.
+     */
+<span class="fc" id="L53">    @Parameter</span>
+    private Map&lt;String, String&gt; typesByPackaging = new HashMap&lt;&gt;();
+
+    private Map&lt;String, String&gt; usedTypesByPackaging;
+
+    public Map&lt;String, String&gt; getTypesByPackaging() {
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (usedTypesByPackaging != null) return usedTypesByPackaging;</span>
+
+<span class="fc" id="L62">        usedTypesByPackaging = typesByPackaging;</span>
+<span class="fc" id="L63">        usedTypesByPackaging.putAll(DEFAULT_TYPES_BY_PACKAGING);</span>
+
+<span class="fc" id="L65">        return usedTypesByPackaging;</span>
+    }
+
+    @Override
+    public void execute() throws MojoExecutionException {
+
+<span class="fc" id="L71">        BillOfMaterials billOfMaterials = new BillOfMaterials();</span>
+
+<span class="fc" id="L73">        billOfMaterials.setGroupId(groupId);</span>
+<span class="fc" id="L74">        billOfMaterials.setArtifactId(artifactId);</span>
+<span class="fc" id="L75">        billOfMaterials.setVersion(version);</span>
+
+<span class="fc" id="L77">        addRootProject(billOfMaterials, project);</span>
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        for (MavenProject collectedProject : project.getCollectedProjects()) {</span>
+
+<span class="fc" id="L81">            addProject(billOfMaterials, collectedProject);</span>
+<span class="fc" id="L82">        }</span>
+
+<span class="fc" id="L84">        XmlMapper mapper = new XmlMapper();</span>
+<span class="fc" id="L85">        mapper.enable(SerializationFeature.INDENT_OUTPUT);</span>
+<span class="fc" id="L86">        mapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);</span>
+
+<span class="fc" id="L88">        Map&lt;String, Dependency&gt; dependencies = new LinkedHashMap&lt;&gt;();</span>
+
+<span class="fc" id="L90">        billOfMaterials.getDependencyManagement().getDependencies().forEach(</span>
+<span class="fc" id="L91">                dependency -&gt; dependencies.put(dependency.dependencyKey(), dependency));</span>
+
+        try {
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            for (File file : additionalBoms) {</span>
+
+<span class="fc" id="L97">                final BillOfMaterials bom = mapper.readValue(file, BillOfMaterials.class);</span>
+
+<span class="fc" id="L99">                bom.getDependencyManagement().getDependencies().forEach(</span>
+<span class="fc" id="L100">                        dependency -&gt; dependencies.put(dependency.dependencyKey(), dependency));</span>
+<span class="fc" id="L101">            }</span>
+
+<span class="fc" id="L103">            billOfMaterials.getDependencyManagement().setDependencies(new ArrayList&lt;&gt;(dependencies.values()));</span>
+
+<span class="fc" id="L105">            FileUtils.forceMkdir(targetFile.getParentFile());</span>
+
+<span class="fc" id="L107">            mapper.writeValue(targetFile, billOfMaterials);</span>
+
+<span class="fc" id="L109">            Artifact bomArtifact = makeBomArtifact();</span>
+
+<span class="fc" id="L111">            project.addAttachedArtifact(bomArtifact);</span>
+
+<span class="nc" id="L113">        } catch (IOException e) {</span>
+
+<span class="nc" id="L115">            throw new MojoExecutionException(e.getMessage(), e);</span>
+<span class="fc" id="L116">        }</span>
+
+<span class="fc" id="L118">    }</span>
+
+    private void addRootProject(BillOfMaterials billOfMaterials, MavenProject project) {
+
+<span class="fc" id="L122">        addProject(billOfMaterials, project);</span>
+<span class="fc" id="L123">        billOfMaterials.setDescription(project.getDescription());</span>
+<span class="fc" id="L124">        billOfMaterials.setUrl(project.getUrl());</span>
+<span class="fc" id="L125">        billOfMaterials.setOrganization(Organization.fromMaven(project.getOrganization()));</span>
+<span class="fc" id="L126">        billOfMaterials.setLicenses(project.getLicenses().stream().map(License::fromMaven).toList());</span>
+<span class="fc" id="L127">        billOfMaterials.setDevelopers(project.getDevelopers().stream().map(Developer::fromMaven).toList());</span>
+<span class="fc" id="L128">        billOfMaterials.setScm(Scm.fromMaven(project.getScm()));</span>
+<span class="fc" id="L129">    }</span>
+
+    private void addProject(BillOfMaterials billOfMaterials, MavenProject collectedProject) {
+
+<span class="fc" id="L133">        String type = getTypesByPackaging().get(collectedProject.getPackaging());</span>
+
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if (type == null) {</span>
+
+<span class="nc" id="L137">            return;</span>
+        }
+
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        if (type.equals(&quot;jar&quot;)) type = null;</span>
+
+<span class="fc" id="L142">        final Dependency dependency = new Dependency();</span>
+
+<span class="fc" id="L144">        dependency.setGroupId(collectedProject.getGroupId());</span>
+<span class="fc" id="L145">        dependency.setArtifactId(collectedProject.getArtifactId());</span>
+<span class="fc" id="L146">        dependency.setVersion(collectedProject.getVersion());</span>
+<span class="fc" id="L147">        dependency.setType(type);</span>
+
+<span class="fc" id="L149">        billOfMaterials.getDependencyManagement().getDependencies().add(dependency);</span>
+<span class="fc" id="L150">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

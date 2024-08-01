@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateBomChecksumsMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bom-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.bom</a> &gt; <span class="el_source">CreateBomChecksumsMojo.java</span></div><h1>CreateBomChecksumsMojo.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.bom;
+
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.install.DualDigester;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+/**
+ * This goal generates check sums for the bill-of-materials generated.
+ */
+@Mojo(name = &quot;checksums&quot;, defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+<span class="nc" id="L17">public class CreateBomChecksumsMojo extends AbstractBillOfMaterialsMojo {</span>
+
+<span class="nc" id="L19">    private final DualDigester digester = new DualDigester();</span>
+
+    @Override
+    public void execute() throws MojoExecutionException {
+
+<span class="nc" id="L24">        File bomFile = makeBomArtifact().getFile();</span>
+
+<span class="nc" id="L26">        digester.calculate(bomFile);</span>
+
+<span class="nc" id="L28">        attachChecksum(bomFile, &quot;.md5&quot;, digester.getMd5());</span>
+<span class="nc" id="L29">        attachChecksum(bomFile, &quot;.sha1&quot;, digester.getSha1());</span>
+<span class="nc" id="L30">    }</span>
+
+    private void attachChecksum(File bomFile, String extension, String checksum) throws MojoExecutionException {
+
+        try {
+
+<span class="nc" id="L36">            File checksumFile = new File(bomFile.getAbsolutePath() + extension);</span>
+
+<span class="nc" id="L38">            Files.writeString(checksumFile.toPath(), checksum);</span>
+
+<span class="nc" id="L40">            Artifact artifact = makeArtifact(&quot;pom&quot; + extension);</span>
+
+<span class="nc" id="L42">            artifact.setFile(checksumFile);</span>
+<span class="nc" id="L43">            project.addAttachedArtifact(artifact);</span>
+
+<span class="nc" id="L45">        } catch (IOException e) {</span>
+
+<span class="nc" id="L47">            throw new MojoExecutionException(e);</span>
+<span class="nc" id="L48">        }</span>
+
+<span class="nc" id="L50">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

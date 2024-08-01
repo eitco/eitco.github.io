@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Developer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bom-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.bom.xml</a> &gt; <span class="el_source">Developer.java</span></div><h1>Developer.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.bom.xml;
+
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import static de.eitco.cicd.bom.xml.BillOfMaterials.MAVEN_XML_NAMESPACE;
+
+<span class="nc" id="L7">public class Developer {</span>
+
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String name;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String email;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String url;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String organization;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String organizationUrl;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String timezone;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String id;
+
+    public String getName() {
+<span class="nc" id="L25">        return name;</span>
+    }
+
+    public Developer setName(String name) {
+<span class="nc" id="L29">        this.name = name;</span>
+<span class="nc" id="L30">        return this;</span>
+    }
+
+    public String getUrl() {
+<span class="nc" id="L34">        return url;</span>
+    }
+
+    public Developer setUrl(String url) {
+<span class="nc" id="L38">        this.url = url;</span>
+<span class="nc" id="L39">        return this;</span>
+    }
+
+    public String getOrganization() {
+<span class="nc" id="L43">        return organization;</span>
+    }
+
+    public Developer setOrganization(String organization) {
+<span class="nc" id="L47">        this.organization = organization;</span>
+<span class="nc" id="L48">        return this;</span>
+    }
+
+    public String getOrganizationUrl() {
+<span class="nc" id="L52">        return organizationUrl;</span>
+    }
+
+    public Developer setOrganizationUrl(String organizationUrl) {
+<span class="nc" id="L56">        this.organizationUrl = organizationUrl;</span>
+<span class="nc" id="L57">        return this;</span>
+    }
+
+    public String getTimezone() {
+<span class="nc" id="L61">        return timezone;</span>
+    }
+
+    public Developer setTimezone(String timezone) {
+<span class="nc" id="L65">        this.timezone = timezone;</span>
+<span class="nc" id="L66">        return this;</span>
+    }
+
+    public String getId() {
+<span class="nc" id="L70">        return id;</span>
+    }
+
+    public Developer setId(String id) {
+<span class="nc" id="L74">        this.id = id;</span>
+<span class="nc" id="L75">        return this;</span>
+    }
+
+    public String getEmail() {
+<span class="nc" id="L79">        return email;</span>
+    }
+
+    public Developer setEmail(String email) {
+<span class="nc" id="L83">        this.email = email;</span>
+<span class="nc" id="L84">        return this;</span>
+    }
+
+    public static Developer fromMaven(org.apache.maven.model.Developer developer) {
+
+<span class="nc" id="L89">        Developer result = new Developer();</span>
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        result.name = developer == null ? null : developer.getName();</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        result.email = developer == null ? null : developer.getEmail();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        result.url = developer == null ? null : developer.getUrl();</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        result.organization = developer == null ? null : developer.getOrganization();</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        result.organizationUrl = developer == null ? null : developer.getOrganizationUrl();</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        result.timezone = developer == null ? null : developer.getTimezone();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        result.id = developer == null ? null : developer.getId();</span>
+
+<span class="nc" id="L99">        return result;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

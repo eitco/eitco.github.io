@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>License.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bom-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.bom.xml</a> &gt; <span class="el_source">License.java</span></div><h1>License.java</h1><pre class="source lang-java linenums">package de.eitco.cicd.bom.xml;
+
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import static de.eitco.cicd.bom.xml.BillOfMaterials.MAVEN_XML_NAMESPACE;
+
+<span class="nc" id="L7">public class License {</span>
+
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String name;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String url;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String distribution;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String comments;
+
+    public String getName() {
+<span class="nc" id="L19">        return name;</span>
+    }
+
+    public License setName(String name) {
+<span class="nc" id="L23">        this.name = name;</span>
+<span class="nc" id="L24">        return this;</span>
+    }
+
+    public String getUrl() {
+<span class="nc" id="L28">        return url;</span>
+    }
+
+    public License setUrl(String url) {
+<span class="nc" id="L32">        this.url = url;</span>
+<span class="nc" id="L33">        return this;</span>
+    }
+
+    public String getDistribution() {
+<span class="nc" id="L37">        return distribution;</span>
+    }
+
+    public License setDistribution(String distribution) {
+<span class="nc" id="L41">        this.distribution = distribution;</span>
+<span class="nc" id="L42">        return this;</span>
+    }
+
+    public String getComments() {
+<span class="nc" id="L46">        return comments;</span>
+    }
+
+    public License setComments(String comments) {
+<span class="nc" id="L50">        this.comments = comments;</span>
+<span class="nc" id="L51">        return this;</span>
+    }
+
+    public static License fromMaven(org.apache.maven.model.License license) {
+
+<span class="nc" id="L56">        License result = new License();</span>
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        result.name = license == null ? null : license.getName();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        result.url = license == null ? null : license.getUrl();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        result.distribution = license == null ? null : license.getDistribution();</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        result.comments = license == null ? null : license.getComments();</span>
+
+<span class="nc" id="L63">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

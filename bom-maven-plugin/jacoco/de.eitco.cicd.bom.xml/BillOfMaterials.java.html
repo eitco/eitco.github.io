@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BillOfMaterials.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bom-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.bom.xml</a> &gt; <span class="el_source">BillOfMaterials.java</span></div><h1>BillOfMaterials.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2023 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 12.01.2023
+ *
+ */
+package de.eitco.cicd.bom.xml;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@JsonRootName(value = &quot;project&quot;, namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L20">public class BillOfMaterials {</span>
+
+    public static final String MAVEN_XML_NAMESPACE = &quot;http://maven.apache.org/POM/4.0.0&quot;;
+
+<span class="fc" id="L24">    @JacksonXmlProperty(isAttribute = true, localName = &quot;xsi:schemaLocation&quot;)</span>
+    private String schemaLocation = &quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;;
+
+<span class="fc" id="L27">    @JacksonXmlProperty(isAttribute = true, localName = &quot;xmlns:xsi&quot;)</span>
+    private String xsi = &quot;http://www.w3.org/2001/XMLSchema-instance&quot;;
+
+<span class="fc" id="L30">    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)</span>
+    private String modelVersion = &quot;4.0.0&quot;;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String groupId;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String artifactId;
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String version;
+
+<span class="fc" id="L39">    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)</span>
+    private String packaging = &quot;pom&quot;;
+
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String description;
+
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private String url;
+
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private Organization organization;
+
+<span class="fc" id="L51">    @JacksonXmlElementWrapper(localName = &quot;licenses&quot;, namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)</span>
+    @JacksonXmlProperty(localName = &quot;license&quot;, namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    private List&lt;License&gt; licenses = new ArrayList&lt;&gt;();
+
+<span class="fc" id="L55">    @JacksonXmlElementWrapper(localName = &quot;developers&quot;, namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)</span>
+    @JacksonXmlProperty(localName = &quot;developer&quot;, namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    private List&lt;Developer&gt; developers = new ArrayList&lt;&gt;();
+
+    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)
+    private Scm scm;
+
+<span class="fc" id="L62">    @JacksonXmlProperty(namespace = MAVEN_XML_NAMESPACE)</span>
+    private DependencyManagement dependencyManagement = new DependencyManagement();
+
+
+    public String getModelVersion() {
+<span class="fc" id="L67">        return modelVersion;</span>
+    }
+
+    public BillOfMaterials setModelVersion(String modelVersion) {
+<span class="fc" id="L71">        this.modelVersion = modelVersion;</span>
+<span class="fc" id="L72">        return this;</span>
+    }
+
+    public String getGroupId() {
+<span class="fc" id="L76">        return groupId;</span>
+    }
+
+    public BillOfMaterials setGroupId(String groupId) {
+<span class="fc" id="L80">        this.groupId = groupId;</span>
+<span class="fc" id="L81">        return this;</span>
+    }
+
+    public String getArtifactId() {
+<span class="fc" id="L85">        return artifactId;</span>
+    }
+
+    public BillOfMaterials setArtifactId(String artifactId) {
+<span class="fc" id="L89">        this.artifactId = artifactId;</span>
+<span class="fc" id="L90">        return this;</span>
+    }
+
+    public String getVersion() {
+<span class="fc" id="L94">        return version;</span>
+    }
+
+    public BillOfMaterials setVersion(String version) {
+<span class="fc" id="L98">        this.version = version;</span>
+<span class="fc" id="L99">        return this;</span>
+    }
+
+    public DependencyManagement getDependencyManagement() {
+<span class="fc" id="L103">        return dependencyManagement;</span>
+    }
+
+    public BillOfMaterials setDependencyManagement(DependencyManagement dependencyManagement) {
+
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (dependencyManagement == null) dependencyManagement = new DependencyManagement();</span>
+
+<span class="fc" id="L110">        this.dependencyManagement = dependencyManagement;</span>
+<span class="fc" id="L111">        return this;</span>
+    }
+
+    public String getPackaging() {
+<span class="fc" id="L115">        return packaging;</span>
+    }
+
+    public String getSchemaLocation() {
+<span class="fc" id="L119">        return schemaLocation;</span>
+    }
+
+    public BillOfMaterials setSchemaLocation(String schemaLocation) {
+<span class="nc" id="L123">        this.schemaLocation = schemaLocation;</span>
+<span class="nc" id="L124">        return this;</span>
+    }
+
+    public String getXsi() {
+<span class="fc" id="L128">        return xsi;</span>
+    }
+
+    public BillOfMaterials setXsi(String xsi) {
+<span class="nc" id="L132">        this.xsi = xsi;</span>
+<span class="nc" id="L133">        return this;</span>
+    }
+
+    public BillOfMaterials setPackaging(String packaging) {
+<span class="fc" id="L137">        this.packaging = packaging;</span>
+<span class="fc" id="L138">        return this;</span>
+    }
+
+    public String getUrl() {
+<span class="fc" id="L142">        return url;</span>
+    }
+
+    public BillOfMaterials setUrl(String url) {
+<span class="fc" id="L146">        this.url = url;</span>
+<span class="fc" id="L147">        return this;</span>
+    }
+
+    public Organization getOrganization() {
+<span class="fc" id="L151">        return organization;</span>
+    }
+
+    public BillOfMaterials setOrganization(Organization organization) {
+<span class="fc" id="L155">        this.organization = organization;</span>
+<span class="fc" id="L156">        return this;</span>
+    }
+
+    public List&lt;License&gt; getLicenses() {
+<span class="fc" id="L160">        return licenses;</span>
+    }
+
+    public BillOfMaterials setLicenses(List&lt;License&gt; licenses) {
+<span class="fc" id="L164">        this.licenses = licenses;</span>
+<span class="fc" id="L165">        return this;</span>
+    }
+
+    public List&lt;Developer&gt; getDevelopers() {
+<span class="fc" id="L169">        return developers;</span>
+    }
+
+    public BillOfMaterials setDevelopers(List&lt;Developer&gt; developers) {
+<span class="fc" id="L173">        this.developers = developers;</span>
+<span class="fc" id="L174">        return this;</span>
+    }
+
+    public Scm getScm() {
+<span class="fc" id="L178">        return scm;</span>
+    }
+
+    public BillOfMaterials setScm(Scm scm) {
+<span class="fc" id="L182">        this.scm = scm;</span>
+<span class="fc" id="L183">        return this;</span>
+    }
+
+    public String getDescription() {
+<span class="fc" id="L187">        return description;</span>
+    }
+
+    public BillOfMaterials setDescription(String description) {
+<span class="fc" id="L191">        this.description = description;</span>
+<span class="fc" id="L192">        return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

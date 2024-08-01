@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Dependency.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">bom-maven-plugin</a> &gt; <a href="index.source.html" class="el_package">de.eitco.cicd.bom.xml</a> &gt; <span class="el_source">Dependency.java</span></div><h1>Dependency.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2023 EITCO GmbH
+ * All rights reserved.
+ *
+ * Created on 12.01.2023
+ *
+ */
+package de.eitco.cicd.bom.xml;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L18">public class Dependency {</span>
+
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    private String groupId;
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    private String artifactId;
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    private String version;
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private String type;
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private String classifier;
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private String scope;
+
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private String optional;
+
+    @JacksonXmlProperty(namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private String systemPath;
+
+<span class="fc" id="L44">    @JacksonXmlElementWrapper(localName = &quot;exclusions&quot;, namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)</span>
+    @JacksonXmlProperty(localName = &quot;exclusion&quot;, namespace = BillOfMaterials.MAVEN_XML_NAMESPACE)
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    private List&lt;Exclusion&gt; exclusions = new ArrayList&lt;&gt;();
+
+    @NotNull
+    public String dependencyKey() {
+
+<span class="fc bfc" id="L52" title="All 4 branches covered.">        return groupId + &quot;:&quot; + artifactId + &quot;:&quot; + (type != null ? (type) : &quot;&quot;) + &quot;:&quot; + (classifier != null ? (classifier) : &quot;&quot;);</span>
+    }
+
+    public String getGroupId() {
+<span class="fc" id="L56">        return groupId;</span>
+    }
+
+    public Dependency setGroupId(String groupId) {
+<span class="fc" id="L60">        this.groupId = groupId;</span>
+<span class="fc" id="L61">        return this;</span>
+    }
+
+    public String getArtifactId() {
+<span class="fc" id="L65">        return artifactId;</span>
+    }
+
+    public Dependency setArtifactId(String artifactId) {
+<span class="fc" id="L69">        this.artifactId = artifactId;</span>
+<span class="fc" id="L70">        return this;</span>
+    }
+
+    public String getVersion() {
+<span class="fc" id="L74">        return version;</span>
+    }
+
+    public Dependency setVersion(String version) {
+<span class="fc" id="L78">        this.version = version;</span>
+<span class="fc" id="L79">        return this;</span>
+    }
+
+    public String getType() {
+<span class="fc" id="L83">        return type;</span>
+    }
+
+    public Dependency setType(String type) {
+<span class="fc" id="L87">        this.type = type;</span>
+<span class="fc" id="L88">        return this;</span>
+    }
+
+    public String getScope() {
+<span class="fc" id="L92">        return scope;</span>
+    }
+
+    public Dependency setScope(String scope) {
+<span class="fc" id="L96">        this.scope = scope;</span>
+<span class="fc" id="L97">        return this;</span>
+    }
+
+    public List&lt;Exclusion&gt; getExclusions() {
+<span class="fc" id="L101">        return exclusions;</span>
+    }
+
+    public Dependency setExclusions(List&lt;Exclusion&gt; exclusions) {
+<span class="fc" id="L105">        this.exclusions = exclusions;</span>
+<span class="fc" id="L106">        return this;</span>
+    }
+
+    public String getClassifier() {
+<span class="fc" id="L110">        return classifier;</span>
+    }
+
+    public Dependency setClassifier(String classifier) {
+<span class="fc" id="L114">        this.classifier = classifier;</span>
+<span class="fc" id="L115">        return this;</span>
+    }
+
+    public String getOptional() {
+<span class="fc" id="L119">        return optional;</span>
+    }
+
+    public Dependency setOptional(String optional) {
+<span class="nc" id="L123">        this.optional = optional;</span>
+<span class="nc" id="L124">        return this;</span>
+    }
+
+    public String getSystemPath() {
+<span class="fc" id="L128">        return systemPath;</span>
+    }
+
+    public Dependency setSystemPath(String systemPath) {
+<span class="nc" id="L132">        this.systemPath = systemPath;</span>
+<span class="nc" id="L133">        return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
