@@ -1,3 +1,15 @@
 <head>
-<meta http-equiv="refresh" content="0; url=https://eitco.github.io/arveo/19.1.0-SNAPSHOT/arveo-docu/index.html" />
+    <meta property="symbolicVersion" content="19.1.0-SNAPSHOT" />
+    <meta property="numericVersion" content="19.1.0" />
 </head>
+<body>
+<script>
+    var symbolicVersion = document.head.querySelector("[property~=symbolicVersion][content]").content;
+    var numericVersion = document.head.querySelector("[property~=numericVersion][content]").content;
+    if(symbolicVersion.includes("SNAPSHOT")){
+        window.location.replace("https://eitco.github.io/arveo/development/arveo-docu/"+numericVersion+"/index.html");
+    }else{
+        window.location.replace("https://eitco.github.io/arveo/"+ symbolicVersion +"/arveo-docu/"+numericVersion+"/index.html");
+    }
+</script>
+</body>
