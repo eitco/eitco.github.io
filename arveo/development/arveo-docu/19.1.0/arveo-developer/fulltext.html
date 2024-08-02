@@ -453,7 +453,10 @@ public interface DocumentWithRdbFullText {
     void setDocumentName(String documentName);
 
     @SystemProperty(SystemPropertyName.QUERY_ATTRIBUTES)
-    QueryAttributes getQueryAttributes();
+    QueryAttributes getQueryAttributes(); <i class="conum" data-value="7"></i><b>(7)</b>
+
+    @SystemProperty(SystemPropertyName.FULL_TEXT_EXTRACTION_STATUS)
+    Map&lt;String, FullTextStatusInformation&gt; getFullTextStatusInformation(); <i class="conum" data-value="8"></i><b>(8)</b>
 }</code></pre>
 </div>
 </div>
@@ -483,6 +486,14 @@ content. This is a requirement for suffix-searches. If suffix searches are not r
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>Activates an additional column on the database that will contain the parsed full text vector data. See below for details.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Provides access to additional query result attributes like rank and highlighting</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Provides access to status information about extracted full text data</td>
 </tr>
 </table>
 </div>
@@ -819,6 +830,51 @@ Generating headlines is an expensive operation on the database and should be use
 <td class="content">
 It is not possible to retrieve a headline when a suffix search is performed.
 </td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="error_handling"><a class="anchor" href="#error_handling"></a>Error handling</h3>
+<div class="paragraph">
+<p><em>arveo</em> keeps track of the status of the extracted full text data for each document and content element. The
+current status can be retrieved from a document entity using a system property getter for full text information as shown
+in the type definition above:</p>
+</div>
+<div class="listingblock">
+<div class="title">accessing the status value</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">RenditionStatus status = client.getEntity().getFullTextStatusInformation().get("content1").getStatus();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Fulltext extraction is retried automatically for each document. The number of retries can be configured using the
+property <code>ecr.server.messaging.redelivery.maximum-redeliveries</code>. When all attempts have failed, the status is set to
+FAILED. It is possible to reset the status using the API as shown below. A system job will detect these document and
+the system will try to extract the full text data again. Triggers for this job are created automatically by the system
+at startup for each type definition containing content elements with full text extraction. By default, the job is
+triggered every three minutes.</p>
+</div>
+<div class="listingblock">
+<div class="title">resetting the status value</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">SearchRequest searchRequest = SearchRequest
+    .first(100)
+    .ascendingBy(SystemFieldList.GeneralSystemField.Id.INSTANCE.getName())
+    .matching(EcrQueryLanguage.condition().entity().id().equalTo().value(client.getIdentifier()).holds()); <i class="conum" data-value="1"></i><b>(1)</b>
+
+serviceClient.resetFailedFullTextExtractionStatus(searchRequest, "content1"); <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The selector used to identify the documents to reset the status</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Resets the status for all documents matching the condition for the content element "content1"</td>
 </tr>
 </table>
 </div>
