@@ -616,6 +616,27 @@ The external ID used in the mapping is read from the subject claim of the token 
 <div class="paragraph">
 <p>The service will then try to get a numeric ID for the user from the access token by checking for the claim configured in <code>commons.security.oauth2.external-user-management.token-id-resolver.id-claim</code>. By default, the claim <code>user-id</code> will be used. It must contain a value that can be parsed to <code>java.lang.Long</code>.</p>
 </div>
+<div class="sect2">
+<h3 id="additional_identifiers"><a class="anchor" href="#additional_identifiers"></a>Additional identifiers</h3>
+<div class="paragraph">
+<p>Neither the internal nor the external ID is suitable to be displayed in a client (for example, in a version history view). For this purpose <em>arveo</em> can add an external identifier to a user. These additional identifiers are stored in the same database table as the assigned internal IDs. By default, the external identifiers are read from the user&#8217;s token at the first login. For both JWTs and opaque tokens, the <code>preferred_username</code> claim (or principal attribute) is used. The claim or attribute to use can be configured using the properties <code>commons.security.oauth2.additional-identifier-resolver.claim-name</code> (for JWTs) or the property <code>commons.security.oauth2.additional-identifier-resolver.principal-attribute-name</code> (for opaque tokens).</p>
+</div>
+<div class="paragraph">
+<p>A client can access the additional identifiers in the <code>ModificationInformation</code> returned for each entity:</p>
+</div>
+<div class="listingblock">
+<div class="title">accessing additional identifiers</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">AdditionalUserIdentifiers additionalUserIdentifiers = entity.getModificationInformation().getAdditionalUserIdentifiers();
+String creationUserIdentifier = additionalUserIdentifiers.getCreationUserIdentifier();
+String initialCreationUserIdentifier = additionalUserIdentifiers.getInitialCreationUserIdentifier();
+String modificationUserIdentifier = additionalUserIdentifiers.getModificationUserIdentifier();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that each of the returned strings might be null depending on the availability of additional identifiers.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
