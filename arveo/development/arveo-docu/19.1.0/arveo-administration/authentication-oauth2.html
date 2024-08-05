@@ -642,7 +642,31 @@ The external ID used in the mapping is read from the subject claim of the token 
 <p>User federation with Active Directory can be achieved by setting up an LDAP synchronization. Single sign on using the Windows credentials is possible using Kerberos.</p>
 </div>
 <div class="paragraph">
-<p>Azure Entra ID must be added as a generic OpenID Connect 1.0 provider. The predefined social login template for Microsoft Azure does not offer the required customization options. All that is required in Entra ID is an app registration for Keycloak with the redirect URI shown in the Keycloak admin UI. By default, Keycloak will use it&#8217;s internal UUID of an imported user for the <code>sub</code> claim in the issued tokens. It is recommended to use the object ID of the user in Azure instead. Add a mapper of type <em>Attribute Importer</em> to the identity provider that maps the <code>oid</code> claim to a user attribute called <code>oid</code>. To get access to the <code>oid</code> claim, the <em>Scopes</em> setting of the identity provider must be set to <code>openid profile</code>. Then configure a token mapper to add this user attribute to a token claim called <code>oid</code>. Using the property <code>commons.security.oauth2.external-user-management.database-id-resolver.external-id-claim=oid</code> will tell <em>arveo</em> to use this claim as the user&#8217;s external ID.</p>
+<p>Azure Entra ID must be added as a generic OpenID Connect 1.0 provider as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker_oidc">Keycloak documentation</a>. The predefined social login template for Microsoft Azure does not offer the required customization options. All that is required in Entra ID is an app registration for Keycloak with the redirect URI shown in the Keycloak admin UI. The client ID is shown in the overview page of the client registration in Entra ID. Client secrets can be managed in the certificates and secrets section of the client registration.</p>
+</div>
+<div class="paragraph">
+<p>By default, Keycloak will use it&#8217;s internal UUID of an imported user for the <code>sub</code> claim in the issued tokens. It is recommended to use the object ID of the user in Azure instead. Add a mapper of type <em>Attribute Importer</em> to the identity provider that maps the <code>oid</code> claim to a user attribute called <code>oid</code>. To get access to the <code>oid</code> claim, the <em>Scopes</em> setting of the identity provider must be set to <code>openid profile</code>. Then configure a token mapper to add this user attribute to a token claim called <code>oid</code>. Setting the property <code>commons.security.oauth2.external-user-management.database-id-resolver.external-id-claim</code> to <code>oid</code> will tell <em>arveo</em> to use this claim as the user&#8217;s external ID.</p>
+</div>
+<div class="sect3">
+<h4 id="mapping_ldap_roles_to_realm_roles"><a class="anchor" href="#mapping_ldap_roles_to_realm_roles"></a>Mapping LDAP roles to realm roles</h4>
+<div class="paragraph">
+<p>LDAP roles (or groups) can be mapped to Keycloak realm roles using an LDAP Role mapper as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/index.html#_ldap_mappers">Keycloak documentation</a>. This can be used to assign access rights to specific parts or entities of the archive to a user by assigning the user to specific LDAP groups.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When importing LDAP roles, make sure to configure a suitable filter. Otherwise, Keycloak will map all roles, which might take a long time.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The LDAP roles that were mapped to realm roles can then be used in a token mapper of type <em>realm role</em>. For example, these roles can be mapped to the authorities claim of the access token and then used in ABAC functions. It is possible to map realm roles to authorities with a different name. That makes it possible to change the name of a required authority without having to change the name of the LDAP group or the realm role.</p>
+</div>
 </div>
 </div>
 </div>
