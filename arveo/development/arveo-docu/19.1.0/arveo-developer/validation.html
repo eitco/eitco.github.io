@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Full-featured archetype :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/19.1.0/arveo-developer/full-featured-archetype.html">
-    <link rel="prev" href="slim-archetype.html">
-    <link rel="next" href="system-tables.html">
+    <title>Validation :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/19.1.0/arveo-developer/validation.html">
+    <link rel="prev" href="metadata-types.html">
+    <link rel="next" href="inheritance.html">
     <meta name="generator" content="Antora 3.2.0-alpha.6">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
@@ -239,7 +239,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="metadata-types.html">Metadata types</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="validation.html">Validation</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -332,7 +332,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="slim-archetype.html">The Types archetype</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="full-featured-archetype.html">The full-featured archetype</a>
   </li>
 </ul>
@@ -386,8 +386,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>Archetypes</li>
-    <li><a href="full-featured-archetype.html">The full-featured archetype</a></li>
+    <li>Data Modelling</li>
+    <li><a href="validation.html">Validation</a></li>
   </ul>
 </nav>
 </div>
@@ -396,274 +396,232 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Full-featured archetype</h1>
+<h1 class="page">Validation</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This archetype creates a more complex project. It is based on the eitco commons archetype It will contain a simple web service, with an automatically generated client layer, based on eitco commons.
-The maven coordinate of this archetype are:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
-&lt;artifactId&gt;ecr-service-archetype&lt;/artifactId&gt;
-&lt;version&gt;19.1.0-SNAPSHOT&lt;/version&gt;</code></pre>
-</div>
+<p><em>arveo</em> offers several ways to make sure data stored in the repository is valid. Type definitions are
+described as Java interfaces, which ensures strong typing of attributes. Furthermore, constraints like <code>@Mandatory</code> can
+be added to attributes to ensure consistency on the database level.</p>
 </div>
 <div class="paragraph">
-<p>To create an arveo based service project use the maven archetype plugin:</p>
+<p>Advanced validation can be implemented using the <code>@Validated</code> and <code>@ValidatedBy</code> annotations as shown in the following
+chapters.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-service-archetype -DarchetypeVersion={project-technical-version}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will start a process that will ask for some parameters and then generate a maven project according to the parameters. The following parameters will be asked for:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<tbody>
+<div class="admonitionblock important">
+<table>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven groupId of the new project</p></td>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The validation is performed on the server side before the entity is persisted in the database. Validation expressions
+and validation methods have access to the attributes present in the input sent to the server. Inherited attributes
+or attribute values of the previous version already persisted in the database are not available in this stage.
+</td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>artifactId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven artifactId of the new project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>version</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maven version of the new project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>class-name-prefix</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A prefix for the names of the generated classes.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scm-locator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The location in the eitco bitbucket server where the sources are (or will be). For a project located in <a href="https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git" class="bare">https://git.eitco.de/scm/&lt;project&gt;/&lt;repository&gt;.git</a>, this would be <code>&lt;project&gt;/&lt;repository&gt;.git</code>. This configures the maven release plugin. If this is omitted (or set to a wrong value) the project will work for now - however the release process will not work - unless it is fixed.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>disable-optional-features</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">when set to false, it will create a little more complex project, including the audit service and jmeter samplers. If set to true (the default value) these features will be disabled but can be activated by uncommenting certain source locations.</p></td>
-</tr>
-</tbody>
 </table>
-<div class="paragraph">
-<p>Some or all of these parameters can also be given on the commandline via <code>-D</code>. The process will not ask for parameters given by command line. So the command</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-service-archetype -DarchetypeVersion={project-technical-version} -DgroupId=my.group.id -DartifactId=my-artifact-id -Dversion=0.0.1-SNAPSHOT -Dclass-name-prefix=My -Dscm-locator=prj/repo.git -Ddisable-optional-features=false</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>would not ask for any parameters and just create the project.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="overview_of_the_generated_project"><a class="anchor" href="#overview_of_the_generated_project"></a>Overview of the generated project</h2>
+<h2 id="using_validated"><a class="anchor" href="#using_validated"></a>Using @Validated</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The project generated by the archetype will consist of four modules:</p>
+<p>The <code>@Validated</code> annotation allows to define validation expressions using the
+<a href="https://docs.spring.io/spring-framework/reference/core/expressions.html">Spring Expression Language</a> (SpEL). This is
+the recommended way to perform simple validations like checking the range of a numeric attribute or if a string matches
+a regular expression. Null- or length-checks should be implemented using database constraints. For very complex validations,
+that might require debugging, the <code>@ValidatedBy</code> annotation described below should be used.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>documentation</code></p>
-</li>
-<li>
-<p><code>implementation</code></p>
-</li>
-<li>
-<p><code>packaging</code></p>
-</li>
-<li>
-<p><code>test</code></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The <code>@Validated</code> annotation is placed on an attribute getter and requires an expression parameter. An optional error
+message can be defined, which will be presented to the client in case the validation has failed and a <code>ValidationException</code>
+is thrown.</p>
 </div>
 <div class="sect2">
-<h3 id="the_documentation_module"><a class="anchor" href="#the_documentation_module"></a>The documentation module</h3>
+<h3 id="writing_validation_spel_expressions"><a class="anchor" href="#writing_validation_spel_expressions"></a>Writing validation SpEL expressions</h3>
 <div class="paragraph">
-<p>This module holds a frame for an asciidoc based documentation of your project.</p>
+<p>The entered SpEL expressions are evaluated on the server side. In each evaluation, the expression has access to two
+variables:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>#value</code>: The actual value of the attribute. Might be null if no value was entered.</p>
+</li>
+<li>
+<p><code>#attributes</code>: A <code>Map&lt;String,Object&gt;</code> containing all attribute values.</p>
+</li>
+</ul>
 </div>
-<div class="sect2">
-<h3 id="the_implementation_module"><a class="anchor" href="#the_implementation_module"></a>The implementation module</h3>
 <div class="paragraph">
-<p>This module contains the actual source code. It is separated into five submodules.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>common</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains classes that are available on the server side as well as the client side.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>generated</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains modules that are automatically generated.</p>
-</li>
-<li>
-<p>Normally developers will not add code in these modules.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>They are however relevant for building the project.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>The following submodules exist</p>
-<div class="ulist">
-<ul>
-<li>
-<p>serialization</p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains automatically generated serialization meta information.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>client</p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains a few submodules itself, holding client side applications for:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>a java spring based http client api,</p>
-</li>
-<li>
-<p>a java spring based embedded client api,</p>
-</li>
-<li>
-<p>a typescript http client api.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>jmeter-sampler</p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule generated jmeter samplers of the services api, usable in load tests.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>server</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This submodule contains the server side implementation.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>types</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>this submodule contains the arveo based model. The generated interface named &lt;class-name-prefix&gt;Model describes an  <a href="entity-types.html#_objects_types_definitions" class="xref page"><strong>arveo type definition</strong></a> as will every interface you register in &lt;class-name-prefix&gt;TypeRegistration. The jar compiled by this module will be available on the server side and client side. Additionally, it needs to be in the class path of your arveo instance. For the system tests (se below) this is already taken care of.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="sect3">
-<h4 id="the_packaging_module"><a class="anchor" href="#the_packaging_module"></a>The packaging module</h4>
-<div class="paragraph">
-<p>This module contains delivery artifacts to deliver the service to or with different runtimes. This includes:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>a stand-alone jar</p>
-</li>
-<li>
-<p>a java web archive (war)</p>
-</li>
-<li>
-<p>a helm chart for deployment in a kubernetes cluster</p>
-</li>
-</ul>
-</div>
+<p>SpEL supports calling methods on java objects, so all available methods of the value&#8217;s class can be used for validation.
+Static methods of other classes can be called using a type expression like <code>T(&lt;class&gt;).method()</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="the_test_module"><a class="anchor" href="#the_test_module"></a>The test module</h3>
+<h3 id="examples"><a class="anchor" href="#examples"></a>Examples</h3>
 <div class="paragraph">
-<p>This module contains a system test module. When building this module maven will start a complete arveo system (containing all required services) with the newly generated service in the <code>pre-integration-test</code>-phase so that tests written here (like the generated example &lt;class-name-prefix&gt;ClientIT) may simply call the new service via the generated http-client (see above).</p>
+<p>In the following example, a regular expression is used to check if the entered value is a valid german license plate:</p>
+</div>
+<div class="listingblock">
+<div class="title">using regular expressions for validation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Mandatory <i class="conum" data-value="1"></i><b>(1)</b>
+@Validated(
+    expression = "#value.matches('[A-Z]{1,3}\\s[A-Z]{1,2}\\s\\d{1,4}[E,H]*')", <i class="conum" data-value="2"></i><b>(2)</b>
+    errorMessage = "$attributeName$ $attributeValue$ is not a valid license plate" <i class="conum" data-value="3"></i><b>(3)</b>
+)
+String getLicensePlate();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A database constraint is used to ensure a value is entered</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The entered value is matched using a regular expression</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The error message used in case the validation has failed</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The next example shows how to use the static <code>now()</code> method of the <code>ZonedDateTime</code> class to perform a date comparison:</p>
+</div>
+<div class="listingblock">
+<div class="title">using static methods</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Mandatory
+@Validated(
+    expression = "#value.isBefore(T(java.time.ZonedDateTime).now())", <i class="conum" data-value="1"></i><b>(1)</b>
+    errorMessage = "Date of purchase must be in the past."
+)
+ZonedDateTime getDateOfPurchase();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A type expression is used to get access to the <code>ZonedDateTime</code> class and the instance method <code>isBefore</code> is used for
+the comparison.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is also possible to write validation expressions that depend on the values of other attributes. In the following
+example, a value must be entered when the value of another attribute is false:</p>
+</div>
+<div class="listingblock">
+<div class="title">referencing other attributes</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Optional <i class="conum" data-value="1"></i><b>(1)</b>
+@Validated(
+    expression = "#attributes.get('available') &amp;&amp; #value == null || !#attributes.get('available') &amp;&amp; #value != null", <i class="conum" data-value="2"></i><b>(2)</b>
+    errorMessage = "$attributeName$ must be set when car is not available"
+)
+ZonedDateTime getLeaseStartDate();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The value is optional, so no database constraint enforces a non-null value</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>If the value for <code>available</code> is false, the entered value must not be null</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="working_on_the_generated_project"><a class="anchor" href="#working_on_the_generated_project"></a>Working on the generated project</h2>
+<h2 id="using_validatedby"><a class="anchor" href="#using_validatedby"></a>Using @ValidatedBy</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Most implementation will be done in the implementation\server module since this contains the server side code. You api and model will be defined in the implementation\common and implementation\types modules. The later will only be used for classes that are part of your arveo model and need to be in the classpath of arveo.</p>
+<p>Complex validations can get difficult to handle when written as a SpEL expression. For such use cases, the <code>@ValidatedBy</code>
+annotation can be used to define that a static method of the type definition interface will be used for the validation.</p>
+</div>
+<div class="sect2">
+<h3 id="writing_validation_methods"><a class="anchor" href="#writing_validation_methods"></a>Writing validation methods</h3>
+<div class="paragraph">
+<p>Validation methods must be static, return a nullable String and accept three parameters in the following declaration order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>Object value</code>: The value of the attribute to validate</p>
+</li>
+<li>
+<p><code>String attributeName</code>: The name of the attribute to validate</p>
+</li>
+<li>
+<p><code>Map&lt;String, Object&gt; attributes</code>: The values of all attributes</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>When testing your code, the test\system-test module comes in handy. As mentioned above, it will start a complete arveo system so that your tests can simply use the generated http client api to test your functionality. However, you can use this to manually test and debug your service, too. In case you simply need to start up the environment, in the test\system-test directory call:</p>
+<p>Each validation method must be annotated using <code>@ValidationMethod</code>. The returned string is used as error message for the
+client when the validation has failed. Returning null means that the validation was successful.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows the same scenario as in the last example for the <code>@Validated</code> annotation: When the value of
+the <code>available</code> attribute is false, a non-null value for the attribute must be entered.</p>
 </div>
 <div class="listingblock">
+<div class="title">validation method</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn -Denv</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ValidationMethod
+static String validateLeaseEndDate(
+    Object value,
+    String attributeName,
+    Map&lt;String, Object&gt; attributes
+) {
+    if (Objects.equals(Boolean.TRUE, attributes.get("available"))) {
+
+        if (value != null) {
+            return "lease_end_date must not be set when car is available";
+        }
+    }
+
+    if (Objects.equals(Boolean.FALSE, attributes.get("available"))) {
+
+        if (value == null) {
+            return "lease_end_date must be set when car is not available";
+        }
+    }
+
+    return null;
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to debug your service call</p>
+<p>The validation method is referenced on the attribute getter using the <code>@ValidatedBy</code> annotation:</p>
 </div>
 <div class="listingblock">
+<div class="title">referencing a validation method</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">mvn -Denv -Dservice.skip</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ValidatedBy("validateLeaseEndDate")
+@Optional
+ZonedDateTime getLeaseEndDate();</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>This will start the environment except for your service. You can then start your service in debug mode from your IDE.</p>
-</div>
-<div class="paragraph">
-<p>In both cases you can now start tests manually or call the service api directly to test your code.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="slim-archetype.html">The Types archetype</a></span>
-  <span class="next"><a href="system-tables.html">System Tables</a></span>
+  <span class="prev"><a href="metadata-types.html">Metadata types</a></span>
+  <span class="next"><a href="inheritance.html">Inheritance</a></span>
 </nav>
 </article>
   </div>
