@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Untitled :: arveo Documentation</title>
+    <title>Solr :: arveo Documentation</title>
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/19.1.0/arveo-administration/solr.html">
     <link rel="prev" href="audit.html">
     <link rel="next" href="jobs.html">
@@ -113,7 +113,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../arveo-getting-started/getting-started.html">getting-started.adoc</a>
+    <a class="nav-link" href="../arveo-getting-started/getting-started.html">Getting Started</a>
   </li>
 </ul>
   </li>
@@ -176,7 +176,7 @@
     <a class="nav-link" href="vault.html">Using Hashicorp Vault</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#commons:configuration-properties.adoc">commons:configuration-properties.adoc</a>
+    <a class="nav-link" href="../commons/configuration-properties.html">Configuration Properties</a>
   </li>
 </ul>
   </li>
@@ -347,7 +347,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../arveo-commons/compatibility-list.html">compatibility-list.adoc</a>
+    <a class="nav-link" href="../arveo-commons/compatibility-list.html">Compatibility List</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../arveo-commons/release-notes.html">Release Notes</a>
@@ -390,23 +390,23 @@
     <li><a href="solr.html">Solr</a></li>
   </ul>
 </nav>
+<div class="edit-this-page"><a href="file:///C:/devpacks/projects/ecr/eitco-content-repository//documentation/project/modules/arveo-administration/pages/solr.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<div class="paragraph">
-<p>Unresolved include directive in modules/arveo-administration/pages/solr.adoc - include::commons:example$ecr-documentation-docs-commons-module/src/main/asciidoc/versions.adoc[]
-= Solr</p>
-</div>
+<h1 class="page">Solr</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
 <p>In order to use Solr in connection with <em>arveo</em>, an installation of a Solr service is required. Under the
 following link you can download the current versions of Solr: <a href="https://solr.apache.org/downloads.html" class="bare" target="_blank" rel="noopener">https://solr.apache.org/downloads.html</a>.</p>
 </div>
 <div class="paragraph">
 <p>The Solr service must be configured in <em>arveo</em> within the <em>application.yaml</em>. See
-<a href="#commons:configuration-properties.adoc#_ecr_server_solr" class="xref unresolved">Configuration properties</a> for details.</p>
+<a href="../commons/configuration-properties.html#_ecr_server_solr" class="xref page">Configuration properties</a> for details.</p>
 </div>
 <div class="paragraph">
 <p>When a type definition is annotated with <code>@NOSql</code>, the entities stored in this type definition will be stored in
@@ -414,6 +414,8 @@ Solr, too. See <a href="../arveo-developer/entity-annotations.html#_entity_annot
 will create a special queue table in the relational database for such a type definition. The queue table will contain
 the entities that have to be stored in Solr. A <a href="jobs.html#nosql_queue_job" class="xref page">system job</a> is used to process the
 entries in the queue table.</p>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="solr_deployment"><a class="anchor" href="#solr_deployment"></a>Solr deployment</h2>
@@ -450,7 +452,7 @@ Collections will be created automatically from <em>arveo</em>.
 </table>
 </div>
 <div class="paragraph">
-<p>More information you can find in the chapter <a href="#commons:configuration-properties.adoc#_ecr_server_solr" class="xref unresolved">ecr.server.solr</a>.</p>
+<p>More information you can find in the chapter <a href="../commons/configuration-properties.html#_ecr_server_solr" class="xref page">ecr.server.solr</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -475,7 +477,7 @@ As default Solr has <strong>no security settings</strong> set. It is very import
 <h3 id="solr_configurations"><a class="anchor" href="#solr_configurations"></a>Solr Configurations</h3>
 <div class="paragraph">
 <p>If you want to use solr with <em>arveo</em> you must upload a ecr-config to the Solr zookeeper. The ecr-config you can find at the following url
-<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/{arveo-version}/ecr-environment-configuration-{arveo-version}-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
+<a href="https://nexus.eitco.de/repository/maven-ecr-releases/de/eitco/ecr/ecr-environment-configuration/19.1.0/ecr-environment-configuration-19.1.0-solr.zip">nexus.eitco.de</a> as zip-file.<br></p>
 </div>
 <div class="paragraph">
 <p>The zip-file you can upload to zookeeper with the following command on the command line interface.</p>

@@ -113,7 +113,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../arveo-getting-started/getting-started.html">getting-started.adoc</a>
+    <a class="nav-link" href="../arveo-getting-started/getting-started.html">Getting Started</a>
   </li>
 </ul>
   </li>
@@ -176,7 +176,7 @@
     <a class="nav-link" href="vault.html">Using Hashicorp Vault</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#commons:configuration-properties.adoc">commons:configuration-properties.adoc</a>
+    <a class="nav-link" href="../commons/configuration-properties.html">Configuration Properties</a>
   </li>
 </ul>
   </li>
@@ -347,7 +347,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../arveo-commons/compatibility-list.html">compatibility-list.adoc</a>
+    <a class="nav-link" href="../arveo-commons/compatibility-list.html">Compatibility List</a>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../arveo-commons/release-notes.html">Release Notes</a>
@@ -390,6 +390,7 @@
     <li><a href="renditions.html">Renditions</a></li>
   </ul>
 </nav>
+<div class="edit-this-page"><a href="file:///C:/devpacks/projects/ecr/eitco-content-repository//documentation/project/modules/arveo-administration/pages/renditions.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -560,7 +561,7 @@ plugins available on the classpath of the service.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>When the creation of a rendition fails, the system will re-try to create the rendition. The number of re-tries can
-be configured, the default is three (see <a href="#commons:configuration-properties.adoc#_ecr_server_messaging" class="xref unresolved">configuration properties</a>).
+be configured, the default is three (see <a href="../commons/configuration-properties.html#_ecr_server_messaging" class="xref page">configuration properties</a>).
 When all retries have failed, the rendition message will be added to a dead letter queue and the status field of the
 rendition will be set to -1 (FAILED). For this to work, the message queue in ActiveMQ must be configured to
 use an individual dead letter queue as described in <a href="https://activemq.apache.org/message-redelivery-and-dlq-handling.html">the ActiveMQ documentation</a>.</p>
@@ -581,7 +582,7 @@ use an individual dead letter queue as described in <a href="https://activemq.ap
 <code>de.eitco.ecr.sdk.document.TypedDocumentServiceClient.resetFailedRenditionStatus</code> or simply by setting the value in the
 database directly. A system job polls the database and will enqueue new rendition messages in ActiveMQ to re-try to
 create the renditions. The interval in which the job polls the database can be configured using the parameter
-<code>retry-renditions.cron-expression</code> (see <a href="#commons:configuration-properties.adoc#_ecr_server_messaging" class="xref unresolved">configuration properties</a>).</p>
+<code>retry-renditions.cron-expression</code> (see <a href="../commons/configuration-properties.html#_ecr_server_messaging" class="xref page">configuration properties</a>).</p>
 </div>
 </div>
 <div class="sect2">
