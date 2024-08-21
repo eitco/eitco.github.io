@@ -6,10 +6,17 @@
 <script>
     var symbolicVersion = document.head.querySelector("[property~=symbolicVersion][content]").content;
     var numericVersion = document.head.querySelector("[property~=numericVersion][content]").content;
-    if(symbolicVersion.includes("SNAPSHOT")){
-        window.location.replace("https://eitco.github.io/arveo/development/arveo-docu/"+numericVersion+"/index.html");
+    var targetPage = "";
+    if(location.hash === "#arveo-getting-started"){
+        targetPage = "arveo-getting-started/getting-started.html";
     }else{
-        window.location.replace("https://eitco.github.io/arveo/"+ symbolicVersion +"/arveo-docu/"+numericVersion+"/index.html");
+        targetPage = "index.html";
+    }
+
+    if(symbolicVersion.includes("SNAPSHOT")){
+        window.location.replace("https://eitco.github.io/arveo/development/arveo-docu/"+numericVersion+"/"+targetPage);
+    }else{
+        window.location.replace("https://eitco.github.io/arveo/"+ symbolicVersion +"/arveo-docu/"+numericVersion+"/"+targetPage);
     }
 </script>
 </body>
