@@ -662,17 +662,13 @@ String modificationUserIdentifier = additionalUserIdentifiers.getModificationUse
 <div class="paragraph">
 <p>Keycloak can act as an intermediate between Microsoft Active Directory (using user federation) and Azure Entra ID (using an identity provider). User data will be managed in Active Directory or Entra ID while Keycloak will issue tokens for the services and client applications.</p>
 </div>
-<div class="paragraph">
-<p>User federation with Active Directory can be achieved by setting up an LDAP synchronization. Single sign on using the Windows credentials is possible using Kerberos.</p>
-</div>
-<div class="paragraph">
-<p>Azure Entra ID must be added as a generic OpenID Connect 1.0 provider as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker_oidc">Keycloak documentation</a>. The predefined social login template for Microsoft Azure does not offer the required customization options. All that is required in Entra ID is an app registration for Keycloak with the redirect URI shown in the Keycloak admin UI. The client ID is shown in the overview page of the client registration in Entra ID. Client secrets can be managed in the certificates and secrets section of the client registration.</p>
-</div>
-<div class="paragraph">
-<p>By default, Keycloak will use it&#8217;s internal UUID of an imported user for the <code>sub</code> claim in the issued tokens. It is recommended to use the object ID of the user in Azure instead. Add a mapper of type <em>Attribute Importer</em> to the identity provider that maps the <code>oid</code> claim to a user attribute called <code>oid</code>. To get access to the <code>oid</code> claim, the <em>Scopes</em> setting of the identity provider must be set to <code>openid profile</code>. Then configure a token mapper to add this user attribute to a token claim called <code>oid</code>. Setting the property <code>commons.security.oauth2.external-user-management.database-id-resolver.external-id-claim</code> to <code>oid</code> will tell <em>arveo</em> to use this claim as the user&#8217;s external ID.</p>
-</div>
 <div class="sect3">
-<h4 id="mapping_ldap_roles_to_realm_roles"><a class="anchor" href="#mapping_ldap_roles_to_realm_roles"></a>Mapping LDAP roles to realm roles</h4>
+<h4 id="ldap"><a class="anchor" href="#ldap"></a>LDAP</h4>
+<div class="paragraph">
+<p>User federation with Active Directory can be achieved by setting up an LDAP synchronization as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/index.html#configuring-federated-ldap-storage">Keycloak documentation</a>. Single sign on using the Windows credentials is possible using Kerberos.</p>
+</div>
+<div class="sect4">
+<h5 id="mapping_ldap_roles_to_realm_roles"><a class="anchor" href="#mapping_ldap_roles_to_realm_roles"></a>Mapping LDAP roles to realm roles</h5>
 <div class="paragraph">
 <p>LDAP roles (or groups) can be mapped to Keycloak realm roles using an LDAP Role mapper as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/index.html#_ldap_mappers">Keycloak documentation</a>. This can be used to assign access rights to specific parts or entities of the archive to a user by assigning the user to specific LDAP groups.</p>
 </div>
@@ -690,6 +686,50 @@ When importing LDAP roles, make sure to configure a suitable filter. Otherwise, 
 </div>
 <div class="paragraph">
 <p>The LDAP roles that were mapped to realm roles can then be used in a token mapper of type <em>realm role</em>. For example, these roles can be mapped to the authorities claim of the access token and then used in ABAC functions. It is possible to map realm roles to authorities with a different name. That makes it possible to change the name of a required authority without having to change the name of the LDAP group or the realm role.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="entra_id"><a class="anchor" href="#entra_id"></a>Entra ID</h4>
+<div class="paragraph">
+<p>Azure Entra ID must be added as a generic OpenID Connect 1.0 provider as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker_oidc">Keycloak documentation</a>. The predefined social login template for Microsoft Azure does not offer the required customization options. All that is required in Entra ID is an app registration for Keycloak with the redirect URI shown in the Keycloak admin UI. The client ID is shown in the overview page of the client registration in Entra ID. Client secrets can be managed in the certificates and secrets section of the client registration.</p>
+</div>
+<div class="paragraph">
+<p>The client registration requires an API permission to be able to sign in and read a user&#8217;s profile. Add the following API permission to the app registration: <code>Microsoft Graph / User.Read</code>.</p>
+</div>
+<div class="paragraph">
+<p>By default, Keycloak will use it&#8217;s internal UUID of an imported user for the <code>sub</code> claim in the issued tokens. It is recommended to use the object ID of the user in Azure instead. Add a mapper of type <em>Attribute Importer</em> to the OpenID Connect identity provider that maps the <code>oid</code> claim to a user attribute called <code>oid</code>.</p>
+</div>
+<div class="paragraph">
+<p>To get access to the <code>oid</code> claim, the <em>Scopes</em> setting of the identity provider must be set to <code>openid profile</code>.</p>
+</div>
+<div class="paragraph">
+<p>Then configure a token mapper to add this user attribute to a token claim called <code>oid</code> in the Keycloak client(s). Now Keycloak will add the user&#8217;s <code>oid</code> to a token claim named <code>oid</code>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If you use the <code>client_credentials</code> flow or if you already have created users in Keycloak manually, these users and the service account user for the technical client must have the <code>oid</code> attribute, too. This can be done in the user settings. The user for the service account role can be found in the client properties under <em>Service Account Roles</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The last step is to configure <em>arveo</em> to use the <code>oid</code> claim to get the user&#8217;s external id. Add the following setting to the configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">commons:
+  security:
+    oauth2:
+      external-user-management:
+        database-id-resolver:
+          external-id-claim: oid</code></pre>
+</div>
 </div>
 </div>
 </div>
