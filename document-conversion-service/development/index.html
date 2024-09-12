@@ -240,6 +240,114 @@ of the service. The plugins will be registered automatically.</p>
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_oss">Plugins contained in document-conversion-plugins-oss</h4>
 <div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<div class="paragraph">
+<p>Merges pdf files.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftomultipagetiffrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToMultiPageTiffRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
 <h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</h5>
 <div class="paragraph">
 <p>Extracts text by using Apache Tika.</p>
@@ -321,9 +429,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
 <div class="paragraph">
-<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
+<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -341,7 +449,43 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>application/vnd.ms-outlook</p>
+<p>application/xhtml+xml</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders TIF to Pdf using IText.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
 </li>
 </ul>
 </div></div></td>
@@ -438,42 +582,6 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
-<div class="paragraph">
-<p>Merges pdf files.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
 <h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
 <div class="paragraph">
 <p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
@@ -509,114 +617,6 @@ of the service. The plugins will be registered automatically.</p>
 <li>
 <p>image/gif</p>
 </li>
-<li>
-<p>image/tiff</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders txt to pdf with openpdf.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/xhtml+xml</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftomultipagetiffrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToMultiPageTiffRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
 <li>
 <p>image/tiff</p>
 </li>
@@ -672,9 +672,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
 <div class="paragraph">
-<p>Renders TIF to Pdf using IText.</p>
+<p>Renders txt to pdf with openpdf.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -692,7 +692,7 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>image/tiff</p>
+<p>text/plain</p>
 </li>
 </ul>
 </div></div></td>
@@ -1059,7 +1059,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/app-registration-01.PNG" alt="app-registration-01">
+<img src="./images/app-registration-01.PNG" alt="app-registration-01">
 </div>
 <div class="title">Figure 1. Azure - App-Registration</div>
 </div>
@@ -1068,7 +1068,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/app-registration-02.PNG" alt="app-registration-02">
+<img src="./images/app-registration-02.PNG" alt="app-registration-02">
 </div>
 <div class="title">Figure 2. App-Registration details</div>
 </div>
@@ -1077,7 +1077,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/app-registration-03.PNG" alt="app-registration-03">
+<img src="./images/app-registration-03.PNG" alt="app-registration-03">
 </div>
 <div class="title">Figure 3. App-Registration api authorization</div>
 </div>
@@ -1086,7 +1086,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/app-registration-04.PNG" alt="app-registration-04">
+<img src="./images/app-registration-04.PNG" alt="app-registration-04">
 </div>
 <div class="title">Figure 4. App-Registration authentication</div>
 </div>
@@ -1095,7 +1095,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/app-registration-05.PNG" alt="app-registration-05">
+<img src="./images/app-registration-05.PNG" alt="app-registration-05">
 </div>
 <div class="title">Figure 5. App-Registration secrets</div>
 </div>
@@ -1262,7 +1262,7 @@ of the service. The plugins will be registered automatically.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_setup_microsoft_azure_fulltext_plugin">Setup microsoft azure fulltext plugin</h4>
+<h4 id="_setup_microsoft_azure_fulltext_plugin">Setup Microsoft Azure fulltext plugin</h4>
 <div class="paragraph">
 <p>If you want to use the azure fulltext plugins you will need a cognitive service in your azure portal.</p>
 </div>
@@ -1273,7 +1273,7 @@ of the service. The plugins will be registered automatically.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/computer-vision-01.png" alt="computer-vision-01">
+<img src="./images/computer-vision-01.png" alt="computer-vision-01">
 </div>
 <div class="title">Figure 6. Azure - Create computer vision service</div>
 </div>
@@ -1282,7 +1282,7 @@ of the service. The plugins will be registered automatically.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/computer-vision-02.png" alt="computer-vision-02">
+<img src="./images/computer-vision-02.png" alt="computer-vision-02">
 </div>
 <div class="title">Figure 7. Computer vision service overview</div>
 </div>
@@ -1291,7 +1291,7 @@ of the service. The plugins will be registered automatically.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/computer-vision-03.png" alt="computer-vision-03">
+<img src="./images/computer-vision-03.png" alt="computer-vision-03">
 </div>
 <div class="title">Figure 8. App-Registration api authorization</div>
 </div>
@@ -1936,7 +1936,7 @@ request.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-09-12 00:27:20 UTC
+Last updated 2024-09-12 07:52:00 UTC
 </div>
 </div>
 </body>
