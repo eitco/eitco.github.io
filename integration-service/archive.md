@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Integration Service deployed so far.
 
+ * [9.1.2](archive/9.1.2)
  * [9.1.1](archive/9.1.1)
  * [9.1.0](archive/9.1.0)
  * [9.0.1](archive/9.0.1)
