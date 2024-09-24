@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>System jobs :: arveo Documentation</title>
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/20.0.0/arveo-administration/jobs.html">
-    <link rel="prev" href="solr.html">
+    <link rel="prev" href="audit.html">
     <link rel="next" href="vault.html">
     <meta name="generator" content="Antora 3.2.0-alpha.6">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
@@ -165,9 +165,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="audit.html">Audit</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="solr.html">Solr</a>
   </li>
   <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="jobs.html">System jobs</a>
@@ -446,31 +443,6 @@ jobs needs to have the <code>ECR_PURGE_RECOVERY_TABLE</code> authority to be abl
 </div>
 </div>
 <div class="sect1">
-<h2 id="nosql_queue_job"><a class="anchor" href="#nosql_queue_job"></a>NOSQL queue job</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Data that is supposed to be stored in the SOLR NOSQL database is stored in dedicated queue tables in the relational
-database used by <em>arveo</em>. The NOSQL queue job is used to read the data from the queue tables and to write
-it to SOLR. By default the job is scheduled once a second individually for every queue table in the system. It is
-possible to configure the number of entries to process in one run of the job as well as the maximum number of attempts
-to write the data to SOLR.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-When the NOSQL feature is disabled for a type definition, the queue job and the triggers for the queue job
-have to be disabled or removed manually from the scheduler.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="using_external_job_service_instances"><a class="anchor" href="#using_external_job_service_instances"></a>Using external Job Service instances</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -558,7 +530,7 @@ standby mode:</p>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="solr.html">Solr</a></span>
+  <span class="prev"><a href="audit.html">Audit</a></span>
   <span class="next"><a href="vault.html">Using Hashicorp Vault</a></span>
 </nav>
 </article>

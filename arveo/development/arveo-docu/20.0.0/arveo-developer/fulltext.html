@@ -167,9 +167,6 @@
     <a class="nav-link" href="../arveo-administration/audit.html">Audit</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../arveo-administration/solr.html">Solr</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-administration/jobs.html">System jobs</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -403,19 +400,6 @@
 <p><em>arveo</em> can make use of the full text support of the PostgreSQL database. Extracted full text
 data can be stored in the database and used in queries in combination with all entity attributes and system properties.</p>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Extracted full text data can be stored either in the PostgreSQL database or in SOLR. It is not possible
-to use both simultaneously.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>The <a href="https://www.postgresql.org/docs/current/textsearch.html">PostgreSQL documentation</a> contains an in-depth explanation
 of the database&#8217;s text search capabilities.</p>
@@ -436,17 +420,18 @@ PostgreSQL.</p>
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
 @ContentElement(
     name = "content1", <i class="conum" data-value="1"></i><b>(1)</b>
-    fulltextExtraction = true, <i class="conum" data-value="2"></i><b>(2)</b>
-    fullTextStorage = FullTextStorage.RDB, <i class="conum" data-value="3"></i><b>(3)</b>
-    fullTextLanguage = FullTextLanguage.ENGLISH, <i class="conum" data-value="4"></i><b>(4)</b>
-    reversedFullTextIndex = true <i class="conum" data-value="5"></i><b>(5)</b>
+    fulltextExtraction = @FullTextExtraction( <i class="conum" data-value="2"></i><b>(2)</b>
+        fullTextLanguage = FullTextLanguage.ENGLISH, <i class="conum" data-value="3"></i><b>(3)</b>
+        reversedFullTextIndex = true <i class="conum" data-value="4"></i><b>(4)</b>
+    )
 )
 @ContentElement(
     name = "content2",
-    fulltextExtraction = true,
-    fullTextStorage = FullTextStorage.RDB_WITH_VECTOR_COLUMN, <i class="conum" data-value="6"></i><b>(6)</b>
-    fullTextLanguage = FullTextLanguage.ENGLISH,
-    reversedFullTextIndex = true
+    fulltextExtraction = @FullTextExtraction(
+        fullTextStorage = FullTextStorage.RDB_WITH_VECTOR_COLUMN, <i class="conum" data-value="5"></i><b>(5)</b>
+        fullTextLanguage = FullTextLanguage.ENGLISH,
+        reversedFullTextIndex = true
+    )
 )
 public interface DocumentWithRdbFullText {
 
@@ -456,10 +441,10 @@ public interface DocumentWithRdbFullText {
     void setDocumentName(String documentName);
 
     @SystemProperty(SystemPropertyName.QUERY_ATTRIBUTES)
-    QueryAttributes getQueryAttributes(); <i class="conum" data-value="7"></i><b>(7)</b>
+    QueryAttributes getQueryAttributes(); <i class="conum" data-value="6"></i><b>(6)</b>
 
     @SystemProperty(SystemPropertyName.FULL_TEXT_EXTRACTION_STATUS)
-    Map&lt;String, FullTextStatusInformation&gt; getFullTextStatusInformation(); <i class="conum" data-value="8"></i><b>(8)</b>
+    Map&lt;String, FullTextStatusInformation&gt; getFullTextStatusInformation(); <i class="conum" data-value="7"></i><b>(7)</b>
 }</code></pre>
 </div>
 </div>
@@ -475,27 +460,23 @@ public interface DocumentWithRdbFullText {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Tells the system to store the extracted full text data in the relational database</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>The language (or configuration) used for the full text index on the database</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>If this property is set to true, an additional index is created that contains full text data of the reversed original
 content. This is a requirement for suffix-searches. If suffix searches are not required, this setting should not be enabled.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>Activates an additional column on the database that will contain the parsed full text vector data. See below for details.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>Provides access to additional query result attributes like rank and highlighting</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
 <td>Provides access to status information about extracted full text data</td>
 </tr>
 </table>

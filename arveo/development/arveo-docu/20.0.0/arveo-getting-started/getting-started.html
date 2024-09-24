@@ -167,9 +167,6 @@
     <a class="nav-link" href="../arveo-administration/audit.html">Audit</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../arveo-administration/solr.html">Solr</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-administration/jobs.html">System jobs</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -558,12 +555,9 @@ repository used in the configuration below. In this case you must use the <code>
       &lt;activation&gt;
         &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;
       &lt;/activation&gt;
-      &lt;properties&gt;
-        &lt;solr.repositoryUrl&gt;https://nexus.eitco.de/repository/raw-public&lt;/solr.repositoryUrl&gt; <i class="conum" data-value="4"></i><b>(4)</b>
-      &lt;/properties&gt;
       &lt;repositories&gt;
         &lt;repository&gt;
-          &lt;id&gt;nexus&lt;/id&gt; <i class="conum" data-value="5"></i><b>(5)</b>
+          &lt;id&gt;nexus&lt;/id&gt; <i class="conum" data-value="4"></i><b>(4)</b>
           &lt;url&gt;https://nexus.eitco.de/repository/maven-private/&lt;/url&gt;
           &lt;releases&gt;
             &lt;updatePolicy&gt;never&lt;/updatePolicy&gt;
@@ -606,10 +600,6 @@ repository used in the configuration below. In this case you must use the <code>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Sets the repository to use for the SOLR plugin used in the system tests</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>Tells maven to use the credentials for the server with id 'nexus'</td>
 </tr>
 </table>
@@ -719,9 +709,6 @@ directory and run <code>mvn -Denv</code>. Maven will start the following process
 </li>
 <li>
 <p>An ActiveMQ message broker</p>
-</li>
-<li>
-<p>A SOLR server</p>
 </li>
 <li>
 <p>A Keycloak server</p>

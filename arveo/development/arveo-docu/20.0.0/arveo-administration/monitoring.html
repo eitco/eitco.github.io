@@ -167,9 +167,6 @@
     <a class="nav-link" href="audit.html">Audit</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="solr.html">Solr</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="jobs.html">System jobs</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -616,63 +613,6 @@ time after which an execution time warning is logged and the counter is incremen
     enable:
       ecr:
         rdb: false</code></pre>
-</div>
-</div>
-<div class="sect3">
-<h4 id="solr"><a class="anchor" href="#solr"></a>Solr</h4>
-<div class="paragraph">
-<p>The following metrics are collected for the Solr object database:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Metric</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.solr.add</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum and total time as well as a counter for add operations</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.solr.query</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum and total time as well as a counter for query operations</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.solr.deletebyid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum and total time as well as a counter for delete-by-id operations</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.solr.error</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A counter for all Solr exceptions</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.solr.time.warning</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of queries that took longer than the configured threshold to execute:</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The error counter contains a tag for the type of operation
-that has failed. The threshold time after which an execution time warning is logged and the counter is incremented can
-be configured using the setting <code>ecr.server.query.noSqlQueryTimeWarningMillis</code> (in milliseconds).</p>
-</div>
-<div class="paragraph">
-<p>It is possible to disable the collection of these metrics using the following configuration parameter:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">management:
-  metrics:
-    enable:
-      ecr:
-        solr: false</code></pre>
-</div>
 </div>
 </div>
 </div>

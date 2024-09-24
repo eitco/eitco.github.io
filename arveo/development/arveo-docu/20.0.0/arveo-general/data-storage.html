@@ -167,9 +167,6 @@
     <a class="nav-link" href="../arveo-administration/audit.html">Audit</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../arveo-administration/solr.html">Solr</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../arveo-administration/jobs.html">System jobs</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -469,9 +466,7 @@ with <em>arveo</em>.</p>
 either a cloud object storage or a file system storage.<br>
 Most cloud providers like AWS S3, NetAPP ONTAP, EMC Elastic Cloud, etc. provide file system storage or object storage systems.
 Object storages are organized in buckets and allow you to store an almost unlimited numbers of objects in a bucket.
-<em>arveo</em> accesses the content via REST Standard S3.<br>
-For an optimized and fast access of often used content objects <em>arveo</em> can integrate a NoSQL Keyvalue
-Cache DB like redis.</p>
+<em>arveo</em> accesses the content via REST Standard S3.<br></p>
 </li>
 <li>
 <p>Structured system properties: containing all primary keys and technical information
@@ -483,11 +478,6 @@ transaction support. <em>arveo</em> saves the data on a relational database.</p>
 semi structured and new properties might be added during the life cycle of the application.</p>
 <div class="ulist">
 <ul>
-<li>
-<p>Eventually consistent customer information: Sometimes the consistency of the data is not important, but we must guarantee a high performance and facets support when we filter by any value without the risk of a full table scan.
-<em>arveo</em> saves customer metadata on a NoSQL document DB apache solr 9.4.0 which
-is highly efficient for inserting and searching and offers automatic completion and facets.</p>
-</li>
 <li>
 <p>Consistent customer keys: The properties require highest performance, consistancy and
 transaction support. <em>arveo</em> saves the data on a relational database.</p>
@@ -776,51 +766,12 @@ The provider of the PostgreSQL 16.2 cluster must guarantee that data is stored r
 If the database has a long term outage and the data files are affected the potential data loss is limited by the time
 that has passed since the last replication and the number of objects stored since that time.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="eventually_consistent_meta_data_storage_nosql_document_database_apache_solr_9_4_0"><a class="anchor" href="#eventually_consistent_meta_data_storage_nosql_document_database_apache_solr_9_4_0"></a>Eventually consistent meta data storage (NoSQL document database apache solr 9.4.0)</h3>
-<div class="paragraph">
-<p><em>arveo</em> uses modern NoSQL storage technologies to guarantee high search performance and horizontal scalability at
-all times. We store semi-structured or dynamic document metadata to a NoSQL document database apache solr 9.4.0.</p>
-</div>
-<div class="paragraph">
-<p>Solr is an open source search platform that has been partially integrated into <em>arveo</em>.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="_images/solr_arveo.png" alt="solr arveo">
-</div>
-</div>
-<div class="paragraph">
-<p>Based on the type definitions that are created in <em>arveo</em>, <em>arveo</em> automatically creates a schema
-that Solr uses. In addition, for each client that is created in <em>arveo</em>, a new collection is also created in
-Solr, so that there is also a separation of data there.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="data_replication_redundancy_3"><a class="anchor" href="#data_replication_redundancy_3"></a>Data Replication (Redundancy)</h3>
-<div class="paragraph">
-<p>Setup a cluster of replicated nodes for apache solr 9.4.0. Refer to the apache solr 9.4.0 documentation to
-setup a redundant cluster.</p>
-</div>
 <div class="sect3">
 <h4 id="fail_safety_availability_partition_tolerance"><a class="anchor" href="#fail_safety_availability_partition_tolerance"></a>Fail safety (availability, partition tolerance)</h4>
 <div class="paragraph">
 <p>In case the database cluster is down <em>arveo</em> is still available but free customer searches fail.
 In case one database node is down or the database is read only <em>arveo</em> is still available but searches may return outdated results.
 If the database has a long term outage and the data files are affected the potential data loss is limited by the time that has passed since the last replication and the number of objects stored since that time.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-The provider of the apache solr 9.4.0 cluster must guarantee that data is replicated between the nodes and that the a backup strategy prevents data loss.
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -916,11 +867,6 @@ the following services as a cluster.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PostgreSQL 16.2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Access to metadata not available, system outage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2-n depending on load and configuration of PostgreSQL 16.2 cluster</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">apache solr 9.4.0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise search not available</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster 2-n depending on load and configuration of apache solr 9.4.0 cluster</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Content Storage</p></td>
