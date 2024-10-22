@@ -471,17 +471,17 @@ Page&lt;Object&gt; objectPage = searchService.where()
 <div class="listingblock">
 <div class="title">Example for type checking</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">            searchService.where() <i class="conum" data-value="1"></i><b>(1)</b>
-                .entity().typeId()   <i class="conum" data-value="2"></i><b>(2)</b>
-                .equalTo()
-                .typeId(NamedFile.class) <i class="conum" data-value="3"></i><b>(3)</b>
-                .or()
-                .entity().typeName() <i class="conum" data-value="4"></i><b>(4)</b>
-                .in().expressions(x -&gt; x
-                    .typeName(NamedTextFile.class) <i class="conum" data-value="5"></i><b>(5)</b>
-                    .typeName(NamedFolder.class)
-                ).and()
-                .entity().typeId().notEqual().typeId("named_relation") <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">                searchService.where() <i class="conum" data-value="1"></i><b>(1)</b>
+                        .entity().typeId()   <i class="conum" data-value="2"></i><b>(2)</b>
+                        .equalTo()
+                        .typeId(NamedFile.class) <i class="conum" data-value="3"></i><b>(3)</b>
+                        .or()
+                        .entity().typeName() <i class="conum" data-value="4"></i><b>(4)</b>
+                        .in().expressions(x -&gt; x
+                                .typeName(NamedTextFile.class) <i class="conum" data-value="5"></i><b>(5)</b>
+                                .typeName(NamedFolder.class)
+                        ).and()
+                        .entity().typeId().notEqual().typeId("named_relation") <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
