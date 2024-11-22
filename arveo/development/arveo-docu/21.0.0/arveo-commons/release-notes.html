@@ -396,7 +396,7 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_20_0_0_november_20_2024"><a class="anchor" href="#release_notes_20_0_0_november_20_2024"></a>Release notes 20.0.0 (November 20, 2024)</h2>
+<h2 id="release_notes_21_0_0_november_22_2024"><a class="anchor" href="#release_notes_21_0_0_november_22_2024"></a>Release notes 21.0.0 (November 22, 2024)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -406,26 +406,47 @@
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">ECR-1459 Batch Api: order operations in dependency order</dt>
+<dt class="hdlist1">ECR-1458: Content of documents deleted by cascading foreign key was not removed</dt>
+<dd>
+<p>Content elements of documents deleted on the database and not using the API will now be removed from the storage.</p>
+</dd>
+<dt class="hdlist1">ECR-1459: Batch Api: order operations in dependency order</dt>
 <dd>
 <p>Every call of the batch api now orders the batches elements so that attribute references are honoured i.e. should
 element a refer to element b it is assured that element b is executed before element a.</p>
 </dd>
-</dl>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">ECR-1458: Content of documents deleted by cascading foreign key was not removed</dt>
+<dt class="hdlist1">ECR-1463: Improved behavior of delete and purge methods</dt>
 <dd>
-<p>Content elements of documents deleted on the database and not using the API will now be removed from the storage.</p>
+<p>The behavior of the delete- and purge-methods was improved to avoid misunderstandings and leftover content elements in
+the storage system. The content of deleted documents will now always be deleted from the storage, too. For details see
+<a href="https://eitco.github.io/arveo/latest/arveo-docu/21.0.0/arveo-developer/repo-service-delete-objects.html">documentation</a>.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>The recovery table feature was removed. The method to clean up the recovery table was removed from the system management API.
+We recommend regular backups of the database- and storage-system instead.</p>
+</li>
+<li>
+<p>The compliance-delete feature was removed. The associated system field and the complianceDelete API methods have been removed.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The configuration option for the asynchronous mode of the retention cleanup job was removed. Instead, the job can now
+use the purge method instead of the delete method to achieve a similar behavior.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>

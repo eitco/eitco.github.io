@@ -400,12 +400,29 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Documents contain one or more content elements which are not stored in the database but in the storage system. When a document is deleted using one of the delete-calls, the content elements will remain on the storage. To delete both the database entries and all content elements (including those referenced from older versions), a client can use the purge
-methods provided by the document clients.</p>
+<p>Documents contain one or more content elements which are not stored in the database but in the storage system. When a document is deleted using one of the delete-calls, the database entries for the deleted documents (including those of older versions) are removed. A system job will delete the content elements of the deleted documents from the storage system asynchronously. To delete both the database entries and all content elements (including those referenced from older versions) immediately, a client can use the purge
+methods provided by the document client API. The purge methods will first remove the content elements from the storage and then remove the database entries. In case some content elements could not be removed from the storage, the system job mentioned above will try to remove those content elements asynchronously.</p>
 </div>
 <div class="paragraph">
-<p>A type definition can use the optional <em>recycle bin</em> feature. If it is enabled, entities in the type definition can be moved to and restored from the recycle bin.
-The Delete-API allows you to execute the methods:</p>
+<p>The IDs of the content elements that need to be removed from the storage in the asynchronous mode are kept in a system table (<code>ecr_purge_content_elements</code>) until they have been deleted successfully. When a content element could not be deleted, the entry in the system table is marked as failed. The number of entries in the system table can be monitored using the actuator endpoint <code>contentElementPurgeTable</code>. The entries marked as failed in the system table can then be used to resolve the problem manually.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The system job that deletes the content from the storage must run in the internal job scheduler of the Repository Service.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A type definition can use the optional <em>recycle bin</em> feature. If it is enabled, entities in the type definition can be moved to and restored from the recycle bin.</p>
+</div>
+<div class="paragraph">
+<p>The Delete-API allows you to execute the methods:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -413,10 +430,10 @@ The Delete-API allows you to execute the methods:</p>
 <p>MoveToRecycleBin(): to move an object to the recycle bin. The <em>DELETE</em>-property of the latest version is set to 1 and content and older versions are not affected.</p>
 </li>
 <li>
-<p>Delete() all the versions of the object are deleted from the database.</p>
+<p>Delete() all the versions of the object are deleted from the database. Content is removed asynchronously.</p>
 </li>
 <li>
-<p>Purge(): all the version of the objects are deleted from the database and the content objects or files are erased.</p>
+<p>Purge(): all the versions of the objects are deleted from the database and the content objects or files are erased immediately.</p>
 </li>
 <li>
 <p>RestoreFormRecycleBin(): restore an object from the recycle bin, the <em>DELETE</em>-property is set to 0</p>
@@ -430,7 +447,7 @@ The Delete-API allows you to execute the methods:</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If an object has relations to other objects is related by other objects the delete or purge method will fail with a foreign key exception. The Relation API provides methods to delete the relations (<a href="#removing_all_relations_of_an_entity"><strong>Remove Relations</strong></a>)
+If an object has relations to other objects the delete or purge method will fail with a foreign key exception. The Relation API provides methods to delete the relations (<a href="#removing_all_relations_of_an_entity"><strong>Remove Relations</strong></a>)
 </td>
 </tr>
 </table>

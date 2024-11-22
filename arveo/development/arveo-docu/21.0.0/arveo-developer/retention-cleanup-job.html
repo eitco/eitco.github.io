@@ -422,7 +422,7 @@ retention period that has expired before the specified time will be removed. The
 <div class="ulist">
 <ul>
 <li>
-<p><code>retention-cleanup-asynchronous</code>: Enables the asynchronous mode of the job. The asynchronous mode is described below.</p>
+<p><code>retention-cleanup-purge-content</code>: If true, the job will use the purge method instead of the delete method. The difference is described below.</p>
 </li>
 <li>
 <p><code>retention-cleanup-batch-size</code>: The size of a single batch of entities to process. The default is 1000 and the maximum is 10000.</p>
@@ -430,10 +430,6 @@ retention period that has expired before the specified time will be removed. The
 <li>
 <p><code>retention-cleanup-filter</code>: An optional filter in form of an EQL <code>Expression&lt;Boolean&gt;</code> to apply to the query used to find
 entities with expired retention period.</p>
-</li>
-<li>
-<p><code>retention-cleanup-maximum-queue-size</code>: The maximum acceptable size of the message queue used by the job in asynchronous mode. If the queue
-size exceeds the configured maximum, the job will stop. The job will check the queue size once a minute.</p>
 </li>
 <li>
 <p><code>retention-cleanup-duration</code>: An optional maximum duration of the job&#8217;s runtime. If the duration is exceeded, the job
@@ -449,20 +445,6 @@ contain a list of all deleted entity IDs.</p>
 </li>
 </ul>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The <code>retention-cleanup-maximum-queue-size</code> limitation mechanism relies on statistics data for the JMS queues that is
-collected by a separate system job. This job is not enabled by default and must be enabled using the property
-<code>ecr.server.jobs.jms-statistics.enabled=true</code> to use this feature.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>All properties except the type definition name, the retention end time and the protocol file can be configured in the
 configuration file of the service either globally or for each type definition.
@@ -471,37 +453,16 @@ See <a href="../commons/configuration-properties.html#_ecr_server_jobs_retention
 </div>
 </div>
 <div class="sect1">
-<h2 id="asynchronous_mode"><a class="anchor" href="#asynchronous_mode"></a>Asynchronous mode</h2>
+<h2 id="differences_between_the_purge_and_delete_method"><a class="anchor" href="#differences_between_the_purge_and_delete_method"></a>Differences between the purge- and delete-method</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In the asynchronous mode, content is not deleted from the storage immediately. Instead, a message queue is used to delete
-the content asynchronously. The database entries for the documents are not removed but marked as deleted using the
-<code>COMPLIANCE_DELETED</code> field.</p>
+<p>The delete method (default) will remove all database entries for the documents. For each removed document-version, an entry is added in a system table containing the version&#8217;s ID and the content information of the version. A separate system job will then remove the content elements from the storage. If removing of at least one content element of a version had failed, the entry in the system table will be marked as failed. When all content elements were removed successfully, the entry will be removed.</p>
 </div>
 <div class="paragraph">
-<p>The entries that were marked as deleted are automatically excluded from query results. It is not possible to read those
-entries using the <em>arveo</em> client API.</p>
+<p>The purge method on the other hand will first try to remove all content elements of the document versions from the storage, then it will delete the database entries. In case a content element could not be removed from the storage, it is added to the above-mentioned system table. When it could not be removed by the system job, too, it will be marked as failed.</p>
 </div>
 <div class="paragraph">
-<p>The <em>arveo</em> client API can be used to delete all entities that were marked as deleted as shown in the
-following example:</p>
-</div>
-<div class="listingblock">
-<div class="title">Deleting marked entities</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Expression&lt;Boolean&gt; expression = EcrQueryLanguage.condition()
-    .entity().systemField(SystemFieldList.GeneralSystemField.ComplianceDeleted.INSTANCE)
-    .equalTo().value(true).holds();
-serviceClient.delete(expression, 1000); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Set a limit to reduce database load</td>
-</tr>
-</table>
+<p>The failed entries in the system table (<code>ecr_purge_content_elements</code>) can then be used to resolve the problem manually.</p>
 </div>
 </div>
 </div>
@@ -534,6 +495,9 @@ schedulerClient.scheduleSimpleTrigger(trigger);</code></pre>
 </div>
 <div class="paragraph">
 <p>The API provides additional methods to create cron expression based triggers and to unschedule a job.</p>
+</div>
+<div class="paragraph">
+<p>Another way to trigger the job is using the <a href="../arveo-administration/ecr-shell.html#_ecr-shell" class="xref page">arveo-shell</a>.</p>
 </div>
 </div>
 </div>

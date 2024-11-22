@@ -407,22 +407,10 @@ Each document can have a retention period that ensures that the document cannot 
 <p>You can delete or purge any object with the <em>arveo</em> Delete-API if you have the <em>DELETE</em> right for the document type and the entity and the retention period has not expired.</p>
 </div>
 <div class="paragraph">
-<p>The delete method deletes all entities including all versions of the object in the database, but it does not delete the content objects or files. The delete operation cannot be restored and the data is permanently deleted.</p>
+<p>The delete method deletes all entities including all versions of the object in the database. The content is removed from the object storage asynchronously. The delete operation cannot be restored and the data is permanently deleted.</p>
 </div>
 <div class="paragraph">
-<p>The purge method additionally erases the content objects or files from the content storage.</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-If you delete objects only in the database the content objects are orphaned, and it is impossible to restore them and almost impossible to delete them later on because there is no relation left in the database. The content objects remain as data trash in the system and cannot be accessed by the API.
-</td>
-</tr>
-</table>
+<p>The purge method additionally erases the content objects or files from the content storage immediately.</p>
 </div>
 </div>
 </div>
@@ -454,47 +442,6 @@ For compliance reasons the audit entries in the database are not deleted by the 
 <h3 id="automated_recycle_bin_emptying"><a class="anchor" href="#automated_recycle_bin_emptying"></a>Automated recycle bin emptying</h3>
 <div class="paragraph">
 <p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>.You can activate the predefined empty recycle bin job, and you can change the age from the 6 months default value to the age you choose. The job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_recovery_log"><a class="anchor" href="#_recovery_log"></a>Recovery log</h3>
-<div class="paragraph">
-<p>In addition to the recycle bin feature, the <em>arveo</em> offers an additional safety layer to recover permanently deleted entities.By annotating a type definition with <em>@Recovery</em>, it is possible to define a time period, in which permanently deleted entities will be kept in a system-wide recovery table before they are removed completely.An entity in such a type definition that is deleted (or purged) will be removed from the type definition&#8217;s table (and its version table).A copy of each version of the entity will be stored in the recovery table making it possible to restore it manually.If the entity is a document, its contents will not be deleted from the storage until the entity is removed from the recovery table.</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-There is no API to restore data from the recovery table.
-This feature is only intended as a last backup in order to make accidentally deleted data available to the business by an administrator.The admin can copy the content file from the storage together with the JSON metadata and send it to the business department.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="recovery_log_emptying"><a class="anchor" href="#recovery_log_emptying"></a>Recovery log emptying</h3>
-<div class="paragraph">
-<p>The system management API provides a method to remove expired entities from the recovery table.An entity is considered expired when its keep-until timestamp is in the past compared from the moment the method is invoked.A user who calls this
-method needs the <strong>ECR_PURGE_RECOVERY_TABLE</strong> authority (see <a href="../arveo-developer/access-rights.html#access_rights" class="xref page">Access Rights</a>).</p>
-</div>
-<div class="paragraph">
-<p>The recovery of deleted entities is a manual process. The recovery table contains a JSONB column containing a JSON representation of the entire entity including attributes, content information and modification information. Each version of an entity is contained in the recovery table as a separate row.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-It is possible to empty the recovery log by an automated custom job scheduled in the Enterprise Integration Service of <em>arveo</em>. The job must execute the Management-API method to empty the recovery table.
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
