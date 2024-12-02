@@ -412,36 +412,13 @@ It is also possible to start the scheduler embedded in the repository service in
 repository service will create the jobs (if required), but it will not execute them.</p>
 </div>
 <div class="paragraph">
+<p>Each job can be enabled or disabled individually. No triggers will be created for disabled jobs. A disabled job will not execute even if a trigger for the job has already been created.</p>
+</div>
+<div class="paragraph">
 <p>The available configuration parameters for the scheduler are listed here: <a href="../commons/configuration-properties.html#_job-service" class="xref page">Job service</a></p>
 </div>
 <div class="paragraph">
 <p>The available configuration parameters for the jobs are listed here: <a href="../commons/configuration-properties.html#_ecr_server_jobs" class="xref page">Job configuration</a></p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-When the jobs are executed in the external Job Service, it is required to configure the user and the password
-to be used for the jobs. The user has to own the required authorities to execute the jobs: <code>ECR_PURGE_RECOVERY_TABLE</code>
-and the authority configured in <em>security.general.role-for-secured-access</em> (by default <code>ECR_SERVICE_USER</code>). When the
-jobs are executed in the scheduler embedded in the repository service, an internal authentication mechanism is used and
-no additional configuration is required.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="clean_recovery_table_job"><a class="anchor" href="#clean_recovery_table_job"></a>Clean recovery table job</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The expired entries in the recovery table (see <a href="../arveo-general/data-deletion.html#_recovery_log" class="xref page">Recovery</a>) are deleted by the
-clean recovery table job. By default, the job is triggered every day at 3 a.m. The user configured to execute the system
-jobs needs to have the <code>ECR_PURGE_RECOVERY_TABLE</code> authority to be able to perform this operation.</p>
 </div>
 </div>
 </div>
@@ -451,7 +428,7 @@ jobs needs to have the <code>ECR_PURGE_RECOVERY_TABLE</code> authority to be abl
 <div class="paragraph">
 <p>It is possible to use one or more external Job Service instances to execute the scheduled system jobs. To be able to
 execute the system jobs, the job implementations must be present in each of the Job Service&#8217;s class paths.
-The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external&lt;version&gt;.zip</em>) that contains all required libraries.
+The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external-21.0.0-SNAPSHOT.zip</em>) that contains all required libraries.
 Simply extract the contents of the ZIP file to a directory (e.g. <em>libs</em>) and start the Job Service with the following parameter:
 <code>-Dloader.path=libs</code>.</p>
 </div>
@@ -469,11 +446,10 @@ messages from the correct queues. Use the property <code>ecr.jobs.external.syste
 </table>
 </div>
 <div class="paragraph">
-<p>The configuration parameters for the jobs are already configured in the database. No further configuration parameters
-for the jobs are required in the Job Service&#8217;s configuration. However, the service must be able to authenticate to
-the repository service. As the jobs use a username and password to obtain an access token, the service needs OAuth
-client registrations both for the <em>client_credentials</em> and for the <em>password</em> grant types. The following example shows
-how to configure two client registrations for the service:</p>
+<p>The triggers for the system jobs running in the external job scheduler will be created automatically. For this to work, the job services requires a running instance of the Content Repository Service to get information about the available type definitions.</p>
+</div>
+<div class="paragraph">
+<p>The configuration parameters for the jobs are already configured in the database. No further configuration parameters for the jobs are required in the Job Service&#8217;s configuration. However, the service must be able to authenticate to the repository service. When the jobs use a username and password to obtain an access token, the service needs OAuth client registrations both for the <em>client_credentials</em> and for the <em>password</em> grant types. The following example shows how to configure two client registrations for the service:</p>
 </div>
 <div class="listingblock">
 <div class="title">OAuth client registrations</div>
@@ -502,10 +478,7 @@ how to configure two client registrations for the service:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The username and password to use for the jobs can be configured using the following parameters. Note that these parameters
-are added to the job configuration data stored for the triggers in the database used by the scheduler. Because these triggers
-are created by the scheduler running in the Repository Service (even if this scheduler is set to standby mode), the job
-authentication parameters must be configured for the Repository Service.</p>
+<p>The username and password to use for the jobs can be configured using the following parameters in the configuration file for the Job Service. If those parameters are not configured, the jobs will use a technical authentication using a client-credentials grant. In this case, only one client registration using the <code>client_credentials</code> grant type is required.</p>
 </div>
 <div class="listingblock">
 <div class="title">Job user authentication</div>
@@ -518,16 +491,18 @@ authentication parameters must be configured for the Repository Service.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>By default, the scheduler included in the repository service instances will be used to execute the scheduled jobs, too.
-When the scheduler in the repository service is started in standby mode, only the external Job Service instances will
-execute the scheduled jobs. The following configuration can be used to start the repository service with a scheduler in
-standby mode:</p>
+<p>Enabling or disabling a job in either the Content Repository Service or the external Job Service decides where a job will run. The following example shows how to disable certain system jobs. The same configuration can be used for the Content Repository Service and the Job Service.</p>
 </div>
 <div class="listingblock">
-<div class="title">Scheduler in standby mode</div>
+<div class="title">disabling jobs</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">job-service:
-  standbyOnlyScheduler: true</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    jobs:
+      retry-renditions:
+        enabled: false
+      retry-full-text-extraction:
+        enabled: false</code></pre>
 </div>
 </div>
 </div>

@@ -421,6 +421,10 @@ element a refer to element b it is assured that element b is executed before ele
 the storage system. The content of deleted documents will now always be deleted from the storage, too. For details see
 <a href="https://eitco.github.io/arveo/latest/arveo-docu/21.0.0/arveo-developer/repo-service-delete-objects.html">documentation</a>.</p>
 </dd>
+<dt class="hdlist1">ECR-1437: Internal and external job scheduler can now be used simultaneously</dt>
+<dd>
+<p>It is now possible to use both the internal and the external job scheduler simultaneously.</p>
+</dd>
 </dl>
 </div>
 <div class="paragraph">
@@ -450,6 +454,11 @@ use the purge method instead of the delete method to achieve a similar behavior.
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
+</div>
+<div class="paragraph">
+<p>The name of the internal Quartz scheduler used in the Content Repository Service was changed from <code>quartzScheduler</code> to
+<code>content-repository-service-scheduler</code>. All triggers for the system jobs will be re-created with the new scheduler name
+automatically. Manual changes made to the old triggers have to be applied manually to the newly created triggers if required.</p>
 </div>
 </div>
 </details>
