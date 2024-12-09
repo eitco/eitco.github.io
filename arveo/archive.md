@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of arveo deployed so far.
 
+ * [21.0.0](archive/21.0.0)
  * [20.0.0](archive/20.0.0)
  * [19.2.1](archive/19.2.1)
  * [19.2.0](archive/19.2.0)
