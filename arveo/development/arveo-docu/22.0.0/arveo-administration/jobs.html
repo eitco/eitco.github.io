@@ -507,6 +507,60 @@ messages from the correct queues. Use the property <code>ecr.jobs.external.syste
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="find_abandoned_content_elements_job"><a class="anchor" href="#find_abandoned_content_elements_job"></a>Find abandoned content elements job</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>arveo provides a system job that can be used to scan a storage profile for content elements that are no longer referenced by an entity in the database. This job is intended to be triggered manually to perform cleanup operations after system failures.
+The job writes the IDs of identified abandoned content elements to a file. The content elements will not be deleted from the storage.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Depending on the number of content elements in the storage and the number of entities in the database, the job might take a long time to run.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The job requires two parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>profile: The name of the storage profile to scan</p>
+</li>
+<li>
+<p>fileName: A path to a file that will contain the IDs of identified abandonded content elements.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The storage profile must be a "real" profile. The bucket organizer plugin, wich distributes content over several actual profiles, does not support listing all content IDs and cannot be used for the job.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <a href="ecr-shell.html" class="xref page">ecr-shell</a> can be used to trigger the job. The following example shows how to run the job with the two parameters mentioned above:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger ecr-find-abandoned-content "{\"profile\":\"fsProfileHeap\",\"fileName\":\"c:\contentids.csv\"}"</code></pre>
+</div>
+</div>
+</div>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="audit.html">Audit</a></span>
   <span class="next"><a href="vault.html">Using Hashicorp Vault</a></span>
