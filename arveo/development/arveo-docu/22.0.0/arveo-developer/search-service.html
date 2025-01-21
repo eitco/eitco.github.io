@@ -1102,12 +1102,12 @@ public interface Invoice {
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        final EcrSearchService&lt;Map&lt;String, Object&gt;&gt; aggregationSearchService = searchClient.aggregate() <i class="conum" data-value="1"></i><b>(1)</b>
-            .count("i", "id").as("invoice_count") <i class="conum" data-value="2"></i><b>(2)</b>
-            .sum("i", "total").as("invoice_total")
-            .groupedBy("c", "name").as("customer")
-            .from().type(ProtectedInvoice.class).as("i").join().type(ProtectedCustomer.class).as("c")  <i class="conum" data-value="3"></i><b>(3)</b>
-            .on().alias("i").field("customer_number").equalTo().alias("c").id() <i class="conum" data-value="4"></i><b>(4)</b>
-            .holds().build();</code></pre>
+                .count("i", "id").as("invoice_count") <i class="conum" data-value="2"></i><b>(2)</b>
+                .sum("i", "total").as("invoice_total")
+                .groupedBy("c", "name").as("customer")
+                .from().type(ProtectedInvoice.class).as("i").join().type(ProtectedCustomer.class).as("c")  <i class="conum" data-value="3"></i><b>(3)</b>
+                .on().alias("i").field("customer_number").equalTo().alias("c").id() <i class="conum" data-value="4"></i><b>(4)</b>
+                .holds().build();</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1147,8 +1147,8 @@ public interface Invoice {
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        final List&lt;Map&lt;String, Object&gt;&gt; open = aggregationSearchService.where()
-            .alias("i").field("open").equalTo().value(true)
-            .holds().unpaged();</code></pre>
+                .alias("i").field("open").equalTo().value(true)
+                .holds().unpaged();</code></pre>
 </div>
 </div>
 <div class="paragraph">
