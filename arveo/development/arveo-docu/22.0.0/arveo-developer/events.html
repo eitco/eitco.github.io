@@ -526,6 +526,198 @@ implement a Spring Boot starter with the according auto import declaration.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="forwarding_events_to_a_message_queue"><a class="anchor" href="#forwarding_events_to_a_message_queue"></a>Forwarding events to a message queue</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>arveo can forward the after&#8230;&#8203; events to message queues. This makes it possible for external services to react
+to certain events.
+The message queues and the types of events to forward can be configured in the configuration of the Content Repository
+Service. Only events fired after an action was performed can be forwarded. By default, no events will be forwarded.
+The following example configuration shows how to forward all available events to different message queues.</p>
+</div>
+<div class="listingblock">
+<div class="title">forwarding configuration</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    messaging:
+      forwarding:
+        afterCreate:
+          containerQueueName: ecr-after-create-container-events
+          documentQueueName: ecr-after-create-document-events
+          folderQueueName: ecr-after-create-folder-events
+          relationQueueName: ecr-after-create-relation-events
+          metaDataQueueName: ecr-after-create-meta-events
+        afterUpdate:
+          containerQueueName: ecr-after-update-container-events
+          documentQueueName: ecr-after-update-document-events
+          folderQueueName: ecr-after-update-folder-events
+          relationQueueName: ecr-after-update-relation-events
+          metaDataQueueName: ecr-after-update-meta-events
+        afterBatchUpdate:
+          containerQueueName: ecr-after-batch-update-container-events
+          documentQueueName: ecr-after-batch-update-document-events
+          folderQueueName: ecr-after-batch-update-folder-events
+          relationQueueName: ecr-after-batch-update-relation-events
+          metaDataQueueName: ecr-after-batch-update-meta-events
+        afterDelete:
+          containerQueueName: ecr-after-delete-container-events
+          documentQueueName: ecr-after-delete-document-events
+          folderQueueName: ecr-after-delete-folder-events
+          relationQueueName: ecr-after-delete-relation-events
+          metaDataQueueName: ecr-after-delete-meta-events
+        afterCreateContentQueueName: ecr-after-create-content-events
+        afterReadContentQueueName: ecr-after-read-content-events
+        afterDeleteContentQueueName: ecr-after-delete-content-events</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Only event types with a configured message queue name will be forwarded.</p>
+</div>
+<div class="paragraph">
+<p>As it is not possible to forward the internal event classes, the events will be converted to serializable event classes.
+The available classes are contained in the package <code>de.eitco.ecr.common.events</code>. These events will be serialized to
+JSON when they are sent to the message queues.</p>
+</div>
+<div class="paragraph">
+<p>The arveo SDK for Spring applications provides a preconfigured <code>JmsTemplate</code> which will automatically
+deserialize the events. The following dependency is required to access the preconfigured <code>JmsTemplate</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">jms dependency</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
+    &lt;artifactId&gt;ecr-jms&lt;/artifactId&gt;
+    &lt;version&gt;22.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The preconfigured <code>JmsTemplate</code> can then by obtained by injecting an <code>EcrJmsTemplateHolder</code> as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+private EcrJmsTemplateHolder ecrJmsTemplateHolder;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>JmsTemplate</code> can then be used to receive events. The following example shows how to listen to a specific queue
+synchronously.</p>
+</div>
+<div class="listingblock">
+<div class="title">listening to events</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">JmsTemplate jmsTemplate = ecrJmsTemplateHolder.getJmsTemplate();
+AfterUpdateDocumentEvent event = (AfterUpdateDocumentEvent) jmsTemplate.receiveAndConvert(
+    new ActiveMQQueue("ecr-after-update-document-events"));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>ecr-jms</code> module also registers <code>JmsListenerContainerFactory</code> beans that can be used to programmatically register
+JMS listeners in a Spring application. The following example shows an example of a component that adds a custom
+message listener using the preconfigured <code>JmsListenerContainerFactory</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">registering event listeners</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Component
+public class MyListenerRegistration implements JmsListenerConfigurer {
+
+    private final JmsListenerContainerFactory&lt;DefaultMessageListenerContainer&gt; queueListenerContainerFactory;
+
+    @Autowired
+    public AbstractListenerRegistration(
+        @Qualifier("ecr-queue-listener-container-factory") JmsListenerContainerFactory&lt;DefaultMessageListenerContainer&gt; queueListenerContainerFactory <i class="conum" data-value="1"></i><b>(1)</b>
+    ) {
+        this.queueListenerContainerFactory = queueListenerContainerFactory;
+    }
+
+    @Override
+    public void configureJmsListeners(@NotNull JmsListenerEndpointRegistrar registrar) {
+
+        SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint(); <i class="conum" data-value="2"></i><b>(2)</b>
+        endpoint.setId("my-listener-id");
+        endpoint.setDestination("my-queue-name");
+        endpoint.setMessageListener(new MyMessageListener());
+
+        registrar.registerEndpoint(endpoint, queueListenerContainerFactory); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Injects the preconfigured <code>JmsListenerContainerFactory</code> provided by the <code>ecr-jms</code> library.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Create a custom listener endpoint.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Register the custom listener endpoint using the preconfigured container factory</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The custom event listener can be implemented by extending <code>de.eitco.ecr.jms.ConvertingMessageListener</code>. This abstract
+class provides automatic deserialization of the message objects.</p>
+</div>
+<div class="listingblock">
+<div class="title">custom event listener</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Component
+public class MyMessageListener extends ConvertingMessageListener&lt;EventType&gt; {
+
+    @Autowired
+    public MyMessageListener(MessageConverter messageConverter) {
+        super(messageConverter, EventType.class); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+
+    @Override
+    protected void handleMessage(@NotNull ActiveMQMessage activeMQMessage, @NotNull EventType event) { <i class="conum" data-value="2"></i><b>(2)</b>
+
+        // the actual event processing happens here
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Pass the injected MessageConverter to the abstract listener. The MessageConverter is provided by the ecr-jms module.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This method is called after the event was converted. The original message is supplied, too.</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="filtering_events_by_type_definition"><a class="anchor" href="#filtering_events_by_type_definition"></a>Filtering events by type definition</h3>
+<div class="paragraph">
+<p>arveo sets a header called <code>ECRTypeDefinition</code> in every forwarded message (except for <code>AfterDeleteContentEvent</code>).
+This header can be used in a message selector, so that only events for a specific type definition are received.</p>
+</div>
+<div class="listingblock">
+<div class="title">using a message selector</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">String messageSelector = TypeDefinitionSpecificEvent.TYPE_DEFINITION_HEADER + "='"
+                         + PersonSimpleNames.getTypeDefinitionName() + "'";
+
+AfterCreateContainerEvent event = (AfterCreateContainerEvent) jmsTemplate.receiveSelectedAndConvert(
+    new ActiveMQQueue("ecr-after-create-container-events"), messageSelector);</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="non-spring-sdk.html">Java SDK for non-Spring applications</a></span>
   <span class="next"><a href="integration-service.html">Enterprise Integration Service</a></span>
