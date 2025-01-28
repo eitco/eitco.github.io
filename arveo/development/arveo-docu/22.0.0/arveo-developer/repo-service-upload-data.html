@@ -409,11 +409,14 @@
     typeDefinitionServiceClient.getDocumentServiceClient().byClass(SingleContentDocument.class); <i class="conum" data-value="1"></i><b>(1)</b>
 
 SingleContentDocument document = serviceClient.createTypeInstance();
-document.setName("some name");
+document.setName("name");
 
-TypedDocumentClient&lt;SingleContentDocument&gt; client = serviceClient.create(
-    new TypedDocumentInput&lt;&gt;(Map.of("content", <i class="conum" data-value="2"></i><b>(2)</b>
-        new ContentUpload(inputStream)), document)); <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+ByteArrayInputStream data = new ByteArrayInputStream("abcde".getBytes()); <i class="conum" data-value="2"></i><b>(2)</b>
+
+Map&lt;String, ContentUpload&gt; content = Map.of("content", new ContentUpload(data)); <i class="conum" data-value="3"></i><b>(3)</b>
+
+TypedDocumentClient&lt;SingleContentDocument&gt; client =
+    serviceClient.create(new TypedDocumentInput&lt;&gt;(content, document));</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -424,11 +427,11 @@ TypedDocumentClient&lt;SingleContentDocument&gt; client = serviceClient.create(
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The type definition SingleContentDocument uses only the default content definition, hence the default name is used.</td>
+<td>The actual content is passed as an InputStream.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The actual content is passed as an InputStream.</td>
+<td>The type definition SingleContentDocument uses only the default content definition, hence the default name is used.</td>
 </tr>
 </table>
 </div>
@@ -440,7 +443,7 @@ TypedDocumentClient&lt;SingleContentDocument&gt; client = serviceClient.create(
 
 TypedTargetDocument document = serviceClient.createTypeInstance();
 
-DocumentContentReference reference = new DocumentContentReference(documentId, "content"); <i class="conum" data-value="2"></i><b>(2)</b>
+DocumentContentReference reference = new DocumentContentReference(documentId, "s3stuff"); <i class="conum" data-value="2"></i><b>(2)</b>
 
 TypedDocumentClient&lt;TypedTargetDocument&gt; client =
     serviceClient.create(new TypedDocumentInput&lt;&gt;(document, Map.of("content", reference)));</code></pre>

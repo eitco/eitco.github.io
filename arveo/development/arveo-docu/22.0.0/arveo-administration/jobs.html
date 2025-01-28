@@ -556,7 +556,33 @@ The storage profile must be a "real" profile. The bucket organizer plugin, wich 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger ecr-find-abandoned-content "{\"profile\":\"fsProfileHeap\",\"fileName\":\"c:\contentids.csv\"}"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger ecr-find-abandoned-content "{\"profile\":\"fsProfileHeap\",\"fileName\":\"c:/contentids.csv\"}"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="delete_abandoned_content_elements_job"><a class="anchor" href="#delete_abandoned_content_elements_job"></a>Delete abandoned content elements job</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The file written by the find abandoned content elements job can be used as an input for the delete abandoned content elements job to actually delete the content from the storage. This job, too, is not triggered automatically but must be triggered manually. The ecr-shell can be used to trigger the job as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger ecr-delete-abandoned-content "{\"profile\":\"fsProfileHeap\",\"fileName\":\"c:/contentids.csv\"}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The job will delete the blobs in batches. The size of the batches can be configured in the configuration file for the
+content repository service. The default batch size is 1000.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    jobs:
+      delete-abandoned-content:
+        batch-size: 1000</code></pre>
 </div>
 </div>
 </div>
