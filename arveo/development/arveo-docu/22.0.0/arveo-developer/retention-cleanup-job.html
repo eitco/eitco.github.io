@@ -470,8 +470,8 @@ See <a href="../commons/configuration-properties.html#_ecr_server_jobs_retention
 <h2 id="triggering_the_job"><a class="anchor" href="#triggering_the_job"></a>Triggering the job</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Both the Repository Service and the Job Service offer an API that provides methods to create triggers for the job. The
-following example shows how to use this API to create a simple trigger that will fire once at a specified time. The API
+<p>Both the Repository Service and the Job Service offer an API that provides methods to create triggers for the job or to trigger a job execution immediately. The
+following example shows how to use this API to trigger the job and to create a cron trigger that will fire every sunday. The API
 requires administrator privileges.</p>
 </div>
 <div class="listingblock">
@@ -480,21 +480,39 @@ requires administrator privileges.</p>
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">EcrSchedulerResourceClient schedulerClient = systemManagementClient.getSchedulerClient();
 
 JobKeyModel jobKey = new JobKeyModel(SystemJobIdentities.ECR_JOBS_GROUP, SystemJobIdentities.RETENTION_CLEANUP);
+
+JobDetailModel jobDetail = new JobDetailModel();
+jobDetail.setKey(jobKey);
+jobDetail.setJobDataMap(Map.of(
+    SystemJobDataKeys.TYPE_DEFINITION_NAME, SimpleInvoiceNames.getTypeDefinitionName(),
+    SystemJobDataKeys.RETENTION_CLEANUP_RETENTION_END_TIME, ZonedDateTime.now(),
+    SystemJobDataKeys.RETENTION_CLEANUP_PROTOCOL_FILE, getTargetDir() + File.separator + "retention-cleanup-job.log"
+));
+
+schedulerClient.triggerJob(jobDetail);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Creating a cron trigger for the retention cleanup job</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">EcrSchedulerResourceClient schedulerClient = systemManagementClient.getSchedulerClient();
+
+JobKeyModel jobKey = new JobKeyModel(SystemJobIdentities.ECR_JOBS_GROUP, SystemJobIdentities.RETENTION_CLEANUP);
 TriggerKeyModel triggerKey = new TriggerKeyModel(SystemJobIdentities.ECR_JOBS_GROUP, "test-trigger-retention-cleanup");
 
-SimpleTriggerModel trigger = new SimpleTriggerModel(triggerKey, jobKey);
-trigger.setNextFireTime(ZonedDateTime.now());
+CronTriggerModel trigger = new CronTriggerModel(triggerKey, jobKey);
+trigger.setCronExpression("0 0 0 ? * SUN *"); // every sunday
 trigger.setJobDataMap(Map.of(
     SystemJobDataKeys.TYPE_DEFINITION_NAME, SimpleInvoiceNames.getTypeDefinitionName(),
     SystemJobDataKeys.RETENTION_CLEANUP_RETENTION_END_TIME, ZonedDateTime.now(),
     SystemJobDataKeys.RETENTION_CLEANUP_PROTOCOL_FILE, getTargetDir() + File.separator + "retention-cleanup-job.log"
 ));
 
-schedulerClient.scheduleSimpleTrigger(trigger);</code></pre>
+schedulerClient.scheduleCronTrigger(trigger);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The API provides additional methods to create cron expression based triggers and to unschedule a job.</p>
+<p>The API provides additional methods to create simple triggers and to unschedule a job.</p>
 </div>
 <div class="paragraph">
 <p>Another way to trigger the job is using the <a href="../arveo-administration/ecr-shell.html#_ecr-shell" class="xref page">arveo-shell</a>.</p>
