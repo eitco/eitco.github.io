@@ -727,7 +727,115 @@ documents related to the file.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
-<td>Perform the batch operation. Note that the order of the entities is important here.</td>
+<td>Perform the batch operation.Note that the order of the entities is important here.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating_or_updating_a_file_with_a_document_in_one_transaction"><a class="anchor" href="#creating_or_updating_a_file_with_a_document_in_one_transaction"></a>Creating or updating a file with a document in one transaction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The batch API also offers a way to perform "upsert" operations.When the file for the employee already exists, it is updated, if not,
+it will be created.In the same transaction a new document can be added to the new (or existing) file.</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating a file in one transaction</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        TypedContainerServiceClient&lt;EmployeeFile&gt; employeeFileServiceClient =
+            typeDefinitionServiceClient.getContainerServiceClient().byClass(EmployeeFile.class); <i class="conum" data-value="1"></i><b>(1)</b>
+
+        EmployeeFile employeeFile = employeeFileServiceClient.createTypeInstance(); <i class="conum" data-value="2"></i><b>(2)</b>
+        employeeFile.setName("Lenny Leonard");
+        employeeFile.setBirthday(LocalDate.of(1985, 10, 7));
+
+        TypedContainerBatchCreateInput&lt;EmployeeFile&gt; fileInput =
+            new TypedContainerBatchCreateInput&lt;&gt;(new TypedContainerInput&lt;&gt;(employeeFile), List.of()); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        TypedDocumentServiceClient&lt;EmployeeDocument&gt; documentServiceClient =
+            typeDefinitionServiceClient.getDocumentServiceClient().byClass(EmployeeDocument.class); <i class="conum" data-value="4"></i><b>(4)</b>
+
+        EmployeeDocument document = documentServiceClient.createTypeInstance(); <i class="conum" data-value="5"></i><b>(5)</b>
+        document.setDescription("Curriculum Vitae");
+        ContentUpload upload = new ContentUpload("curriculum_vitae.docx", null, null, inputStream); <i class="conum" data-value="6"></i><b>(6)</b>
+
+        final TypedDocumentBatchCreateInput&lt;EmployeeDocument&gt; documentInput = new TypedDocumentBatchCreateInput&lt;&gt;( <i class="conum" data-value="7"></i><b>(7)</b>
+            new TypedDocumentInput&lt;&gt;(Map.of("content", upload), document), <i class="conum" data-value="8"></i><b>(8)</b>
+            List.of(
+                new BatchAttributeReference( <i class="conum" data-value="9"></i><b>(9)</b>
+                    EmployeeDocumentNames.EMPLOYEE_ID,
+                    SystemFieldList.GeneralSystemField.Id.INSTANCE.getName(),
+                    fileInput.getVirtualIdentifier().getUuid() <i class="conum" data-value="10"></i><b>(10)</b>
+                )
+            )
+        );
+
+        TypedContainerBatchCreateOrUpdateOperation&lt;EmployeeFile&gt; createOrUpdateOperation = <i class="conum" data-value="11"></i><b>(11)</b>
+            new TypedContainerBatchCreateOrUpdateOperation&lt;&gt;(
+                EcrQueryLanguage.condition().entity().field(EmployeeFileNames.NAME).equalTo().value("Lenny Leonard").holds(),
+                fileInput
+            );
+
+        TypedDocumentBatchCreateOperation&lt;EmployeeDocument&gt; createOperation =  <i class="conum" data-value="12"></i><b>(12)</b>
+            new TypedDocumentBatchCreateOperation&lt;&gt;(documentInput);
+
+        batchOperationServiceClient.performTypedBatchOperations(createOperation, createOrUpdateOperation); <i class="conum" data-value="13"></i><b>(13)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Obtain a service client for the EmployeeFile type definition</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Create the entity and add metadata</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Create the batch input object that will create the EmployeeFile entity</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Obtain a service client for the EmployeeFile type definition</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Create the document entity and add metadata</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Create a ContentUpload for the actual document content</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Create the batch input that will create the EmployeeDocument entity</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Create the regular typed document input holding the metadata and the content</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Use a BatchAttributeReference to set the <em>EMPLOYEE_ID</em> attribute to the value of the system attribute <em>ID</em> of the EmployeeFile entity</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>The virtual identifier of the batch create input created in step 3 is used to reference the created entity</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>This operation performs the "upsert" for the file. The EQL condition identifies an already existing file by name.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>This operation will create a new document linked to the file.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Performs the operations. Note that the order of the operations is important here.</td>
 </tr>
 </table>
 </div>
