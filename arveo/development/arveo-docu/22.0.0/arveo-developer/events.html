@@ -400,7 +400,41 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <em>arveo</em> service publishes several different kinds of events internally. Events are named after the operation they
+<p>The <em>arveo</em> service publishes several different kinds of events internally for the following actions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create</p>
+</li>
+<li>
+<p>Update</p>
+</li>
+<li>
+<p>Batch-Update</p>
+</li>
+<li>
+<p>Delete</p>
+</li>
+<li>
+<p>Retention prolongation</p>
+</li>
+<li>
+<p>Litigation hold</p>
+</li>
+<li>
+<p>Read content</p>
+</li>
+<li>
+<p>Create content</p>
+</li>
+<li>
+<p>Delete content</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Events are named after the operation they
 are published for and have one of the following three prefixes:</p>
 </div>
 <div class="ulist">
@@ -567,6 +601,16 @@ The following example configuration shows how to forward all available events to
           folderQueueName: ecr-after-delete-folder-events
           relationQueueName: ecr-after-delete-relation-events
           metaDataQueueName: ecr-after-delete-meta-events
+        afterRetentionProlongation:
+          containerQueueName: ecr-after-retention-prolongation-container-events
+          documentQueueName: ecr-after-retention-prolongation-document-events
+          folderQueueName: ecr-after-retention-prolongation-folder-events
+          relationQueueName: ecr-after-retention-prolongation-relation-events
+        afterLitigationHold:
+          containerQueueName: ecr-after-litigation-hold-container-events
+          documentQueueName: ecr-after-litigation-hold-document-events
+          folderQueueName: ecr-after-litigation-hold-folder-events
+          relationQueueName: ecr-after-litigation-hold-relation-events
         afterCreateContentQueueName: ecr-after-create-content-events
         afterReadContentQueueName: ecr-after-read-content-events
         afterDeleteContentQueueName: ecr-after-delete-content-events</code></pre>
