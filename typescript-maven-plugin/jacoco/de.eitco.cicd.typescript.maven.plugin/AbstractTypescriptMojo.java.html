@@ -310,17 +310,15 @@ import java.util.stream.Stream;
 
 <span class="fc" id="L311">        metaDataReader.forEachDependency((dependency, packaj) -&gt; {</span>
 
-<span class="pc bpc" id="L313" title="1 of 2 branches missed.">            String version = packaj.getVersion().endsWith(&quot;-SNAPSHOT&quot;)</span>
-<span class="fc" id="L314">                    ? '~' + packaj.getVersion()</span>
-<span class="pc" id="L315">                    : packaj.getVersion();</span>
+<span class="fc" id="L313">            String version = &quot;&gt;=&quot; + packaj.getVersion();</span>
 
-<span class="fc" id="L317">            projectBuilder.addPeerDependency(</span>
-<span class="fc" id="L318">                    packaj.getName(),</span>
-<span class="fc" id="L319">                    dependency.getArtifact().getFile().toURI().toString(),</span>
+<span class="fc" id="L315">            projectBuilder.addPeerDependency(</span>
+<span class="fc" id="L316">                    packaj.getName(),</span>
+<span class="fc" id="L317">                    dependency.getArtifact().getFile().toURI().toString(),</span>
                     version
             );
-<span class="fc" id="L322">        });</span>
-<span class="fc" id="L323">        return projectBuilder;</span>
+<span class="fc" id="L320">        });</span>
+<span class="fc" id="L321">        return projectBuilder;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
