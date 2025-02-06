@@ -12,10 +12,12 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-<span class="fc" id="L17">public abstract class AbstractDotnetMojo extends AbstractMojo {</span>
+<span class="fc" id="L18">public abstract class AbstractDotnetMojo extends AbstractMojo {</span>
 
+    public static final String SUFFIX_SNAPSHOT = &quot;-SNAPSHOT&quot;;
     /**
      * This parameter specifies the directory where to execute {@code dotnet} and thus where the
      * project files are located
@@ -62,24 +64,24 @@ import java.util.Map;
      * name {@code nuget} will use to identify the repository by. It can also be used to add
      * &lt;a href=&quot;https://maven.apache.org/settings.html#servers&quot;&gt;credentials&lt;/a&gt; to using {@code &lt;server&gt;}
      * elements in the {@code settings.xml}.
-     *
+     * &lt;p&gt;
      * Consider to &lt;a href=&quot;https://maven.apache.org/guides/mini/guide-encryption.html&quot;&gt;encrypt passwords&lt;/a&gt; in
      * your {@code settings.xml}
-     *
+     * &lt;p&gt;
      * Note that crendentials added this way will be written to your nuget configuration file. On windows systems
      * the credentials will be encrypted, however on linux systems password encryption is not supported by
      * {@code nuget} - so the credentials will be written to the {code nuget} config way unencrypted.
      */
-<span class="fc" id="L73">    @Parameter</span>
-<span class="fc" id="L74">    protected Map&lt;String, String&gt; nugetSources = Map.of();</span>
+<span class="fc" id="L75">    @Parameter</span>
+<span class="fc" id="L76">    protected Map&lt;String, String&gt; nugetSources = Map.of();</span>
 
     /**
      * This parameter specifies custom properties given to dotnet via '-p:'. Keep in mind that the 'Version', 'Company',
      * 'Description', 'RepositoryUrl' and 'AssemblyVersion' properties will be overwritten by their respective
      * parameters, when specified.
      */
-<span class="fc" id="L81">    @Parameter</span>
-<span class="fc" id="L82">    protected Map&lt;String, String&gt; customProperties = Map.of();</span>
+<span class="fc" id="L83">    @Parameter</span>
+<span class="fc" id="L84">    protected Map&lt;String, String&gt; customProperties = Map.of();</span>
 
     /**
      * This parameter specifies additional environment variables to be added to the {@code dotnet} process.
@@ -87,8 +89,8 @@ import java.util.Map;
      * Note that the {@code DOTNET_CLI_TELEMETRY_OPTOUT} will be set to {@code TRUE} if not overwritten with
      * this parameter.
      */
-<span class="fc" id="L90">    @Parameter</span>
-<span class="fc" id="L91">    protected Map&lt;String, String&gt; environmentVariables = Map.of();</span>
+<span class="fc" id="L92">    @Parameter</span>
+<span class="fc" id="L93">    protected Map&lt;String, String&gt; environmentVariables = Map.of();</span>
 
     /**
      * This parameter specifies the symbolic name of the local nuget repository. The local nuget repository is a
@@ -108,6 +110,54 @@ import java.util.Map;
     @Parameter(defaultValue = &quot;${settings.localRepository}&quot;)
     protected String localMavenNugetRepositoryBaseDirectory;
 
+    /**
+     * This parameter specifies properties that contain versions. They will be handled differently than normal
+     * properties to honour '-SNAPSHOT' dependencies. This happens in two steps per property:
+     * &lt;ol&gt;
+     *      &lt;li&gt;it is checked whether the property value ends with '-SNAPSHOT'
+     *          &lt;ul&gt;
+     *              &lt;li&gt;if not the value of the property is used&lt;/li&gt;
+     *              &lt;li&gt;if it does end with '-SNAPSHOT' the ending substring '-SNAPSHOT' is replaced with the value of
+     *                      the parameter {@link #snapshotReplacement}&lt;/li&gt;
+     *          &lt;/ul&gt;
+     *      &lt;/li&gt;
+     *      &lt;li&gt;it is checked if the resulting string contains the string '%c'
+     *          &lt;ul&gt;
+     *              &lt;li&gt;if not this is the value used&lt;/li&gt;
+     *              &lt;li&gt;if yes, the string will represent a version range: the minimum element is the string with every
+     *                      occurrence of '%c' replaced by '0', the (excluded) upper bound will be the string with every
+     *                      occurrence of '%c' replaced by 'A'&lt;/li&gt;
+     *          &lt;/ul&gt;
+     *      &lt;/li&gt;
+     * &lt;/ol&gt;
+     * &lt;p&gt;
+     * For example this configuration:
+     * &lt;pre&gt;
+     * {@code
+     * &lt;versionProperties&gt;
+     *   &lt;apacheVersion&gt;3.1.4&lt;/apacheVersion&gt;
+     *   &lt;someMavenDependencyVersion&gt;1.5.6-dev-version-addendum-SNAPSHOT&lt;/someMavenDependencyVersion&gt;
+     * &lt;/versionProperties&gt;
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * would result in two dotnet properties, referable with '$()' so that
+     * &lt;pre&gt;
+     * {@code
+     * $(apacheVersion) = 3.1.4
+     * $(someMavenDependencyVersion) = [1.5.6-dev-version-addendum-build.0,1.5.6-dev-version-addendum-build.A)
+     * }
+     * &lt;/pre&gt;
+     */
+<span class="fc" id="L152">    @Parameter</span>
+<span class="fc" id="L153">    protected Map&lt;String, String&gt; versionProperties = Map.of();</span>
+
+    /**
+     * This parameter specifies the replacement of the suffix '-SNAPSHOT' in {@link #versionProperties version properties}
+     */
+    @Parameter(defaultValue = &quot;-build.%c&quot;)
+    protected String snapshotReplacement;
+
     @Parameter(defaultValue = &quot;${settings}&quot;, readonly = true)
     protected Settings settings;
 
@@ -116,87 +166,111 @@ import java.util.Map;
 
     protected DotnetExecutor newExecutor() {
 
-<span class="fc" id="L119">        return newExecutor(false);</span>
+<span class="fc" id="L169">        return newExecutor(false);</span>
     }
 
     protected DotnetExecutor newExecutor(boolean ignoreResult) {
-<span class="fc" id="L123">        return new DotnetExecutor(</span>
+<span class="fc" id="L173">        return new DotnetExecutor(</span>
                 workingDirectory,
                 dotnetExecutable,
                 targetDirectory,
                 projectVersion,
-                customProperties,
+<span class="fc" id="L178">                buildProperties(),</span>
                 environmentVariables,
-<span class="fc" id="L130">                getLog(),</span>
+<span class="fc" id="L180">                getLog(),</span>
                 ignoreResult
         );
+    }
+
+    private Map&lt;String, String&gt; buildProperties() {
+
+<span class="fc" id="L187">        LinkedHashMap&lt;String, String&gt; result = new LinkedHashMap&lt;&gt;(customProperties);</span>
+
+<span class="fc" id="L189">        versionProperties.forEach((key, value) -&gt; {</span>
+
+<span class="nc bnc" id="L191" title="All 2 branches missed.">            if (!value.endsWith(SUFFIX_SNAPSHOT)) {</span>
+<span class="nc" id="L192">                result.put(key, value);</span>
+<span class="nc" id="L193">                return;</span>
+            }
+
+<span class="nc" id="L196">            String template = value.substring(0, value.length() - SUFFIX_SNAPSHOT.length()) + snapshotReplacement;</span>
+
+<span class="nc" id="L198">            String lowerValue = template.replace(&quot;%c&quot;, &quot;0&quot;);</span>
+<span class="nc" id="L199">            String upperValue = template.replace(&quot;%c&quot;, &quot;A&quot;);</span>
+
+<span class="nc" id="L201">            String range = &quot;[&quot; + lowerValue + &quot;%2c&quot; + upperValue + &quot;)&quot;;</span>
+
+<span class="nc" id="L203">            result.put(key, range);</span>
+<span class="nc" id="L204">        });</span>
+
+<span class="fc" id="L206">        return result;</span>
     }
 
 
     protected String decrypt(String text) throws MojoExecutionException {
         try {
 
-<span class="nc" id="L139">            return securityDispatcher.decrypt(text);</span>
+<span class="nc" id="L213">            return securityDispatcher.decrypt(text);</span>
 
-<span class="nc" id="L141">        } catch (SecDispatcherException e) {</span>
+<span class="nc" id="L215">        } catch (SecDispatcherException e) {</span>
 
-<span class="nc" id="L143">            throw new MojoExecutionException(e);</span>
+<span class="nc" id="L217">            throw new MojoExecutionException(e);</span>
         }
     }
 
     protected Server findServer(String serverId) throws MojoExecutionException {
 
-<span class="nc" id="L149">        Server server = settings.getServer(serverId);</span>
+<span class="nc" id="L223">        Server server = settings.getServer(serverId);</span>
 
-<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (server == null) {</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (server == null) {</span>
 
-<span class="nc" id="L153">            throw new MojoExecutionException(&quot;server &quot; + serverId + &quot; not found&quot;);</span>
+<span class="nc" id="L227">            throw new MojoExecutionException(&quot;server &quot; + serverId + &quot; not found&quot;);</span>
         }
-<span class="nc" id="L155">        return server;</span>
+<span class="nc" id="L229">        return server;</span>
     }
 
     protected File getResolvedNugetRepoDirectory() {
 
-<span class="fc" id="L160">        String baseDirectory = localMavenNugetRepositoryBaseDirectory;</span>
+<span class="fc" id="L234">        String baseDirectory = localMavenNugetRepositoryBaseDirectory;</span>
 
-<span class="fc bfc" id="L162" title="All 2 branches covered.">        for (Map.Entry&lt;String, String&gt; entry : System.getenv().entrySet()) {</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">        for (Map.Entry&lt;String, String&gt; entry : System.getenv().entrySet()) {</span>
 
-<span class="fc" id="L164">            String key = entry.getKey();</span>
-<span class="fc" id="L165">            String value = entry.getValue();</span>
+<span class="fc" id="L238">            String key = entry.getKey();</span>
+<span class="fc" id="L239">            String value = entry.getValue();</span>
 
-<span class="fc" id="L167">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
-<span class="fc" id="L168">        }</span>
+<span class="fc" id="L241">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
+<span class="fc" id="L242">        }</span>
 
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : environmentVariables.entrySet()) {</span>
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : environmentVariables.entrySet()) {</span>
 
-<span class="nc" id="L172">            String key = entry.getKey();</span>
-<span class="nc" id="L173">            String value = entry.getValue();</span>
+<span class="nc" id="L246">            String key = entry.getKey();</span>
+<span class="nc" id="L247">            String value = entry.getValue();</span>
 
-<span class="nc" id="L175">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
-<span class="nc" id="L176">        }</span>
+<span class="nc" id="L249">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
+<span class="nc" id="L250">        }</span>
 
-<span class="fc" id="L178">        return new File(baseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
+<span class="fc" id="L252">        return new File(baseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
     }
 
     protected File getUnresolvedLocalNugetRepositoryDirectory() {
 
-<span class="fc" id="L183">        return new File(localMavenNugetRepositoryBaseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
+<span class="fc" id="L257">        return new File(localMavenNugetRepositoryBaseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
     }
 
     protected File createLocalNugetRepositoryDirectory() throws MojoExecutionException {
 
         try {
 
-<span class="fc" id="L190">            File localNugetRepository = getResolvedNugetRepoDirectory();</span>
+<span class="fc" id="L264">            File localNugetRepository = getResolvedNugetRepoDirectory();</span>
 
-<span class="fc" id="L192">            getLog().debug(&quot;creating directory &quot; + localNugetRepository.getAbsolutePath());</span>
-<span class="fc" id="L193">            FileUtils.forceMkdir(localNugetRepository);</span>
+<span class="fc" id="L266">            getLog().debug(&quot;creating directory &quot; + localNugetRepository.getAbsolutePath());</span>
+<span class="fc" id="L267">            FileUtils.forceMkdir(localNugetRepository);</span>
 
-<span class="fc" id="L195">            return localNugetRepository;</span>
+<span class="fc" id="L269">            return localNugetRepository;</span>
 
-<span class="nc" id="L197">        } catch (IOException e) {</span>
+<span class="nc" id="L271">        } catch (IOException e) {</span>
 
-<span class="nc" id="L199">            throw new MojoExecutionException(e);</span>
+<span class="nc" id="L273">            throw new MojoExecutionException(e);</span>
         }
     }
 }

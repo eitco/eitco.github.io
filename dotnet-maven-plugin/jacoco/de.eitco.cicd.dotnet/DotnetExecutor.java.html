@@ -131,7 +131,7 @@ import java.util.stream.Collectors;
 <span class="fc" id="L131">            Map&lt;String, String&gt; properties = new HashMap&lt;&gt;(customProperties);</span>
 <span class="fc" id="L132">            properties.putAll(propertyOverrides);</span>
 
-<span class="fc" id="L134">            properties.forEach((key, value) -&gt; command.add(&quot;-p:&quot; + key + &quot;=&quot; + value));</span>
+<span class="fc" id="L134">            properties.forEach((key, value) -&gt; command.add(&quot;\&quot;-p:&quot; + key + &quot;=&quot; + value + &quot;\&quot;&quot;));</span>
         }
 
 <span class="fc" id="L137">        return command;</span>
