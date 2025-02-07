@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Monitoring :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/22.0.1/arveo-administration/monitoring.html">
+    <link rel="prev" href="ecr-shell.html">
+    <link rel="next" href="../arveo-developer/access-rights.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <link rel="stylesheet" href="../../../ui-assets/css/site.css">
+    <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand"> 
+      <img src="../../../ui-assets/img/arveo_WortBildmarke_NEG_500px.png" id="arveoLogo" style="vertical-align:middle;margin:10px 0px">
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://eitco.github.io">Home</a>
+        <!--<div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>-->
+        <!--<div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>-->
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arveo-docu" data-version="22.0.1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../arveo-general/product-summary.html">arveo Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-general/product-summary.html">What is <em>arveo</em> - Content Services Platform (CSP)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Architecture Overview</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/content-services.html">Content Services</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/technology-stack.html">Opensource Technology Stack</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Security</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/application-security.html">Application security</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/gobd.html">Compliance recommendations (GoBD)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Store</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/data-storage.html">Persistence architecture</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/data-deletion.html">Data deletion</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-getting-started/getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Administration und Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="deployment-options.html">Deployment options</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="system-requirements.html">System requirements</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Administration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="authentication-oauth2.html">OAuth Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="db-access.html">Database access</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="content-elements-storage.html">Storage locations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="renditions.html">Renditions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="retention-container.html">Retention and Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="encryption.html">Encryption</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messaging.html">Configure Active MQ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="maintenance-mode-db-schema.html">Maintenance mode for the database schema</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="audit.html">Audit</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jobs.html">System jobs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vault.html">Using Hashicorp Vault</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../commons/configuration-properties.html">Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="ecr-shell.html">arveo shell</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="monitoring.html">Monitoring</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Developer</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Access Control</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/access-rights.html">Access rights</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/attribute-based-security.html">Attribute Based Access Control (ABAC)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/permissions.html">Permissions on Type definitions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Modelling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/entity-types.html">Entity types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/entity-annotations.html">Entity annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/data-types.html">Data types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/system-fields.html">System fields</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/document-types.html">Document types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/container-types.html">Container types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/relation-types.html">Relation types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/folder-types.html">Folder types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/metadata-types.html">Metadata types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/validation.html">Validation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/inheritance.html">Inheritance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention-annotations.html">Retention document types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/tenant-separation.html">Tenant separation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/advanced-schema-changes.html">Advanced database schema changes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-developer/repo-service.html">Repository Service</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-upload-data.html">Upload Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-data.html">Download Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-delete-objects.html">Delete Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-locking.html">Locking</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-links-external-users.html">Download Links for External Users</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/versioning.html">Versioning</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/search-service.html">Search language</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/fulltext.html">Full text search in relational database</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-developer/retention-introduction.html">Retention</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention.html">Retention periods</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention-cleanup-job.html">Cleanup job</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">SDKs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/client-sdks-json-serialization.html">Client SDKs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/sdk-and-batch-operations.html">Java SDK for Spring applications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/non-spring-sdk.html">Java SDK for non-Spring applications</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Events and messaging</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/events.html">Events</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/integration-service.html">Enterprise Integration Service</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Archetypes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/slim-archetype.html">The Types archetype</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/full-featured-archetype.html">The full-featured archetype</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../arveo-developer/system-tables.html">System Tables</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/compatibility-list.html">Compatibility List</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/release-notes.html">Release Notes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/glossary.html">Important Terminology</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">arveo Documentation</span>
+    <span class="version">22.0.1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../arveo-general/product-summary.html">arveo Documentation</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../arveo-general/product-summary.html">22.0.1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
+    <li>Administration und Configuration</li>
+    <li><a href="monitoring.html">Monitoring</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Monitoring</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/3.4.0/reference/html/actuator.html" target="_blank" rel="noopener">Spring Boot Actuator</a>
+to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/" target="_blank" rel="noopener">Prometheus</a> or
+the Administration Service. The Actuator documentation linked above contains information about the available monitoring
+data, how to enable or disable specific endpoints and how to configure security.</p>
+</div>
+<div class="paragraph">
+<p>The overview of all actuator endpoints is available at <code>/actuator</code>. Health information is available at <code>/actuator/health</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom_health_indicators"><a class="anchor" href="#custom_health_indicators"></a>Custom health indicators</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In addition to the default health indicators, <em>arveo</em> provides the following additional health indicators:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>storagePlugins</code>: Checks if at least one storage profile is configured and if all storage plugins configured in the
+storage profiles are able to store data.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>FileSystemPlugin</code>: Checks if the configured storage directory exists and whether the database sequence used to
+generate storage IDs is available.</p>
+</li>
+<li>
+<p><code>S3Plugin</code>: Checks if the configured bucket exists. When the last storage operation has failed, the endpoint checks
+if the S3 service is available.</p>
+</li>
+<li>
+<p><code>SwiftV2Plugin</code>, <code>SwiftV3Plugin</code>: Checks if the configured container exists. When the last storage operation has
+failed, the endpoint checks if the Swift service is available.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>typeDefinitions</code>: Checks if there is at least one registered type definition.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The custom health indicators can be disabled like any other health indicator by setting the configuration property
+<code>management.health.key.enabled</code> (where key is the name of the indicator) to false.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom_endpoints"><a class="anchor" href="#custom_endpoints"></a>Custom endpoints</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In addition to the default actuator endpoints, <em>arveo</em> provides the following custom actuator endpoints.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>storageProfiles</code>: Provides a list of all storage profiles and the storage plugin used by each profile.</p>
+</li>
+<li>
+<p><code>typeDefinitions</code>: Provides a list of all type definitions.</p>
+</li>
+<li>
+<p><code>contentElementPurgeTable</code>: Provides the number of entries (total and failed) in the purge content system table.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The custom endpoints can be disabled like any other actuator endpoint by setting the property
+<code>management.endpoint.key.enabled</code> (where key is the name of the endpoint) to false.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom_metrics"><a class="anchor" href="#custom_metrics"></a>Custom metrics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In addition to the default metrics, <em>arveo</em> provides additional metrics that can be used to monitor the
+performance of the system.</p>
+</div>
+<div class="sect2">
+<h3 id="storage"><a class="anchor" href="#storage"></a>Storage</h3>
+<div class="paragraph">
+<p>For each storage profile a metric is available that records the following statistics:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Metric</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.read.count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of read operations</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.write.count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of write operations</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.read.bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total amount of bytes read</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.write.bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total amount of bytes written</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.read.error</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of read errors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.write.error</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of write errors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.read.time</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read times</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.storage.write.time</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Write times</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each metric contains a tag named <code>profile</code> with a value for each configured storage profile.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These metrics are reset each time the repository service instance is restarted.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Profiles that use the <code>BucketOrganizerPlugin</code> are not included in the metrics. Instead, a separate metric for each of
+the referenced profiles used by the bucket organizer profile is available.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is possible to disable the recording of these metrics by setting the following parameters to false. This does not
+only disable the availability of the metrics but the entire recording mechanism.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">management:
+  metrics:
+    enable:
+      ecr:
+        storage: false</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="relational_database"><a class="anchor" href="#relational_database"></a>Relational database</h3>
+<div class="paragraph">
+<p>The following metrics are collected for operations on the relational database:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Metric</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.rdb.statement</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum and total execution time as well as the number of executed database statements</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.rdb.error.count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of database errors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.rdb.time.warning</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of statements that took longer than the configured threshold to execute</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each of these metrics contains a tag for the type of statement that was executed. The threshold
+time after which an execution time warning is logged and the counter is incremented can be configured using the setting
+<code>ecr.server.query.statementExecutionTimeWarningMillis</code> (in milliseconds).</p>
+</div>
+<div class="paragraph">
+<p>The recording of these metrics can be disabled using the following configuration parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">management:
+  metrics:
+    enable:
+      ecr:
+        rdb: false</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="jms_queues"><a class="anchor" href="#jms_queues"></a>JMS queues</h3>
+<div class="paragraph">
+<p><em>arveo</em> provides metrics to monitor the state of the JMS queues used for asynchronous operations. These
+metrics rely on the <a href="https://activemq.apache.org/statisticsplugin">statistics plugin</a> of ActiveMQ to retrieve statistics.
+The plugin must be activated in <code>activemq.xml</code> as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;broker...&gt;
+    &lt;plugins&gt;
+        &lt;statisticsBrokerPlugin/&gt;
+    &lt;/plugins&gt;
+&lt;/broker&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The statistics collected by the statistics plugin are polled periodically by a job running in the repository service.
+The job is disabled by default. To activate it, set the following parameters in the configuration of the repository
+service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    jobs:
+      jms-statistics:
+        cron-expression: "*/15 * * * * ?"
+        enabled: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example configuration above, the job is triggered every 15 seconds.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Unlike other system jobs, this job always runs within the repository service. It cannot be offloaded to a separate job
+service instance.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following metrics will be available once the job was activated:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Metric</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.jms.queue.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of messages currently contained in the queue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.jms.queue.enqueuecount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The total number of messages that have been enqueued in the queue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.jms.queue.dequeuecount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The total number of messages that have been dequeued from the queue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.jms.queue.averageenqueuetime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The average time a message was enqueued before it was dequeued.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each metric contains a tag called <code>queue</code> containing the name of the queue. The following queues are currently used
+by the repository service:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Queue</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr-queue-content-to-purge</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains messages containing IDs of content elements that have to be purged from the
+  storage.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr-queue-delete-recycled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains messages with a delivery delay that will cause an entity to be deleted from the
+  recycle bin once it&#8217;s recycle delay has expired.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr-queue-create-renditions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains messages of renditions that have to be created for new content elements.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DLQ.ecr-queue-create-renditions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The dead letter queue for the ecr-queue-create-renditions queue. This is used to
+  set the rendition availability status to failed once all retries for the creation of a rendition have failed.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="type_definitions"><a class="anchor" href="#type_definitions"></a>Type definitions</h3>
+<div class="paragraph">
+<p><em>arveo</em> provides metrics for several operations for each type definition. The following metrics are available:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Metric</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.read</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for read operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.read.error.client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for read operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.read.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for read operation errors caused by the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.delete</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for delete operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.delete.error.client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for delete operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.delete.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for delete operation errors caused by the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.create</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for create operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.create.error.client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for create operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.create.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for create operation errors caused by the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.update</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for update operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.update.error.cliet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for update operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.update.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for update operation errors caused by the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.recycle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for recycle operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.recycle.error.client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for recycle operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.recycle.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for recycle operation errors caused by the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.restore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for restore operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.restore.error.client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for restore operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.restore.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for restore operation errors caused by the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.find</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for find operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.find.error.client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for find operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.find.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for find operation errors caused by the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.batchupdate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter and time measurements for batchupdate operations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.batchupdate.error.client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for batch update operation errors caused by the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.typedefinition.batchupdate.error.server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counter for batch update operation errors caused by the server.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each of these metrics has a tag called <code>type-definition</code> containing the name of the type definition the measurement
+was taken for.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prometheus"><a class="anchor" href="#prometheus"></a>Prometheus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em> provides an actuator endpoint that can be used to collect metrics data using <a href="https://prometheus.io/">Prometheus</a>.
+Prometheus collects data by periodically calling configured sources ("scrapes"). The following example shows an entry
+in the <code>prometheus.yml</code> file for a scrape configuration that collects data from the prometheus actuator endpoint every
+15 seconds:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'arveo'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:39001']</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The metrics support of <em>arveo</em> is based on <a href="https://micrometer.io">Micrometer</a>. To support monitoring systems
+like Prometheus, micrometer remembers the last maximum value of time based metrics for a configurable amount of time.
+This time should be close to the scrape interval of Prometheus and can be
+configured in the configuration properties of <em>arveo</em> as shown in the example below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">management:
+  metrics:
+    export:
+      prometheus:
+        step: 15s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The data collected by Prometheus can be visualized using <a href="https://grafana.com/oss/grafana/">Grafana</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="other_monitoring_systems"><a class="anchor" href="#other_monitoring_systems"></a>Other monitoring systems</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
+The <a href="https://docs.spring.io/spring-boot/docs/3.4.0/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
+contains a list of the supported monitoring systems and further information about how to configure them.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_attributes_in_mdc"><a class="anchor" href="#_attributes_in_mdc"></a>Attributes in MDC</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em> adds the following additional attributes to the mapped diagnostic context (MDC) of the logging framework
+to make it easier to analyze the system&#8217;s behavior:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr.user-id</code>: The ID of the user performing the current request, if available</p>
+</li>
+<li>
+<p><code>ecr.trace-id</code>: The ID of the current trace, if available. The trace-id is set by Open Telemetry (see below).</p>
+</li>
+<li>
+<p><code>ecr.span-id</code>: The ID of the current span, if available. The span-id is set by Open Telemetry (see below).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These attributes are added using a <code>HandlerInterceptor</code> for the REST endpoints using Spring WebMVC. Note that these
+attributes will not be added when <em>arveo</em> is used embedded. In this case, the application using the embedded
+<em>arveo</em> instance is responsible for adding required information to the MDC.</p>
+</div>
+<div class="paragraph">
+<p>Depending on the logger appender in use, it is possible to add these attributes to log messages. See the
+<a href="https://logback.qos.ch/manual/mdc.html">documentation</a> of logback for details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="open_telemetry"><a class="anchor" href="#open_telemetry"></a>Open Telemetry</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em> supports using <a href="https://opentelemetry.io/" target="_blank" rel="noopener">Open Telemetry</a> to monitor the system&#8217;s behavior. Most notably
+it is possible to view traces of requests across the different services using a tracing backend like
+<a href="https://www.jaegertracing.io/" target="_blank" rel="noopener">Jaeger</a> or <a href="https://zipkin.io/" target="_blank" rel="noopener">Zipkin</a> as well as metrics and logs. The outermost span of
+a trace that was started by a user&#8217;s request will contain the <code>ecr.user-id</code> attribute containing the user&#8217;s ID.
+This is done by the same mechanism as described above for the <a href="#_attributes_in_mdc">MDC</a>.</p>
+</div>
+<div class="paragraph">
+<p>Because <em>arveo</em> is based on several widely used open source libraries, the automatic instrumentation mode of
+Open Telemetry can be used to record traces. This is done by the Open Telemetry java agent as described in the
+<a href="https://opentelemetry.io/docs/instrumentation/java/automatic/" target="_blank" rel="noopener">Open Telemetry documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>With Open Telemetry it is possible to collect logs, metrics and traces of each <em>arveo</em> service. It is
+recommended to use an <a href="https://opentelemetry.io/docs/collector/" target="_blank" rel="noopener">Open Telemetry Collector</a> on the same server, VM or
+Kubernetes node as the service to avoid network performance issues. The Collector is able to forward the collected data
+to suitable observability backends like <a href="https://prometheus.io/docs/prometheus/latest/" target="_blank" rel="noopener">Prometheus</a> (metrics),
+<a href="https://grafana.com/docs/loki/latest/" target="_blank" rel="noopener">Loki</a> (logs) or <a href="https://www.jaegertracing.io/" target="_blank" rel="noopener">Jaeger</a> (traces). Open Telemetry uses the
+OTLP protocol to send data to the Collector.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows the required parameters to use Open Telemetry for the repository service assuming
+a Collector instance is running on the same machine:</p>
+</div>
+<div class="listingblock">
+<div class="title">Start parameters for Open Telemetry</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">-Dotel.logs.exporter=otlp
+-Dotel.metrics.exporter=otlp
+-Dotel.traces.exporter=otlp
+-Dotel.service.name=repository-service
+-javaagent:&lt;path&gt;/opentelemetry-javaagent.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following diagram shows the basic setup:</p>
+</div>
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/42dc8e203214d21599acc99e4e32444dc2502441.svg" alt="relation-type-model">
+</div>
+<div class="title">Figure 1. Open Telemetry Collector</div>
+</div>
+<div class="paragraph">
+<p>The required configuration properties for the Collector to forward collected data to observability backends is described
+in detail in the Open Telemetry documentation.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="ecr-shell.html">arveo shell</a></span>
+  <span class="next"><a href="../arveo-developer/access-rights.html">Access rights</a></span>
+</nav>
+</article>
+  </div>
+</main>
+    <!-- The Modal -->
+    <div id="imageModalBox" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../ui-assets/js/site.js" data-ui-root-path="../../../ui-assets"></script>
+<script async src="../../../ui-assets/js/vendor/highlight.js"></script>
+<script async src="../../../ui-assets/js/modal.js"></script>
+<script src="../../../ui-assets/js/vendor/lunr.js"></script>
+<script src="../../../ui-assets/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../ui-assets/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
