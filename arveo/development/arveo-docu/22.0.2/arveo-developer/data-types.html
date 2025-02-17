@@ -539,6 +539,8 @@ Because the way a query is performed is defined by the setting on the attribute,
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="indexes"><a class="anchor" href="#indexes"></a>Indexes</h3>
 <div class="paragraph">
 <p>Adding indexes to the database column has a huge impact on search performance, especially for large tables. This table gives an overview of the available indexes. An example of an index on multiple columns can be found <a href="entity-annotations.html#index_example" class="xref page">here</a>.</p>
 </div>
@@ -589,6 +591,19 @@ It is possible to use both <code>@Indexed</code> and <code>@IndexedForTextMatchi
 </td>
 </tr>
 </table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Text matching indexes are not supported on array attributes. Also, it is not supported to add an index on a case-insensitive array attribute.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
