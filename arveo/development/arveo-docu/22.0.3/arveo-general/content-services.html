@@ -413,14 +413,14 @@ For the highest possible security on the web and to be suitable for mobile acces
 <p><em>arveo</em> has multi tenant support and separates content and meta values per tenant.</p>
 </div>
 <div class="paragraph">
-<p>As <em>arveo</em> is built for cloud operating systems like Openstack you automatically deploy and can scale the <em>arveo</em> containerized applications with the cloud orchestration framework kubernetes. You can cluster together linux containers and build an auto-scaling and high available platform with high fail safety. Containerized applications scale horizontally and can run on commodity hardware.</p>
+<p>As <em>arveo</em> is built for cloud operating systems like Openstack, you can automatically deploy and scale the <em>arveo</em> containerized applications with the cloud orchestration framework Kubernetes. You can cluster together linux containers and build an auto-scaling and high available platform with high fail safety. Containerized applications scale horizontally and can run on commodity hardware.</p>
 </div>
 <div class="paragraph">
-<p><em>arveo</em> is available as containerized application or WAR/JAR file and allows a hybrid deployment: On-Premise or in Cloud.</p>
+<p><em>arveo</em> is available as containerized application or JAR file and allows a hybrid deployment: On-Premise or in Cloud.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="_images/arveo-architecture.png" alt="diagram">
+<img src="_images/arveo-architecture-new.png" alt="diagram">
 </div>
 <div class="title">Figure 1. Architecture Overview</div>
 </div>
@@ -438,44 +438,34 @@ For the highest possible security on the web and to be suitable for mobile acces
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Document Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content Repository Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Store, edit and version documents, records/folders and their metadata.</p>
 <p class="tableblock">Manage storage locations with retention periods (GoBD certificate &amp; GDPR/DSGVO compliant)</p>
 <p class="tableblock">Search of metadata with relational database PostgreSQL 17.0.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Registry Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Service registry for all <em>arveo</em> content services managing the availability of the services.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Config Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Secure storage of configuration data in git or database</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Creates and manages audit tables for all other entity types like document types etc.
-Provides API to access the audit trail of any object by its entoty ID</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SAP Archive Link Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Web server that processes documents in accordance with the SAP Archive Link standard</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Web server that processes documents in accordance with the SAP Archive Link standard (certified)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service (optional)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Conversion of document formats like docx, xlsx, etc. to image formats or PDF/A</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise Integration Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The _arveo enterprise integration service supports over 300 data formats
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integration Service (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <em>arveo</em> enterprise integration service supports over 300 data formats
 and interfaces like XML, REST, CSV, Mail,<br>
 Easily integrate all your applications and IT systems e.g. scheduled data import or listen on  events, etc.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Federation Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multi repository architecture: The open connector plugin interface allows to access data from other repositories (Saperion, Documentum, file systems directories)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MS365-Connect (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Automatically imports documents from SharePoint or Mails from Outlook inboxes with a customizable mapping to <em>arveo</em> entities.</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>A complete list of the <em>arveo</em> services can be found in the <a href="../arveo-commons/compatibility-list.html" class="xref page">compatibility list</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -517,9 +507,11 @@ Implement Single Sign On (SSO) with identity management providers:  Keycloak</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Monitoring (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Supports logging / monitoring via ELK (Elasticsearch, Logstash, and Kibana.</p>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Supports logging / monitoring via <a href="https://opentelemetry.io/">OpenTelemetry</a>.</p>
 <p class="tableblock">Supports Spring Service Admin Monitor</p>
-<p class="tableblock">Supports Prometheus + Grafana Monitoring frontends</p></td>
+<p class="tableblock">Supports Prometheus + Grafana Monitoring frontends</p>
+<p class="tableblock">Supports Loki logging database</p>
+<p class="tableblock">Supports tracing with Jaeger or Zipkin</p></td>
 </tr>
 </tbody>
 </table>
@@ -540,10 +532,10 @@ Implement Single Sign On (SSO) with identity management providers:  Keycloak</p>
 <p>Storage: S3 (Cloud Object Storage API)</p>
 </li>
 <li>
-<p>Authentication: OAUTH2, X.509 or Basic Auth.</p>
+<p>Authentication: OAUTH2, X.509 or API key (for some services).</p>
 </li>
 <li>
-<p>Relational Database: JDBC access for PostgreSQL, Oracle, SQL Server</p>
+<p>Relational Database: JDBC access for PostgreSQL</p>
 </li>
 <li>
 <p>SAP: Archive Link Service</p>
