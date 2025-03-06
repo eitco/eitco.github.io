@@ -399,7 +399,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/docs/3.4.3/reference/html/actuator.html" target="_blank" rel="noopener">Spring Boot Actuator</a>
+<p><em>arveo</em> uses <a href="https://docs.spring.io/spring-boot/reference/actuator/index.html" target="_blank" rel="noopener">Spring Boot Actuator</a>
 to expose a monitoring REST API that can be consumed by monitoring systems like <a href="https://prometheus.io/" target="_blank" rel="noopener">Prometheus</a> or
 the Administration Service. The Actuator documentation linked above contains information about the available monitoring
 data, how to enable or disable specific endpoints and how to configure security.</p>
@@ -985,11 +985,21 @@ a Collector instance is running on the same machine:</p>
 <div class="paragraph">
 <p>The following diagram shows the basic setup:</p>
 </div>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
+<div class="title">Open Telemetry Collector</div>
 <div class="content">
-<img src="_images/42dc8e203214d21599acc99e4e32444dc2502441.svg" alt="relation-type-model">
+<pre> +------------+               +--------+-----+    metrics   +---------------+
+ |   Service  |               |              |-------------&gt;|   Prometheus  |
+ |            |    OTLP       |              |              +---------------+
+ |            |--------------&gt;|   Collector  |
+ | Otel agent |               |              |    logs      +---------------+
+ |            |               |              |-------------&gt;|     Loki      |
+ +---+--------+               +--------------+              +---------------+
+                                      |
+                                      |      traces         +---------------+
+                                      +--------------------&gt;|    Jaeger     |
+                                                            +---------------+</pre>
 </div>
-<div class="title">Figure 1. Open Telemetry Collector</div>
 </div>
 <div class="paragraph">
 <p>The required configuration properties for the Collector to forward collected data to observability backends is described
