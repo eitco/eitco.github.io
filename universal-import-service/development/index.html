@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 1.0.1-SNAPSHOT</title>
+<title>Universal Import Service 1.1.0-SNAPSHOT</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,7 +442,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_universal_import_service_1_0_1_snapshot">1. Universal Import Service 1.0.1-SNAPSHOT</a>
+<li><a href="#_universal_import_service_1_1_0_snapshot">1. Universal Import Service 1.1.0-SNAPSHOT</a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">1.1. Configuration</a></li>
 </ul>
@@ -453,6 +453,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_simple_mode">2.2. Simple mode</a></li>
 <li><a href="#_counting_mode">2.3. Counting mode</a></li>
 <li><a href="#_referencing_mode">2.4. Referencing mode</a></li>
+<li><a href="#_content_preprocessing">2.5. Content preprocessing</a></li>
 </ul>
 </li>
 <li><a href="#_writing_a_custom_line_mapper">3. Writing a custom line mapper</a></li>
@@ -461,7 +462,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_universal_import_service_1_0_1_snapshot">1. Universal Import Service 1.0.1-SNAPSHOT</h2>
+<h2 id="_universal_import_service_1_1_0_snapshot">1. Universal Import Service 1.1.0-SNAPSHOT</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
@@ -837,6 +838,40 @@ inherit attributes from the referenced record.
 <p>A complete configuration example can be found in the system-test module in the file <code>src/test/resource-templates/config/universal-import-service-referencing.yaml</code>.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_content_preprocessing">2.5. Content preprocessing</h3>
+<div class="paragraph">
+<p>The generic CSV mapper provides an additional extension mechanism that can be used to preprocess the binary content for
+each individual line in the CSV file before it is handed over to the mapper. This way it is possible to perform tasks
+like decryption, conversion or merging of content.</p>
+</div>
+<div class="paragraph">
+<p>The extension mechanism works by registering a bean of type <code>de.eitco.uis.common.ContentPreprocessor</code> (for example, by
+creating a custom Spring Boot starter). Each ContentPreprocessor must implement the <code>preprocess</code> method, which has
+the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>fileNames</code>: A list of file names that was parsed from the current line in the CSV file (never null)</p>
+</li>
+<li>
+<p><code>csvFilePath</code>: The directory that contains the CSV file (never null)</p>
+</li>
+<li>
+<p><code>contentPath</code>: The configured path used to find the actual files (might be null)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The ContentPreprocessor returns a list of <code>PreprocessedContent</code> instances, which consist of an <code>InputStrem</code>, the
+file name that will be used in arveo and the position of the file in the original list of file names. How many <code>PreprocessedContent</code>
+instances are contained in the returned list depends on the preprocessor. For example, an implementation might take
+all files and merge them to a single PDF file. Other implementations might just wrap the returned streams for decryption.
+Custom implementation can extend the class <code>de.eitco.uis.common.AbstractContentPreprocessor</code> which contains a utility
+method to open new <code>FileInputStreams</code>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -869,7 +904,7 @@ batch operation(s). The operations will be executed in the order in which they a
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-11 23:21:04 UTC
+Last updated 2025-03-12 13:52:10 UTC
 </div>
 </div>
 <style>

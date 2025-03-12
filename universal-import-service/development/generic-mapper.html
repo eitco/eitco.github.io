@@ -762,12 +762,46 @@ inherit attributes from the referenced record.
 <p>A complete configuration example can be found in the system-test module in the file <code>src/test/resource-templates/config/universal-import-service-referencing.yaml</code>.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_content_preprocessing">Content preprocessing</h3>
+<div class="paragraph">
+<p>The generic CSV mapper provides an additional extension mechanism that can be used to preprocess the binary content for
+each individual line in the CSV file before it is handed over to the mapper. This way it is possible to perform tasks
+like decryption, conversion or merging of content.</p>
+</div>
+<div class="paragraph">
+<p>The extension mechanism works by registering a bean of type <code>de.eitco.uis.common.ContentPreprocessor</code> (for example, by
+creating a custom Spring Boot starter). Each ContentPreprocessor must implement the <code>preprocess</code> method, which has
+the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>fileNames</code>: A list of file names that was parsed from the current line in the CSV file (never null)</p>
+</li>
+<li>
+<p><code>csvFilePath</code>: The directory that contains the CSV file (never null)</p>
+</li>
+<li>
+<p><code>contentPath</code>: The configured path used to find the actual files (might be null)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The ContentPreprocessor returns a list of <code>PreprocessedContent</code> instances, which consist of an <code>InputStrem</code>, the
+file name that will be used in arveo and the position of the file in the original list of file names. How many <code>PreprocessedContent</code>
+instances are contained in the returned list depends on the preprocessor. For example, an implementation might take
+all files and merge them to a single PDF file. Other implementations might just wrap the returned streams for decryption.
+Custom implementation can extend the class <code>de.eitco.uis.common.AbstractContentPreprocessor</code> which contains a utility
+method to open new <code>FileInputStreams</code>.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-11 23:21:04 UTC
+Last updated 2025-03-12 13:52:10 UTC
 </div>
 </div>
 <style>
