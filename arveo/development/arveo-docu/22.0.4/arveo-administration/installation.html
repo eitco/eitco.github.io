@@ -401,7 +401,7 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>These instructions describe the installation procedure, the installation content and the items required for commissioning the product.
-We recommend controlling the rollout of the <em>_arveo</em> services by a continuous integration process that provides all artefact required for the deployment of the required content services and your web solution and integrations.</p>
+We recommend controlling the rollout of the <em>arveo</em> services by a continuous integration process that provides all artefact required for the deployment of the required content services and your web solution and integrations.</p>
 </div>
 <div class="paragraph">
 <p>Depending on the underlying platform, deployment takes place via binary service artifacts that are deployed on pre-installed VMs or via containerized applications that are made available in the host cloud system.</p>
@@ -567,6 +567,23 @@ The current status of the service can also be determined with systemctl status &
 <div class="paragraph">
 <p>If all connections between the services are to be encrypted, SSL certificates are required. The following requirements apply:
 An <a href="authentication-x509.html" class="xref page">X-509 certificate</a> with an associated "private key" is required for each server. The certificate should be signed by an official CA or the company&#8217;s own CA. Self-signed certificates can also be used. The following special feature must be observed: the X509 extension “Subject Alternative Name” must contain all DNS names and IP addresses via which the respective systems are accessed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the_system_identifier_system_id"><a class="anchor" href="#the_system_identifier_system_id"></a>The system identifier "system-id"</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each <em>arveo</em> system has a unique identifier that is part of each entity- and version-id. This concept makes it possible to merge two systems into one. Two systems using the same system identifier cannot be merged because of duplicate entity- and version-ids. The system identifier is a numeric value starting at 0 that must be specified in the configuration file for each installation:</p>
+</div>
+<div class="listingblock">
+<div class="title">setting the system identifier</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    system:
+      system-id: 0</code></pre>
+</div>
 </div>
 </div>
 </div>
