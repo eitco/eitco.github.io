@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 2.0.0-SNAPSHOT</title>
+<title>Generic CSV mapper</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,106 +437,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article toc2 toc-left">
+<body class="article">
 <div id="header">
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_universal_import_service_2_0_0_snapshot">1. Universal Import Service 2.0.0-SNAPSHOT</a>
-<ul class="sectlevel2">
-<li><a href="#_configuration">1.1. Configuration</a></li>
-</ul>
-</li>
-<li><a href="#_generic_csv_mapper">2. Generic CSV mapper</a>
-<ul class="sectlevel2">
-<li><a href="#_attribute_mapping">2.1. Attribute mapping</a></li>
-<li><a href="#_simple_mode">2.2. Simple mode</a></li>
-<li><a href="#_counting_mode">2.3. Counting mode</a></li>
-<li><a href="#_referencing_mode">2.4. Referencing mode</a></li>
-<li><a href="#_content_preprocessing">2.5. Content preprocessing</a></li>
-</ul>
-</li>
-<li><a href="#_writing_a_custom_line_mapper">3. Writing a custom line mapper</a></li>
-<li><a href="#_generic_file_mapper">4. Generic file mapper</a>
-<ul class="sectlevel2">
-<li><a href="#_property_collection">4.1. Property collection</a></li>
-<li><a href="#_attribute_mapping_2">4.2. Attribute mapping</a></li>
-<li><a href="#_example_configuration">4.3. Example configuration</a></li>
-<li><a href="#_extensions">4.4. Extensions</a></li>
-</ul>
-</li>
-<li><a href="#_writing_a_custom_file_mapper">5. Writing a custom file mapper</a></li>
-</ul>
-</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_universal_import_service_2_0_0_snapshot">1. Universal Import Service 2.0.0-SNAPSHOT</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
-supports reading data from CSV files and from the filesystem.</p>
-</div>
-<div class="paragraph">
-<p>The service is based on Apache Camel and monitors a configurable directory for files to import. It provides plugin interfaces
-for <code>CsvLineMappers</code> and <code>FileMappers</code>. <code>CsvLineMappers</code> are used to create one or more arveo entities from one line in
-a CSV file. <code>FileMappers</code> do the same for arbitrary files. A highly configurable default mapper implementation for both
-use cases is provided, which should be sufficient for most import scenarios.</p>
-</div>
-<div class="sect2">
-<h3 id="_configuration">1.1. Configuration</h3>
-<div class="paragraph">
-<p>The service offers some generic settings that apply to all mapping configurations. Because the service is based on
-<a href="https://camel.apache.org">Apache Camel</a>, several configuration options for the Camel components apply.</p>
-</div>
-<div class="paragraph">
-<p>The route used to import files uses a URI-parameter to configure the start of the route. This makes it possible
-to select the Camel component for the start of the route by URI scheme. The following example shows how to configure
-the URI:</p>
-</div>
-<div class="listingblock">
-<div class="title">configuring the URI for CSV imports</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
-  <span class="key">csv</span>:
-    <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false</span><span class="delimiter">&quot;</span></span></code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">configuring the URI for file imports</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
-  <span class="key">file</span>:
-    <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the example, the file component of Apache Camel is activated by the <code>file:</code> scheme of the URI. The
-<a href="https://camel.apache.org/components/next/file-component.html">Camel documentation</a> contains information about the available
-parameters for the file endpoint as well as the other available endpoints.</p>
-</div>
-<div class="paragraph">
-<p>The way CSV files are processed is controlled by the CSV data format of Apache Camel. It offers various configuration
-properties, that are listed in the <a href="https://camel.apache.org/components/next/dataformats/csv-dataformat.html">Camel documentation</a>.
-The properties can be used in the configuration file for the Universal Import Service as shown below:</p>
-</div>
-<div class="listingblock">
-<div class="title">configing the CSV data format</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">camel</span>:
-  <span class="key">dataformat</span>:
-    <span class="key">csv</span>:
-      <span class="key">delimiter</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">;</span><span class="delimiter">&quot;</span></span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the example, the delimiter for the CSV columns is set to <code>;</code>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_generic_csv_mapper">2. Generic CSV mapper</h2>
+<h2 id="_generic_csv_mapper">Generic CSV mapper</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The generic CSV mapper is the default implementation of the <code>CsvLineMapper</code> interface contained in the service.
@@ -570,7 +476,7 @@ and zero or more document components referenced by a foreign key, each containin
 <p>Only one mode can be used at a time.</p>
 </div>
 <div class="sect2">
-<h3 id="_attribute_mapping">2.1. Attribute mapping</h3>
+<h3 id="_attribute_mapping">Attribute mapping</h3>
 <div class="paragraph">
 <p>The mapping of CSV columns to arveo attributes works the same in each mode. An <em>attribute mapping</em> must be configured
 for each CSV column that is supposed to be imported. Attribute mappings are configured in a map, the keys being the
@@ -697,7 +603,7 @@ attributes that were not contained in the original data.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_simple_mode">2.2. Simple mode</h3>
+<h3 id="_simple_mode">Simple mode</h3>
 <div class="paragraph">
 <p>The simple mode is the default operating mode of the generic CSV mapper. In this mode, a 1:1 mapping between file names
 read from the CSV file and content element names must be configured. The mapping can either be from file name to content
@@ -742,7 +648,7 @@ Because the simple mode is the default, it does not habe to be explicitly enable
 </div>
 </div>
 <div class="sect2">
-<h3 id="_counting_mode">2.3. Counting mode</h3>
+<h3 id="_counting_mode">Counting mode</h3>
 <div class="paragraph">
 <p>In the counting mode, CSV lines containing more than one filename are mapped to multiple independent document entities.
 Each document entity will contain one content element. If a line in the CSV file does not contain any file names, one
@@ -800,7 +706,7 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_referencing_mode">2.4. Referencing mode</h3>
+<h3 id="_referencing_mode">Referencing mode</h3>
 <div class="paragraph">
 <p>In the referencing mode, a record container is created for each imported document. This record will contain all attributes,
 but no content. For each imported file, a document is created that contains only the data of the imported file. The
@@ -871,7 +777,7 @@ inherit attributes from the referenced record.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_content_preprocessing">2.5. Content preprocessing</h3>
+<h3 id="_content_preprocessing">Content preprocessing</h3>
 <div class="paragraph">
 <p>The generic CSV mapper provides an additional extension mechanism that can be used to preprocess the binary content for
 each individual line in the CSV file before it is handed over to the mapper. This way it is possible to perform tasks
@@ -920,400 +826,6 @@ in the following artifact:</p>
 <p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
 placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_writing_a_custom_line_mapper">3. Writing a custom line mapper</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Custom line mappers have to implement the interface <code>CsvLineMapper</code>. Mappers can use the typed or the generic API of arveo.
-A mapper that uses the generic API has to return true in the <code>isGeneric</code> method implementation and has to implement the
-<code>mapLineGeneric</code> method. Typed mappers have to return false in the <code>isGeneric</code> method and have to implement the <code>mapLine</code>
-method.</p>
-</div>
-<div class="paragraph">
-<p>The custom mapper implementation has to be registered as a Spring bean in a custom Spring Boot starter. To replace the
-provided default mapper, the custom auto starter either has to run before the auto configuration class <code>de.eitco.uis.mappers.csv.GenericCsvMapperAutoConfiguration</code>
-or the default mapper bean registrations have to be disabled by setting the property <code>universal-import-service.generic-csv-mapper.mode</code>
-to <code>DISABLED</code>.</p>
-</div>
-<div class="paragraph">
-<p>Line mappers return a list of batch operations. The arveo entities created for one line can be created using the respective
-batch operation(s). The operations will be executed in the order in which they are contained in the list.</p>
-</div>
-<div class="paragraph">
-<p>The custom mapper can be activated by adding the jar of the custom starter to the service&#8217;s libs directory configured
-by the parameter <code>-Dloader.path</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_generic_file_mapper">4. Generic file mapper</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The generic file mapper is the default implementation of the <code>FileMapper</code> interface contained in the service. It can
-import files from a configurable directory into arveo. Properties of the files, for example parts of the path of file
-name, can be extracted as attributes of the arveo entities.</p>
-</div>
-<div class="paragraph">
-<p>The mapper operates in two phases:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Phase 1: Collect properties of the file to import. These can be parts of the path, the length or type of the file.</p>
-</li>
-<li>
-<p>Phase 2: Map collected properties to arveo attributes.</p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="_property_collection">4.1. Property collection</h3>
-<div class="paragraph">
-<p>Which properties to collect is configurable. Properties can be extracted from the path and file name by position or by
-using a regular expression. The path is split using the system&#8217;s path separator. The file name can be split using a
-configurable separator. The value of each property is a string that can be mapped to an attribute using the attribute
-mappings described below.</p>
-</div>
-<div class="sect3">
-<h4 id="_positional_properties">4.1.1. Positional properties</h4>
-<div class="paragraph">
-<p>Positional properties are collected from the path or file name, after it is split into an array of strings either by using
-the path separator or the configured file name separator character. The position can be given as a positive or negative
-integer. A positive integer (starting at 1) defines the position from left to right. A negative integer (starting at -1)
-defines the position from right to left. For example, in the path <code>/path/to/my/file.txt</code>, the position <code>1</code> would match
-<code>path</code> and the position <code>-2</code> would match <code>my</code>. Likewise, when the file name is used to collect a property and the file
-name separator is configured as <code>_</code>, the position <code>2</code> in the file name <code>invoice_20250982.pdf</code> would match <code>20250982</code>
-(the extension is stripped from the file name by default).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_regular_expression_properties">4.1.2. Regular expression properties</h4>
-<div class="paragraph">
-<p>Properties can be extracted from the path or file name using a regular expression. The expression can use capturing
-groups. The number of the group that contains the property can be configured. For example, the regular expression
-<code>[-,_]([A-Z]{2})$</code> could be used to parse the language <code>DE</code> as two upper-case characters at the end of the file name
-<code>EITCO_arveo-secom_Produktportfolio_DE.pdf</code>. The extension is removed from the filename by default before the expression
-is matched against the file name.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_property_mapping">4.1.3. Property mapping</h4>
-<div class="paragraph">
-<p>Properties to collect are configured using a map, where the keys are the names of the properties. These names can then
-be used in the attribute mappings. Each map entry can contain the following settings. Note that only one way to collect
-a property can be used for each individual property.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. property mapping options</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Option</th>
-<th class="tableblock halign-left valign-top">Explanation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">position-in-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Position in the path split by path separator char. Positive or negative integer.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">position-in-file-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Position in the file name split by file name separator char. Positive or negative integer.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">path-regex</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Regular expression matched on the path</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">file-name-regex</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Regular expression matched on the file name</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">remove-extension</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to remove the extension from the path or file name. Default is true.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Each regular expression has two settings:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. regular expression settings</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Option</th>
-<th class="tableblock halign-left valign-top">Explanation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">expression</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">regular expression</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">group</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the number of the group containing the value (default is 0 for entire expression).</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_predefined_properties">4.1.4. Predefined properties</h4>
-<div class="paragraph">
-<p>The mapper provides some predefined properties that can be used in attribute mappings without additional configuration
-in the property mappings.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. predefined properties</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Content</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Absolute path of the file (string)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">File name (string including extension)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_parent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path of the file&#8217;s parent directory (string)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_length</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Length of the file (long)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_extension</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Extension of the file name only (string)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_last_modified</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Last modified timestamp of the file (in IS0-8601 format)</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_attribute_mapping_2">4.2. Attribute mapping</h3>
-<div class="paragraph">
-<p>The collected properties (and the predefined properties) are mapped to arveo attributes in the attribute mappings.
-The key of each attribute mapping must be a collected or predefined property name. Each attribute mapping can use
-the following parameters:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. attribute mapping parameters</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Explanation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">attribute-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the arveo attribute (in snake-case)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the attribute (<code>SHORT</code>, <code>INTEGER</code>, <code>LONG</code>, <code>DOUBLE</code>, <code>STRING</code>, <code>BOOLEAN</code>, <code>DATE_TIME</code>, <code>DATE</code> or <code>TIME</code>)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the attribute is multivalued or not (the default is false).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">delimiter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes. Ignored when <code>array</code> is set to false.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">date-pattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>DATE</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>TIME</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">date-time-pattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>DATE_TIME</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zone-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">time zone ID</a> used when the value in the CSV column for <code>DATE_TIME</code> attributes does not contain time zone information.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">local-date</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">local-time</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute used if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">prefix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An optional prefix added to imported attributes of type <code>STRING</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">suffix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An optional suffix added to imported attributes of type <code>STRING</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">default-value</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Attributes are parsed using the default Java parsers, e.g. <code>Integer.parseInt()</code> for INTEGER, or using the supplied
-patterns for date, time or date-time values. Booleans can either be Strings ('true', 'false') or integers (0,1).</p>
-</div>
-<div class="paragraph">
-<p>The default date-time-pattern used by the importer for date-time attributes (<code>[u-M-d]['T'][H:m:s][X]</code>) allows
-parsing partial values for date-time attributes. The parts in square brackets (the date, the letter 'T', the time and
-the zone) are optional. If no value for these parts is contained in the parsed value, it is replaced by the configured
-default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_example_configuration">4.3. Example configuration</h3>
-<div class="paragraph">
-<p>The following example shows how to configure the generic file mapper. The example collects three properties and maps
-these and one of the predefined properties to attributes.</p>
-</div>
-<div class="listingblock">
-<div class="title">example configuration</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">generic-file-mapper</span>:
-  <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="key">properties</span>: <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="key">parent-name</span>:
-      <span class="key">position-in-path</span>: <span class="string"><span class="content">-2</span></span>
-    <span class="key">drive-name</span>:
-      <span class="key">position-in-path</span>: <span class="string"><span class="content">1</span></span>
-    <span class="key">language</span>:
-      <span class="key">file-name-regex</span>:
-        <span class="key">expression</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">[-,_]([A-Z]{2})$</span><span class="delimiter">&quot;</span></span>
-        <span class="key">group</span>: <span class="string"><span class="content">1</span></span>
-  <span class="key">attributes</span>: <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="key">_name</span>:
-      <span class="key">attribute-name</span>: <span class="string"><span class="content">file_name</span></span>
-      <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
-    <span class="key">parent-name</span>:
-      <span class="key">attribute-name</span>: <span class="string"><span class="content">parent_name</span></span>
-      <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
-    <span class="key">language</span>:
-      <span class="key">attribute-name</span>: <span class="string"><span class="content">language</span></span>
-      <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
-    <span class="key">drive-name</span>:
-      <span class="key">attribute-name</span>: <span class="string"><span class="content">drive_name</span></span>
-      <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Name of the type definition to import into</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Map of collected properties</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Mapping from properties to attributes</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_extensions">4.4. Extensions</h3>
-<div class="paragraph">
-<p>The generic file importer provides an extension mechanism that allows preprocessing of imported files, for example to
-perform decryption. To use this extension mechanism, a bean of type <code>de.eitco.uis.mappers.common.FilePreprocessor</code> must
-be registered with a custom Spring Boot Starter. <code>FilePreprocessors</code> can influence the way the actual content of the
-file is read, as well as properties like file length, name and path. This mechanism can also be used to provide
-attributes that will be added to the arveo entity created for the file. This allows to implement an import that reads
-files from a directory that do not contain the actual content to import, but a link to another file containing the
-actual content and a collection of attributes to import.</p>
-</div>
-<div class="paragraph">
-<p>A second extension mechanism allows to resolve attributes from arbitrary sources for an imported file. For example,
-the extension could read a YAML file containing additional attributes. To use this extension mechanism, a bean of type
-<code>de.eitco.uis.mappers.common.AttributesProvider</code> must be registered. The attributes returned by an <code>AttributesProvider</code>
-are added after the regular attribute mapping was performed. So it is possible to overwrite already resolved attributes
-using an <code>AttributesProvider</code>.</p>
-</div>
-<div class="paragraph">
-<p>The required classes for the extensions are contained in the following artifact:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>de.eitco.uis<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>universal-import-mappers-common<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>${import.service.version}<span class="tag">&lt;/version&gt;</span>
-<span class="tag">&lt;/dependency&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
-placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_writing_a_custom_file_mapper">5. Writing a custom file mapper</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Custom file mappers have to implement the interface <code>FileMapper</code>. Mappers can use the typed or the generic API of arveo.
-A mapper that uses the generic API has to return true in the <code>isGeneric</code> method implementation and has to implement the
-<code>mapFileGeneric</code> method. Typed mappers have to return false in the <code>isGeneric</code> method and have to implement the <code>mapFile</code>
-method.</p>
-</div>
-<div class="paragraph">
-<p>The custom mapper implementation has to be registered as a Spring bean in a custom Spring Boot starter. To replace the
-provided default mapper, the custom auto starter either has to run before the auto configuration class <code>de.eitco.uis.mappers.file.GenericFileMapperAutoConfiguration</code>
-or the default mapper bean registration has to be disabled by setting the property <code>universal-import-service.generic-file-mapper.enabled</code>
-to <code>false</code>.</p>
-</div>
-<div class="paragraph">
-<p>File mappers return a list of batch operations. The arveo entities created for one line can be created using the respective
-batch operation(s). The operations will be executed in the order in which they are contained in the list.</p>
-</div>
-<div class="paragraph">
-<p>The custom mapper can be activated by adding the jar of the custom starter to the service&#8217;s libs directory configured
-by the parameter <code>-Dloader.path</code>.</p>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration-properties.adoc[]</p>
 </div>
 </div>
 </div>
