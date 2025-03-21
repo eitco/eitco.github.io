@@ -775,6 +775,47 @@ inherit attributes from the referenced record.
 <div class="paragraph">
 <p>A complete configuration example can be found in the system-test module in the file <code>src/test/resource-templates/config/universal-import-service-referencing.yaml</code>.</p>
 </div>
+<div class="sect3">
+<h4 id="_configuring_the_foreign_key">Configuring the foreign key</h4>
+<div class="paragraph">
+<p>The foreign key links the document entities to a container entity. As shown above, the reference field name in the document
+entities must be configured. The field in the container entity referenced by the foreign key is, by default, the system
+field <code>id</code>. The value will be retrieved automatically by the batch processing API of the content repository service.
+It is possible to change the name of the referenced field using the property <code>reference-target-field-name</code>.
+It is also possible to disable the automatic retrieval of the foreign key value by configuring no value for the
+<code>reference-field-name</code> property. The value must be provided by the attribute mappings in this case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_document_attributes">Document attributes</h4>
+<div class="paragraph">
+<p>By default, the document does not have any attributes except the required system fields and the reference field. In some
+cases, the document type definition might require additional custom fields. Those can be configured by providing
+additional attribute mappings for the document entities as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring document attribute mappings</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">generic-csv-mapper</span>:
+    <span class="key">referencing</span>:
+      <span class="key">document-attributes</span>:
+        <span class="key">docid</span>:
+          <span class="key">attribute-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">doc_id</span><span class="delimiter">&quot;</span></span>
+          <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
+        <span class="key">contentRep</span>:
+          <span class="key">attribute-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">repository_id</span><span class="delimiter">&quot;</span></span>
+          <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
+        <span class="key">componentName</span>:
+          <span class="key">attribute-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">component_id</span><span class="delimiter">&quot;</span></span>
+          <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
+          <span class="key">default-value</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">data_${documentNumber}</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The generic CSV mapper provides one placeholder <code>$+{documentNumber}+</code> that contains the document&#8217;s number (starting at 1)
+and that can be used either in a prefix or suffix or in a default value.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_content_preprocessing">Content preprocessing</h3>
@@ -832,7 +873,7 @@ placed in the directory configured as loader path of the service using the <code
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-20 23:21:11 UTC
+Last updated 2025-03-21 16:14:49 UTC
 </div>
 </div>
 <style>
