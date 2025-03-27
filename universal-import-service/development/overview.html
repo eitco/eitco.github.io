@@ -449,7 +449,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 supports reading data from CSV files and from the filesystem.</p>
 </div>
 <div class="paragraph">
-<p>The service is based on Apache Camel and monitors a configurable directory for files to import. It provides plugin interfaces
+<p>The service is based on Apache Camel and monitors configurable directories for files to import. It provides plugin interfaces
 for <code>CsvLineMappers</code> and <code>FileMappers</code>. <code>CsvLineMappers</code> are used to create one or more arveo entities from one line in
 a CSV file. <code>FileMappers</code> do the same for arbitrary files. A highly configurable default mapper implementation for both
 use cases is provided, which should be sufficient for most import scenarios.</p>
@@ -461,16 +461,24 @@ use cases is provided, which should be sufficient for most import scenarios.</p>
 <a href="https://camel.apache.org">Apache Camel</a>, several configuration options for the Camel components apply.</p>
 </div>
 <div class="paragraph">
-<p>The route used to import files uses a URI-parameter to configure the start of the route. This makes it possible
-to select the Camel component for the start of the route by URI scheme. The following example shows how to configure
-the URI:</p>
+<p>The Camel routes used to import files use a URI-parameter to configure the start of the route. This makes it possible
+to select and configure the Camel component for the start of the route by URI scheme.</p>
+</div>
+<div class="paragraph">
+<p>A URI must be configured for each directory to import files from. The keys in the configuration maps define the IDs of
+the Camel routes. In the following example, three CSV import routes and one file import route are configured.</p>
 </div>
 <div class="listingblock">
-<div class="title">configuring the URI for CSV imports</div>
+<div class="title">configuring the URIs for CSV imports</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
   csv:
-    uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false"</code></pre>
+    csv-import-1:
+      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false"
+    csv-import-2:
+      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;noop=false"
+    csv-import-3:
+      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;noop=false"</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -478,7 +486,8 @@ the URI:</p>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
   file:
-    uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"</code></pre>
+    file-import-1:
+      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -503,13 +512,25 @@ The properties can be used in the configuration file for the Universal Import Se
 <div class="paragraph">
 <p>In the example, the delimiter for the CSV columns is set to <code>;</code>.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The configuration settings for the CSV data format apply to all CVS import routes.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-27 12:13:43 UTC
+Last updated 2025-03-27 12:24:41 UTC
 </div>
 </div>
 </body>

@@ -473,7 +473,33 @@ and zero or more document components referenced by a foreign key, each containin
 </ul>
 </div>
 <div class="paragraph">
-<p>Only one mode can be used at a time.</p>
+<p>The generic CSV mapper supports individual configurations for each configured import route as shown in the following
+example:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring the generic mapper</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  csv:
+    csv-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      uri: "file://..."
+  generic-csv-mapper:
+    settings:
+      csv-import-1: <i class="conum" data-value="2"></i><b>(2)</b>
+        type-definition-name: "demo_document"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The ID of the import route for the configured directory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The ID of the configuration for the generic CSV mapper. Must match the ID of the import route.</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_attribute_mapping">Attribute mapping</h3>
@@ -614,31 +640,37 @@ Because the simple mode is the default, it does not habe to be explicitly enable
 <div class="title">simple mode configuration</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
-  type-definition-name: "demo_document" <i class="conum" data-value="1"></i><b>(1)</b>
-  simple:
-    content:
-      csv-field-name: "filename" <i class="conum" data-value="2"></i><b>(2)</b>
-      content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="3"></i><b>(3)</b>
-      position-mappings:
-        0: "content" <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+  settings:
+    csv-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      type-definition-name: "demo_document" <i class="conum" data-value="2"></i><b>(2)</b>
+      simple:
+        content:
+          csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
+          content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="4"></i><b>(4)</b>
+          position-mappings:
+            0: "content" <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The name of the type definition that will contain the imported documents</td>
+<td>The name of the import configuration. Must match the name of the configured route (see <a href="overview.html#_configuration">configuration</a>])</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The name of the field in the CSV file containing the file names</td>
+<td>The name of the type definition that will contain the imported documents</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The path of the directory that contains the files. In this case, the CSV is expected to contain only the file names.</td>
+<td>The name of the field in the CSV file containing the file names</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The path of the directory that contains the files. In this case, the CSV is expected to contain only the file names.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>Mapping by position. The first file will be stored in the content element named "content".</td>
 </tr>
 </table>
@@ -659,18 +691,20 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
 <div class="title">counting mode configuration</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
-  type-definition-name: "document" <i class="conum" data-value="1"></i><b>(1)</b>
-  mode: COUNTING <i class="conum" data-value="2"></i><b>(2)</b>
-  counting:
-    content:
-      csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
-      delimiter: "," <i class="conum" data-value="4"></i><b>(4)</b>
-      content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="5"></i><b>(5)</b>
-    attributes:
-      xhdoc:
-        attribute-name: "xhdoc"
-        type: STRING
-        suffix: "_${contentElementNumber}" <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+  settings:
+    csv-import-2:
+      type-definition-name: "document" <i class="conum" data-value="1"></i><b>(1)</b>
+      mode: COUNTING <i class="conum" data-value="2"></i><b>(2)</b>
+      counting:
+        content:
+          csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
+          delimiter: "," <i class="conum" data-value="4"></i><b>(4)</b>
+          content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="5"></i><b>(5)</b>
+        attributes:
+          xhdoc:
+            attribute-name: "xhdoc"
+            type: STRING
+            suffix: "_${contentElementNumber}" <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -729,15 +763,17 @@ inherit attributes from the referenced record.
 <div class="title">referencing mode configuration</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
-  type-definition-name: "component" <i class="conum" data-value="1"></i><b>(1)</b>
-  mode: REFERENCING <i class="conum" data-value="2"></i><b>(2)</b>
-  referencing:
-    container-type-definition-name: "container" <i class="conum" data-value="3"></i><b>(3)</b>
-    reference-field-name: "container_id" <i class="conum" data-value="4"></i><b>(4)</b>
-    content:
-      csv-field-name: "filename" <i class="conum" data-value="5"></i><b>(5)</b>
-      delimiter: "," <i class="conum" data-value="6"></i><b>(6)</b>
-      content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
+  settings:
+    csv-import-3:
+      type-definition-name: "component" <i class="conum" data-value="1"></i><b>(1)</b>
+      mode: REFERENCING <i class="conum" data-value="2"></i><b>(2)</b>
+      referencing:
+        container-type-definition-name: "container" <i class="conum" data-value="3"></i><b>(3)</b>
+        reference-field-name: "container_id" <i class="conum" data-value="4"></i><b>(4)</b>
+        content:
+          csv-field-name: "filename" <i class="conum" data-value="5"></i><b>(5)</b>
+          delimiter: "," <i class="conum" data-value="6"></i><b>(6)</b>
+          content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -797,18 +833,21 @@ additional attribute mappings for the document entities as shown below:</p>
 <div class="title">configuring document attribute mappings</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
-    referencing:
-      document-attributes:
-        docid:
-          attribute-name: "doc_id"
-          type: STRING
-        contentRep:
-          attribute-name: "repository_id"
-          type: STRING
-        componentName:
-          attribute-name: "component_id"
-          type: STRING
-          default-value: "data_${documentNumber}"</code></pre>
+  settings:
+    csv-import-3:
+      mode: REFERENCING
+      referencing:
+        document-attributes:
+          docid:
+            attribute-name: "doc_id"
+            type: STRING
+          contentRep:
+            attribute-name: "repository_id"
+            type: STRING
+          componentName:
+            attribute-name: "component_id"
+            type: STRING
+            default-value: "data_${documentNumber}"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -843,12 +882,17 @@ the following parameters:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The ContentPreprocessor returns a list of <code>PreprocessedContent</code> instances, which consist of an <code>InputStrem</code>, the
+<p>The ContentPreprocessor returns a list of <code>PreprocessedContent</code> instances, which consist of an <code>InputStream</code>, the
 file name that will be used in arveo and the position of the file in the original list of file names. How many <code>PreprocessedContent</code>
 instances are contained in the returned list depends on the preprocessor. For example, an implementation might take
 all files and merge them to a single PDF file. Other implementations might just wrap the returned streams for decryption.
 Custom implementation can extend the class <code>de.eitco.uis.mappers.common.AbstractContentPreprocessor</code> which contains a utility
 method to open new <code>FileInputStreams</code>.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to register several <code>ContentPreprocessor</code> beans. The processor used for a specific import route is
+selected by calling the processor&#8217;s <code>usedForRoute</code> method with the ID of the route. The first processor found that returns
+true in this method will be used.</p>
 </div>
 <div class="paragraph">
 <p>The interfaces to implement as well as the other classes required to implement a <code>ContentPreprocessor</code> are contained
@@ -873,7 +917,7 @@ placed in the directory configured as loader path of the service using the <code
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-27 12:13:43 UTC
+Last updated 2025-03-27 12:24:41 UTC
 </div>
 </div>
 </body>

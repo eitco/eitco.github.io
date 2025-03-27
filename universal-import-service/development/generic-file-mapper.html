@@ -696,6 +696,35 @@ default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>
 <div class="sect2">
 <h3 id="_example_configuration">Example configuration</h3>
 <div class="paragraph">
+<p>The generic file mapper supports individual configurations for each configured import route as shown in the following
+example:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring the generic mapper</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  file:
+    file-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      uri: "file://..."
+  generic-file-mapper:
+    settings:
+      file-import-1: <i class="conum" data-value="2"></i><b>(2)</b>
+        type-definition-name: "files"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The ID of the import route for the configured directory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The ID of the configuration for the generic file mapper. Must match the ID of the import route.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
 <p>The following example shows how to configure the generic file mapper. The example collects three properties and maps
 these and one of the predefined properties to attributes.</p>
 </div>
@@ -703,43 +732,49 @@ these and one of the predefined properties to attributes.</p>
 <div class="title">example configuration</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-file-mapper:
-  type-definition-name: "files" <i class="conum" data-value="1"></i><b>(1)</b>
-  properties: <i class="conum" data-value="2"></i><b>(2)</b>
-    parent-name:
-      position-in-path: -2
-    drive-name:
-      position-in-path: 1
-    language:
-      file-name-regex:
-        expression: "[-,_]([A-Z]{2})$"
-        group: 1
-  attributes: <i class="conum" data-value="3"></i><b>(3)</b>
-    _name:
-      attribute-name: file_name
-      type: STRING
-    parent-name:
-      attribute-name: parent_name
-      type: STRING
-    language:
-      attribute-name: language
-      type: STRING
-    drive-name:
-      attribute-name: drive_name
-      type: STRING</code></pre>
+  settings:
+    file-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      type-definition-name: "files" <i class="conum" data-value="2"></i><b>(2)</b>
+      properties: <i class="conum" data-value="3"></i><b>(3)</b>
+        parent-name:
+          position-in-path: -2
+        drive-name:
+          position-in-path: 1
+        language:
+          file-name-regex:
+            expression: "[-,_]([A-Z]{2})$"
+            group: 1
+      attributes: <i class="conum" data-value="4"></i><b>(4)</b>
+        _name:
+          attribute-name: file_name
+          type: STRING
+        parent-name:
+          attribute-name: parent_name
+          type: STRING
+        language:
+          attribute-name: language
+          type: STRING
+        drive-name:
+          attribute-name: drive_name
+          type: STRING</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Name of the type definition to import into</td>
+<td>Name of the configuration. Must match the name of the configured import route.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Map of collected properties</td>
+<td>Name of the type definition to import into</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Map of collected properties</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Mapping from properties to attributes</td>
 </tr>
 </table>
@@ -764,6 +799,11 @@ are added after the regular attribute mapping was performed. So it is possible t
 using an <code>AttributesProvider</code>.</p>
 </div>
 <div class="paragraph">
+<p>It is possible to register several <code>FilePreprocessor</code> and <code>AttributesProvider</code> beans. The bean used for a specific
+import route is selected by calling the bean&#8217;s <code>usedForRoute</code> method with the ID of the route. The first bean found that
+returns true in this method will be used.</p>
+</div>
+<div class="paragraph">
 <p>The required classes for the extensions are contained in the following artifact:</p>
 </div>
 <div class="listingblock">
@@ -785,7 +825,7 @@ placed in the directory configured as loader path of the service using the <code
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-27 12:13:43 UTC
+Last updated 2025-03-27 12:24:41 UTC
 </div>
 </div>
 </body>
