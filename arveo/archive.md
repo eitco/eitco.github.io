@@ -7,6 +7,7 @@ Here you can find documentation for any version of arveo deployed so far.
  * [22.0.2](archive/22.0.2)
  * [22.0.1](archive/22.0.1)
  * [22.0.0](archive/22.0.0)
+ * [21.1.2](archive/21.1.2)
  * [21.1.1](archive/21.1.1)
  * [21.1.0](archive/21.1.0)
  * [21.0.0](archive/21.0.0)
