@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Client SDKs :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/22.0.4/arveo-developer/client-sdks-json-serialization.html">
-    <link rel="prev" href="retention-cleanup-job.html">
-    <link rel="next" href="sdk-and-batch-operations.html">
+    <title>RESTful API :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/22.0.4/arveo-developer/rest-api.html">
+    <link rel="prev" href="non-spring-sdk.html">
+    <link rel="next" href="events.html">
     <meta name="generator" content="Antora 3.2.0-alpha.8">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
@@ -302,14 +302,17 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">SDKs</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="client-sdks-json-serialization.html">Client SDKs</a>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="client-sdks.html">Client SDKs</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="sdk-and-batch-operations.html">Java SDK for Spring applications</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="non-spring-sdk.html">Java SDK for non-Spring applications</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="rest-api.html">REST API</a>
   </li>
 </ul>
   </li>
@@ -387,7 +390,7 @@
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
     <li>SDKs</li>
-    <li><a href="client-sdks-json-serialization.html">Client SDKs</a></li>
+    <li><a href="rest-api.html">REST API</a></li>
   </ul>
 </nav>
 </div>
@@ -396,45 +399,14 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Client SDKs</h1>
+<h1 class="page">RESTful API</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The client SDKs provide APIs for applications using <em>arveo</em>. SDKs exist for both Java and TypeScript. Client applications
-should not use the REST API of <em>arveo</em> directly but instead use one of the provided SDKs.</p>
-</div>
-<div class="paragraph">
-<p>Currently, three different SDKs are available:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Java SDK for Spring applications</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Provides a typed API using the same interfaces as used for the type definitions</p>
-</li>
-<li>
-<p>Spring autoconfiguration for dependency injection</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Java SDK for non-spring applications</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Provides a generic API</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Typescript SDK</p>
-</li>
-</ul>
+<p>The <em>arveo</em> Content Repository Service, like all <em>arveo</em> services, provides a RESTful API. While it
+is recommended to use one of the <a href="client-sdks.html" class="xref page">SDKs</a>, in some situations it might be required to access the
+RESTful API directly. This chapter provides information about the JSON serialization of the models and examples for some
+important requests.</p>
 </div>
 </div>
 </div>
@@ -442,20 +414,16 @@ should not use the REST API of <em>arveo</em> directly but instead use one of th
 <h2 id="json_serialization"><a class="anchor" href="#json_serialization"></a>JSON serialization</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>arveo</em> uses a custom serialization for the JSON data in the REST API to support advanced features like polymorphism.
+<p><em>arveo</em> uses a custom serialization for the JSON data in the RESTful API to support advanced features like polymorphism.
 Additionally, the custom serialization allows the <em>arveo</em> server and the client SDKs to pass type information. This way
 it is for example possible to differ between number types like short, int and long. The client SDKs take care of the
-serialization and the direct usage of the REST API is discouraged.</p>
-</div>
-<div class="paragraph">
-<p>If it is necessary to (de-) serialize the custom JSON data, use the already configured Jackson <em>ObjectMapper</em> that is
-used by the server and the SDKs. This <em>ObjectMapper</em> is equipped with mixin types that contain information about how
-to (de-) serialize the custom JSON content. The internal <em>ObjectMapper</em> can be obtained by injecting an instance of
-<code>de.eitco.commons.spring.web.json.AsdlObjectMapperHolder</code>.</p>
+serialization and the direct usage of the RESTful API is discouraged.</p>
 </div>
 <div class="paragraph">
 <p>The service offers an overview page containing the REST resources and details about the models. It can generate examples
-for the models, too. The overview page is located at the root URL of the service.</p>
+for the models, too. The overview page is located at the root URL of the service. The overview page also contains an
+OpenAPI specification for the Content Repository Service. Note that the Swagger UI used in the overview page has some
+limitations. For example, it does not support the multipart/form-data requests used to upload new documents.</p>
 </div>
 </div>
 </div>
@@ -521,12 +489,12 @@ overview page for each model class. Example:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@float</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@utc-date-time</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ZonedDateTime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@zoned-date-time</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LocalDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@local-date-time</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Class&lt;?&gt;</p></td>
@@ -553,14 +521,81 @@ overview page for each model class. Example:</p>
 <div class="paragraph">
 <p>Other data types do not require specific type identifiers.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="date_and_time_types"><a class="anchor" href="#date_and_time_types"></a>Date and time types</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>The following example shows a special type identifier:</p>
+<p>The API supports different date and time types based on the respective Java representations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>LocalDate: Contains only date information without time and timezone.</p>
+</li>
+<li>
+<p>LocalTime: Contains only time information without timezone.</p>
+</li>
+<li>
+<p>ZonedDateTime: Contains date and time information including a time zone.</p>
+</li>
+<li>
+<p>LocalDateTime: Contains date and time information without a time zone.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="zoneddatetime"><a class="anchor" href="#zoneddatetime"></a>ZonedDateTime</h3>
+<div class="paragraph">
+<p>ZonedDateTime values are represented as a string in ISO8601 format.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"retentionDate": {
-  "@zoned-date-time": "2020-12-15T15:52:21.5193002+01:00[Europe/Berlin]"
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"@zoned-date-time": "2025-04-08T15:16:20.027Z"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="localdatetime"><a class="anchor" href="#localdatetime"></a>LocalDateTime</h3>
+<div class="paragraph">
+<p>LocalDateTime values are represented as a string in ISO8601 format without timezone.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"@local-date-time": "2025-04-08T15:16:20.027"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="localdate"><a class="anchor" href="#localdate"></a>LocalDate</h3>
+<div class="paragraph">
+<p>LocalDate values are represented as an object containing year, month and day of month.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"@localDate": {
+  "year": 2025,
+  "month": 4,
+  "day": 8
 }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="localtime"><a class="anchor" href="#localtime"></a>LocalTime</h3>
+<div class="paragraph">
+<p>LocalTime values are represented as an object containing hour, minute, second and nano.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"@time": {
+    "hour": 17,
+    "minute": 48,
+    "second": 23,
+    "nano": 0
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -607,9 +642,140 @@ types.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="authorization"><a class="anchor" href="#authorization"></a>Authorization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <em>arveo</em> Content Repository Service supports OAuth2 and x509 authorization protocols. x509 requires the client
+to encrypt requests with a trusted certificate. OAuth2 uses access tokens, which must be sent in the Authorization header
+using the Bearer scheme. The examples below all use OAuth2. There are several different methods (or flows) to acquire an
+access token from an IDP like Keycloak. Details about the different token requests can be found in the IDPs documentation.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following examples show some often used request types.</p>
+</div>
+<div class="sect2">
+<h3 id="creating_a_new_container_entity"><a class="anchor" href="#creating_a_new_container_entity"></a>Creating a new container entity</h3>
+<div class="paragraph">
+<p>This example creates a new container entity. Containers contain attributes but no binary content. Hence, a simple POST
+request with a JSON payload is used.</p>
+</div>
+<div class="listingblock">
+<div class="title">creating a new container</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-httprequest hljs" data-lang="httprequest">POST http://localhost:39001/api/containers/multiple/date_time_thing HTTP/1.1
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: application/json
+
+{
+  "@type": "create-containers-input",
+  "inputs": {
+    "@list": [
+      {
+        "@type": "container-input",
+        "attributes": {
+          "date": {
+            "@date": {
+              "year": 2025,
+              "month": 4,
+              "day": 8
+            }
+          },
+          "time": {
+            "@time": {
+              "hour": 17,
+              "minute": 48,
+              "second": 23,
+              "nano": 0
+            }
+          },
+          "date_time": {
+            "@zoned-date-time": "2025-04-08T15:16:20.027Z"
+          },
+          "other_date_time": {
+            "@local-date-time": "2025-04-08T15:16:20.027"
+          }
+        }
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The request creates a single container. Creating multiple containers in a single request is possible because the outer
+<code>create-containers-input</code> object contains a list of individual <code>container-input</code> objects. The type definition of the
+containers is defined in the last part of the URL (<code>date-time-thing</code>). The string <code>{{$auth.token("keycloak")}}</code> is a
+placeholder for the actual access token.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating_a_new_document_entity"><a class="anchor" href="#creating_a_new_document_entity"></a>Creating a new document entity</h3>
+<div class="paragraph">
+<p>Document entities contain both attributes and binary content. Multipart requests are used to transfer both in a single
+request to the server.</p>
+</div>
+<div class="listingblock">
+<div class="title">using a multipart request to create a new document</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-httprequest hljs" data-lang="httprequest">POST http://localhost:39001/api/documents/simple_invoice/multiple HTTP/1.1
+Authorization: Bearer {{$auth.token("keycloak")}}
+Content-Type: multipart/form-data; boundary=---randomboundary918273
+
+-----randomboundary918273
+Content-Disposition: form-data; name="batchInput"; filename="batchInput"
+Content-Type: application/json
+
+{
+    "@type": "create-documents-input",
+    "inputs": {
+        "@list": [
+            {
+                "@type": "document-input",
+                "contentReferences": {},
+                "content": {
+                    "content": {
+                        "@type": "content-upload",
+                        "fileName": "test.txt",
+                        "data": {
+                            "@stream-id": "stream1"
+                        }
+                    }
+                },
+                "attributes": {
+                    "invoice_number": "20250001",
+                    "amount": 19.99
+                }
+            }
+        ]
+    }
+}
+-----randomboundary918273
+Content-Disposition: form-data; name="stream1"; filename="test.txt"
+Content-Type: text/plain
+
+This is my text file.
+-----randomboundary918273--</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The request consists of two parts. The first part called <code>batchInput</code> contains the JSON representation of a
+<code>create-documents-input</code> object, which can contain one or more <code>document-input</code> objects. The <code>document-input</code> contains
+the attributes of the new document entity as well as a reference to the actual content. The document will contain one
+content element called <em>content</em>. The binary data is contained in the second part of the request called <code>stream1</code>. Note
+that this part name is used in the <code>@stream-id</code> value of the content upload object.</p>
+</div>
+</div>
+</div>
+</div>
 <nav class="pagination">
-  <span class="prev"><a href="retention-cleanup-job.html">Cleanup job</a></span>
-  <span class="next"><a href="sdk-and-batch-operations.html">Java SDK for Spring applications</a></span>
+  <span class="prev"><a href="non-spring-sdk.html">Java SDK for non-Spring applications</a></span>
+  <span class="next"><a href="events.html">Events</a></span>
 </nav>
 </article>
   </div>

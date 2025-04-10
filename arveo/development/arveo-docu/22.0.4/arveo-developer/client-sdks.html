@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Untitled :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/22.0.4/arveo-developer/repo-service.html">
-    <link rel="prev" href="advanced-schema-changes.html">
-    <link rel="next" href="repo-service-upload-data.html">
+    <title>Client SDKs :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/22.0.4/arveo-developer/client-sdks.html">
+    <link rel="prev" href="retention-cleanup-job.html">
+    <link rel="next" href="sdk-and-batch-operations.html">
     <meta name="generator" content="Antora 3.2.0-alpha.8">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
@@ -256,7 +256,7 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="repo-service.html">Repository Service</a>
 <ul class="nav-list">
@@ -302,7 +302,7 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">SDKs</span>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="client-sdks.html">Client SDKs</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -389,7 +389,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li><a href="repo-service.html">Repository Service</a></li>
+    <li>SDKs</li>
+    <li><a href="client-sdks.html">Client SDKs</a></li>
   </ul>
 </nav>
 </div>
@@ -398,15 +399,47 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
+<h1 class="page">Client SDKs</h1>
 <div class="paragraph">
-<p>The Repository Service service is responsible for handling various repository entities such as documents and folders. The following entity types are supported: document, folder, container, relation and metadata.</p>
+<p>The client SDKs provide APIs for applications using <em>arveo</em>. SDKs exist for both Java and TypeScript. Client applications
+should not use the REST API of <em>arveo</em> directly but instead use one of the provided SDKs.</p>
 </div>
 <div class="paragraph">
-<p>The service saves the binary data belonging to the documents and delivers them again. Various plugins are available for connecting storage devices and services. A plug-in is assigned to a profile and configured. When saving data, the client has to specify the profile to be used and thereby decides where the data will be saved.</p>
+<p>Currently, three different SDKs are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Java SDK for Spring applications</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Provides a typed API using the same interfaces as used for the type definitions</p>
+</li>
+<li>
+<p>Spring autoconfiguration for dependency injection</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Java SDK for non-spring applications</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Provides a generic API</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Typescript SDK</p>
+</li>
+</ul>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="advanced-schema-changes.html">Advanced database schema changes</a></span>
-  <span class="next"><a href="repo-service-upload-data.html">Upload Data</a></span>
+  <span class="prev"><a href="retention-cleanup-job.html">Cleanup job</a></span>
+  <span class="next"><a href="sdk-and-batch-operations.html">Java SDK for Spring applications</a></span>
 </nav>
 </article>
   </div>
