@@ -741,7 +741,6 @@ Content-Type: application/json
                 "content": {
                     "content": {
                         "@type": "content-upload",
-                        "fileName": "test.txt",
                         "data": {
                             "@stream-id": "stream1"
                         }
@@ -768,7 +767,21 @@ This is my text file.
 <code>create-documents-input</code> object, which can contain one or more <code>document-input</code> objects. The <code>document-input</code> contains
 the attributes of the new document entity as well as a reference to the actual content. The document will contain one
 content element called <em>content</em>. The binary data is contained in the second part of the request called <code>stream1</code>. Note
-that this part name is used in the <code>@stream-id</code> value of the content upload object.</p>
+that this part&#8217;s name is used in the <code>@stream-id</code> value of the content upload object.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The filename, length and content-type fields of a <code>ContentUpload</code> object are read from the respective HTTP headers in the
+referenced part. All three fields are optional. If not set, <em>arveo</em> will auto-detect the length and the content
+type and will assign a random name to the uploaded file.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
