@@ -42,6 +42,13 @@
 </ul>
 </li>
 <li><a href="#_writing_a_custom_file_mapper"><strong>Writing a custom file mapper</strong></a></li>
+<li><a href="#_configuration_properties">Configuration Properties</a>
+<ul class="sectlevel2">
+<li><a href="#_generic-csv-mapper_settings">generic-csv-mapper.settings</a></li>
+<li><a href="#_generic-file-mapper_settings">generic-file-mapper.settings</a></li>
+<li><a href="#_universal-import-service">universal-import-service</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1071,15 +1078,596 @@ batch operation(s). The operations will be executed in the order in which they a
 <p>The custom mapper can be activated by adding the jar of the custom starter to the service&#8217;s libs directory configured
 by the parameter <code>-Dloader.path</code>.</p>
 </div>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::configuration-properties.adoc[]</p>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_properties">Configuration Properties</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_generic-csv-mapper_settings">generic-csv-mapper.settings</h3>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attribute mappings.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the attribute is multivalued.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.attribute-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the attribute in arveo.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.date-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse date values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.date-time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse date-time values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional default value.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.delimiter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.local-date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.local-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute used if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>.</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.number-format.pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Non-localized pattern string for the number format. See {@link java.text.DecimalFormat}.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>#,##0.###</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional prefix for STRING attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.suffix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional suffix for STRING attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse time values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AttributeType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the attribute.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.zone-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The zone ID used for date-time attribute if the value does not contain zone information.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">counting.content.content-element-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element to use.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for date values. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>u-M-d</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for date-time values. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[u-M-d]['T'][H:m:s][X]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">entity-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EntityType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of entity created by the mapper (DOCUMENT or CONTAINER).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>document</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MapperMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The mode used by the mapper.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>simple</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.container-type-definition-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the type definition that will contain the record containers.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.content.content-element-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element to use.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attribute mappings for the document entities. Can be empty.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the attribute is multivalued.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.attribute-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the attribute in arveo.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.date-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse date values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.date-time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse date-time values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional default value.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.delimiter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.local-date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.local-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute used if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>.</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.number-format.pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Non-localized pattern string for the number format. See {@link java.text.DecimalFormat}.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>#,##0.###</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional prefix for STRING attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.suffix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional suffix for STRING attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse time values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AttributeType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the attribute.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.zone-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The zone ID used for date-time attribute if the value does not contain zone information.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.reference-field-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the attribute in the document type definition containing the foreign key to the record containers. If  not set, no reference will be created automatically.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.reference-target-field-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the attribute in the container type definition referenced by the foreign key. If not set, the ID  system field will be used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">simple.content.file-name-mappings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mappings from file names to content element names.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">simple.content.position-mappings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mappings from the position of the file name in the list (starting at 0) to content element names.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for time values. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>H:m:s</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the type definition the entities are imported into.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zone-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default zone ID used when date-time pattern does not contain zone information. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_generic-file-mapper_settings">generic-file-mapper.settings</h3>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attribute mappings.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the attribute is multivalued.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.attribute-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the attribute in arveo.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.date-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse date values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.date-time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse date-time values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional default value.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.delimiter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.local-date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.local-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute used if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>.</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">char</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.number-format.pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Non-localized pattern string for the number format. See {@link java.text.DecimalFormat}.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>#,##0.###</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional prefix for STRING attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.suffix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional suffix for STRING attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pattern used to parse time values.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AttributeType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the attribute.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.zone-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The zone ID used for date-time attribute if the value does not contain zone information.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-element-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element in the type definition that will contain the file&#8217;s data.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for date values. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>u-M-d</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for date-time values. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[u-M-d]['T'][H:m:s][X]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">entity-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EntityType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of entity created by the mapper (DOCUMENT or CONTAINER).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>document</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file-name-property-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional separator used to split the filename in parts which can then be used to extract properties. Note  that this is a regular expression!</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mappings for properties that can be extracted from the path and file name. Properties are then used as sources  for the attribute mappings.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for time values. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>H:m:s</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-definition-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the type definition the entities are imported into.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zone-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default zone ID used when date-time pattern does not contain zone information. Can be overridden by attribute specific setting.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_universal-import-service">universal-import-service</h3>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the CSV imports.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csv.thread-pool-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The thread pool size used to process the CSV files.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csv.uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to import CSV files.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the file importer.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file.thread-pool-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The thread pool size used to process the files.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file.uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to import files.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generic-csv-mapper.settings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the generic CSV mapper for each import.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generic-file-mapper.settings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the generic file mapper for each import.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-04-23 13:46:53 UTC
+Last updated 2025-04-23 16:12:27 UTC
 </div>
 </div>
 <style>
