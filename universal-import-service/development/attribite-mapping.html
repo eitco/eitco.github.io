@@ -505,11 +505,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">default-value</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator character.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Attributes are parsed using the default Java parsers, e.g. <code>Integer.parseInt()</code> for INTEGER, or using the supplied
+<p>Attributes are parsed using the configures number format settings for numeric values, or using the supplied
 patterns for date, time or date-time values. Booleans can either be Strings ('true', 'false') or integers (0,1).</p>
+</div>
+<div class="paragraph">
+<p>The settings for numeric values allow configuring group- and decimal-separators as well as a (non-localized) pattern for numeric
+values. The default pattern <code>#,##0.###</code> requires one or more digits in front of the decimal separator and up to three
+digits behind the decimal separator. The default grouping separator is <code>,</code>. The default decimal separator is <code>.</code>. Note
+that the separators in the pattern are not localized, e.g. they have to be the default separators for the english locale.</p>
 </div>
 <div class="paragraph">
 <p>The default date-time-pattern used by the importer for date-time attributes (<code>[u-M-d]['T'][H:m:s][X]</code>) allows
@@ -520,7 +538,7 @@ default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-04-21 22:21:04 UTC
+Last updated 2025-04-23 13:46:53 UTC
 </div>
 </div>
 </body>
