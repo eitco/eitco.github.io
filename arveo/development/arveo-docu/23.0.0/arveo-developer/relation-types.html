@@ -425,11 +425,17 @@ Changes of the child-id or parent-id are not tracked in the version table.
 </tr>
 </table>
 </div>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
+<div class="title">Data model of a <code>Relation</code></div>
 <div class="content">
-<img src="_images/5c2a3b92ea863fea6f70b1cdbf74b69fd354bc76.svg" alt="relation-type-model">
+<pre> +------------+               +--------+-----+              +------------+
+ |   Parent   |               +   Relation   +              |   Child    |
+ |------------|      source   |--------------|  target      |------------|
+ |            |&lt;--------------|              |-------------&gt;|            |
+ | attributes |               |  attributes  |              | attributes |
+ |            |               |              |              |            |
+ +---+--------+               +--------------+              +------------+</pre>
 </div>
-<div class="title">Figure 1. Data model of a <code>Relation</code></div>
 </div>
 <div class="listingblock">
 <div class="title">Example: A <code>Relation</code> type definition</div>
@@ -515,11 +521,17 @@ The type of the annotated attribute must match the type of the target property o
 long getCustomerNumber();</code></pre>
 </div>
 </div>
-<div class="imageblock kroki">
+<div class="literalblock kroki-error">
+<div class="title">Data model of a foreign key relationship</div>
 <div class="content">
-<img src="_images/5cdc4f412f0ff5c1db1891eceef31c873c2081d2.svg" alt="foreign-key-model">
+<pre> +------------+                 +------------+
+ |   Parent   |                 |   Child    |
+ |------------|   foreign key   |------------|
+ |            |----------------&gt;|            |
+ | attributes |                 | attributes |
+ |            |                 |            |
+ +---+--------+                 +------------+</pre>
 </div>
-<div class="title">Figure 2. Data model of a foreign key relationship</div>
 </div>
 </div>
 </div>
