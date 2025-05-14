@@ -297,10 +297,28 @@ digits behind the decimal separator. The default grouping separator is <code>,</
 that the separators in the pattern are not localized, e.g. they have to be the default separators for the english locale.</p>
 </div>
 <div class="paragraph">
+<p>Empty values (null, an empty string or a string containing only whitespace) are mapped to null. A default value to return
+instead can be configured in the attribute mapping. The default value is a string in the same format as expected in the
+original value.</p>
+</div>
+<div class="paragraph">
 <p>The default date-time-pattern used by the importer for date-time attributes (<code>[u-M-d]['T'][H:m:s][X]</code>) allows
 parsing partial values for date-time attributes. The parts in square brackets (the date, the letter 'T', the time and
 the zone) are optional. If no value for these parts is contained in the parsed value, it is replaced by the configured
 default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The partial default values <code>local-date</code>, <code>local-time</code> and <code>zone-id</code> will not be used for empty values. Use the
+<code>default-value</code> instead to configure a default for empty values.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Attribute mappings are configured for each mapper mode. For example, when the counting mode is used, the attribute
@@ -920,10 +938,28 @@ digits behind the decimal separator. The default grouping separator is <code>,</
 that the separators in the pattern are not localized, e.g. they have to be the default separators for the english locale.</p>
 </div>
 <div class="paragraph">
+<p>Empty values (null, an empty string or a string containing only whitespace) are mapped to null. A default value to return
+instead can be configured in the attribute mapping. The default value is a string in the same format as expected in the
+original value.</p>
+</div>
+<div class="paragraph">
 <p>The default date-time-pattern used by the importer for date-time attributes (<code>[u-M-d]['T'][H:m:s][X]</code>) allows
 parsing partial values for date-time attributes. The parts in square brackets (the date, the letter 'T', the time and
 the zone) are optional. If no value for these parts is contained in the parsed value, it is replaced by the configured
 default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The partial default values <code>local-date</code>, <code>local-time</code> and <code>zone-id</code> will not be used for empty values. Use the
+<code>default-value</code> instead to configure a default for empty values.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1667,7 +1703,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-05-13 22:21:09 UTC
+Last updated 2025-05-14 14:58:57 UTC
 </div>
 </div>
 <style>
