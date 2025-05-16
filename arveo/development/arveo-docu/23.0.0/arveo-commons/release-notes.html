@@ -402,7 +402,7 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_23_0_0_may_15_2025"><a class="anchor" href="#release_notes_23_0_0_may_15_2025"></a>Release notes 23.0.0 (May 15, 2025)</h2>
+<h2 id="release_notes_23_0_0_may_16_2025"><a class="anchor" href="#release_notes_23_0_0_may_16_2025"></a>Release notes 23.0.0 (May 16, 2025)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -419,6 +419,14 @@
 <dt class="hdlist1">ECR-1533: Store annotations on content elements</dt>
 <dd>
 <p>API methods to store annotations on content elements were added.</p>
+</dd>
+<dt class="hdlist1">ECR-1543: Fixed quiet delete of Azure blob storage plugin</dt>
+<dd>
+<p>The plugin now correctly handles exceptions returned by Azure blob storage when an already deleted blob was deleted by the plugin.</p>
+</dd>
+<dt class="hdlist1">ECR-1551: Calling purge disables the trigger used to delete content asynchronously</dt>
+<dd>
+<p>Fixed the trigger to correctly evaluate the <code>ecr.purge_content_trigger.enabled</code> setting.</p>
 </dd>
 </dl>
 </div>
@@ -438,6 +446,9 @@ about the state of the entity. Code that used the <code>deleted</code> attribute
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
+</div>
+<div class="paragraph">
+<p>The fix for ECR-1551 will only be applied when the server is started in schema-update-mode once.</p>
 </div>
 </div>
 </details>
