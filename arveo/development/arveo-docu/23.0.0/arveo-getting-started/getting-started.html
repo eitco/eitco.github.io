@@ -1481,12 +1481,14 @@ with the metadata.</td>
 <code>help import</code> will show information about the command&#8217;s parameters.</p>
 </div>
 <div class="paragraph">
-<p>Now you have to add configuration parameters. You can copy the entire <code>spring.security</code> section from the
+<p>Now you have to add configuration parameters. The configuration parameters for the command line tool must be added to the
+file <code>src/main/resources/application.yaml</code>. Create this file if it does not exist already. You can copy the entire <code>spring.security</code> section from the
 file <code>test/system-test/src/test/resource-templates/application-test.yaml</code> in the demo-types project generated earlier in
 this guide. Replace the <code>${keycloak.port}</code> variable with the actual value defined in the <code>pom.xml</code> of the system-test
 module of demo-types (by default 8180).</p>
 </div>
 <div class="listingblock">
+<div class="title">application.yaml</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
   security:
@@ -1502,12 +1504,15 @@ module of demo-types (by default 8180).</p>
         provider:
           keycloak:
             issuer-uri: "http://localhost:8180/realms/TestRealm" <i class="conum" data-value="2"></i><b>(2)</b>
+  shell:
+    interactive:
+      enabled: true <i class="conum" data-value="3"></i><b>(3)</b>
 
 eureka:
   client:
-    registerWithEureka: false <i class="conum" data-value="3"></i><b>(3)</b>
+    registerWithEureka: false <i class="conum" data-value="4"></i><b>(4)</b>
 
-logging: <i class="conum" data-value="4"></i><b>(4)</b>
+logging: <i class="conum" data-value="5"></i><b>(5)</b>
   file:
     name: "demo-tool.log"
   level:
@@ -1527,11 +1532,28 @@ in the test system provided by the system test module of the project created in 
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Do not register this application in the service registry</td>
+<td>Enable interactive mode for the shell application</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Do not register this application in the service registry</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>Log only errors to a file</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The Spring Initializer automatically adds a file called <code>application.properties</code>. Move the application name parameter
+from this file to the <code>application.yaml</code> and delete <code>application.properties</code>.
+</td>
 </tr>
 </table>
 </div>
