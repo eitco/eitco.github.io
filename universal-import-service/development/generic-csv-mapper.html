@@ -948,12 +948,66 @@ in the following artifact:</p>
 placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_attribute_preprocessing">Attribute preprocessing</h3>
+<div class="paragraph">
+<p>Similar to the content preprocessing plugin mechanism, there is another extension mechanism that can be used to perform
+custom preprocessing actions on the mapped attributes.</p>
+</div>
+<div class="paragraph">
+<p>The extension mechanism works by registering a bean of type <code>de.eitco.uis.mappers.common.AttributesPreprocessor</code> (for example, by
+creating a custom Spring Boot starter). Each AttributesPreprocessor must implement the <code>preprocessAttributes</code> method, which has
+the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>attributes</code>: The attributes that were resolved by the configured mappings</p>
+</li>
+<li>
+<p><code>line</code>: The original line in the CSV being processed</p>
+</li>
+<li>
+<p><code>contentUploadMap</code>: A map containing the resolved content uploads (after being preprocessed)</p>
+</li>
+<li>
+<p><code>csvFilePath</code>: The path of the current CSV file</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The AttributesPreprocessor must return a map containing all attributes that are supposed to be added to the created
+entity. It can remove, add or edit any attribute already present in the map.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to register several <code>AttributesPreprocessor</code> beans. The processor used for a specific import route is
+selected by calling the processor&#8217;s <code>usedForRoute</code> method with the ID of the route. The first processor found that returns
+true in this method will be used.</p>
+</div>
+<div class="paragraph">
+<p>The interfaces to implement as well as the other classes required to implement a <code>AttributesPreprocessor</code> are contained
+in the following artifact:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.uis&lt;/groupId&gt;
+    &lt;artifactId&gt;universal-import-mappers-common&lt;/artifactId&gt;
+    &lt;version&gt;${import.service.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
+placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-05-20 22:21:05 UTC
+Last updated 2025-05-21 12:43:51 UTC
 </div>
 </div>
 </body>
