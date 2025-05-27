@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>EITCO ArchiveLink 11.0.1</title>
+<title>EITCO ArchiveLink 12.0.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -15,9 +15,9 @@
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>EITCO ArchiveLink 11.0.1</h1>
+<h1>EITCO ArchiveLink 12.0.0</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO ArchiveLink 11.0.1</div>
+<div id="toctitle">EITCO ArchiveLink 12.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_arveo_repository"><em>arveo</em> repository</a>
 <ul class="sectlevel2">
@@ -38,6 +38,7 @@
 <li><a href="#_archivelink_shell">ArchiveLink Shell</a>
 <ul class="sectlevel2">
 <li><a href="#_running">Running</a></li>
+<li><a href="#_generating_certificates_for_repository_access">Generating Certificates for Repository Access</a></li>
 <li><a href="#_scripting">Scripting</a></li>
 <li><a href="#_commands">Commands</a></li>
 <li><a href="#_configuration_3">Configuration</a></li>
@@ -497,10 +498,27 @@ link arguments:</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="_generating_certificates_for_repository_access">Generating Certificates for Repository Access</h3>
+<div class="paragraph">
+<p>In order to access the contents of a Content Repository a client (SAP-System or ArchiveLink Shell) must send his certificate to the Content Repository. After the certificate has been sent towards the Content Repository, the Content Repository administrator must grant access for the client/certificate.</p>
+</div>
+<div class="paragraph">
+<p>A JKS keystore containing a suitable key-pair and certificate can be created using a command like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">keytool -genkeypair -alias ArchiveLink -keyalg DSA -keysize 1024 -validity 5475 -keystore &quot;&lt;HOSTNAME&gt;-archive-link.ks&quot; -dname &quot;CN=&lt;HOSTNAME&gt;,OU=archive-link&quot; -storepass ArchiveLink -keypass ArchiveLink</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the certificate has been created and configured in the ArchiveLink Shell configuration file it can be sent towards the Content Repository using the "put-cert" command offered by the ArchiveLink Shell.
+The ArchiveLink Shell also offers a "get-cert-info" command that can be used to request the certificates that have been granted access by the Content Repository administrator.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_scripting">Scripting</h3>
 <div class="paragraph">
-<p>SpringShell supports scripts, which are simple text files containing a command with all required attributes. Each
-command with it&#8217;s attributes is written on a separate line.</p>
+<p>SpringShell supports scripts, which are simple text files containing a command with all required attributes. Each command with it&#8217;s attributes is written on a separate line.</p>
 </div>
 <div class="listingblock">
 <div class="title">example script</div>
@@ -1001,7 +1019,7 @@ application is closed. If null, no protocol will be written.</p></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-11 15:55:46 UTC
+Last updated 2025-05-27 15:48:19 UTC
 </div>
 </div>
 <style>
