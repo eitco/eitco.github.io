@@ -285,6 +285,10 @@ names of the columns of the CSV file. An attribute mapping consists of the follo
 <td class="tableblock halign-left valign-top"><p class="tableblock">number-format.decimal-separator</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator character.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique-identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks the attribute as a unique identifier or as part of a combined unique identifier that will be used to check if the entity already exists.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -336,6 +340,7 @@ mappings would be configured in the setting <code>universal-import-service.gener
   <span class="key">sysrowid</span>:
     <span class="key">attribute-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">sys_row_id</span><span class="delimiter">&quot;</span></span>
     <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
+    <span class="key">unique-identifier</span>: <span class="string"><span class="content">true</span></span>
   <span class="key">systimestamp</span>:
     <span class="key">attribute-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">sys_time_stamp</span><span class="delimiter">&quot;</span></span>
     <span class="key">type</span>: <span class="string"><span class="content">DATE_TIME</span></span>
@@ -362,6 +367,30 @@ attributes that were not contained in the original data.
 </td>
 </tr>
 </table>
+</div>
+<div class="sect3">
+<h4 id="_unique_identifier_checks">Unique identifier checks</h4>
+<div class="paragraph">
+<p>When an attribute mapping uses the <code>unique-identifier: true</code> setting, it will be used to check if the entity already
+exists in the archive before the line is processed. When multiple attribute mappings are marked as unique identifiers,
+all attribute values are compared to check for existence. There are some limitations to keep in mind when this feature
+is used:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Each check requires an additional request that performs a query. For performance reasons, the existence checks should be
+disabled for the initial import.</p>
+</li>
+<li>
+<p>The referencing mode will only check for existing entities in the container type definition.</p>
+</li>
+<li>
+<p>The counting mode still needs to preprocess the uploaded content to determine the number of entities to create before
+the existence checks can be done.</p>
+</li>
+</ol>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -440,7 +469,8 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
           <span class="key">xhdoc</span>:
             <span class="key">attribute-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">xhdoc</span><span class="delimiter">&quot;</span></span>
             <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
-            <span class="key">suffix</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">_${contentElementNumber}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+            <span class="key">suffix</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">_${contentElementNumber}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="6"></i><b>(6)</b>
+            <span class="key">unique-identifier</span>: <span class="string"><span class="content">true</span></span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -983,6 +1013,10 @@ the following parameters:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">number-format.decimal-separator</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator character.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique-identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks the attribute as a unique identifier or as part of a combined unique identifier that will be used to check if the entity already exists.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -1292,6 +1326,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.unique-identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the value of this attribute will be used to check if an entity with the same value already exists. If so,  the current entity will be skipped.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.zone-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The zone ID used for date-time attribute if the value does not contain zone information.</p></td>
@@ -1446,6 +1486,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AttributeType</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The type of the attribute.</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.unique-identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the value of this attribute will be used to check if an entity with the same value already exists. If so,  the current entity will be skipped.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.zone-id</p></td>
@@ -1613,6 +1659,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.unique-identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, the value of this attribute will be used to check if an entity with the same value already exists. If so,  the current entity will be skipped.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.zone-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The zone ID used for date-time attribute if the value does not contain zone information.</p></td>
@@ -1761,7 +1813,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-05-27 22:21:09 UTC
+Last updated 2025-05-28 09:19:12 UTC
 </div>
 </div>
 <style>
