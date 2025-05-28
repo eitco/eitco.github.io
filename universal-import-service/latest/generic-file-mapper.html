@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 2.0.0</title>
+<title>Generic file mapper</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,87 +442,422 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_universal_import_service_2_0_0"><strong>Universal Import Service 2.0.0</strong></h2>
+<h2 id="_generic_file_mapper"><strong>Generic file mapper</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
-supports reading data from CSV files and from the filesystem.</p>
+<p>The generic file mapper is the default implementation of the <code>FileMapper</code> interface contained in the service. It can
+import files from a configurable directory into arveo. Properties of the files, for example parts of the path of file
+name, can be extracted as attributes of the arveo entities.</p>
 </div>
 <div class="paragraph">
-<p>The service is based on Apache Camel and monitors configurable directories for files to import. It provides plugin interfaces
-for <code>CsvLineMappers</code> and <code>FileMappers</code>. <code>CsvLineMappers</code> are used to create one or more arveo entities from one line in
-a CSV file. <code>FileMappers</code> do the same for arbitrary files. A highly configurable default mapper implementation for both
-use cases is provided, which should be sufficient for most import scenarios.</p>
+<p>The mapper operates in two phases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Phase 1: Collect properties of the file to import. These can be parts of the path, the length or type of the file.</p>
+</li>
+<li>
+<p>Phase 2: Map collected properties to arveo attributes.</p>
+</li>
+</ul>
 </div>
 <div class="sect2">
-<h3 id="_configuration">Configuration</h3>
+<h3 id="_property_collection">Property collection</h3>
 <div class="paragraph">
-<p>The service offers some generic settings that apply to all mapping configurations. Because the service is based on
-<a href="https://camel.apache.org">Apache Camel</a>, several configuration options for the Camel components apply.</p>
+<p>Which properties to collect is configurable. Properties can be extracted from the path and file name by position or by
+using a regular expression. The path is split using the system&#8217;s path separator. The file name can be split using a
+configurable separator. The value of each property is a string that can be mapped to an attribute using the attribute
+mappings described below.</p>
+</div>
+<div class="sect3">
+<h4 id="_positional_properties">Positional properties</h4>
+<div class="paragraph">
+<p>Positional properties are collected from the path or file name, after it is split into an array of strings either by using
+the path separator or the configured file name separator character. The position can be given as a positive or negative
+integer. A positive integer (starting at 1) defines the position from left to right. A negative integer (starting at -1)
+defines the position from right to left. For example, in the path <code>/path/to/my/file.txt</code>, the position <code>1</code> would match
+<code>path</code> and the position <code>-2</code> would match <code>my</code>. Likewise, when the file name is used to collect a property and the file
+name separator is configured as <code>_</code>, the position <code>2</code> in the file name <code>invoice_20250982.pdf</code> would match <code>20250982</code>
+(the extension is stripped from the file name by default).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_regular_expression_properties">Regular expression properties</h4>
+<div class="paragraph">
+<p>Properties can be extracted from the path or file name using a regular expression. The expression can use capturing
+groups. The number of the group that contains the property can be configured. For example, the regular expression
+<code>[-,_]([A-Z]{2})$</code> could be used to parse the language <code>DE</code> as two upper-case characters at the end of the file name
+<code>EITCO_arveo-secom_Produktportfolio_DE.pdf</code>. The extension is removed from the filename by default before the expression
+is matched against the file name.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_property_mapping">Property mapping</h4>
+<div class="paragraph">
+<p>Properties to collect are configured using a map, where the keys are the names of the properties. These names can then
+be used in the attribute mappings. Each map entry can contain the following settings. Note that only one way to collect
+a property can be used for each individual property.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. property mapping options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">position-in-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Position in the path split by path separator char. Positive or negative integer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">position-in-file-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Position in the file name split by file name separator char. Positive or negative integer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">path-regex</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Regular expression matched on the path</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file-name-regex</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Regular expression matched on the file name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">remove-extension</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to remove the extension from the path or file name. Default is true.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each regular expression has two settings:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. regular expression settings</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">regular expression</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the number of the group containing the value (default is 0 for entire expression).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_predefined_properties">Predefined properties</h4>
+<div class="paragraph">
+<p>The mapper provides some predefined properties that can be used in attribute mappings without additional configuration
+in the property mappings.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. predefined properties</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Absolute path of the file (string)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File name (string including extension)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_parent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of the file&#8217;s parent directory (string)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_length</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Length of the file (long)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_extension</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extension of the file name only (string)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_last_modified</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last modified timestamp of the file (in IS0-8601 format)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attribute_mapping">Attribute mapping</h3>
+<div class="paragraph">
+<p>The collected properties (and the predefined properties) are mapped to arveo attributes in the attribute mappings.
+The key of each attribute mapping must be a collected or predefined property name. Each attribute mapping can use
+the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. attribute mapping parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attribute-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the arveo attribute (in snake-case)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the attribute (<code>SHORT</code>, <code>INTEGER</code>, <code>LONG</code>, <code>DOUBLE</code>, <code>STRING</code>, <code>BOOLEAN</code>, <code>DATE_TIME</code>, <code>DATE</code> or <code>TIME</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the attribute is multivalued or not (the default is false).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">delimiter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes. Ignored when <code>array</code> is set to false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>DATE</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>TIME</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>DATE_TIME</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zone-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">time zone ID</a> used when the value in the CSV column for <code>DATE_TIME</code> attributes does not contain time zone information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute used if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional prefix added to imported attributes of type <code>STRING</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">suffix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional suffix added to imported attributes of type <code>STRING</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique-identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks the attribute as a unique identifier or as part of a combined unique identifier that will be used to check if the entity already exists.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Attributes are parsed using the configures number format settings for numeric values, or using the supplied
+patterns for date, time or date-time values. Booleans can either be Strings ('true', 'false') or integers (0,1).</p>
 </div>
 <div class="paragraph">
-<p>The Camel routes used to import files use a URI-parameter to configure the start of the route. This makes it possible
-to select and configure the Camel component for the start of the route by URI scheme.</p>
+<p>The settings for numeric values allow configuring group- and decimal-separators as well as a (non-localized) pattern for numeric
+values. The default pattern <code>#,##0.###</code> requires one or more digits in front of the decimal separator and up to three
+digits behind the decimal separator. The default grouping separator is <code>,</code>. The default decimal separator is <code>.</code>. Note
+that the separators in the pattern are not localized, e.g. they have to be the default separators for the english locale.</p>
 </div>
 <div class="paragraph">
-<p>A URI must be configured for each directory to import files from. The keys in the configuration maps define the IDs of
-the Camel routes. In the following example, three CSV import routes and one file import route are configured.</p>
-</div>
-<div class="listingblock">
-<div class="title">configuring the URIs for CSV imports</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
-  csv:
-    csv-import-1:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false"
-    csv-import-2:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;noop=false"
-    csv-import-3:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;noop=false"</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">configuring the URI for file imports</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
-  file:
-    file-import-1:
-      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"</code></pre>
-</div>
+<p>Empty values (null, an empty string or a string containing only whitespace) are mapped to null. A default value to return
+instead can be configured in the attribute mapping. The default value is a string in the same format as expected in the
+original value.</p>
 </div>
 <div class="paragraph">
-<p>In the example, the file component of Apache Camel is activated by the <code>file:</code> scheme of the URI. The
-<a href="https://camel.apache.org/components/next/file-component.html">Camel documentation</a> contains information about the available
-parameters for the file endpoint as well as the other available endpoints.</p>
+<p>The default date-time-pattern used by the importer for date-time attributes (<code>[u-M-d]['T'][H:m:s][X]</code>) allows
+parsing partial values for date-time attributes. The parts in square brackets (the date, the letter 'T', the time and
+the zone) are optional. If no value for these parts is contained in the parsed value, it is replaced by the configured
+default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>.</p>
 </div>
-<div class="paragraph">
-<p>The way CSV files are processed is controlled by the CSV data format of Apache Camel. It offers various configuration
-properties, that are listed in the <a href="https://camel.apache.org/components/next/dataformats/csv-dataformat.html">Camel documentation</a>.
-The properties can be used in the configuration file for the Universal Import Service as shown below:</p>
-</div>
-<div class="listingblock">
-<div class="title">configing the CSV data format</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">camel:
-  dataformat:
-    csv:
-      delimiter: ";"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the example, the delimiter for the CSV columns is set to <code>;</code>.</p>
-</div>
-<div class="admonitionblock important">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The configuration settings for the CSV data format apply to all CVS import routes.
+The partial default values <code>local-date</code>, <code>local-time</code> and <code>zone-id</code> will not be used for empty values. Use the
+<code>default-value</code> instead to configure a default for empty values.
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_configuration">Example configuration</h3>
+<div class="paragraph">
+<p>The generic file mapper supports individual configurations for each configured import route as shown in the following
+example:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring the generic mapper</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  file:
+    file-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      uri: "file://..."
+  generic-file-mapper:
+    settings:
+      file-import-1: <i class="conum" data-value="2"></i><b>(2)</b>
+        type-definition-name: "files"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The ID of the import route for the configured directory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The ID of the configuration for the generic file mapper. Must match the ID of the import route.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example shows how to configure the generic file mapper. The example collects three properties and maps
+these and one of the predefined properties to attributes.</p>
+</div>
+<div class="listingblock">
+<div class="title">example configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-file-mapper:
+  settings:
+    file-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      type-definition-name: "files" <i class="conum" data-value="2"></i><b>(2)</b>
+      properties: <i class="conum" data-value="3"></i><b>(3)</b>
+        parent-name:
+          position-in-path: -2
+        drive-name:
+          position-in-path: 1
+        language:
+          file-name-regex:
+            expression: "[-,_]([A-Z]{2})$"
+            group: 1
+      attributes: <i class="conum" data-value="4"></i><b>(4)</b>
+        _name:
+          attribute-name: file_name
+          type: STRING
+        parent-name:
+          attribute-name: parent_name
+          type: STRING
+        language:
+          attribute-name: language
+          type: STRING
+        drive-name:
+          attribute-name: drive_name
+          type: STRING</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Name of the configuration. Must match the name of the configured import route.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of the type definition to import into</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Map of collected properties</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Mapping from properties to attributes</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extensions">Extensions</h3>
+<div class="paragraph">
+<p>The generic file importer provides an extension mechanism that allows preprocessing of imported files, for example to
+perform decryption. To use this extension mechanism, a bean of type <code>de.eitco.uis.mappers.common.FilePreprocessor</code> must
+be registered with a custom Spring Boot Starter. <code>FilePreprocessors</code> can influence the way the actual content of the
+file is read, as well as properties like file length, name and path. This mechanism can also be used to provide
+attributes that will be added to the arveo entity created for the file. This allows to implement an import that reads
+files from a directory that do not contain the actual content to import, but a link to another file containing the
+actual content and a collection of attributes to import.</p>
+</div>
+<div class="paragraph">
+<p>A second extension mechanism allows to resolve attributes from arbitrary sources for an imported file. For example,
+the extension could read a YAML file containing additional attributes. To use this extension mechanism, a bean of type
+<code>de.eitco.uis.mappers.common.AttributesProvider</code> must be registered. The attributes returned by an <code>AttributesProvider</code>
+are added after the regular attribute mapping was performed. So it is possible to overwrite already resolved attributes
+using an <code>AttributesProvider</code>.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to register several <code>FilePreprocessor</code> and <code>AttributesProvider</code> beans. The bean used for a specific
+import route is selected by calling the bean&#8217;s <code>usedForRoute</code> method with the ID of the route. The first bean found that
+returns true in this method will be used.</p>
+</div>
+<div class="paragraph">
+<p>The required classes for the extensions are contained in the following artifact:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.uis&lt;/groupId&gt;
+    &lt;artifactId&gt;universal-import-mappers-common&lt;/artifactId&gt;
+    &lt;version&gt;${import.service.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
+placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
 </div>
 </div>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 2.0.0</title>
+<title>Generic CSV mapper</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,87 +442,597 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_universal_import_service_2_0_0"><strong>Universal Import Service 2.0.0</strong></h2>
+<h2 id="_generic_csv_mapper"><strong>Generic CSV mapper</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
-supports reading data from CSV files and from the filesystem.</p>
+<p>The generic CSV mapper is the default implementation of the <code>CsvLineMapper</code> interface contained in the service.
+The mapper maps each column in the CSV file to an attribute of an arveo entity. Content to import is read from a
+configurable column, which can contain zero or more file names to import. The file names can either contain a fully
+qualified path, or just the name of the file. In the later case, the directory containing the files with the actual
+content can be configured (see below).</p>
 </div>
 <div class="paragraph">
-<p>The service is based on Apache Camel and monitors configurable directories for files to import. It provides plugin interfaces
-for <code>CsvLineMappers</code> and <code>FileMappers</code>. <code>CsvLineMappers</code> are used to create one or more arveo entities from one line in
-a CSV file. <code>FileMappers</code> do the same for arbitrary files. A highly configurable default mapper implementation for both
-use cases is provided, which should be sufficient for most import scenarios.</p>
+<p>The mapper offers three different modes:</p>
 </div>
-<div class="sect2">
-<h3 id="_configuration">Configuration</h3>
-<div class="paragraph">
-<p>The service offers some generic settings that apply to all mapping configurations. Because the service is based on
-<a href="https://camel.apache.org">Apache Camel</a>, several configuration options for the Camel components apply.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>SIMPLE: This is the default. Each line in the CSV file is mapped to one arveo document, which might contain zero or more
+content elements. The mapping of files to content elements is fixed and can either map file names to content element
+names or positions in the list of files to content element names.</p>
+</li>
+<li>
+<p>COUNTING: Each line is mapped to one or more arveo documents. Each document contains either one content element or no
+content at all. A counter can be used as prefix or suffix for any imported attribute to distinguish the documents
+created for one line.</p>
+</li>
+<li>
+<p>REFERENCING: Each line is mapped as a simple record structure consisting of a container entity containing all attributes
+and zero or more document components referenced by a foreign key, each containing one content element.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>The Camel routes used to import files use a URI-parameter to configure the start of the route. This makes it possible
-to select and configure the Camel component for the start of the route by URI scheme.</p>
-</div>
-<div class="paragraph">
-<p>A URI must be configured for each directory to import files from. The keys in the configuration maps define the IDs of
-the Camel routes. In the following example, three CSV import routes and one file import route are configured.</p>
+<p>The generic CSV mapper supports individual configurations for each configured import route as shown in the following
+example:</p>
 </div>
 <div class="listingblock">
-<div class="title">configuring the URIs for CSV imports</div>
+<div class="title">configuring the generic mapper</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
   csv:
-    csv-import-1:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false"
-    csv-import-2:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;noop=false"
-    csv-import-3:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;noop=false"</code></pre>
+    csv-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      uri: "file://..."
+  generic-csv-mapper:
+    settings:
+      csv-import-1: <i class="conum" data-value="2"></i><b>(2)</b>
+        type-definition-name: "demo_document"</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="title">configuring the URI for file imports</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
-  file:
-    file-import-1:
-      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"</code></pre>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The ID of the import route for the configured directory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The ID of the configuration for the generic CSV mapper. Must match the ID of the import route.</td>
+</tr>
+</table>
 </div>
+<div class="sect2">
+<h3 id="_attribute_mapping">Attribute mapping</h3>
+<div class="paragraph">
+<p>The mapping of CSV columns to arveo attributes works the same in each mode. An <em>attribute mapping</em> must be configured
+for each CSV column that is supposed to be imported. Attribute mappings are configured in a map, the keys being the
+names of the columns of the CSV file. An attribute mapping consists of the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. attribute mapping parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attribute-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the arveo attribute (in snake-case)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the attribute (<code>SHORT</code>, <code>INTEGER</code>, <code>LONG</code>, <code>DOUBLE</code>, <code>STRING</code>, <code>BOOLEAN</code>, <code>DATE_TIME</code>, <code>DATE</code> or <code>TIME</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the attribute is multivalued or not (the default is false).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">delimiter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes. Ignored when <code>array</code> is set to false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>DATE</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>TIME</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date-time-pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">pattern</a> used to parse attributes of type <code>DATE_TIME</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zone-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">time zone ID</a> used when the value in the CSV column for <code>DATE_TIME</code> attributes does not contain time zone information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The local time for a date-time attribute used if the value does not contain a time. Must be in ISO-8601 format such as '10:15' or '10:15:30'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional prefix added to imported attributes of type <code>STRING</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">suffix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An optional suffix added to imported attributes of type <code>STRING</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique-identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks the attribute as a unique identifier or as part of a combined unique identifier that will be used to check if the entity already exists.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Attributes are parsed using the configures number format settings for numeric values, or using the supplied
+patterns for date, time or date-time values. Booleans can either be Strings ('true', 'false') or integers (0,1).</p>
 </div>
 <div class="paragraph">
-<p>In the example, the file component of Apache Camel is activated by the <code>file:</code> scheme of the URI. The
-<a href="https://camel.apache.org/components/next/file-component.html">Camel documentation</a> contains information about the available
-parameters for the file endpoint as well as the other available endpoints.</p>
+<p>The settings for numeric values allow configuring group- and decimal-separators as well as a (non-localized) pattern for numeric
+values. The default pattern <code>#,##0.###</code> requires one or more digits in front of the decimal separator and up to three
+digits behind the decimal separator. The default grouping separator is <code>,</code>. The default decimal separator is <code>.</code>. Note
+that the separators in the pattern are not localized, e.g. they have to be the default separators for the english locale.</p>
 </div>
 <div class="paragraph">
-<p>The way CSV files are processed is controlled by the CSV data format of Apache Camel. It offers various configuration
-properties, that are listed in the <a href="https://camel.apache.org/components/next/dataformats/csv-dataformat.html">Camel documentation</a>.
-The properties can be used in the configuration file for the Universal Import Service as shown below:</p>
-</div>
-<div class="listingblock">
-<div class="title">configing the CSV data format</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">camel:
-  dataformat:
-    csv:
-      delimiter: ";"</code></pre>
-</div>
+<p>Empty values (null, an empty string or a string containing only whitespace) are mapped to null. A default value to return
+instead can be configured in the attribute mapping. The default value is a string in the same format as expected in the
+original value.</p>
 </div>
 <div class="paragraph">
-<p>In the example, the delimiter for the CSV columns is set to <code>;</code>.</p>
+<p>The default date-time-pattern used by the importer for date-time attributes (<code>[u-M-d]['T'][H:m:s][X]</code>) allows
+parsing partial values for date-time attributes. The parts in square brackets (the date, the letter 'T', the time and
+the zone) are optional. If no value for these parts is contained in the parsed value, it is replaced by the configured
+default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>.</p>
 </div>
-<div class="admonitionblock important">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The configuration settings for the CSV data format apply to all CVS import routes.
+The partial default values <code>local-date</code>, <code>local-time</code> and <code>zone-id</code> will not be used for empty values. Use the
+<code>default-value</code> instead to configure a default for empty values.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Attribute mappings are configured for each mapper mode. For example, when the counting mode is used, the attribute
+mappings would be configured in the setting <code>universal-import-service.generic-csv-mapper.counting.attributes</code>.</p>
+</div>
+<div class="paragraph">
+<p>The example below shows a mapping configuration for the import of CSV columns called 'sysrowid', 'systimestamp' and
+'ispdf'.</p>
+</div>
+<div class="listingblock">
+<div class="title">attribute mapping</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">attributes:
+  sysrowid:
+    attribute-name: "sys_row_id"
+    type: STRING
+    unique-identifier: true
+  systimestamp:
+    attribute-name: "sys_time_stamp"
+    type: DATE_TIME
+    date-time-pattern: "u-M-d H:m:s"
+    zone-id: "UTC"
+  ispdf:
+    attribute-name: "pdf"
+    type: BOOLEAN
+  archive:
+    attribute-name: "archive"
+    type: STRING
+    default-value: "records"</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Attributes using a default value do not have to be contained in the CSV file. This makes it possible to add new
+attributes that were not contained in the original data.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_unique_identifier_checks">Unique identifier checks</h4>
+<div class="paragraph">
+<p>When an attribute mapping uses the <code>unique-identifier: true</code> setting, it will be used to check if the entity already
+exists in the archive before the line is processed. When multiple attribute mappings are marked as unique identifiers,
+all attribute values are compared to check for existence. There are some limitations to keep in mind when this feature
+is used:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Each check requires an additional request that performs a query. For performance reasons, the existence checks should be
+disabled for the initial import.</p>
+</li>
+<li>
+<p>The referencing mode will only check for existing entities in the container type definition.</p>
+</li>
+<li>
+<p>The counting mode still needs to preprocess the uploaded content to determine the number of entities to create before
+the existence checks can be done.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_simple_mode">Simple mode</h3>
+<div class="paragraph">
+<p>The simple mode is the default operating mode of the generic CSV mapper. In this mode, a 1:1 mapping between file names
+read from the CSV file and content element names must be configured. The mapping can either be from file name to content
+element name or from the position of the file name in the list to a content element name.
+Because the simple mode is the default, it does not habe to be explicitly enabled in the configuration.</p>
+</div>
+<div class="listingblock">
+<div class="title">simple mode configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
+  settings:
+    csv-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      type-definition-name: "demo_document" <i class="conum" data-value="2"></i><b>(2)</b>
+      simple:
+        content:
+          csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
+          content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="4"></i><b>(4)</b>
+          position-mappings:
+            0: "content" <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the import configuration. Must match the name of the configured route (see <a href="overview.html#_configuration">configuration</a>])</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the type definition that will contain the imported documents</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The name of the field in the CSV file containing the file names</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The path of the directory that contains the files. In this case, the CSV is expected to contain only the file names.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Mapping by position. The first file will be stored in the content element named "content".</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A complete configuration example can be found in the system-test module in the file <code>src/test/resource-templates/config/universal-import-service.yaml</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_counting_mode">Counting mode</h3>
+<div class="paragraph">
+<p>In the counting mode, CSV lines containing more than one filename are mapped to multiple independent document entities.
+Each document entity will contain one content element. If a line in the CSV file does not contain any file names, one
+document with no content elements will be created. A counter can be added to the suffix or prefix of any string attribute
+by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">counting mode configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
+  settings:
+    csv-import-2:
+      type-definition-name: "document" <i class="conum" data-value="1"></i><b>(1)</b>
+      mode: COUNTING <i class="conum" data-value="2"></i><b>(2)</b>
+      counting:
+        content:
+          csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
+          delimiter: "," <i class="conum" data-value="4"></i><b>(4)</b>
+          content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="5"></i><b>(5)</b>
+        attributes:
+          xhdoc:
+            attribute-name: "xhdoc"
+            type: STRING
+            suffix: "_${contentElementNumber}" <i class="conum" data-value="6"></i><b>(6)</b>
+            unique-identifier: true</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the type definition that will contain the imported documents</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The counting mode must be enabled explicitly</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The name of the field in the CSV file containing the file names</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The delimiter used to separate file names</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The path of the directory that contains the files. In this case, the CSV is expected to contain only the file names.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Adds a suffix with the counter (starting at 1) of the file</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A complete configuration example can be found in the system-test module in the file <code>src/test/resource-templates/config/universal-import-service-counting.yaml</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_referencing_mode">Referencing mode</h3>
+<div class="paragraph">
+<p>In the referencing mode, a record container is created for each imported document. This record will contain all attributes,
+but no content. For each imported file, a document is created that contains only the data of the imported file. The
+documents are referenced by a foreign key containing the ID of the record container.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The imported documents do not contain any custom attributes, but arveo&#8217;s inheritance feature can be used to automatically
+inherit attributes from the referenced record.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">referencing mode configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
+  settings:
+    csv-import-3:
+      type-definition-name: "component" <i class="conum" data-value="1"></i><b>(1)</b>
+      mode: REFERENCING <i class="conum" data-value="2"></i><b>(2)</b>
+      referencing:
+        container-type-definition-name: "container" <i class="conum" data-value="3"></i><b>(3)</b>
+        reference-field-name: "container_id" <i class="conum" data-value="4"></i><b>(4)</b>
+        content:
+          csv-field-name: "filename" <i class="conum" data-value="5"></i><b>(5)</b>
+          delimiter: "," <i class="conum" data-value="6"></i><b>(6)</b>
+          content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the type definition that will contain the imported documents</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The referencing mode must be enabled explicitly</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The name of the type definition containing the record containers</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The name of the attribute in the documents containing the foreign key</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The name of the field in the CSV file containing the file names</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The delimiter used to separate file names</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The path of the directory that contains the files. In this case, the CSV is expected to contain only the file names.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A complete configuration example can be found in the system-test module in the file <code>src/test/resource-templates/config/universal-import-service-referencing.yaml</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_configuring_the_foreign_key">Configuring the foreign key</h4>
+<div class="paragraph">
+<p>The foreign key links the document entities to a container entity. As shown above, the reference field name in the document
+entities must be configured. The field in the container entity referenced by the foreign key is, by default, the system
+field <code>id</code>. The value will be retrieved automatically by the batch processing API of the content repository service.
+It is possible to change the name of the referenced field using the property <code>reference-target-field-name</code>.
+It is also possible to disable the automatic retrieval of the foreign key value by configuring no value for the
+<code>reference-field-name</code> property. The value must be provided by the attribute mappings in this case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_document_attributes">Document attributes</h4>
+<div class="paragraph">
+<p>By default, the document does not have any attributes except the required system fields and the reference field. In some
+cases, the document type definition might require additional custom fields. Those can be configured by providing
+additional attribute mappings for the document entities as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring document attribute mappings</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-csv-mapper:
+  settings:
+    csv-import-3:
+      mode: REFERENCING
+      referencing:
+        document-attributes:
+          docid:
+            attribute-name: "doc_id"
+            type: STRING
+          contentRep:
+            attribute-name: "repository_id"
+            type: STRING
+          componentName:
+            attribute-name: "component_id"
+            type: STRING
+            default-value: "data_${documentNumber}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The generic CSV mapper provides one placeholder <code>$+{documentNumber}+</code> that contains the document&#8217;s number (starting at 1)
+and that can be used either in a prefix or suffix or in a default value.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_content_preprocessing">Content preprocessing</h3>
+<div class="paragraph">
+<p>The generic CSV mapper provides an additional extension mechanism that can be used to preprocess the binary content for
+each individual line in the CSV file before it is handed over to the mapper. This way it is possible to perform tasks
+like decryption, conversion or merging of content.</p>
+</div>
+<div class="paragraph">
+<p>The extension mechanism works by registering a bean of type <code>de.eitco.uis.mappers.common.ContentPreprocessor</code> (for example, by
+creating a custom Spring Boot starter). Each ContentPreprocessor must implement the <code>preprocess</code> method, which has
+the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>fileNames</code>: A list of file names that was parsed from the current line in the CSV file (never null)</p>
+</li>
+<li>
+<p><code>csvFilePath</code>: The directory that contains the CSV file (never null)</p>
+</li>
+<li>
+<p><code>contentPath</code>: The configured path used to find the actual files (might be null)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The ContentPreprocessor returns a list of <code>PreprocessedContent</code> instances, which consist of an <code>InputStream</code>, the
+file name that will be used in arveo and the position of the file in the original list of file names. How many <code>PreprocessedContent</code>
+instances are contained in the returned list depends on the preprocessor. For example, an implementation might take
+all files and merge them to a single PDF file. Other implementations might just wrap the returned streams for decryption.
+Custom implementation can extend the class <code>de.eitco.uis.mappers.common.AbstractContentPreprocessor</code> which contains a utility
+method to open new <code>FileInputStreams</code>.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to register several <code>ContentPreprocessor</code> beans. The processor used for a specific import route is
+selected by calling the processor&#8217;s <code>usedForRoute</code> method with the ID of the route. The first processor found that returns
+true in this method will be used.</p>
+</div>
+<div class="paragraph">
+<p>The interfaces to implement as well as the other classes required to implement a <code>ContentPreprocessor</code> are contained
+in the following artifact:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.uis&lt;/groupId&gt;
+    &lt;artifactId&gt;universal-import-mappers-common&lt;/artifactId&gt;
+    &lt;version&gt;${import.service.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
+placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attribute_preprocessing">Attribute preprocessing</h3>
+<div class="paragraph">
+<p>Similar to the content preprocessing plugin mechanism, there is another extension mechanism that can be used to perform
+custom preprocessing actions on the mapped attributes.</p>
+</div>
+<div class="paragraph">
+<p>The extension mechanism works by registering a bean of type <code>de.eitco.uis.mappers.common.AttributesPreprocessor</code> (for example, by
+creating a custom Spring Boot starter). Each AttributesPreprocessor must implement the <code>preprocessAttributes</code> method, which has
+the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>attributes</code>: The attributes that were resolved by the configured mappings</p>
+</li>
+<li>
+<p><code>line</code>: The original line in the CSV being processed</p>
+</li>
+<li>
+<p><code>contentUploadMap</code>: A map containing the resolved content uploads (after being preprocessed)</p>
+</li>
+<li>
+<p><code>csvFilePath</code>: The path of the current CSV file</p>
+</li>
+<li>
+<p><code>typeDefinitionName</code>: The name of the type definition the attributes will be used for</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The AttributesPreprocessor must return a map containing all attributes that are supposed to be added to the created
+entity. It can remove, add or edit any attribute already present in the map.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to register several <code>AttributesPreprocessor</code> beans. The processor used for a specific import route is
+selected by calling the processor&#8217;s <code>usedForRoute</code> method with the ID of the route. The first processor found that returns
+true in this method will be used.</p>
+</div>
+<div class="paragraph">
+<p>The interfaces to implement as well as the other classes required to implement a <code>AttributesPreprocessor</code> are contained
+in the following artifact:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.uis&lt;/groupId&gt;
+    &lt;artifactId&gt;universal-import-mappers-common&lt;/artifactId&gt;
+    &lt;version&gt;${import.service.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
+placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
 </div>
 </div>
 </div>

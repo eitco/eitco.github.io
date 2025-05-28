@@ -435,39 +435,41 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="article">
 <div id="header">
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_writing_a_custom_line_mapper">Writing a custom line mapper</h2>
+<h2 id="_writing_a_custom_line_mapper"><strong>Writing a custom line mapper</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Custom line mappers have to implement the interface <code>CsvLineMapper</code>. Mappers can use the typed or the generic API of arveo.
 A mapper that uses the generic API has to return true in the <code>isGeneric</code> method implementation and has to implement the
-<code>mapLineGeneric</code> method. Typed mappers have to return false in the <code>isGeneric</code> method and have to implement the <code>malLine</code>
+<code>mapLineGeneric</code> method. Typed mappers have to return false in the <code>isGeneric</code> method and have to implement the <code>mapLine</code>
 method.</p>
 </div>
 <div class="paragraph">
 <p>The custom mapper implementation has to be registered as a Spring bean in a custom Spring Boot starter. To replace the
-provided default mapper, the custom auto starter either has to run before the auto configuration class <code>de.eitco.uis.generic.mapper.GenericCsvMapperAutoConfiguration</code>
-or the default mapper bean registrations have to be disabled by setting the property <code>universal-import-service.generic-csv-mapper.mode</code>
-to <code>DISABLED</code>.</p>
+provided default mapper, the custom auto starter either has to run before the auto configuration class <code>de.eitco.uis.mappers.csv.GenericCsvMapperAutoConfiguration</code>
+or the default mapper bean registrations have to be disabled by setting the property <code>universal-import-service.generic-csv-mapper.enabled</code>
+to <code>false</code>.</p>
 </div>
 <div class="paragraph">
 <p>Line mappers return a list of batch operations. The arveo entities created for one line can be created using the respective
 batch operation(s). The operations will be executed in the order in which they are contained in the list.</p>
 </div>
 <div class="paragraph">
-<p>The custom mapper can be activated by adding the jar of the custom starter to the service&#8217;s libs directory.</p>
+<p>The custom mapper can be activated by adding the jar of the custom starter to the service&#8217;s libs directory configured
+by the parameter <code>-Dloader.path</code>.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-11 16:50:45 UTC
+Last updated 2025-05-28 09:29:08 UTC
 </div>
 </div>
 </body>
