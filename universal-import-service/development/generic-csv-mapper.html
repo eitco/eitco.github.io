@@ -709,6 +709,7 @@ Because the simple mode is the default, it does not habe to be explicitly enable
     csv-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
       type-definition-name: "demo_document" <i class="conum" data-value="2"></i><b>(2)</b>
       simple:
+        conflict-resolution-strategy: UPDATE_ATTRIBUTES
         content:
           csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
           content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="4"></i><b>(4)</b>
@@ -761,6 +762,7 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
       type-definition-name: "document" <i class="conum" data-value="1"></i><b>(1)</b>
       mode: COUNTING <i class="conum" data-value="2"></i><b>(2)</b>
       counting:
+        conflict-resolution-strategy: UPDATE_ATTRIBUTES
         content:
           csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
           delimiter: "," <i class="conum" data-value="4"></i><b>(4)</b>
@@ -834,6 +836,7 @@ inherit attributes from the referenced record.
       type-definition-name: "component" <i class="conum" data-value="1"></i><b>(1)</b>
       mode: REFERENCING <i class="conum" data-value="2"></i><b>(2)</b>
       referencing:
+        conflict-resolution-strategy: UPDATE_ATTRIBUTES
         container-type-definition-name: "container" <i class="conum" data-value="3"></i><b>(3)</b>
         reference-field-name: "container_id" <i class="conum" data-value="4"></i><b>(4)</b>
         content:
@@ -1035,12 +1038,95 @@ in the following artifact:</p>
 placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_conflict_resolution_strategies">Conflict resolution strategies</h3>
+<div class="paragraph">
+<p>The Universal Import Service features several different strategies to resolve conflicts with already existing entities.</p>
+</div>
+<div class="paragraph">
+<p>The strategy to use can be selected by configuring the following parameter. The default strategy is <code>SKIP</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the simple mapper mode</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-csv-mapper:
+    settings:
+      csv-import-1:
+        simple:
+          conflict-resolution-strategy: UPDATE_ATTRIBUTES</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the counting mapper mode</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-csv-mapper:
+    settings:
+      csv-import-2:
+        mode: COUNTING
+        counting:
+          conflict-resolution-strategy: UPDATE_ATTRIBUTES</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the referencing mapper mode</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-csv-mapper:
+    settings:
+      csv-import-3:
+        mode: REFERENCING
+        referencing:
+          conflict-resolution-strategy: UPDATE_ATTRIBUTES</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following strategies are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SKIP</code>: The default strategy. Existing entities will be skipped.</p>
+</li>
+<li>
+<p><code>UPDATE</code>: Existing entities will be updated.</p>
+</li>
+<li>
+<p><code>UPDATE_ATTRIBUTES</code>: Attributes of existing entities will be updated. The content of documents will be ignored.</p>
+</li>
+<li>
+<p><code>OVERWRITE</code>: Existing entities will be overwritten.</p>
+</li>
+<li>
+<p><code>OVERWRITE_ATTRIBUTES</code>: Attributes of existing entities will be overwritten. The content of documents will be ignored.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Overwriting existing entities must be enabled in the type definition in use.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Except for the default <code>SKIP</code> strategy, all other strategies require at least one <code>unique-identifier</code> attribute. The
+unique identifier attributes will be used to create a selector passed on to the Content Repository Service.
+The Content Repository Service will use this selector to perform an update on the existing entity.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-06-01 22:21:06 UTC
+Last updated 2025-06-02 11:48:41 UTC
 </div>
 </div>
 </body>

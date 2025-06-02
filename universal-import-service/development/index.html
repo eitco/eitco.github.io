@@ -31,6 +31,7 @@
 <li><a href="#_referencing_mode">Referencing mode</a></li>
 <li><a href="#_content_preprocessing">Content preprocessing</a></li>
 <li><a href="#_attribute_preprocessing">Attribute preprocessing</a></li>
+<li><a href="#_conflict_resolution_strategies">Conflict resolution strategies</a></li>
 </ul>
 </li>
 <li><a href="#_writing_a_custom_line_mapper"><strong>Writing a custom line mapper</strong></a></li>
@@ -409,6 +410,7 @@ Because the simple mode is the default, it does not habe to be explicitly enable
     <span class="key">csv-import-1</span>: <i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">demo_document</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">simple</span>:
+        <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
         <span class="key">content</span>:
           <span class="key">csv-field-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">filename</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
           <span class="key">content-path</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${project.build.testOutputDirectory}/content</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -461,6 +463,7 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key">mode</span>: <span class="string"><span class="content">COUNTING </span></span><i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">counting</span>:
+        <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
         <span class="key">content</span>:
           <span class="key">csv-field-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">filename</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
           <span class="key">delimiter</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">,</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -534,6 +537,7 @@ inherit attributes from the referenced record.
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">component</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key">mode</span>: <span class="string"><span class="content">REFERENCING </span></span><i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">referencing</span>:
+        <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
         <span class="key">container-type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">container</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="key">reference-field-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">container_id</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
         <span class="key">content</span>:
@@ -733,6 +737,89 @@ in the following artifact:</p>
 <div class="paragraph">
 <p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
 placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conflict_resolution_strategies">Conflict resolution strategies</h3>
+<div class="paragraph">
+<p>The Universal Import Service features several different strategies to resolve conflicts with already existing entities.</p>
+</div>
+<div class="paragraph">
+<p>The strategy to use can be selected by configuring the following parameter. The default strategy is <code>SKIP</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the simple mapper mode</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">generic-csv-mapper</span>:
+    <span class="key">settings</span>:
+      <span class="key">csv-import-1</span>:
+        <span class="key">simple</span>:
+          <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the counting mapper mode</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">generic-csv-mapper</span>:
+    <span class="key">settings</span>:
+      <span class="key">csv-import-2</span>:
+        <span class="key">mode</span>: <span class="string"><span class="content">COUNTING</span></span>
+        <span class="key">counting</span>:
+          <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the referencing mapper mode</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">generic-csv-mapper</span>:
+    <span class="key">settings</span>:
+      <span class="key">csv-import-3</span>:
+        <span class="key">mode</span>: <span class="string"><span class="content">REFERENCING</span></span>
+        <span class="key">referencing</span>:
+          <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following strategies are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SKIP</code>: The default strategy. Existing entities will be skipped.</p>
+</li>
+<li>
+<p><code>UPDATE</code>: Existing entities will be updated.</p>
+</li>
+<li>
+<p><code>UPDATE_ATTRIBUTES</code>: Attributes of existing entities will be updated. The content of documents will be ignored.</p>
+</li>
+<li>
+<p><code>OVERWRITE</code>: Existing entities will be overwritten.</p>
+</li>
+<li>
+<p><code>OVERWRITE_ATTRIBUTES</code>: Attributes of existing entities will be overwritten. The content of documents will be ignored.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Overwriting existing entities must be enabled in the type definition in use.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Except for the default <code>SKIP</code> strategy, all other strategies require at least one <code>unique-identifier</code> attribute. The
+unique identifier attributes will be used to create a selector passed on to the Content Repository Service.
+The Content Repository Service will use this selector to perform an update on the existing entity.</p>
 </div>
 </div>
 </div>
@@ -1095,6 +1182,7 @@ these and one of the predefined properties to attributes.</p>
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">generic-file-mapper</span>:
   <span class="key">settings</span>:
     <span class="key">file-import-1</span>: <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">properties</span>: <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="key">parent-name</span>:
@@ -1109,6 +1197,7 @@ these and one of the predefined properties to attributes.</p>
         <span class="key">_name</span>:
           <span class="key">attribute-name</span>: <span class="string"><span class="content">file_name</span></span>
           <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
+          <span class="key">unique-identifier</span>: <span class="string"><span class="content">true</span></span>
         <span class="key">parent-name</span>:
           <span class="key">attribute-name</span>: <span class="string"><span class="content">parent_name</span></span>
           <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
@@ -1813,7 +1902,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-06-01 22:21:06 UTC
+Last updated 2025-06-02 11:48:41 UTC
 </div>
 </div>
 <style>
