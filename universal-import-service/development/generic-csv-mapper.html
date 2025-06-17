@@ -669,11 +669,20 @@ attributes that were not contained in the original data.
 </table>
 </div>
 <div class="sect3">
+<h4 id="_null_values">null values</h4>
+<div class="paragraph">
+<p>When an entity is updated, it might be necessary to actively set an existing attribute value in the archive to null.
+This can be achieved by setting the value of the attribute in the imported data to the configured <code>attribute-null-value</code>.
+The default attribute null value is <code>$null</code>.When this value is used as a <code>default-value</code> in an attribute mapping, attributes
+not present in the imported data will be set to null.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_unique_identifier_checks">Unique identifier checks</h4>
 <div class="paragraph">
 <p>When an attribute mapping uses the <code>unique-identifier: true</code> setting, it will be used to check if the entity already
-exists in the archive before the line is processed. When multiple attribute mappings are marked as unique identifiers,
-all attribute values are compared to check for existence. There are some limitations to keep in mind when this feature
+exists in the archive before the line is processed.When multiple attribute mappings are marked as unique identifiers,
+all attribute values are compared to check for existence.There are some limitations to keep in mind when this feature
 is used:</p>
 </div>
 <div class="olist arabic">
@@ -708,8 +717,8 @@ Because the simple mode is the default, it does not habe to be explicitly enable
   settings:
     csv-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
       type-definition-name: "demo_document" <i class="conum" data-value="2"></i><b>(2)</b>
+      conflict-resolution-strategy: UPDATE_ATTRIBUTES
       simple:
-        conflict-resolution-strategy: UPDATE_ATTRIBUTES
         content:
           csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
           content-path: "${project.build.testOutputDirectory}/content" <i class="conum" data-value="4"></i><b>(4)</b>
@@ -834,9 +843,9 @@ inherit attributes from the referenced record.
   settings:
     csv-import-3:
       type-definition-name: "component" <i class="conum" data-value="1"></i><b>(1)</b>
+      conflict-resolution-strategy: UPDATE_ATTRIBUTES
       mode: REFERENCING <i class="conum" data-value="2"></i><b>(2)</b>
       referencing:
-        conflict-resolution-strategy: UPDATE_ATTRIBUTES
         container-type-definition-name: "container" <i class="conum" data-value="3"></i><b>(3)</b>
         reference-field-name: "container_id" <i class="conum" data-value="4"></i><b>(4)</b>
         content:
@@ -1044,7 +1053,7 @@ placed in the directory configured as loader path of the service using the <code
 <p>The Universal Import Service features several different strategies to resolve conflicts with already existing entities.</p>
 </div>
 <div class="paragraph">
-<p>The strategy to use can be selected by configuring the following parameter. The default strategy is <code>SKIP</code>.</p>
+<p>The strategy to use can be selected by configuring the following parameter.The default strategy is <code>SKIP</code>.</p>
 </div>
 <div class="listingblock">
 <div class="title">conflict resolution strategy for the simple mapper mode</div>
@@ -1126,7 +1135,7 @@ The Content Repository Service will use this selector to perform an update on th
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-06-16 22:21:06 UTC
+Last updated 2025-06-17 15:26:59 UTC
 </div>
 </div>
 </body>

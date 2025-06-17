@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 3.0.0-SNAPSHOT</title>
+<title>Importing from CSF files</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,85 +442,166 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_universal_import_service_3_0_0_snapshot"><strong>Universal Import Service 3.0.0-SNAPSHOT</strong></h2>
+<h2 id="_importing_from_csf_files"><strong>Importing from CSF files</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
-supports reading data from CSV files and from the filesystem.</p>
-</div>
-<div class="paragraph">
-<p>The service is based on Apache Camel and monitors configurable directories for files to import. It provides plugin interfaces
-for <code>CsvLineMappers</code> and <code>FileMappers</code>. <code>CsvLineMappers</code> are used to create one or more arveo entities from one line in
-a CSV file. <code>FileMappers</code> do the same for arbitrary files. A highly configurable default mapper implementation for both
-use cases is provided, which should be sufficient for most import scenarios.</p>
+<p>The Universal Import Service can be used to import data from Saperion CSF files. CSF files are basically CSV files with
+a proprietary header containing configuration for the Saperion importers. The Universal Import Service can use some of
+the settings read from the header. The reading of the actual data from the CSF file is done using the same mechanism as is
+used for generic CSV files. So the same configuration options, especially for attribute mappings, can be used for CSF
+files, too.</p>
 </div>
 <div class="sect2">
-<h3 id="_configuration">Configuration</h3>
+<h3 id="_settings_from_csf_headers">Settings from CSF headers</h3>
 <div class="paragraph">
-<p>The service offers some generic settings that apply to all mapping configurations. Because the service is based on
-<a href="https://camel.apache.org">Apache Camel</a>, several configuration options for the Camel components apply.</p>
+<p>The following information is read from the CSF headers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>separator</strong>: The separator used in the body of the CSF file.</p>
+</li>
+<li>
+<p><strong>date pattern</strong>: The format of date values in the body of the CSF file</p>
+</li>
+<li>
+<p><strong>time pattern</strong>: The format of time values in the body of the CSF file</p>
+</li>
+<li>
+<p><strong>date-time pattern</strong>: The format of timestamps in the body of the CSF file</p>
+</li>
+<li>
+<p><strong>lagacy-import-mode</strong>: This controls the behavior of the old import mechanism in the Saperion Rich Client or Core Server.</p>
+</li>
+<li>
+<p><strong>duplicate handling</strong>: This controls how the Saperion Universal Importer handles duplicate documents.</p>
+</li>
+<li>
+<p><strong>document handling</strong>: This controls how the Saperion Universal Importer treats actual binary content of duplicate documents.</p>
+</li>
+<li>
+<p><strong>property handling</strong>: This controls how the Saperion Universal Importer treats attributes of duplicate documents.</p>
+</li>
+<li>
+<p><strong>DDC name</strong>: The name of the Saperion DDC to import data into.</p>
+</li>
+<li>
+<p><strong>key field names</strong>: Names of fields that can be used to identify duplicate documents.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>The Camel routes used to import files use a URI-parameter to configure the start of the route. This makes it possible
-to select and configure the Camel component for the start of the route by URI scheme.</p>
+<p>Except for the separator, all of these fields in the header are optional.</p>
 </div>
 <div class="paragraph">
-<p>A URI must be configured for each directory to import files from. The keys in the configuration maps define the IDs of
-the Camel routes. In the following example, three CSV import routes and one file import route are configured.</p>
+<p>The Universal Import Service uses the separator and the patterns for date, time and date-time values (if present) to
+read the actual data from the CSF file. The key field names are used to identify potential conflicts with already
+existing entities. The DDC name can be used in the configuration (see <a href="#_configuring_csf_imports">below</a>) to determine the name of the type definition
+to import into.</p>
+</div>
+<div class="paragraph">
+<p>The Universal Import Service maps the settings for the legacy import mode and the duplicate, document and property
+handling to the <a href="generic-csv-mapper.html#<em>conflict_resolution_strategies">conflict resolution strategies</a> of the
+generic CSV mapper. Due to the differences in the data model between Saperion and _arveo</em>, not all of these settings
+are supported.</p>
+</div>
+<div class="sect3">
+<h4 id="_legacy_import_mode">Legacy import mode</h4>
+<div class="paragraph">
+<p>The legacy import mode setting can be mapped to the conflict resolution strategies. Both modes are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>U</strong> (update-only): Only entities that are already present in the archive will be updated. No new entities will be created.</p>
+</li>
+<li>
+<p><strong>A</strong> (create-or-update): Existing entities will be updated, new entities will be created.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This will work only when the key field names are not empty.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_duplicate_handling">Duplicate handling</h4>
+<div class="paragraph">
+<p>Because <em>arveo</em> enforces uniqueness of entities, only the <code>REVISE</code> and <code>REVISEONLY</code> modes are supported.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>REVISE</code> (create-or-update): Existing entities will be updated, new entities will be created.</p>
+</li>
+<li>
+<p><code>REVISEONLY</code> (update-only): Only entities that are already present in the archive will be updated. No new entities will be created.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_document_handling">Document handling</h4>
+<div class="paragraph">
+<p>In difference to Saperion, <em>arveo</em> does not support arbitrary content elements for one document entity. Some of the
+behavior of the Saperion Universal Importer can be reproduced using the different importing modes of the
+<a href="generic-csv-mapper.html">generic CSV mapper</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SIMPLE</code>: In the simple mode, the number of possible content elements is fixed. The importer will update existing content
+elements, but new ones cannot be appended.</p>
+</li>
+<li>
+<p><code>COUNTING</code>: In this mode, the importer will create seprate documents for each content element. This makes it possible
+to update existing ones and to create new entities for additional content elements.</p>
+</li>
+<li>
+<p><code>REFERENCING</code>: In this mode, content elements are stored as separate document entities which are linkes to a common
+container entity using foreign keys. This mode will append new content elements and replace existing ones when they
+can be identified by a unique key.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>REPLACEALL</code> mode of the Saperion Universal Importer is not supported.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_property_handling">Property handling</h4>
+<div class="paragraph">
+<p>The setting for the property handling mode is ignored.By default, the Universal Import Service will behave as if the
+<code>UPDATE</code> setting is active.However, it is possible to reproduce the <code>OVERWRITE</code> behavior by using the
+<a href="generic-csv-mapper.html#_null_values">attriute-null-value</a> as a default value for attributes not present in the body
+of the CSF file.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_csf_imports">Configuring CSF imports</h3>
+<div class="paragraph">
+<p>CSF imports are configured by defining the file system resource to monitor for CSF files as shown below:</p>
 </div>
 <div class="listingblock">
-<div class="title">configuring the URIs for CSV imports</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
-  csv:
-    csv-import-1:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false"
-    csv-import-2:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;noop=false"
-    csv-import-3:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;noop=false"</code></pre>
+  csf:
+    csf-import-1:
+      uri: "file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest1.csf&amp;noop=false"
+    csf-import-2:
+      uri: "file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest4.csf&amp;noop=false"
+    csf-import-3:
+      uri: "file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest3.csf&amp;noop=false"
+  type-name-mappings: <i class="conum" data-value="1"></i><b>(1)</b>
+    AMV_TBL: incident</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="title">configuring the URI for file imports</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
-  file:
-    file-import-1:
-      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the example, the file component of Apache Camel is activated by the <code>file:</code> scheme of the URI. The
-<a href="https://camel.apache.org/components/next/file-component.html">Camel documentation</a> contains information about the available
-parameters for the file endpoint as well as the other available endpoints.</p>
-</div>
-<div class="paragraph">
-<p>The way CSV files are processed is controlled by the CSV data format of Apache Camel. It offers various configuration
-properties, that are listed in the <a href="https://camel.apache.org/components/next/dataformats/csv-dataformat.html">Camel documentation</a>.
-The properties can be used in the configuration file for the Universal Import Service as shown below:</p>
-</div>
-<div class="listingblock">
-<div class="title">configing the CSV data format</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">camel:
-  dataformat:
-    csv:
-      delimiter: ";"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the example, the delimiter for the CSV columns is set to <code>;</code>.</p>
-</div>
-<div class="admonitionblock important">
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The configuration settings for the CSV data format apply to all CVS import routes.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This setting can be used to configure a mapping from DDC names read from the CSF header to type definition names</td>
 </tr>
 </table>
 </div>

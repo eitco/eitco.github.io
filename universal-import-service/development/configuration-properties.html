@@ -462,6 +462,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attribute-null-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The string representing a null value of an attribute. An attribute with this value will be set to null when an entity is updated during an import.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$null</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Attribute mappings.</p></td>
@@ -570,6 +576,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">conflict-resolution-strategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ConflictResolutionStrategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This determines how conflicts, such as existing entities with the same identifier, are handled.  &lt;ul&gt;  &lt;li&gt;SKIP: The entity will be skipped without making changes.&lt;/li&gt;  &lt;li&gt;UPDATE: The entity will be updated with the new data.&lt;/li&gt;  &lt;li&gt;UPDATE_ATTRIBUTES: Only attributes of the entity will be updated, ignoring its content.&lt;/li&gt;  &lt;li&gt;OVERWRITE: The current version of the entity will be entirely overwritten.&lt;/li&gt;  &lt;li&gt;OVERWRITE_ATTRIBUTES: Only attributes of the entity will be overwritten, ignoring its content.&lt;/li&gt;  &lt;/ul&gt;  The default strategy is set to SKIP.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skip</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">counting.content.content-element-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element to use.</p></td>
@@ -610,6 +622,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">MapperMode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The mode used by the mapper.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>simple</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Character</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>.</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Character</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Non-localized pattern string for the number format. See java.text.DecimalFormat.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>#,##0.###</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">referencing.container-type-definition-name</p></td>
@@ -903,6 +933,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">conflict-resolution-strategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ConflictResolutionStrategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This determines how conflicts, such as existing entities with the same identifier, are handled.  &lt;ul&gt;  &lt;li&gt;SKIP: The entity will be skipped without making changes.&lt;/li&gt;  &lt;li&gt;UPDATE: The entity will be updated with the new data.&lt;/li&gt;  &lt;li&gt;UPDATE_ATTRIBUTES: Only attributes of the entity will be updated, ignoring its content.&lt;/li&gt;  &lt;li&gt;OVERWRITE: The current version of the entity will be entirely overwritten.&lt;/li&gt;  &lt;li&gt;OVERWRITE_ATTRIBUTES: Only attributes of the entity will be overwritten, ignoring its content.&lt;/li&gt;  &lt;/ul&gt;  The default strategy is set to SKIP.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skip</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">content-element-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element in the type definition that will contain the file&#8217;s data.</p></td>
@@ -990,6 +1026,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csf</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the CSF imports.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csf.thread-pool-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The thread pool size used to process the CSF files.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csf.uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to import CSF files.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">csv</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the CSV imports.</p></td>
@@ -1037,6 +1091,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the generic file mapper for each import.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-name-mappings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mappings from source type names to type definition names. Used for DDC names found in CSF headers.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1045,7 +1105,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-06-16 22:22:03 UTC
+Last updated 2025-06-17 15:27:48 UTC
 </div>
 </div>
 </body>
