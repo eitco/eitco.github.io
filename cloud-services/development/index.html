@@ -19,20 +19,20 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_gateway_service">1. Gateway Service</a>
+<li><a href="#_gateway_service"><strong>Gateway Service</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_route_configuration">1.1. Route configuration</a></li>
-<li><a href="#_extension_points">1.2. Extension points</a></li>
+<li><a href="#_route_configuration">Route configuration</a></li>
+<li><a href="#_extension_points">Extension points</a></li>
 </ul>
 </li>
-<li><a href="#_registry_service">2. Registry Service</a></li>
-<li><a href="#_configuration_service">3. Configuration Service</a>
+<li><a href="#_registry_service"><strong>Registry Service</strong></a></li>
+<li><a href="#_configuration_service"><strong>Configuration Service</strong></a>
 <ul class="sectlevel3">
-<li><a href="#_external_configuration_in_spring_boot">3.1. External configuration in Spring Boot</a></li>
-<li><a href="#_typed_configuration_classes">3.2. Typed configuration classes</a></li>
-<li><a href="#_backends">3.3. Backends</a></li>
-<li><a href="#_securing_parameters_in_the_configuration_service">3.4. Securing parameters in the Configuration Service</a></li>
-<li><a href="#_encrypting_parameters_in_the_yaml_files">3.5. Encrypting parameters in the yaml files</a></li>
+<li><a href="#_external_configuration_in_spring_boot">External configuration in Spring Boot</a></li>
+<li><a href="#_typed_configuration_classes">Typed configuration classes</a></li>
+<li><a href="#_backends">Backends</a></li>
+<li><a href="#_securing_parameters_in_the_configuration_service">Securing parameters in the Configuration Service</a></li>
+<li><a href="#_encrypting_parameters_in_the_yaml_files">Encrypting parameters in the yaml files</a></li>
 </ul>
 </li>
 </ul>
@@ -40,10 +40,10 @@
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_gateway_service">1. Gateway Service</h2>
+<h2 id="_gateway_service"><strong>Gateway Service</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The gateway service provides a central API gateway that hides the various microservices from an application. It is based
+<p>The Gateway Service provides a central API gateway that hides the various microservices from an application. It is based
 on Spring Cloud Gateway.</p>
 </div>
 <div class="admonitionblock warning">
@@ -60,7 +60,7 @@ runtime environment. For this reason, the Gateway Service cannot be used in a tr
 </table>
 </div>
 <div class="sect2">
-<h3 id="_route_configuration">1.1. Route configuration</h3>
+<h3 id="_route_configuration">Route configuration</h3>
 <div class="paragraph">
 <p>Routes can be configured in the configuration file of the service. There are many options to match requests against
 configured routes. The
@@ -133,13 +133,13 @@ instance of the repository service to the path <code><a href="http://&lt;reposit
 </div>
 </div>
 <div class="sect2">
-<h3 id="_extension_points">1.2. Extension points</h3>
+<h3 id="_extension_points">Extension points</h3>
 <div class="paragraph">
 <p>There are two global filters, that are active by default in all routes: The <code>ResponseFilter</code> and the <code>X509Filter</code>. Both
 filters serve as extension points for project specific logic.</p>
 </div>
 <div class="sect3">
-<h4 id="_responsefilter">1.2.1. ResponseFilter</h4>
+<h4 id="_responsefilter">ResponseFilter</h4>
 <div class="paragraph">
 <p>The <code>ResponseFilter</code> is executed <em>after</em> a request was handled by the filter chain. It calls all beans of type
 <code>RequestContextConsumer</code>, passing the current <code>ServerWebExchange</code>. To hook into that filter, just implement the interface
@@ -147,7 +147,7 @@ filters serve as extension points for project specific logic.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_x509filter">1.2.2. X509Filter</h4>
+<h4 id="_x509filter">X509Filter</h4>
 <div class="paragraph">
 <p>The <code>X509Filter</code> is executed <em>before</em> a request is handled by the filter chain. It can be used to check the client&#8217;s
 certificates. It calls all beans of type <code>X509CertificateConsumer</code>, passing the current client&#8217;s certificates.
@@ -159,20 +159,20 @@ starter, which registers a bean for your consumer, to the classpath.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_registry_service">2. Registry Service</h2>
+<h2 id="_registry_service"><strong>Registry Service</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The registry service provides the central registration for service instances. The services can register with the registry
-service and a client can use the registry to query the available instances. In this way it can be checked whether all
+<p>The Registry Service provides the central registration for service instances. The services can register with the Registry
+Service and a client can use the registry to query the available instances. In this way it can be checked whether all
 services are running properly. The service is based on the Spring Cloud Netflix stack.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_configuration_service">3. Configuration Service</h2>
+<h2 id="_configuration_service"><strong>Configuration Service</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <em>{product-name}</em> configuration service provides the configuration parameters for the other services centrally. It runs on the Spring Cloud Config Service and has its own endpoint for distributing the configuration files for the type system.</p>
+<p>The <em>{product-name}</em> Cconfiguration Service provides the configuration parameters for the other services centrally. It runs on the Spring Cloud Config Service and has its own endpoint for distributing the configuration files for the type system.</p>
 </div>
 <div class="paragraph">
 <p>Spring Cloud Config can read configuration parameters from various sources and in various formats. The source can e.g. be
@@ -206,7 +206,7 @@ passwords, etc.) will be implemented in future releases.</p>
 can thus be integrated very easily into Spring Boot-based applications.</p>
 </div>
 <div class="sect3">
-<h4 id="_external_configuration_in_spring_boot">3.1. External configuration in Spring Boot</h4>
+<h4 id="_external_configuration_in_spring_boot">External configuration in Spring Boot</h4>
 <div class="paragraph">
 <p>Spring Boot itself provides a mechanism for externalised configuration parameters: <a href="https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config" class="bare">https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config</a>.</p>
 </div>
@@ -291,14 +291,14 @@ the production environment.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_typed_configuration_classes">3.2. Typed configuration classes</h3>
+<h3 id="_typed_configuration_classes">Typed configuration classes</h3>
 <div class="paragraph">
 <p>Spring configuration can also be used to create typed structured configuration classes:
 <a href="https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-typesafe-configuration-properties" class="bare">https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-typesafe-configuration-properties</a></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_backends">3.3. Backends</h3>
+<h3 id="_backends">Backends</h3>
 <div class="paragraph">
 <p>The Spring Cloud Config Service inherently offers various options for storing configuration parameters
 <a href="https://cloud.spring.io/spring-cloud-static/spring-cloud-config/2.0.0.RC2/single/spring-cloud-config.html#_environment_repository" class="bare">https://cloud.spring.io/spring-cloud-static/spring-cloud-config/2.0.0.RC2/single/spring-cloud-config.html#_environment_repository</a>:</p>
@@ -320,21 +320,21 @@ the production environment.</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_file_format">3.3.1. File format</h4>
+<h4 id="_file_format">File format</h4>
 <div class="paragraph">
 <p>In the file-based backends (Git, file system), the configuration parameters can be stored either as a normal .properties file or in YAML.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_securing_parameters_in_the_configuration_service">3.4. Securing parameters in the Configuration Service</h3>
+<h3 id="_securing_parameters_in_the_configuration_service">Securing parameters in the Configuration Service</h3>
 <div class="paragraph">
 <p>Some parameters like database passwords, or the master password for the data encryption should not be accessible for
 everyone. The configuration service is based on the Spring Cloud Configuration Service, so all security measures described
 in the Spring documentation apply.</p>
 </div>
 <div class="sect3">
-<h4 id="_ssl_transport_encryption_and_x509_access">3.4.1. SSL transport encryption and x509 access</h4>
+<h4 id="_ssl_transport_encryption_and_x509_access">SSL transport encryption and x509 access</h4>
 <div class="paragraph">
 <p>The configuration service can serve SSL encrypted data and it can enforce client certificate checks to limit access. Both
 features can be enabled in the <em>bootstrap.yaml</em> file for the configuration service. Access to this file must be protected by
@@ -458,7 +458,7 @@ by operating system measures like file system access restrictions.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_encrypting_parameters_in_the_yaml_files">3.5. Encrypting parameters in the yaml files</h3>
+<h3 id="_encrypting_parameters_in_the_yaml_files">Encrypting parameters in the yaml files</h3>
 <div class="paragraph">
 <p>The configuration properties for the different services are stored in yaml files or in a database. It is possible to
 encrypt values in those files to secure sensitive data like passwords. The configuration service can automatically decrypt
@@ -491,7 +491,7 @@ documentation.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-06-24 01:34:07 UTC
+Last updated 2025-06-24 09:28:15 UTC
 </div>
 </div>
 <style>
