@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 2.0.0</title>
+<title>Universal Import Service 3.0.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -18,7 +18,7 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_universal_import_service_2_0_0"><strong>Universal Import Service 2.0.0</strong></a>
+<li><a href="#_universal_import_service_3_0_0"><strong>Universal Import Service 3.0.0</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
 </ul>
@@ -31,6 +31,13 @@
 <li><a href="#_referencing_mode">Referencing mode</a></li>
 <li><a href="#_content_preprocessing">Content preprocessing</a></li>
 <li><a href="#_attribute_preprocessing">Attribute preprocessing</a></li>
+<li><a href="#_conflict_resolution_strategies">Conflict resolution strategies</a></li>
+</ul>
+</li>
+<li><a href="#_importing_from_csf_files"><strong>Importing from CSF files</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_settings_from_csf_headers">Settings from CSF headers</a></li>
+<li><a href="#_configuring_csf_imports">Configuring CSF imports</a></li>
 </ul>
 </li>
 <li><a href="#_writing_a_custom_line_mapper"><strong>Writing a custom line mapper</strong></a></li>
@@ -56,7 +63,7 @@
 <div id="content">
 <div style="page-break-after: always;"></div>
 <div class="sect1">
-<h2 id="_universal_import_service_2_0_0"><strong>Universal Import Service 2.0.0</strong></h2>
+<h2 id="_universal_import_service_3_0_0"><strong>Universal Import Service 3.0.0</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
@@ -369,11 +376,20 @@ attributes that were not contained in the original data.
 </table>
 </div>
 <div class="sect3">
+<h4 id="_null_values">null values</h4>
+<div class="paragraph">
+<p>When an entity is updated, it might be necessary to actively set an existing attribute value in the archive to null.
+This can be achieved by setting the value of the attribute in the imported data to the configured <code>attribute-null-value</code>.
+The default attribute null value is <code>$null</code>.When this value is used as a <code>default-value</code> in an attribute mapping, attributes
+not present in the imported data will be set to null.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_unique_identifier_checks">Unique identifier checks</h4>
 <div class="paragraph">
 <p>When an attribute mapping uses the <code>unique-identifier: true</code> setting, it will be used to check if the entity already
-exists in the archive before the line is processed. When multiple attribute mappings are marked as unique identifiers,
-all attribute values are compared to check for existence. There are some limitations to keep in mind when this feature
+exists in the archive before the line is processed.When multiple attribute mappings are marked as unique identifiers,
+all attribute values are compared to check for existence.There are some limitations to keep in mind when this feature
 is used:</p>
 </div>
 <div class="olist arabic">
@@ -408,6 +424,8 @@ Because the simple mode is the default, it does not habe to be explicitly enable
   <span class="key">settings</span>:
     <span class="key">csv-import-1</span>: <i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">demo_document</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">simple</span>:
         <span class="key">content</span>:
           <span class="key">csv-field-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">filename</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
@@ -459,6 +477,7 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
   <span class="key">settings</span>:
     <span class="key">csv-import-2</span>:
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">mode</span>: <span class="string"><span class="content">COUNTING </span></span><i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">counting</span>:
         <span class="key">content</span>:
@@ -532,6 +551,8 @@ inherit attributes from the referenced record.
   <span class="key">settings</span>:
     <span class="key">csv-import-3</span>:
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">component</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">mode</span>: <span class="string"><span class="content">REFERENCING </span></span><i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">referencing</span>:
         <span class="key">container-type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">container</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
@@ -733,6 +754,256 @@ in the following artifact:</p>
 <div class="paragraph">
 <p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
 placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conflict_resolution_strategies">Conflict resolution strategies</h3>
+<div class="paragraph">
+<p>The Universal Import Service features several different strategies to resolve conflicts with already existing entities.</p>
+</div>
+<div class="paragraph">
+<p>The strategy to use can be selected by configuring the following parameter.The default strategy is <code>SKIP</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the simple mapper mode</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">generic-csv-mapper</span>:
+    <span class="key">settings</span>:
+      <span class="key">csv-import-1</span>:
+        <span class="key">simple</span>:
+          <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the counting mapper mode</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">generic-csv-mapper</span>:
+    <span class="key">settings</span>:
+      <span class="key">csv-import-2</span>:
+        <span class="key">mode</span>: <span class="string"><span class="content">COUNTING</span></span>
+        <span class="key">counting</span>:
+          <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">conflict resolution strategy for the referencing mapper mode</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">generic-csv-mapper</span>:
+    <span class="key">settings</span>:
+      <span class="key">csv-import-3</span>:
+        <span class="key">mode</span>: <span class="string"><span class="content">REFERENCING</span></span>
+        <span class="key">referencing</span>:
+          <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following strategies are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SKIP</code>: The default strategy. Existing entities will be skipped.</p>
+</li>
+<li>
+<p><code>UPDATE</code>: Existing entities will be updated.</p>
+</li>
+<li>
+<p><code>UPDATE_ATTRIBUTES</code>: Attributes of existing entities will be updated. The content of documents will be ignored.</p>
+</li>
+<li>
+<p><code>OVERWRITE</code>: Existing entities will be overwritten.</p>
+</li>
+<li>
+<p><code>OVERWRITE_ATTRIBUTES</code>: Attributes of existing entities will be overwritten. The content of documents will be ignored.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Overwriting existing entities must be enabled in the type definition in use.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Except for the default <code>SKIP</code> strategy, all other strategies require at least one <code>unique-identifier</code> attribute. The
+unique identifier attributes will be used to create a selector passed on to the Content Repository Service.
+The Content Repository Service will use this selector to perform an update on the existing entity.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_importing_from_csf_files"><strong>Importing from CSF files</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Universal Import Service can be used to import data from Saperion CSF files. CSF files are basically CSV files with
+a proprietary header containing configuration for the Saperion importers. The Universal Import Service can use some of
+the settings read from the header. The reading of the actual data from the CSF file is done using the same mechanism as is
+used for generic CSV files. So the same configuration options, especially for attribute mappings, can be used for CSF
+files, too.</p>
+</div>
+<div class="sect2">
+<h3 id="_settings_from_csf_headers">Settings from CSF headers</h3>
+<div class="paragraph">
+<p>The following information is read from the CSF headers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>separator</strong>: The separator used in the body of the CSF file.</p>
+</li>
+<li>
+<p><strong>date pattern</strong>: The format of date values in the body of the CSF file</p>
+</li>
+<li>
+<p><strong>time pattern</strong>: The format of time values in the body of the CSF file</p>
+</li>
+<li>
+<p><strong>date-time pattern</strong>: The format of timestamps in the body of the CSF file</p>
+</li>
+<li>
+<p><strong>lagacy-import-mode</strong>: This controls the behavior of the old import mechanism in the Saperion Rich Client or Core Server.</p>
+</li>
+<li>
+<p><strong>duplicate handling</strong>: This controls how the Saperion Universal Importer handles duplicate documents.</p>
+</li>
+<li>
+<p><strong>document handling</strong>: This controls how the Saperion Universal Importer treats actual binary content of duplicate documents.</p>
+</li>
+<li>
+<p><strong>property handling</strong>: This controls how the Saperion Universal Importer treats attributes of duplicate documents.</p>
+</li>
+<li>
+<p><strong>DDC name</strong>: The name of the Saperion DDC to import data into.</p>
+</li>
+<li>
+<p><strong>key field names</strong>: Names of fields that can be used to identify duplicate documents.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Except for the separator, all of these fields in the header are optional.</p>
+</div>
+<div class="paragraph">
+<p>The Universal Import Service uses the separator and the patterns for date, time and date-time values (if present) to
+read the actual data from the CSF file. The key field names are used to identify potential conflicts with already
+existing entities. The DDC name can be used in the configuration (see <a href="#_configuring_csf_imports">below</a>) to determine the name of the type definition
+to import into.</p>
+</div>
+<div class="paragraph">
+<p>The Universal Import Service maps the settings for the legacy import mode and the duplicate, document and property
+handling to the <a href="#<em>conflict_resolution_strategies">conflict resolution strategies</a> of the
+generic CSV mapper. Due to the differences in the data model between Saperion and _arveo</em>, not all of these settings
+are supported.</p>
+</div>
+<div class="sect3">
+<h4 id="_legacy_import_mode">Legacy import mode</h4>
+<div class="paragraph">
+<p>The legacy import mode setting can be mapped to the conflict resolution strategies. Both modes are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>U</strong> (update-only): Only entities that are already present in the archive will be updated. No new entities will be created.</p>
+</li>
+<li>
+<p><strong>A</strong> (create-or-update): Existing entities will be updated, new entities will be created.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This will work only when the key field names are not empty.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_duplicate_handling">Duplicate handling</h4>
+<div class="paragraph">
+<p>Because <em>arveo</em> enforces uniqueness of entities, only the <code>REVISE</code> and <code>REVISEONLY</code> modes are supported.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>REVISE</code> (create-or-update): Existing entities will be updated, new entities will be created.</p>
+</li>
+<li>
+<p><code>REVISEONLY</code> (update-only): Only entities that are already present in the archive will be updated. No new entities will be created.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_document_handling">Document handling</h4>
+<div class="paragraph">
+<p>In difference to Saperion, <em>arveo</em> does not support arbitrary content elements for one document entity. Some of the
+behavior of the Saperion Universal Importer can be reproduced using the different importing modes of the
+<a href="#">generic CSV mapper</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SIMPLE</code>: In the simple mode, the number of possible content elements is fixed. The importer will update existing content
+elements, but new ones cannot be appended.</p>
+</li>
+<li>
+<p><code>COUNTING</code>: In this mode, the importer will create seprate documents for each content element. This makes it possible
+to update existing ones and to create new entities for additional content elements.</p>
+</li>
+<li>
+<p><code>REFERENCING</code>: In this mode, content elements are stored as separate document entities which are linkes to a common
+container entity using foreign keys. This mode will append new content elements and replace existing ones when they
+can be identified by a unique key.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <code>REPLACEALL</code> mode of the Saperion Universal Importer is not supported.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_property_handling">Property handling</h4>
+<div class="paragraph">
+<p>The setting for the property handling mode is ignored.By default, the Universal Import Service will behave as if the
+<code>UPDATE</code> setting is active.However, it is possible to reproduce the <code>OVERWRITE</code> behavior by using the
+<a href="#_null_values">attriute-null-value</a> as a default value for attributes not present in the body
+of the CSF file.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_csf_imports">Configuring CSF imports</h3>
+<div class="paragraph">
+<p>CSF imports are configured by defining the file system resource to monitor for CSF files as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">csf</span>:
+    <span class="key">csf-import-1</span>:
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest1.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+    <span class="key">csf-import-2</span>:
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest4.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+    <span class="key">csf-import-3</span>:
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest3.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+  <span class="key">type-name-mappings</span>: <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key">AMV_TBL</span>: <span class="string"><span class="content">incident</span></span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This setting can be used to configure a mapping from DDC names read from the CSF header to type definition names</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1095,6 +1366,8 @@ these and one of the predefined properties to attributes.</p>
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">generic-file-mapper</span>:
   <span class="key">settings</span>:
     <span class="key">file-import-1</span>: <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">properties</span>: <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="key">parent-name</span>:
@@ -1109,6 +1382,7 @@ these and one of the predefined properties to attributes.</p>
         <span class="key">_name</span>:
           <span class="key">attribute-name</span>: <span class="string"><span class="content">file_name</span></span>
           <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
+          <span class="key">unique-identifier</span>: <span class="string"><span class="content">true</span></span>
         <span class="key">parent-name</span>:
           <span class="key">attribute-name</span>: <span class="string"><span class="content">parent_name</span></span>
           <span class="key">type</span>: <span class="string"><span class="content">STRING</span></span>
@@ -1230,6 +1504,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attribute-null-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The string representing a null value of an attribute. An attribute with this value will be set to null when an entity is updated during an import.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$null</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Attribute mappings.</p></td>
@@ -1338,6 +1618,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">conflict-resolution-strategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ConflictResolutionStrategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This determines how conflicts, such as existing entities with the same identifier, are handled.  &lt;ul&gt;  &lt;li&gt;SKIP: The entity will be skipped without making changes.&lt;/li&gt;  &lt;li&gt;UPDATE: The entity will be updated with the new data.&lt;/li&gt;  &lt;li&gt;UPDATE_ATTRIBUTES: Only attributes of the entity will be updated, ignoring its content.&lt;/li&gt;  &lt;li&gt;OVERWRITE: The current version of the entity will be entirely overwritten.&lt;/li&gt;  &lt;li&gt;OVERWRITE_ATTRIBUTES: Only attributes of the entity will be overwritten, ignoring its content.&lt;/li&gt;  &lt;/ul&gt;  The default strategy is set to SKIP.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skip</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">counting.content.content-element-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element to use.</p></td>
@@ -1378,6 +1664,24 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MapperMode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The mode used by the mapper.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>simple</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.decimal-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Character</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The decimal separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>.</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.grouping-separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Character</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The grouping separator used to parse numbers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number-format.pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Non-localized pattern string for the number format. See java.text.DecimalFormat.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>#,##0.###</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">referencing.container-type-definition-name</p></td>
@@ -1522,6 +1826,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Mappings from the position of the file name in the list (starting at 0) to content element names.</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">skip-empty-documents</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, documents with no binary content (no files or only empty files) will be skipped. If false, a document  containing only metadata will be created.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
@@ -1671,6 +1981,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">conflict-resolution-strategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ConflictResolutionStrategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This determines how conflicts, such as existing entities with the same identifier, are handled.  &lt;ul&gt;  &lt;li&gt;SKIP: The entity will be skipped without making changes.&lt;/li&gt;  &lt;li&gt;UPDATE: The entity will be updated with the new data.&lt;/li&gt;  &lt;li&gt;UPDATE_ATTRIBUTES: Only attributes of the entity will be updated, ignoring its content.&lt;/li&gt;  &lt;li&gt;OVERWRITE: The current version of the entity will be entirely overwritten.&lt;/li&gt;  &lt;li&gt;OVERWRITE_ATTRIBUTES: Only attributes of the entity will be overwritten, ignoring its content.&lt;/li&gt;  &lt;/ul&gt;  The default strategy is set to SKIP.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skip</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">content-element-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element in the type definition that will contain the file&#8217;s data.</p></td>
@@ -1719,6 +2035,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">skip-empty-documents</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, documents with no binary content (no files or only empty files) will be skipped. If false, a document  containing only metadata will be created.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for time values. Can be overridden by attribute specific setting.</p></td>
@@ -1758,6 +2080,24 @@ by the parameter <code>-Dloader.path</code>.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csf</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the CSF imports.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csf.thread-pool-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The thread pool size used to process the CSF files.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csf.uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to import CSF files.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">csv</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the CSV imports.</p></td>
@@ -1774,6 +2114,18 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to import CSV files.</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">delete-imported-files</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to delete files that were successfully imported. This refers to files for the actual content elements.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">delete-skipped-files</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to delete files that were skipped. This refers to files for the actual content elements.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">file</p></td>
@@ -1805,6 +2157,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the generic file mapper for each import.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-name-mappings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mappings from source type names to type definition names. Used for DDC names found in CSF headers.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1813,7 +2171,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-05-28 09:29:08 UTC
+Last updated 2025-07-01 14:22:15 UTC
 </div>
 </div>
 <style>
