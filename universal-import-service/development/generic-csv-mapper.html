@@ -718,6 +718,7 @@ Because the simple mode is the default, it does not habe to be explicitly enable
     csv-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
       type-definition-name: "demo_document" <i class="conum" data-value="2"></i><b>(2)</b>
       conflict-resolution-strategy: UPDATE_ATTRIBUTES
+      skip-empty-documents: true
       simple:
         content:
           csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
@@ -769,9 +770,9 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
   settings:
     csv-import-2:
       type-definition-name: "document" <i class="conum" data-value="1"></i><b>(1)</b>
+      skip-empty-documents: true
       mode: COUNTING <i class="conum" data-value="2"></i><b>(2)</b>
       counting:
-        conflict-resolution-strategy: UPDATE_ATTRIBUTES
         content:
           csv-field-name: "filename" <i class="conum" data-value="3"></i><b>(3)</b>
           delimiter: "," <i class="conum" data-value="4"></i><b>(4)</b>
@@ -844,6 +845,7 @@ inherit attributes from the referenced record.
     csv-import-3:
       type-definition-name: "component" <i class="conum" data-value="1"></i><b>(1)</b>
       conflict-resolution-strategy: UPDATE_ATTRIBUTES
+      skip-empty-documents: true
       mode: REFERENCING <i class="conum" data-value="2"></i><b>(2)</b>
       referencing:
         container-type-definition-name: "container" <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1135,7 +1137,7 @@ The Content Repository Service will use this selector to perform an update on th
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-07-01 13:54:32 UTC
+Last updated 2025-07-01 14:09:46 UTC
 </div>
 </div>
 </body>

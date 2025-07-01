@@ -425,6 +425,7 @@ Because the simple mode is the default, it does not habe to be explicitly enable
     <span class="key">csv-import-1</span>: <i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">demo_document</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">simple</span>:
         <span class="key">content</span>:
           <span class="key">csv-field-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">filename</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
@@ -476,9 +477,9 @@ by using the placeholder <code>$+{contentElementNumber}+</code>.</p>
   <span class="key">settings</span>:
     <span class="key">csv-import-2</span>:
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">mode</span>: <span class="string"><span class="content">COUNTING </span></span><i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">counting</span>:
-        <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
         <span class="key">content</span>:
           <span class="key">csv-field-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">filename</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
           <span class="key">delimiter</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">,</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
@@ -551,6 +552,7 @@ inherit attributes from the referenced record.
     <span class="key">csv-import-3</span>:
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">component</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">mode</span>: <span class="string"><span class="content">REFERENCING </span></span><i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">referencing</span>:
         <span class="key">container-type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">container</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1365,6 +1367,7 @@ these and one of the predefined properties to attributes.</p>
   <span class="key">settings</span>:
     <span class="key">file-import-1</span>: <i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key">conflict-resolution-strategy</span>: <span class="string"><span class="content">UPDATE_ATTRIBUTES</span></span>
+      <span class="key">skip-empty-documents</span>: <span class="string"><span class="content">true</span></span>
       <span class="key">type-definition-name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">files</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
       <span class="key">properties</span>: <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="key">parent-name</span>:
@@ -1825,6 +1828,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">skip-empty-documents</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, documents with no binary content (no files or only empty files) will be skipped. If false, a document  containing only metadata will be created.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for time values. Can be overridden by attribute specific setting.</p></td>
@@ -2026,6 +2035,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">skip-empty-documents</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true, documents with no binary content (no files or only empty files) will be skipped. If false, a document  containing only metadata will be created.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">time-pattern</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default pattern for time values. Can be overridden by attribute specific setting.</p></td>
@@ -2156,7 +2171,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-07-01 13:54:32 UTC
+Last updated 2025-07-01 14:09:46 UTC
 </div>
 </div>
 <style>
