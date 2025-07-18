@@ -474,13 +474,13 @@ the Camel routes. In the following example, three CSV import routes and one file
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
   csv:
     csv-import-1:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false"
+      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;moveFailed=.error"
       statistics: "file://${project.build.testOutputDirectory}/csv/statistics"
     csv-import-2:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;noop=false"
+      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;moveFailed=.error"
       statistics: "file://${project.build.testOutputDirectory}/csv/statistics"
     csv-import-3:
-      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;noop=false"
+      uri: "file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;moveFailed=.error"
       statistics: "file://${project.build.testOutputDirectory}/csv/statistics"</code></pre>
 </div>
 </div>
@@ -554,7 +554,7 @@ Skipped: 5</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-07-17 22:21:04 UTC
+Last updated 2025-07-18 09:39:35 UTC
 </div>
 </div>
 </body>

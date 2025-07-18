@@ -96,13 +96,13 @@ the Camel routes. In the following example, three CSV import routes and one file
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
   <span class="key">csv</span>:
     <span class="key">csv-import-1</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
       <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csv-import-2</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
       <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csv-import-3</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
       <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv/statistics</span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
@@ -2211,7 +2211,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-07-17 22:21:04 UTC
+Last updated 2025-07-18 09:39:35 UTC
 </div>
 </div>
 <style>
