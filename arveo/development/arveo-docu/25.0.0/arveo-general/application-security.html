@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Application security :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/25.0.0/arveo-general/application-security.html">
+    <link rel="prev" href="technology-stack.html">
+    <link rel="next" href="gobd.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.8">
+    <link rel="stylesheet" href="../../../ui-assets/css/site.css">
+    <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand"> 
+      <img src="../../../ui-assets/img/arveo_WortBildmarke_NEG_500px.png" id="arveoLogo" style="vertical-align:middle;margin:10px 0px">
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://eitco.github.io">Home</a>
+        <!--<div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>-->
+        <!--<div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>-->
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arveo-docu" data-version="25.0.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="product-summary.html">arveo Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="product-summary.html">What is <em>arveo</em> - Content Services Platform (CSP)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Architecture Overview</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="content-services.html">Content Services</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="technology-stack.html">Opensource Technology Stack</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Security</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="application-security.html">Application security</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="gobd.html">Compliance recommendations (GoBD)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Store</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="data-storage.html">Persistence architecture</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="data-deletion.html">Data deletion</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-getting-started/getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Administration und Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-administration/installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/deployment-options.html">Deployment options</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/system-requirements.html">System requirements</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Administration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/authentication-oauth2.html">OAuth Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/db-access.html">Database access</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/content-elements-storage.html">Storage locations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/renditions.html">Renditions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/retention-container.html">Retention and Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/encryption.html">Encryption</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/messaging.html">Configure Active MQ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/maintenance-mode-db-schema.html">Maintenance mode for the database schema</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/audit.html">Audit</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/jobs.html">System jobs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/vault.html">Using Hashicorp Vault</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../commons/configuration-properties.html">Configuration Properties</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-administration/ecr-shell.html">arveo shell</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../arveo-administration/monitoring.html">Monitoring</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Developer</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Access Control</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/access-rights.html">Access rights</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/attribute-based-security.html">Attribute Based Access Control (ABAC)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/permissions.html">Permissions on Type definitions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Modelling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/entity-types.html">Entity types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/entity-annotations.html">Entity annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/data-types.html">Data types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/system-fields.html">System fields</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/document-types.html">Document types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/container-types.html">Container types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/relation-types.html">Relation types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/folder-types.html">Folder types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/metadata-types.html">Metadata types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/validation.html">Validation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/inheritance.html">Inheritance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention-annotations.html">Retention document types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/tenant-separation.html">Tenant separation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/advanced-schema-changes.html">Advanced database schema changes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-developer/repo-service.html">Repository Service</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-upload-data.html">Upload Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-data.html">Download Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-delete-objects.html">Delete Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-locking.html">Locking</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-links-external-users.html">Download Links for External Users</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/versioning.html">Versioning</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/search-service.html">Search language</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/fulltext.html">Full text search in relational database</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/annotations.html">Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-developer/retention-introduction.html">Retention</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention.html">Retention periods</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention-cleanup-job.html">Cleanup job</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">SDKs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/client-sdks.html">Client SDKs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/sdk-and-batch-operations.html">Java SDK for Spring applications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/non-spring-sdk.html">Java SDK for non-Spring applications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/rest-api.html">REST API</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Events and messaging</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/events.html">Events</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/integration-service.html">Enterprise Integration Service</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Archetypes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/slim-archetype.html">The Types archetype</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/full-featured-archetype.html">The full-featured archetype</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../arveo-developer/system-tables.html">System Tables</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/compatibility-list.html">Compatibility List</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/release-notes.html">Release Notes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/glossary.html">Important Terminology</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">arveo Documentation</span>
+    <span class="version">25.0.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="product-summary.html">arveo Documentation</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="product-summary.html">25.0.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="product-summary.html">arveo Documentation</a></li>
+    <li><a href="product-summary.html">What is <em>arveo</em> - Content Services Platform (CSP)</a></li>
+    <li>Security</li>
+    <li><a href="application-security.html">Application security</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Application security</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em> is a content service platform you can trust. We are continuously working to ensure
+that our services can be operated securely in the cloud.</p>
+</div>
+<div class="paragraph">
+<p>All <em>arveo</em> content services and clients communicate via state-of-the-art secure REST interfaces via
+the secure HTTPS (SSL) protocol.
+All services require the web standard OAUTH2 with OpenID Connect authentication using tokens.
+A central authentication service (Keycloak) issues tokens with an
+expiry date. That ensures that only client authenticated against the central service can use the content service APIs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="data_security"><a class="anchor" href="#data_security"></a>Data security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>arveo</em>  can encrypt the content with AES 256 and thus protect it against unauthorized access.
+The key is stored in such a way that maximum security is guaranteed.
+In order not to re-encrypt all data if the key is compromised, own keys are generated. Only the keys used are encrypted with the customer key and stored separately (<a href="../arveo-administration#_encryption">Encryption</a>). See also <a href=".#_data_integrity">Data Integrity</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>arveo</em> allows you to organize documents into folders and records.
+<em>arveo</em> can control the access rights such as reading, writing or deleting to each document via
+attributes or access lists and thus grant or deny the corresponding access to the groups or users.</p>
+</div>
+<div class="paragraph">
+<p><strong>Access rights</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>None</strong> - no authorization (object not visible)</p>
+</li>
+<li>
+<p><strong>Browse</strong> - the user is allowed to see the metadata of the object, but not the content</p>
+</li>
+<li>
+<p><strong>Read</strong> - the user can read metadata and content</p>
+</li>
+<li>
+<p><strong>Relate</strong> - The user can add an annotation</p>
+</li>
+<li>
+<p><strong>Version</strong> - The user may change the content, but may not overwrite it</p>
+</li>
+<li>
+<p><strong>Write</strong> - The user can change metadata and content with the possibility to overwrite</p>
+</li>
+<li>
+<p><strong>Delete</strong> - The user can delete the object</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security_patches"><a class="anchor" href="#security_patches"></a>Security patches</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For us it is important to continuously ensure that all known vulnerabilities are fixed
+and that we deliver security patches and hotfixes as early as possible to our customers.</p>
+</div>
+<div class="paragraph">
+<p>To achieve this goal we integrated all kind of state-of-the-art tools like OWASP dependency check in our build process
+that perform automated static code analysis.
+We also perform PEN Tests on a regular basis.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<strong>What is OWASP?</strong><br>
+The Open Web Application Security Project® (OWASP) is a nonprofit foundation that works to improve the security of software.
+Through community-led open-source software projects, hundreds of local chapters worldwide, tens of thousands of members,
+and leading educational and training conferences, the OWASP Foundation is the source for developers and technologists
+to secure the web.<br>
+OWASP is dedicated to enabling organizations to conceive, develop, acquire, operate, and maintain applications
+that can be trusted. <br>
+All of our projects, tools, documents, forums, and chapters are free and open to anyone interested in improving application security (<a href="https://owasp.org" class="bare">https://owasp.org</a>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="application_protection_by_design"><a class="anchor" href="#application_protection_by_design"></a>Application protection by design</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>What does Eitco to develop, operate and maintain a secure content service platform?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>we only use Opensource Software from secure and accepted projects like Apache or Spring.</p>
+</li>
+<li>
+<p>we implemented an open source review and monitor process</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Software architecture review by the Eitco software architects</p>
+</li>
+<li>
+<p>security check using OWASP dependency check</p>
+</li>
+<li>
+<p>legal licence check to ensure that it is a real open source project on the long term.</p>
+</li>
+<li>
+<p>we continuously check our open source dependencies with reference to architecture, security leaks, maintainability.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>to ensure that all known vulnerabilities of 3rd party open source projects are eliminated we integrated the OWASP dependency-check tool in our nightly build.
+Dependency check checks our dependencies against a database with all known vulnerabilities.</p>
+</li>
+<li>
+<p>in case a severe vulnerability is found we take the appropriate countermeasures.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>provide a security path for our customers with a new version of the 3rd party library</p>
+</li>
+<li>
+<p>change the implementation or configuration using the 3rd party component</p>
+</li>
+<li>
+<p>inform our customers to update or reconfigure components like database, message queue, application server, etc.</p>
+</li>
+<li>
+<p>replace the 3rd party component. The typically requires a major update.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="owasp_dependency_check_tool"><a class="anchor" href="#owasp_dependency_check_tool"></a>OWASP dependency-check tool</h3>
+<div class="paragraph">
+<p>it is a Software Composition Analysis tool trying to find vulnerabilities made public within the project dependencies.<br>
+The tool checks if there is an issue tracked in the "Common Platform Enumeration (CPE)" for the dependency.<br>
+If a vulnerability is found it creates report with a link to the CVE entry.<br>
+It is command line interface that can be easily integrated in any nightly build process.<br>
+For further information, consult National Vulnerability Database (NVD)– (<a href="https://nvd.nist.gov" class="bare">https://nvd.nist.gov</a>). <br>
+The following source is worth having a look at: Jeff Williams und Arshan Dabirsiaghi “Unfortunate Reality of Insecure Libraries”<br>
+ (<a href="https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf" class="bare">https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf</a>).<br></p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="technology-stack.html">Opensource Technology Stack</a></span>
+  <span class="next"><a href="gobd.html">Compliance recommendations (GoBD)</a></span>
+</nav>
+</article>
+  </div>
+</main>
+    <!-- The Modal -->
+    <div id="imageModalBox" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../ui-assets/js/site.js" data-ui-root-path="../../../ui-assets"></script>
+<script async src="../../../ui-assets/js/vendor/highlight.js"></script>
+<script async src="../../../ui-assets/js/modal.js"></script>
+<script src="../../../ui-assets/js/vendor/lunr.js"></script>
+<script src="../../../ui-assets/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../ui-assets/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
