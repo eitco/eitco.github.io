@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Maintenance mode for the database schema :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/25.0.0/arveo-administration/maintenance-mode-db-schema.html">
+    <title>Database schema creation :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/25.0.0/arveo-administration/database-schema-creation.html">
     <link rel="prev" href="messaging.html">
     <link rel="next" href="audit.html">
     <meta name="generator" content="Antora 3.2.0-alpha.8">
@@ -121,7 +121,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">Administration und Configuration</span>
+    <span class="nav-text">Administration and Configuration</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -161,7 +161,7 @@
     <a class="nav-link" href="messaging.html">Configure Active MQ</a>
   </li>
   <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="maintenance-mode-db-schema.html">Maintenance mode for the database schema</a>
+    <a class="nav-link" href="database-schema-creation.html">Database schema creation</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="audit.html">Audit</a>
@@ -391,9 +391,9 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
-    <li>Administration und Configuration</li>
+    <li>Administration and Configuration</li>
     <li>Administration</li>
-    <li><a href="maintenance-mode-db-schema.html">Maintenance mode for the database schema</a></li>
+    <li><a href="database-schema-creation.html">Database schema creation</a></li>
   </ul>
 </nav>
 </div>
@@ -402,8 +402,79 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Maintenance mode for the database schema</h1>
+<h1 class="page">Database schema creation</h1>
 <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Content Repository Service will automatically create the database schema when started for the first time. The
+database schema includes system tables as well as tables for the customer-specific type definitions.</p>
+</div>
+<div class="paragraph">
+<p>System tables are managed using Liquibase. Tables for the type definitions are managed by the Content
+Repository Service&#8217;s schema initializer.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to deactivate the automatic creation of the database schema. In this case, the Content Repository Service
+expects that the database schema has been initialized by some external application.</p>
+</div>
+<div class="paragraph">
+<p>The automatic creation of system tables by Liquibase can be disabled by disabling the relevant <em>LiquibaseExecutions</em>.
+Each <em>LiquibaseExecution</em> has a label. The relevant labels for the Content Repository Service are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ecr</code>: The system tables for the Content Repository Service</p>
+</li>
+<li>
+<p><code>oauth2-external-user-management</code>: The system table used to manage user-IDs.</p>
+</li>
+<li>
+<p><code>quartz-jobs</code>: Tables used by the Quartz scheduler</p>
+</li>
+<li>
+<p><code>audit</code>: Tables used for the audit functionality</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The execution for each label can be disabled by setting <code>commons.liquibase.execution-settings.&lt;label&gt;.initialize-schema</code>
+to <code>false</code>. There is also a global property to disable all executions: <code>commons.liquibase.global.initialize-schema</code>.</p>
+</div>
+<div class="paragraph">
+<p>The creation of the schema for the type definitions will be performed when</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the service is started in maintenance mode (see below) or</p>
+</li>
+<li>
+<p>the database is not empty and the setting <code>ecr.server.system.update-schema</code> is set to <code>true</code>  (default is <code>false</code>) or</p>
+</li>
+<li>
+<p>the database is empty and the setting <code>ecr.server.system.initialize-empty-database</code> is set to <code>true</code> (default is <code>true</code>)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+When the database schema is created by an external system, the external system must ensure that the schema meets the
+requirements of the Content Repository Service. If not, the system&#8217;s behavior is undefined. Errors including data-loss
+are likely.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="maintenance_mode_for_the_database_schema"><a class="anchor" href="#maintenance_mode_for_the_database_schema"></a>Maintenance mode for the database schema</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <em>arveo</em> can be started in a special mode that ensures, that this instance changes the schema and prevents other
@@ -413,6 +484,15 @@ in a way that can be easily evaluated by the administrator to be able to react t
 <div class="paragraph">
 <p>The service does not start if registry query returns other running instances. The service terminates after the liquibase
 script is executed. The following two parameters are set:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">system:
+  maintenanceMode: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is equivalent to setting the following properties:</p>
 </div>
 <div class="listingblock">
 <div class="content">
