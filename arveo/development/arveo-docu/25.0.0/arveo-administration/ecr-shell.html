@@ -537,14 +537,14 @@ NAME
        login - authenticates to ecr system
 
 SYNOPSIS
-       login [--username String] [--password String] --help
+       login --username String --password String --help
 
 OPTIONS
        --username String
-       [Mandatory]
+       [Optional]
 
        --password String
-       [Mandatory]
+       [Optional]
 
        --help or -h
        help for login
@@ -556,7 +556,7 @@ OPTIONS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">login --username [user-name] --password [password]</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">login</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -564,9 +564,14 @@ OPTIONS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;login --username [user] --password [password]
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;login
+
 logged in as [user] with user id [numeric-user-id]</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Depending on the configured authorization method, you will have to enter username or password or authorize the shell
+application by entering a code in the device authorization page of the IDP.</p>
 </div>
 <div class="paragraph">
 <p>So far the shell was able to contact the arveo system and authenticate you. Let us execute a simple query:</p>
@@ -608,6 +613,70 @@ ecr:&gt;</code></pre>
 <div class="sect1">
 <h2 id="configuration"><a class="anchor" href="#configuration"></a>Configuration</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="configuration_properties"><a class="anchor" href="#configuration_properties"></a>Configuration Properties</h3>
+<div class="sect3">
+<h4 id="_ecr-shell"><a class="anchor" href="#_ecr-shell"></a>ecr-shell</h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">authorization-method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AuthorizationMethod</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The authorization method to use. Possible values are PASSWORD, DEVICE_CODE and CLIENT_CREDENTIALS. Requires a configured OAuth2 client registration with a matching grant type.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.directory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional default directory that contains the json files to import. Will be ignored when the directory option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.exclude</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to exclude in the import. Ignored when the exclude option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to include in the import. Ignored when the include option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">query.batch-size-limit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default limit for the number of entities in a batch operation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">query.page-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default size of pages returned in a query.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>80</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.eager-loading</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the cache used for the type definitions will be eagerly populated.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Since arveo shell uses spring to be configured, you have several possibilities to
 <a href="https://docs.spring.io/spring-boot/reference/features/external-config.html#page-title">configure properties</a> of the shell. You can specify properties as java system properties:</p>
@@ -666,6 +735,8 @@ respectively:</p>
 <p>arveo shell does use spring cloud config, so it may also be configured using the eitco config service. Its
 <code>spring.application.name</code> is <code>ecr-shell</code> so you can add the file above renamed to <code>ecr-shell.yaml</code> to your config
 service. arveo shell will automatically get the config servers url using the eitco service registry.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
