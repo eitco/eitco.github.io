@@ -54,56 +54,61 @@ import org.apache.maven.settings.Server;
     @Override
     public void execute() throws MojoExecutionException {
 
-<span class="nc" id="L57">        Server server = findServer(nugetServerId);</span>
-
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        String apiKey = server != null ? decrypt(server.getPassword()) : null;</span>
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        String nugetServerUser = server != null ? decrypt(server.getUsername()) : null;</span>
-
-<span class="nc" id="L62">        String repositoryUrl = decideRepositoryUrl();</span>
-
-<span class="nc bnc" id="L64" title="All 4 branches missed.">        boolean addSource = coalesce(forceAddSource, nugetSources.get(nugetServerId) == null &amp;&amp; repositoryUrl.endsWith(&quot;/index.json&quot;));</span>
-
-<span class="nc" id="L66">        DotnetExecutor dotnetExecutor = newExecutor();</span>
-
-<span class="nc" id="L68">        String repository = repositoryUrl;</span>
-
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (addSource) {</span>
-
-<span class="nc" id="L72">            String usedRepositoryName = coalesce(repositoryName, nugetServerId);</span>
-
-<span class="nc" id="L74">            repository = usedRepositoryName;</span>
-
-<span class="nc" id="L76">            dotnetExecutor.upsertNugetSource(repositoryUrl, usedRepositoryName, nugetServerUser, apiKey, null);</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (skip) {</span>
+<span class="nc" id="L58">            getLog().info(&quot;Skipping execution&quot;);</span>
+<span class="nc" id="L59">            return;</span>
         }
 
-<span class="nc" id="L79">        dotnetExecutor.push(apiKey, repository);</span>
+<span class="nc" id="L62">        Server server = findServer(nugetServerId);</span>
 
-<span class="nc" id="L81">    }</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        String apiKey = server != null ? decrypt(server.getPassword()) : null;</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        String nugetServerUser = server != null ? decrypt(server.getUsername()) : null;</span>
+
+<span class="nc" id="L67">        String repositoryUrl = decideRepositoryUrl();</span>
+
+<span class="nc bnc" id="L69" title="All 4 branches missed.">        boolean addSource = coalesce(forceAddSource, nugetSources.get(nugetServerId) == null &amp;&amp; repositoryUrl.endsWith(&quot;/index.json&quot;));</span>
+
+<span class="nc" id="L71">        DotnetExecutor dotnetExecutor = newExecutor();</span>
+
+<span class="nc" id="L73">        String repository = repositoryUrl;</span>
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (addSource) {</span>
+
+<span class="nc" id="L77">            String usedRepositoryName = coalesce(repositoryName, nugetServerId);</span>
+
+<span class="nc" id="L79">            repository = usedRepositoryName;</span>
+
+<span class="nc" id="L81">            dotnetExecutor.upsertNugetSource(repositoryUrl, usedRepositoryName, nugetServerUser, apiKey, null);</span>
+        }
+
+<span class="nc" id="L84">        dotnetExecutor.push(apiKey, repository);</span>
+
+<span class="nc" id="L86">    }</span>
 
     private String decideRepositoryUrl() {
 
-<span class="nc" id="L85">        boolean isSnapshot = project.getVersion().endsWith(&quot;-SNAPSHOT&quot;);</span>
+<span class="nc" id="L90">        boolean isSnapshot = project.getVersion().endsWith(&quot;-SNAPSHOT&quot;);</span>
 
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (isSnapshot) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (isSnapshot) {</span>
 
-<span class="nc" id="L89">            return coalesce(nugetSnapshotServerUrl, nugetServerUrl, project.getDistributionManagement().getSnapshotRepository().getUrl(), nugetSources.get(nugetServerId), project.getDistributionManagement().getRepository().getUrl());</span>
+<span class="nc" id="L94">            return coalesce(nugetSnapshotServerUrl, nugetServerUrl, project.getDistributionManagement().getSnapshotRepository().getUrl(), nugetSources.get(nugetServerId), project.getDistributionManagement().getRepository().getUrl());</span>
         }
 
-<span class="nc" id="L92">        return coalesce(nugetServerUrl, nugetSources.get(nugetServerId), project.getDistributionManagement().getRepository().getUrl());</span>
+<span class="nc" id="L97">        return coalesce(nugetServerUrl, nugetSources.get(nugetServerId), project.getDistributionManagement().getRepository().getUrl());</span>
     }
 
     @SafeVarargs
     private &lt;Type&gt; Type coalesce(Type... elements) {
 
-<span class="nc bnc" id="L98" title="All 2 branches missed.">        for (Type element : elements) {</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (Type element : elements) {</span>
 
-<span class="nc bnc" id="L100" title="All 2 branches missed.">            if (element != null) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            if (element != null) {</span>
 
-<span class="nc" id="L102">                return element;</span>
+<span class="nc" id="L107">                return element;</span>
             }
         }
 
-<span class="nc" id="L106">        return null;</span>
+<span class="nc" id="L111">        return null;</span>
     }
 
 }

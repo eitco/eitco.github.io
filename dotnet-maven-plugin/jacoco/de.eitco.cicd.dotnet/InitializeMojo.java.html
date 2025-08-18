@@ -18,30 +18,35 @@ import java.util.Map;
     @Override
     public void execute() throws MojoExecutionException {
 
-<span class="fc" id="L21">        DotnetExecutor dotnetExecutor = newExecutor();</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if (skip) {</span>
+<span class="nc" id="L22">            getLog().info(&quot;Skipping execution&quot;);</span>
+<span class="nc" id="L23">            return;</span>
+        }
 
-<span class="fc" id="L23">        createLocalNugetRepositoryDirectory();</span>
+<span class="fc" id="L26">        DotnetExecutor dotnetExecutor = newExecutor();</span>
 
-<span class="fc" id="L25">        File localNugetRepository = getUnresolvedLocalNugetRepositoryDirectory();</span>
+<span class="fc" id="L28">        createLocalNugetRepositoryDirectory();</span>
 
-<span class="fc" id="L27">        dotnetExecutor.upsertNugetSource(localNugetRepository.getPath(), localMavenNugetRepositoryName, null, null, DotnetExecutor.NugetConfigLocation.USER);</span>
+<span class="fc" id="L30">        File localNugetRepository = getUnresolvedLocalNugetRepositoryDirectory();</span>
 
-<span class="pc bpc" id="L29" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : nugetSources.entrySet()) {</span>
-<span class="nc" id="L30">            String key = entry.getKey();</span>
-<span class="nc" id="L31">            String value = entry.getValue();</span>
+<span class="fc" id="L32">        dotnetExecutor.upsertNugetSource(localNugetRepository.getPath(), localMavenNugetRepositoryName, null, null, DotnetExecutor.NugetConfigLocation.USER);</span>
 
-<span class="nc" id="L33">            Server server = settings.getServer(key);</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : nugetSources.entrySet()) {</span>
+<span class="nc" id="L35">            String key = entry.getKey();</span>
+<span class="nc" id="L36">            String value = entry.getValue();</span>
 
-<span class="nc bnc" id="L35" title="All 2 branches missed.">            if (server == null) {</span>
+<span class="nc" id="L38">            Server server = settings.getServer(key);</span>
 
-<span class="nc" id="L37">                dotnetExecutor.upsertNugetSource(value, key, null, null, null);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            if (server == null) {</span>
+
+<span class="nc" id="L42">                dotnetExecutor.upsertNugetSource(value, key, null, null, null);</span>
 
             } else {
 
-<span class="nc" id="L41">                dotnetExecutor.upsertNugetSource(value, key, decrypt(server.getUsername()), decrypt(server.getPassword()), null);</span>
+<span class="nc" id="L46">                dotnetExecutor.upsertNugetSource(value, key, decrypt(server.getUsername()), decrypt(server.getPassword()), null);</span>
             }
-<span class="nc" id="L43">        }</span>
-<span class="fc" id="L44">    }</span>
+<span class="nc" id="L48">        }</span>
+<span class="fc" id="L49">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

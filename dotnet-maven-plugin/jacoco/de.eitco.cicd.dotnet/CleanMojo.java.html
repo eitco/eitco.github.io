@@ -13,7 +13,12 @@ import org.apache.maven.plugins.annotations.Mojo;
     @Override
     public void execute() throws MojoExecutionException {
 
-<span class="nc" id="L16">        newExecutor().clean();</span>
-<span class="nc" id="L17">    }</span>
+<span class="nc bnc" id="L16" title="All 2 branches missed.">        if (skip) {</span>
+<span class="nc" id="L17">            getLog().info(&quot;Skipping execution&quot;);</span>
+<span class="nc" id="L18">            return;</span>
+        }
+
+<span class="nc" id="L21">        newExecutor().clean();</span>
+<span class="nc" id="L22">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

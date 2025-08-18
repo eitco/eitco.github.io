@@ -25,61 +25,66 @@ import java.nio.file.StandardCopyOption;
     @Override
     public void execute() throws MojoExecutionException {
 
-<span class="fc" id="L28">        File[] files = targetDirectory.listFiles(file -&gt; file.getName().endsWith(NUPKG_SUFFIX));</span>
-
-<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if (files == null) {</span>
-
-<span class="nc" id="L32">            getLog().debug(&quot;target directory does not exist&quot;);</span>
-<span class="nc" id="L33">            return;</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        if (skip) {</span>
+<span class="nc" id="L29">            getLog().info(&quot;Skipping execution&quot;);</span>
+<span class="nc" id="L30">            return;</span>
         }
 
-<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (files.length == 0) {</span>
+<span class="fc" id="L33">        File[] files = targetDirectory.listFiles(file -&gt; file.getName().endsWith(NUPKG_SUFFIX));</span>
 
-<span class="nc" id="L38">            getLog().debug(&quot;target directory is empty&quot;);</span>
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">        if (files == null) {</span>
+
+<span class="nc" id="L37">            getLog().debug(&quot;target directory does not exist&quot;);</span>
+<span class="nc" id="L38">            return;</span>
         }
 
-<span class="fc" id="L41">        File localNugetRepository = createLocalNugetRepositoryDirectory();</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (files.length == 0) {</span>
 
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (File file : files) {</span>
+<span class="nc" id="L43">            getLog().debug(&quot;target directory is empty&quot;);</span>
+        }
+
+<span class="fc" id="L46">        File localNugetRepository = createLocalNugetRepositoryDirectory();</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (File file : files) {</span>
 
             try {
 
-<span class="fc" id="L47">                File targetFile = new File(localNugetRepository, file.getName());</span>
+<span class="fc" id="L52">                File targetFile = new File(localNugetRepository, file.getName());</span>
 
-<span class="fc" id="L49">                getLog().info(&quot;installing &quot; + targetFile.getAbsolutePath());</span>
-<span class="fc" id="L50">                Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);</span>
+<span class="fc" id="L54">                getLog().info(&quot;installing &quot; + targetFile.getAbsolutePath());</span>
+<span class="fc" id="L55">                Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);</span>
 
 
-<span class="fc" id="L53">                getLog().debug(&quot;get package id for  &quot; + file.getName() + &quot; project version is &quot; + projectVersion);</span>
-<span class="fc" id="L54">                String packageId = file.getName().substring(0, file.getName().length() - NUPKG_SUFFIX.length() - projectVersion.length() - 1);</span>
+<span class="fc" id="L58">                getLog().debug(&quot;get package id for  &quot; + file.getName() + &quot; project version is &quot; + projectVersion);</span>
+<span class="fc" id="L59">                String packageId = file.getName().substring(0, file.getName().length() - NUPKG_SUFFIX.length() - projectVersion.length() - 1);</span>
 
-<span class="fc" id="L56">                File cacheDirectory = getGlobalsCacheDirectory();</span>
+<span class="fc" id="L61">                File cacheDirectory = getGlobalsCacheDirectory();</span>
 
-<span class="fc" id="L58">                File cacheEntry = new File(new File(cacheDirectory, packageId), projectVersion);</span>
-<span class="fc" id="L59">                getLog().debug(&quot;cache entry for &quot; + file.getName() + &quot; is &quot; + cacheEntry.getAbsolutePath());</span>
+<span class="fc" id="L63">                File cacheEntry = new File(new File(cacheDirectory, packageId), projectVersion);</span>
+<span class="fc" id="L64">                getLog().debug(&quot;cache entry for &quot; + file.getName() + &quot; is &quot; + cacheEntry.getAbsolutePath());</span>
 
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">                if (cacheEntry.isDirectory()) {</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">                if (cacheEntry.isDirectory()) {</span>
 
-<span class="nc" id="L63">                    getLog().debug(&quot;deleting cache entry &quot; + cacheEntry.getAbsolutePath());</span>
+<span class="nc" id="L68">                    getLog().debug(&quot;deleting cache entry &quot; + cacheEntry.getAbsolutePath());</span>
 
-<span class="nc" id="L65">                    FileUtils.deleteDirectory(cacheEntry);</span>
+<span class="nc" id="L70">                    FileUtils.deleteDirectory(cacheEntry);</span>
                 }
 
-<span class="nc" id="L68">            } catch (IOException e) {</span>
+<span class="nc" id="L73">            } catch (IOException e) {</span>
 
-<span class="nc" id="L70">                throw new MojoExecutionException(e);</span>
-<span class="fc" id="L71">            }</span>
+<span class="nc" id="L75">                throw new MojoExecutionException(e);</span>
+<span class="fc" id="L76">            }</span>
         }
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L78">    }</span>
 
     private File getGlobalsCacheDirectory() throws MojoExecutionException {
 
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (globalsCacheDirectory != null) {</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (globalsCacheDirectory != null) {</span>
 
-<span class="fc" id="L79">            return globalsCacheDirectory;</span>
+<span class="fc" id="L84">            return globalsCacheDirectory;</span>
         }
 
-<span class="fc" id="L82">        return globalsCacheDirectory = new File(newExecutor().getLocalArtifactCache());</span>
+<span class="fc" id="L87">        return globalsCacheDirectory = new File(newExecutor().getLocalArtifactCache());</span>
     }
 
 }

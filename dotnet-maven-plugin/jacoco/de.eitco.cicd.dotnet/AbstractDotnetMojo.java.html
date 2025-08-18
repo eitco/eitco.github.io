@@ -161,116 +161,119 @@ import java.util.Map;
     @Parameter(defaultValue = &quot;${settings}&quot;, readonly = true)
     protected Settings settings;
 
+    @Parameter(defaultValue = &quot;false&quot;)
+    protected boolean skip;
+
     @Component(hint = &quot;dotnet-security&quot;)
     private SecDispatcher securityDispatcher;
 
     protected DotnetExecutor newExecutor() {
 
-<span class="fc" id="L169">        return newExecutor(false);</span>
+<span class="fc" id="L172">        return newExecutor(false);</span>
     }
 
     protected DotnetExecutor newExecutor(boolean ignoreResult) {
-<span class="fc" id="L173">        return new DotnetExecutor(</span>
+<span class="fc" id="L176">        return new DotnetExecutor(</span>
                 workingDirectory,
                 dotnetExecutable,
                 targetDirectory,
                 projectVersion,
-<span class="fc" id="L178">                buildProperties(),</span>
+<span class="fc" id="L181">                buildProperties(),</span>
                 environmentVariables,
-<span class="fc" id="L180">                getLog(),</span>
+<span class="fc" id="L183">                getLog(),</span>
                 ignoreResult
         );
     }
 
     private Map&lt;String, String&gt; buildProperties() {
 
-<span class="fc" id="L187">        LinkedHashMap&lt;String, String&gt; result = new LinkedHashMap&lt;&gt;(customProperties);</span>
+<span class="fc" id="L190">        LinkedHashMap&lt;String, String&gt; result = new LinkedHashMap&lt;&gt;(customProperties);</span>
 
-<span class="fc" id="L189">        versionProperties.forEach((key, value) -&gt; {</span>
+<span class="fc" id="L192">        versionProperties.forEach((key, value) -&gt; {</span>
 
-<span class="nc bnc" id="L191" title="All 2 branches missed.">            if (!value.endsWith(SUFFIX_SNAPSHOT)) {</span>
-<span class="nc" id="L192">                result.put(key, value);</span>
-<span class="nc" id="L193">                return;</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">            if (!value.endsWith(SUFFIX_SNAPSHOT)) {</span>
+<span class="nc" id="L195">                result.put(key, value);</span>
+<span class="nc" id="L196">                return;</span>
             }
 
-<span class="nc" id="L196">            String template = value.substring(0, value.length() - SUFFIX_SNAPSHOT.length()) + snapshotReplacement;</span>
+<span class="nc" id="L199">            String template = value.substring(0, value.length() - SUFFIX_SNAPSHOT.length()) + snapshotReplacement;</span>
 
-<span class="nc" id="L198">            String lowerValue = template.replace(&quot;%c&quot;, &quot;0&quot;);</span>
-<span class="nc" id="L199">            String upperValue = template.replace(&quot;%c&quot;, &quot;A&quot;);</span>
+<span class="nc" id="L201">            String lowerValue = template.replace(&quot;%c&quot;, &quot;0&quot;);</span>
+<span class="nc" id="L202">            String upperValue = template.replace(&quot;%c&quot;, &quot;A&quot;);</span>
 
-<span class="nc" id="L201">            String range = &quot;[&quot; + lowerValue + &quot;%2c&quot; + upperValue + &quot;)&quot;;</span>
+<span class="nc" id="L204">            String range = &quot;[&quot; + lowerValue + &quot;%2c&quot; + upperValue + &quot;)&quot;;</span>
 
-<span class="nc" id="L203">            result.put(key, range);</span>
-<span class="nc" id="L204">        });</span>
+<span class="nc" id="L206">            result.put(key, range);</span>
+<span class="nc" id="L207">        });</span>
 
-<span class="fc" id="L206">        return result;</span>
+<span class="fc" id="L209">        return result;</span>
     }
 
 
     protected String decrypt(String text) throws MojoExecutionException {
         try {
 
-<span class="nc" id="L213">            return securityDispatcher.decrypt(text);</span>
+<span class="nc" id="L216">            return securityDispatcher.decrypt(text);</span>
 
-<span class="nc" id="L215">        } catch (SecDispatcherException e) {</span>
+<span class="nc" id="L218">        } catch (SecDispatcherException e) {</span>
 
-<span class="nc" id="L217">            throw new MojoExecutionException(e);</span>
+<span class="nc" id="L220">            throw new MojoExecutionException(e);</span>
         }
     }
 
     protected Server findServer(String serverId) throws MojoExecutionException {
 
-<span class="nc" id="L223">        Server server = settings.getServer(serverId);</span>
+<span class="nc" id="L226">        Server server = settings.getServer(serverId);</span>
 
-<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (server == null) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">        if (server == null) {</span>
 
-<span class="nc" id="L227">            throw new MojoExecutionException(&quot;server &quot; + serverId + &quot; not found&quot;);</span>
+<span class="nc" id="L230">            throw new MojoExecutionException(&quot;server &quot; + serverId + &quot; not found&quot;);</span>
         }
-<span class="nc" id="L229">        return server;</span>
+<span class="nc" id="L232">        return server;</span>
     }
 
     protected File getResolvedNugetRepoDirectory() {
 
-<span class="fc" id="L234">        String baseDirectory = localMavenNugetRepositoryBaseDirectory;</span>
+<span class="fc" id="L237">        String baseDirectory = localMavenNugetRepositoryBaseDirectory;</span>
 
-<span class="fc bfc" id="L236" title="All 2 branches covered.">        for (Map.Entry&lt;String, String&gt; entry : System.getenv().entrySet()) {</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">        for (Map.Entry&lt;String, String&gt; entry : System.getenv().entrySet()) {</span>
 
-<span class="fc" id="L238">            String key = entry.getKey();</span>
-<span class="fc" id="L239">            String value = entry.getValue();</span>
+<span class="fc" id="L241">            String key = entry.getKey();</span>
+<span class="fc" id="L242">            String value = entry.getValue();</span>
 
-<span class="fc" id="L241">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
-<span class="fc" id="L242">        }</span>
+<span class="fc" id="L244">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
+<span class="fc" id="L245">        }</span>
 
-<span class="pc bpc" id="L244" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : environmentVariables.entrySet()) {</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">        for (Map.Entry&lt;String, String&gt; entry : environmentVariables.entrySet()) {</span>
 
-<span class="nc" id="L246">            String key = entry.getKey();</span>
-<span class="nc" id="L247">            String value = entry.getValue();</span>
+<span class="nc" id="L249">            String key = entry.getKey();</span>
+<span class="nc" id="L250">            String value = entry.getValue();</span>
 
-<span class="nc" id="L249">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
-<span class="nc" id="L250">        }</span>
+<span class="nc" id="L252">            baseDirectory = baseDirectory.replace(&quot;%&quot; + key + &quot;%&quot;, value);</span>
+<span class="nc" id="L253">        }</span>
 
-<span class="fc" id="L252">        return new File(baseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
+<span class="fc" id="L255">        return new File(baseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
     }
 
     protected File getUnresolvedLocalNugetRepositoryDirectory() {
 
-<span class="fc" id="L257">        return new File(localMavenNugetRepositoryBaseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
+<span class="fc" id="L260">        return new File(localMavenNugetRepositoryBaseDirectory, &quot;.&quot; + localMavenNugetRepositoryName);</span>
     }
 
     protected File createLocalNugetRepositoryDirectory() throws MojoExecutionException {
 
         try {
 
-<span class="fc" id="L264">            File localNugetRepository = getResolvedNugetRepoDirectory();</span>
+<span class="fc" id="L267">            File localNugetRepository = getResolvedNugetRepoDirectory();</span>
 
-<span class="fc" id="L266">            getLog().debug(&quot;creating directory &quot; + localNugetRepository.getAbsolutePath());</span>
-<span class="fc" id="L267">            FileUtils.forceMkdir(localNugetRepository);</span>
+<span class="fc" id="L269">            getLog().debug(&quot;creating directory &quot; + localNugetRepository.getAbsolutePath());</span>
+<span class="fc" id="L270">            FileUtils.forceMkdir(localNugetRepository);</span>
 
-<span class="fc" id="L269">            return localNugetRepository;</span>
+<span class="fc" id="L272">            return localNugetRepository;</span>
 
-<span class="nc" id="L271">        } catch (IOException e) {</span>
+<span class="nc" id="L274">        } catch (IOException e) {</span>
 
-<span class="nc" id="L273">            throw new MojoExecutionException(e);</span>
+<span class="nc" id="L276">            throw new MojoExecutionException(e);</span>
         }
     }
 }
