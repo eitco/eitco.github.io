@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 3.0.0</title>
+<title>Universal Import Service 4.0.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -18,9 +18,10 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_universal_import_service_3_0_0"><strong>Universal Import Service 3.0.0</strong></a>
+<li><a href="#_universal_import_service_4_0_0"><strong>Universal Import Service 4.0.0</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_statistics">Statistics</a></li>
 </ul>
 </li>
 <li><a href="#_generic_csv_mapper"><strong>Generic CSV mapper</strong></a>
@@ -63,7 +64,7 @@
 <div id="content">
 <div style="page-break-after: always;"></div>
 <div class="sect1">
-<h2 id="_universal_import_service_3_0_0"><strong>Universal Import Service 3.0.0</strong></h2>
+<h2 id="_universal_import_service_4_0_0"><strong>Universal Import Service 4.0.0</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
@@ -95,11 +96,14 @@ the Camel routes. In the following example, three CSV import routes and one file
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
   <span class="key">csv</span>:
     <span class="key">csv-import-1</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-Demo.csv&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
+      <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csv-import-2</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100.csv&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
+      <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csv-import-3</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;noop=false</span><span class="delimiter">&quot;</span></span></code></pre>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv?antInclude=**/test-100_2.csv&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
+      <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csv/statistics</span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -144,6 +148,27 @@ The configuration settings for the CSV data format apply to all CVS import route
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_statistics">Statistics</h3>
+<div class="paragraph">
+<p>The Universal Import Service writes a <code>.statistics</code> file for each processed CSV or CSF file in the configured directory.
+Each statistics file will contain information about the processing time and the number of processes lines as shown in the
+following example. The <code>.statistics</code> directory must be configured for each CSV and CSF import route as shown in the
+configuration example above.</p>
+</div>
+<div class="listingblock">
+<div class="title">example statistics file</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>File: test-100.csv
+Processed at: 2025-07-07 13:18:07
+Total time: 9 seconds
+Total lines: 95
+Successful: 87
+Failed: 3
+Skipped: 5</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -989,10 +1014,13 @@ of the CSF file.</p>
   <span class="key">csf</span>:
     <span class="key">csf-import-1</span>:
       <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest1.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csf-import-2</span>:
       <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest4.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csf-import-3</span>:
       <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest3.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf/statistics</span><span class="delimiter">&quot;</span></span>
   <span class="key">type-name-mappings</span>: <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="key">AMV_TBL</span>: <span class="string"><span class="content">incident</span></span></code></pre>
 </div>
@@ -2086,6 +2114,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csf.statistics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to store statistic files.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">csf.thread-pool-size</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The thread pool size used to process the CSF files.</p></td>
@@ -2101,6 +2135,12 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">csv</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the CSV imports.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csv.statistics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to store statistic files.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -2171,7 +2211,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-07-01 14:22:15 UTC
+Last updated 2025-08-20 16:20:32 UTC
 </div>
 </div>
 <style>
