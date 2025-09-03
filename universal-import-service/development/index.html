@@ -51,6 +51,12 @@
 </ul>
 </li>
 <li><a href="#_writing_a_custom_file_mapper"><strong>Writing a custom file mapper</strong></a></li>
+<li><a href="#_importing_saperion_export_files"><strong>Importing Saperion export files</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_configuration_2">Configuration</a></li>
+<li><a href="#_saperion_revision_mappers">Saperion revision mappers</a></li>
+</ul>
+</li>
 <li><a href="#_configuration_properties">Configuration Properties</a>
 <ul class="sectlevel2">
 <li><a href="#_generic-csv-mapper_settings">generic-csv-mapper.settings</a></li>
@@ -1013,13 +1019,13 @@ of the CSF file.</p>
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
   <span class="key">csf</span>:
     <span class="key">csf-import-1</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest1.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest1.csf&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
       <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csf-import-2</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest4.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest4.csf&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
       <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf/statistics</span><span class="delimiter">&quot;</span></span>
     <span class="key">csf-import-3</span>:
-      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest3.csf&amp;noop=false</span><span class="delimiter">&quot;</span></span>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest3.csf&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span>
       <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/csf/statistics</span><span class="delimiter">&quot;</span></span>
   <span class="key">type-name-mappings</span>: <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="key">AMV_TBL</span>: <span class="string"><span class="content">incident</span></span></code></pre>
@@ -1507,6 +1513,202 @@ batch operation(s). The operations will be executed in the order in which they a
 <div class="paragraph">
 <p>The custom mapper can be activated by adding the jar of the custom starter to the service&#8217;s libs directory configured
 by the parameter <code>-Dloader.path</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_importing_saperion_export_files"><strong>Importing Saperion export files</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Saperion Storage Toolkit (STK) can export documents from Saperion as structured JSON files. The STK will create one
+JSON file containing a list of all revisions for each exported document.</p>
+</div>
+<div class="paragraph">
+<p><em>arveo</em> provides API methods to import the version history of an entity. The Universal Import Service acts as a link
+between the STK and arveo for data migration.</p>
+</div>
+<div class="sect2">
+<h3 id="_configuration_2">Configuration</h3>
+<div class="paragraph">
+<p>Saperion import routes are configured as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">universal-import-service</span>:
+  <span class="key">saperion</span>:
+    <span class="key">saperion-import-1</span>: <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key">uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/saperion-export?antInclude=**.json&amp;moveFailed=.error</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key">statistics</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">file://${project.build.testOutputDirectory}/saperion-export/statistics</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The ID of the import route</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The URI containing the location of the directory to import from</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A directory that will contain a statistics file when the route processing has finished</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_saperion_revision_mappers">Saperion revision mappers</h3>
+<div class="paragraph">
+<p>The mapping between the revision lists exported by the STK and the imported history is implemented using
+<code>SaperionRevisionMapper</code> implementations. Each implementation maps a <code>RevisionList</code> to a List of <code>BatchOperation</code>
+instances. For example, to import a version history of a document, a <code>DocumentBatchImportWithHistoryOperation</code> (or the
+typed variant <code>TypedDocumentBatchImportWithHistoryOperation</code>) is used. Other types of operations can be used to create
+complex data models for each imported Saperion entity.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The JSON files created by the STK use the same data model as <em>arveo</em> for the exported attributes. Conversion of
+attribute values like timestamps should not be necessary in most cases.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>SaperionRevisionMapper</code> implementations can use either the typed or the generic <em>arveo</em> API. Which implementation is
+used depends on the return value of the <code>isGeneric</code> method that must be implemented by each mapper.</p>
+</div>
+<div class="paragraph">
+<p>Mapper implementations must be made available as Spring Beans. The importer will pick the correct mapper by calling the
+<code>usedForRoute</code> method with the configured import route&#8217;d ID.</p>
+</div>
+<div class="sect3">
+<h4 id="_example_implementation">Example implementation</h4>
+<div class="paragraph">
+<p>The following example shows the implementation of a mapper using the typed API to import document version histories.
+Each document entity will contain one content element.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Mapper implementations should extend the class <code>AbstractGenericSaperionRevisionMapper</code> or <code>AbstractTypedSaperionRevisionMapper</code> to
+inherit utility methods.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">example implementation of the map method</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;TypedBatchOperation&gt; map(<span class="annotation">@NotNull</span> RevisionList revisionList, <span class="annotation">@NotNull</span> Exchange exchange) {
+
+    TypedDocumentServiceClient&lt;ExampleV8&gt; documentServiceClient =
+        typeDefinitionServiceClient.getDocumentServiceClient().byClass(ExampleV8.class);
+
+    <span class="predefined-type">List</span>&lt;TypedDocumentVersionInput&lt;ExampleV8&gt;&gt; versions = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
+
+    <span class="predefined-type">List</span>&lt;Revision&gt; revisions = sortRevisionsByDate(revisionList.getRevisions());
+
+    <span class="predefined-type">AtomicInteger</span> versionNumber = <span class="keyword">new</span> <span class="predefined-type">AtomicInteger</span>(<span class="integer">1</span>);
+
+    revisions.forEach(revision -&gt; {
+
+        ExampleV8 version = documentServiceClient.createTypeInstance(); <i class="conum" data-value="1"></i><b>(1)</b>
+        version.setSaperionId(revisionList.getDocumentId());
+        version.setDocumentNumber((<span class="predefined-type">Integer</span>) revision.getIndexData().get(<span class="string"><span class="delimiter">&quot;</span><span class="content">EX8_DOCNR</span><span class="delimiter">&quot;</span></span>));
+        version.setDocumentName((<span class="predefined-type">String</span>) revision.getIndexData().get(<span class="string"><span class="delimiter">&quot;</span><span class="content">EX8_DOCNAME</span><span class="delimiter">&quot;</span></span>));
+        version.setDocumentDate((LocalDate) revision.getIndexData().get(<span class="string"><span class="delimiter">&quot;</span><span class="content">EX8_ARCDATE</span><span class="delimiter">&quot;</span></span>));
+        version.setComment((<span class="predefined-type">String</span>) revision.getIndexData().get(<span class="string"><span class="delimiter">&quot;</span><span class="content">EX8_COMMENT</span><span class="delimiter">&quot;</span></span>));
+        version.setLanguage((<span class="predefined-type">String</span>) revision.getIndexData().get(<span class="string"><span class="delimiter">&quot;</span><span class="content">EX8_LANGUAGE</span><span class="delimiter">&quot;</span></span>));
+
+        ExternalVersionInformation versionInformation = <span class="keyword">new</span> ExternalVersionInformation( <i class="conum" data-value="2"></i><b>(2)</b>
+            versionNumber.getAndIncrement(),
+            getRevisionCreationDate(revision)
+        );
+
+        versions.add(<span class="keyword">new</span> TypedDocumentVersionInput&lt;&gt;( <i class="conum" data-value="3"></i><b>(3)</b>
+            getContentUploads(collectAllContentElements(revision), exchange),
+            revision.getRevisionComment(),
+            version,
+            <span class="predefined-constant">null</span>,
+            versionInformation
+        ));
+    });
+
+    <span class="keyword">return</span> <span class="predefined-type">List</span>.of(
+        <span class="keyword">new</span> TypedDocumentBatchImportWithHistoryOperation&lt;&gt;(<span class="keyword">new</span> TypedDocumentVersionBatchInput&lt;&gt;(versions)) <i class="conum" data-value="4"></i><b>(4)</b>
+    );
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create and populate the arveo entity with the attributes of the revision</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Define version number and creation date</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Wrap attributes, content and version information in a TypedDocumentVersionInput</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Wrap all version inputs in the import operation to create the version history</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A complete example implementation can be found in the <code>universal-import-test-plugins</code> module.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_importing_version_information">Importing version information</h4>
+<div class="paragraph">
+<p>Each imported version must contain a version number and a creation date in it&#8217;s <code>ExternalVersionInformation</code>.
+In addition, it can contain an optional modification date and the IDs of the creation- and modification-user.</p>
+</div>
+<div class="paragraph">
+<p>The creation- and modification-users are represented by <code>ExternalUserId</code> instances, each of which contains the external
+and the internal ID of the user (if known). The user IDs must be imported before importing the version histories. The
+<code>UserIdServiceClient</code> provides an import-API for external users.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The import of a version history that includes user information will fail if the users were not imported before. The
+import API requires administrator privileges.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">importing an external user</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">userIdServiceClient.importExternalUserIds(<span class="predefined-type">List</span>.of(<span class="keyword">new</span> ExternalIdAndIdentifier(externalUserId, <span class="predefined-constant">null</span>)));
+
+UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2198,6 +2400,30 @@ by the parameter <code>-Dloader.path</code>.</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">saperion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for the Saperion importer.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">saperion.statistics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to store statistic files.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">saperion.thread-pool-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The thread pool size used to process the CSF files.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">saperion.uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The URI used to import CSF files.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type-name-mappings</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Mappings from source type names to type definition names. Used for DDC names found in CSF headers.</p></td>
@@ -2211,7 +2437,7 @@ by the parameter <code>-Dloader.path</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-02 22:21:05 UTC
+Last updated 2025-09-03 16:10:13 UTC
 </div>
 </div>
 <style>

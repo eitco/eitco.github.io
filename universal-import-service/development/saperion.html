@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Importing from CSF files</title>
+<title>Importing Saperion export files</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,171 +442,197 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_importing_from_csf_files"><strong>Importing from CSF files</strong></h2>
+<h2 id="_importing_saperion_export_files"><strong>Importing Saperion export files</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Universal Import Service can be used to import data from Saperion CSF files. CSF files are basically CSV files with
-a proprietary header containing configuration for the Saperion importers. The Universal Import Service can use some of
-the settings read from the header. The reading of the actual data from the CSF file is done using the same mechanism as is
-used for generic CSV files. So the same configuration options, especially for attribute mappings, can be used for CSF
-files, too.</p>
+<p>The Saperion Storage Toolkit (STK) can export documents from Saperion as structured JSON files. The STK will create one
+JSON file containing a list of all revisions for each exported document.</p>
+</div>
+<div class="paragraph">
+<p><em>arveo</em> provides API methods to import the version history of an entity. The Universal Import Service acts as a link
+between the STK and arveo for data migration.</p>
 </div>
 <div class="sect2">
-<h3 id="_settings_from_csf_headers">Settings from CSF headers</h3>
+<h3 id="_configuration">Configuration</h3>
 <div class="paragraph">
-<p>The following information is read from the CSF headers:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>separator</strong>: The separator used in the body of the CSF file.</p>
-</li>
-<li>
-<p><strong>date pattern</strong>: The format of date values in the body of the CSF file</p>
-</li>
-<li>
-<p><strong>time pattern</strong>: The format of time values in the body of the CSF file</p>
-</li>
-<li>
-<p><strong>date-time pattern</strong>: The format of timestamps in the body of the CSF file</p>
-</li>
-<li>
-<p><strong>lagacy-import-mode</strong>: This controls the behavior of the old import mechanism in the Saperion Rich Client or Core Server.</p>
-</li>
-<li>
-<p><strong>duplicate handling</strong>: This controls how the Saperion Universal Importer handles duplicate documents.</p>
-</li>
-<li>
-<p><strong>document handling</strong>: This controls how the Saperion Universal Importer treats actual binary content of duplicate documents.</p>
-</li>
-<li>
-<p><strong>property handling</strong>: This controls how the Saperion Universal Importer treats attributes of duplicate documents.</p>
-</li>
-<li>
-<p><strong>DDC name</strong>: The name of the Saperion DDC to import data into.</p>
-</li>
-<li>
-<p><strong>key field names</strong>: Names of fields that can be used to identify duplicate documents.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Except for the separator, all of these fields in the header are optional.</p>
-</div>
-<div class="paragraph">
-<p>The Universal Import Service uses the separator and the patterns for date, time and date-time values (if present) to
-read the actual data from the CSF file. The key field names are used to identify potential conflicts with already
-existing entities. The DDC name can be used in the configuration (see <a href="#_configuring_csf_imports">below</a>) to determine the name of the type definition
-to import into.</p>
-</div>
-<div class="paragraph">
-<p>The Universal Import Service maps the settings for the legacy import mode and the duplicate, document and property
-handling to the <a href="generic-csv-mapper.html#<em>conflict_resolution_strategies">conflict resolution strategies</a> of the
-generic CSV mapper. Due to the differences in the data model between Saperion and _arveo</em>, not all of these settings
-are supported.</p>
-</div>
-<div class="sect3">
-<h4 id="_legacy_import_mode">Legacy import mode</h4>
-<div class="paragraph">
-<p>The legacy import mode setting can be mapped to the conflict resolution strategies. Both modes are supported:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>U</strong> (update-only): Only entities that are already present in the archive will be updated. No new entities will be created.</p>
-</li>
-<li>
-<p><strong>A</strong> (create-or-update): Existing entities will be updated, new entities will be created.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>This will work only when the key field names are not empty.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_duplicate_handling">Duplicate handling</h4>
-<div class="paragraph">
-<p>Because <em>arveo</em> enforces uniqueness of entities, only the <code>REVISE</code> and <code>REVISEONLY</code> modes are supported.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>REVISE</code> (create-or-update): Existing entities will be updated, new entities will be created.</p>
-</li>
-<li>
-<p><code>REVISEONLY</code> (update-only): Only entities that are already present in the archive will be updated. No new entities will be created.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_document_handling">Document handling</h4>
-<div class="paragraph">
-<p>In difference to Saperion, <em>arveo</em> does not support arbitrary content elements for one document entity. Some of the
-behavior of the Saperion Universal Importer can be reproduced using the different importing modes of the
-<a href="generic-csv-mapper.html">generic CSV mapper</a>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>SIMPLE</code>: In the simple mode, the number of possible content elements is fixed. The importer will update existing content
-elements, but new ones cannot be appended.</p>
-</li>
-<li>
-<p><code>COUNTING</code>: In this mode, the importer will create seprate documents for each content element. This makes it possible
-to update existing ones and to create new entities for additional content elements.</p>
-</li>
-<li>
-<p><code>REFERENCING</code>: In this mode, content elements are stored as separate document entities which are linkes to a common
-container entity using foreign keys. This mode will append new content elements and replace existing ones when they
-can be identified by a unique key.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The <code>REPLACEALL</code> mode of the Saperion Universal Importer is not supported.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_property_handling">Property handling</h4>
-<div class="paragraph">
-<p>The setting for the property handling mode is ignored.By default, the Universal Import Service will behave as if the
-<code>UPDATE</code> setting is active.However, it is possible to reproduce the <code>OVERWRITE</code> behavior by using the
-<a href="generic-csv-mapper.html#_null_values">attriute-null-value</a> as a default value for attributes not present in the body
-of the CSF file.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_configuring_csf_imports">Configuring CSF imports</h3>
-<div class="paragraph">
-<p>CSF imports are configured by defining the file system resource to monitor for CSF files as shown below:</p>
+<p>Saperion import routes are configured as shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
-  csf:
-    csf-import-1:
-      uri: "file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest1.csf&amp;moveFailed=.error"
-      statistics: "file://${project.build.testOutputDirectory}/csf/statistics"
-    csf-import-2:
-      uri: "file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest4.csf&amp;moveFailed=.error"
-      statistics: "file://${project.build.testOutputDirectory}/csf/statistics"
-    csf-import-3:
-      uri: "file://${project.build.testOutputDirectory}/csf?antInclude=**/csftest3.csf&amp;moveFailed=.error"
-      statistics: "file://${project.build.testOutputDirectory}/csf/statistics"
-  type-name-mappings: <i class="conum" data-value="1"></i><b>(1)</b>
-    AMV_TBL: incident</code></pre>
+  saperion:
+    saperion-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      uri: "file://${project.build.testOutputDirectory}/saperion-export?antInclude=**.json&amp;moveFailed=.error" <i class="conum" data-value="2"></i><b>(2)</b>
+      statistics: "file://${project.build.testOutputDirectory}/saperion-export/statistics" <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This setting can be used to configure a mapping from DDC names read from the CSF header to type definition names</td>
+<td>The ID of the import route</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The URI containing the location of the directory to import from</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A directory that will contain a statistics file when the route processing has finished</td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_saperion_revision_mappers">Saperion revision mappers</h3>
+<div class="paragraph">
+<p>The mapping between the revision lists exported by the STK and the imported history is implemented using
+<code>SaperionRevisionMapper</code> implementations. Each implementation maps a <code>RevisionList</code> to a List of <code>BatchOperation</code>
+instances. For example, to import a version history of a document, a <code>DocumentBatchImportWithHistoryOperation</code> (or the
+typed variant <code>TypedDocumentBatchImportWithHistoryOperation</code>) is used. Other types of operations can be used to create
+complex data models for each imported Saperion entity.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The JSON files created by the STK use the same data model as <em>arveo</em> for the exported attributes. Conversion of
+attribute values like timestamps should not be necessary in most cases.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>SaperionRevisionMapper</code> implementations can use either the typed or the generic <em>arveo</em> API. Which implementation is
+used depends on the return value of the <code>isGeneric</code> method that must be implemented by each mapper.</p>
+</div>
+<div class="paragraph">
+<p>Mapper implementations must be made available as Spring Beans. The importer will pick the correct mapper by calling the
+<code>usedForRoute</code> method with the configured import route&#8217;d ID.</p>
+</div>
+<div class="sect3">
+<h4 id="_example_implementation">Example implementation</h4>
+<div class="paragraph">
+<p>The following example shows the implementation of a mapper using the typed API to import document version histories.
+Each document entity will contain one content element.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Mapper implementations should extend the class <code>AbstractGenericSaperionRevisionMapper</code> or <code>AbstractTypedSaperionRevisionMapper</code> to
+inherit utility methods.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">example implementation of the map method</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Override
+public @NotNull List&lt;TypedBatchOperation&gt; map(@NotNull RevisionList revisionList, @NotNull Exchange exchange) {
+
+    TypedDocumentServiceClient&lt;ExampleV8&gt; documentServiceClient =
+        typeDefinitionServiceClient.getDocumentServiceClient().byClass(ExampleV8.class);
+
+    List&lt;TypedDocumentVersionInput&lt;ExampleV8&gt;&gt; versions = new ArrayList&lt;&gt;();
+
+    List&lt;Revision&gt; revisions = sortRevisionsByDate(revisionList.getRevisions());
+
+    AtomicInteger versionNumber = new AtomicInteger(1);
+
+    revisions.forEach(revision -&gt; {
+
+        ExampleV8 version = documentServiceClient.createTypeInstance(); <i class="conum" data-value="1"></i><b>(1)</b>
+        version.setSaperionId(revisionList.getDocumentId());
+        version.setDocumentNumber((Integer) revision.getIndexData().get("EX8_DOCNR"));
+        version.setDocumentName((String) revision.getIndexData().get("EX8_DOCNAME"));
+        version.setDocumentDate((LocalDate) revision.getIndexData().get("EX8_ARCDATE"));
+        version.setComment((String) revision.getIndexData().get("EX8_COMMENT"));
+        version.setLanguage((String) revision.getIndexData().get("EX8_LANGUAGE"));
+
+        ExternalVersionInformation versionInformation = new ExternalVersionInformation( <i class="conum" data-value="2"></i><b>(2)</b>
+            versionNumber.getAndIncrement(),
+            getRevisionCreationDate(revision)
+        );
+
+        versions.add(new TypedDocumentVersionInput&lt;&gt;( <i class="conum" data-value="3"></i><b>(3)</b>
+            getContentUploads(collectAllContentElements(revision), exchange),
+            revision.getRevisionComment(),
+            version,
+            null,
+            versionInformation
+        ));
+    });
+
+    return List.of(
+        new TypedDocumentBatchImportWithHistoryOperation&lt;&gt;(new TypedDocumentVersionBatchInput&lt;&gt;(versions)) <i class="conum" data-value="4"></i><b>(4)</b>
+    );
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create and populate the arveo entity with the attributes of the revision</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Define version number and creation date</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Wrap attributes, content and version information in a TypedDocumentVersionInput</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Wrap all version inputs in the import operation to create the version history</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A complete example implementation can be found in the <code>universal-import-test-plugins</code> module.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_importing_version_information">Importing version information</h4>
+<div class="paragraph">
+<p>Each imported version must contain a version number and a creation date in it&#8217;s <code>ExternalVersionInformation</code>.
+In addition, it can contain an optional modification date and the IDs of the creation- and modification-user.</p>
+</div>
+<div class="paragraph">
+<p>The creation- and modification-users are represented by <code>ExternalUserId</code> instances, each of which contains the external
+and the internal ID of the user (if known). The user IDs must be imported before importing the version histories. The
+<code>UserIdServiceClient</code> provides an import-API for external users.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The import of a version history that includes user information will fail if the users were not imported before. The
+import API requires administrator privileges.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">importing an external user</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">userIdServiceClient.importExternalUserIds(List.of(new ExternalIdAndIdentifier(externalUserId, null)));
+
+UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
