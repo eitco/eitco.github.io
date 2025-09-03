@@ -923,6 +923,8 @@ fails and the transaction is rolled back.</p>
 </div>
 <div class="sect2">
 <h3 id="examples"><a class="anchor" href="#examples"></a>Examples</h3>
+<div class="sect3">
+<h4 id="batch_with_attribute_references"><a class="anchor" href="#batch_with_attribute_references"></a>Batch with attribute references</h4>
 <div class="paragraph">
 <p>The first example implements a solution for the following problem: An invoice was archived with a relation to an
 invalid customer. The customer must be replaced with a new customer and the reference in the invoice must be updated.</p>
@@ -1016,6 +1018,89 @@ List&lt;EcrId&gt; ids = batchOperationServiceClient.performTypedBatchOperations(
 <td>An injected instance of <code>de.eitco.ecr.sdk.BatchOperationServiceClient</code></td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="batch_with_virtual_ids"><a class="anchor" href="#batch_with_virtual_ids"></a>Batch with virtual IDs</h4>
+<div class="paragraph">
+<p>When referencing IDs of other entities created, read or updated in a batch, <em>virtual IDs</em> can be used. Virtual IDs
+represent identifiers that are created or retrieved within a batch.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>VirtualContainerId</code>: References the ID of a container</p>
+</li>
+<li>
+<p><code>VirtualDocumentId</code>: References the ID of a document</p>
+</li>
+<li>
+<p><code>VirtualFolderId</code>: References the ID of a folder</p>
+</li>
+<li>
+<p><code>VirtualRelationId</code>: References the ID of a relation</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To reference a specific version ID in a batch, a <code>VersionIdReference</code> can be used. VersionIdReferences use the UUID of
+the respective batch operation and the version number to reference a specific entity version.</p>
+</div>
+<div class="paragraph">
+<p>In the following example, a simple file consisting of a container holding the file&#8217;s attributes and a document linked
+to the file by a virtual ID is created.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using virtual IDs</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedContainerServiceClient&lt;EmployeeFile&gt; containerServiceClient =
+    typeDefinitionServiceClient.getContainerServiceClient().byClass(EmployeeFile.class);
+
+TypedDocumentServiceClient&lt;EmployeeDocument&gt; documentServiceClient =
+    typeDefinitionServiceClient.getDocumentServiceClient().byClass(EmployeeDocument.class);
+
+EmployeeFile employeeFile = containerServiceClient.createTypeInstance(); <i class="conum" data-value="1"></i><b>(1)</b>
+employeeFile.setBirthday(LocalDate.of(1980, 1, 1));
+employeeFile.setName(UUIDGenerator.randomUUID().toString());
+
+TypedContainerBatchCreateOperation&lt;EmployeeFile&gt; fileOperation =
+    new TypedContainerBatchCreateOperation&lt;&gt;(employeeFile);
+
+ContainerId employeeFileId = fileOperation.getVirtualId(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+EmployeeDocument document = documentServiceClient.createTypeInstance(); <i class="conum" data-value="3"></i><b>(3)</b>
+document.setEmployeeId(employeeFileId);
+
+TypedDocumentBatchCreateOperation&lt;EmployeeDocument&gt; documentOperation =
+    new TypedDocumentBatchCreateOperation&lt;&gt;(new TypedDocumentBatchCreateInput&lt;&gt;(
+        new TypedDocumentInput&lt;&gt;(
+            Map.of(ContentElement.CONTENT, new ContentUpload("my content".getBytes(StandardCharsets.UTF_8))),
+            document
+        )));
+
+List&lt;EcrId&gt; ids = batchOperationServiceClient.performTypedBatchOperations(fileOperation, documentOperation); <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create and populate the contained instance representing the file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Get the virtual container ID for the file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Create and populate the document</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Perform the batch operations</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
