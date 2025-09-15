@@ -765,6 +765,10 @@ or <code>file:/C:/changelogs/type-definition-changelog.xml</code>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Versioned</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This annotation defines if an attribute of a type is versioned or not (when placed on a getter) or if all attributes of a type are versioned or not (when placed on a type). When the annotation is present on a type and on a getter in the type, the annotation on the getter wins.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>@Encrypted</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attributes of type <code>String</code> and <code>byte[]</code> annotated with <code>@Encrypted</code> are automatically encrypted before they are written to the database. More information can be found <a href="#attribute_encryption">here</a>.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1209,6 +1213,55 @@ Can only be used on relations.</p>
 Can only be used on relation types that support relations to or from versions.</p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="attribute_encryption"><a class="anchor" href="#attribute_encryption"></a>Attribute encryption</h3>
+<div class="paragraph">
+<p>Attributes of type <code>String</code> and <code>byte[]</code> can be encrypted using the same encryption method as is used for the binary content. Details about the encryption method can be found <a href="../arveo-administration/encryption.html#aes" class="xref page">here</a>. This feature is intended for attribute values containing sensitive data that must not be visible for anyone with direct access to the database. For a client using the API, the encryption is transparent.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+It is not possible to search for values of encrypted attributes.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Encryption and decryption is a CPU-intensive operation. Encrypted attributes should not be used in scenarios where many entities are retrieved from the database on a regular basis. <a href="#_define_a_view">Partial views</a> can be used to select only the plaintext attributes of an entity to avoid performance issues.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="using_manual_decryption"><a class="anchor" href="#using_manual_decryption"></a>Using manual decryption</h4>
+<div class="paragraph">
+<p>In cases where it is not possible to separate encrypted from plaintext attributes the automatic decryption of attribute values can be disabled system-wide:</p>
+</div>
+<div class="listingblock">
+<div class="title">disabling automatic decryption</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    system:
+      attribute-encryption:
+        auto-decrypt: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When automatic decryption is disabled, the server will return the encrypted form of the attribute values. String-attributes will be Base64 encoded before they are returned. Clients can use the <code>DecryptionClient</code> API class to decrypt the encrypted values.</p>
 </div>
 </div>
 </div>
