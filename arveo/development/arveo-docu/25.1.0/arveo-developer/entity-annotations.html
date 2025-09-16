@@ -1248,20 +1248,17 @@ Encryption and decryption is a CPU-intensive operation. Encrypted attributes sho
 <div class="sect3">
 <h4 id="using_manual_decryption"><a class="anchor" href="#using_manual_decryption"></a>Using manual decryption</h4>
 <div class="paragraph">
-<p>In cases where it is not possible to separate encrypted from plaintext attributes the automatic decryption of attribute values can be disabled system-wide:</p>
+<p>In cases where it is not possible to separate encrypted from plaintext attributes, the automatic decryption of attribute values can be disabled:</p>
 </div>
 <div class="listingblock">
 <div class="title">disabling automatic decryption</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
-  server:
-    system:
-      attribute-encryption:
-        auto-decrypt: false</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Encrypted(autoDecrypt = false)
+String getManuallyDecryptedString();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When automatic decryption is disabled, the server will return the encrypted form of the attribute values. String-attributes will be Base64 encoded before they are returned. Clients can use the <code>DecryptionClient</code> API class to decrypt the encrypted values.</p>
+<p>When automatic decryption is disabled, the server will return the encrypted form of the attribute values. String-attributes will be Base64 encoded before they are returned. Clients can use the <code>DecryptionClient</code> API class to decrypt the encrypted values on-demand.</p>
 </div>
 </div>
 </div>
