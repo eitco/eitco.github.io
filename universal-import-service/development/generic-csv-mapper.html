@@ -574,6 +574,10 @@ names of the columns of the CSV file. An attribute mapping consists of the follo
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A randomly generated default value used when the line does not contain a value for a configured attribute mapping. Takes precedence over <code>default-value</code>. The possible values for this parameter are described below.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
 </tr>
@@ -624,6 +628,22 @@ The partial default values <code>local-date</code>, <code>local-time</code> and 
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Using the <code>generated-default-value</code> parameter, it is possible to generate random values for non-existing values in an
+imported file. The following options for random value generation exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UUID</code>: A random type 4 UUID string, generated using a pseudo random generator with a period of 2<sup>64</sup>. Note that the
+generated UUIDs are not cryptographically strong.</p>
+</li>
+<li>
+<p><code>CRYPTOGRAPHIC_UUID</code>: A cryptographically strong type 4 UUID. Generating these UUIDs requires more CPU resources
+compared to the weaker <code>UUID</code> variant.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Attribute mappings are configured for each mapper mode. For example, when the counting mode is used, the attribute
@@ -1137,7 +1157,7 @@ The Content Repository Service will use this selector to perform an update on th
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-17 22:21:07 UTC
+Last updated 2025-09-18 08:37:15 UTC
 </div>
 </div>
 </body>

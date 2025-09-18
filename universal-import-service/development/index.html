@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 5.0.1-SNAPSHOT</title>
+<title>Universal Import Service 5.1.0-SNAPSHOT</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -18,7 +18,7 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_universal_import_service_5_0_1_snapshot"><strong>Universal Import Service 5.0.1-SNAPSHOT</strong></a>
+<li><a href="#_universal_import_service_5_1_0_snapshot"><strong>Universal Import Service 5.1.0-SNAPSHOT</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
 <li><a href="#_statistics">Statistics</a></li>
@@ -70,7 +70,7 @@
 <div id="content">
 <div style="page-break-after: always;"></div>
 <div class="sect1">
-<h2 id="_universal_import_service_5_0_1_snapshot"><strong>Universal Import Service 5.0.1-SNAPSHOT</strong></h2>
+<h2 id="_universal_import_service_5_1_0_snapshot"><strong>Universal Import Service 5.1.0-SNAPSHOT</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
@@ -312,6 +312,10 @@ names of the columns of the CSV file. An attribute mapping consists of the follo
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A randomly generated default value used when the line does not contain a value for a configured attribute mapping. Takes precedence over <code>default-value</code>. The possible values for this parameter are described below.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
 </tr>
@@ -362,6 +366,22 @@ The partial default values <code>local-date</code>, <code>local-time</code> and 
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Using the <code>generated-default-value</code> parameter, it is possible to generate random values for non-existing values in an
+imported file. The following options for random value generation exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UUID</code>: A random type 4 UUID string, generated using a pseudo random generator with a period of 2<sup>64</sup>. Note that the
+generated UUIDs are not cryptographically strong.</p>
+</li>
+<li>
+<p><code>CRYPTOGRAPHIC_UUID</code>: A cryptographically strong type 4 UUID. Generating these UUIDs requires more CPU resources
+compared to the weaker <code>UUID</code> variant.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Attribute mappings are configured for each mapper mode. For example, when the counting mode is used, the attribute
@@ -1307,6 +1327,10 @@ the following parameters:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A randomly generated default value used when the line does not contain a value for a configured attribute mapping. Takes precedence over <code>default-value</code>. The possible values for this parameter are described below.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
 </tr>
@@ -1357,6 +1381,22 @@ The partial default values <code>local-date</code>, <code>local-time</code> and 
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Using the <code>generated-default-value</code> parameter, it is possible to generate random values for non-existing values in an
+imported file. The following options for random value generation exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UUID</code>: A random type 4 UUID string, generated using a pseudo random generator with a period of 2<sup>64</sup>. Note that the
+generated UUIDs are not cryptographically strong.</p>
+</li>
+<li>
+<p><code>CRYPTOGRAPHIC_UUID</code>: A cryptographically strong type 4 UUID. Generating these UUIDs requires more CPU resources
+compared to the weaker <code>UUID</code> variant.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -1782,6 +1822,12 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GeneratedDefaultValue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional generated default value. Takes precedence over defaultValue.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.local-date</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
@@ -1968,6 +2014,12 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GeneratedDefaultValue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional generated default value. Takes precedence over defaultValue.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.local-date</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
@@ -2142,6 +2194,12 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.delimiter</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GeneratedDefaultValue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional generated default value. Takes precedence over defaultValue.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -2437,7 +2495,7 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-17 22:21:07 UTC
+Last updated 2025-09-18 08:37:15 UTC
 </div>
 </div>
 <style>
