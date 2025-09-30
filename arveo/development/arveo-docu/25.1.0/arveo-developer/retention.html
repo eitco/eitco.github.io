@@ -695,12 +695,12 @@ in charge of this task and you must set the option <em>delete rows only</em>.
     final String TEST_DATA_MIMETYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
     TypedDocumentServiceClient&lt;DocumentWithRetention&gt; serviceClient =
-            typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
+        typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
     ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
 
     DocumentWithRetention newDocument = serviceClient.createTypeInstance();
     newDocument.setName(TEST_IDENTIFIER + System.currentTimeMillis());
-    newDocument.setReceiptDate(now );
+    newDocument.setReceiptDate(now);
     newDocument.setMimeType(TEST_DATA_MIMETYPE);
     newDocument.setRetentionDate(now);
 
@@ -717,7 +717,7 @@ in charge of this task and you must set the option <em>delete rows only</em>.
     Assert.assertTrue(loadedDocument.getName().startsWith(TEST_IDENTIFIER));
     Assert.assertEquals(loadedDocument.getMimeType(), TEST_DATA_MIMETYPE);
 
-    assertDateEquals( loadedDocument.getReceiptDate(), now);
+    assertDateEquals(loadedDocument.getReceiptDate(), now);
     assertDateEquals(loadedDocument.getRetentionInformation().getRetentionDate(), now);
     Assert.assertFalse(loadedDocument.getRetentionInformation().isLitigationHold());
 
@@ -748,7 +748,7 @@ in charge of this task and you must set the option <em>delete rows only</em>.
     final String TEST_DATA_MIMETYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
     TypedDocumentServiceClient&lt;DocumentWithRetention&gt; serviceClient =
-            typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
+        typeDefinitionServiceClient.getDocumentServiceClient().byClass(DocumentWithRetention.class);
     // store document without retention
     DocumentWithRetention newDocument = serviceClient.createTypeInstance();
     newDocument.setName(TEST_IDENTIFIER + System.currentTimeMillis());
