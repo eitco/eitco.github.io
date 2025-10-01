@@ -44,6 +44,13 @@
 <li><a href="#_configuration_3">Configuration</a></li>
 </ul>
 </li>
+<li><a href="#_barcode_endpoint">Barcode endpoint</a>
+<ul class="sectlevel2">
+<li><a href="#_installation">Installation</a></li>
+<li><a href="#_configuration_4">Configuration</a></li>
+<li><a href="#_usage">Usage</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1016,10 +1023,183 @@ application is closed. If null, no protocol will be written.</p></td>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_barcode_endpoint">Barcode endpoint</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The barcode plugin provides a REST API to send barcodes to SAP. The API is secured using either OAuth2 or an API Key.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The security method used for the barcode endpoint does not affect the certificate-based security used for the
+Archive Link HTTP endpoints.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_installation">Installation</h3>
+<div class="paragraph">
+<p>The plugin must be added to the Archive Link Service&#8217;s libs directory. There are two packages, one contains the required
+libraries for OAuth2 security and the other one the libraries for the API key security:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>archive-link-barcode-packaging-jco-oauth2</code></p>
+</li>
+<li>
+<p><code>archive-link-barcode-packaging-jco-apikey</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both consist of a ZIP archive, which must be extracted to the service&#8217;s lib directory.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Due to licensing restrictions, the JCO library used to connect to SAP is not contained in the plugin&#8217;s delivery packages
+and must be provided by the customer. It has to be placed in the service&#8217;s libs directory like the plugin libraries.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_4">Configuration</h3>
+<div class="paragraph">
+<p>The plugin uses SAP JCO to connect to the SAP system. JCO supports multiple destinations to individual systems. Each
+destination supports a wide range of configuration parameters, because of which the configuration is kept very general
+and accepts a map of key-value pairs. The available parameters can be found in the SAP documentation. The following
+example shows a minimal set of parameters used to connect to a SAP system using a destination called <code>test</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">SAP JCO configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">archive-link</span>:
+  <span class="key">sap</span>:
+    <span class="key">jco</span>:
+      <span class="key">destinations</span>:
+        <span class="key">test</span>:
+          <span class="key">properties</span>:
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[jco.client.ashost]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;ip or dns name&gt;</span><span class="delimiter">&quot;</span></span>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[jco.client.sysnr]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">00</span><span class="delimiter">&quot;</span></span>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[jco.client.client]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">100</span><span class="delimiter">&quot;</span></span>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[jco.client.user]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;username&gt;</span><span class="delimiter">&quot;</span></span>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[jco.client.passwd]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;password&gt;</span><span class="delimiter">&quot;</span></span>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[jco.client.lang]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The plugin supports the configuration of multiple destinations, but currently only one destination can be used to send
+barcodes. If more than one destination is configured, the destination to use must be set using the property
+<code>archive-link.sap.jco.destinationToUse</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_api_key_security">API key security</h4>
+<div class="paragraph">
+<p>The API key security plugin expects a header called <code>API-Key</code> in each request. The header must contain a valid API key,
+which must be configured as shown in the following example. The parameter accepts a comma-separated list of allowed keys.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">archive-link</span>:
+  <span class="key">security</span>:
+    <span class="key">api-key</span>:
+      <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
+      <span class="key">keys</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">changeme,anotherone</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_oauth2_security">OAuth2 security</h4>
+<div class="paragraph">
+<p>The OAuth2 security must be configured as any other OAuth2 resource server using Spring Security settings as shown in
+the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">resource server configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">resourceserver</span>:
+        <span class="key">jwt</span>:
+          <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8180/realms/TestRealm</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage">Usage</h3>
+<div class="paragraph">
+<p>The barcode endpoint client can be used to send barcode confirmation requests. The client is currently only available
+for Spring applications and is provided by the following auto starter dependency:</p>
+</div>
+<div class="listingblock">
+<div class="title">maven dependency</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.archive.link<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>archive-link-barcode-client<span class="tag">&lt;/artifactId&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The auto starter registers a bean of type <code>de.eitco.archive.link.barcode.client.BarcodeClient</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_client_configuration">Client configuration</h4>
+<div class="paragraph">
+<p>By default, the client uses OAuth2 to authenticate. The configuration uses the default Spring Security parameters as
+shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring OAuth2 client authentication</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml">  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">client</span>:
+        <span class="key">registration</span>:
+          <span class="key">keycloak-client-credentials</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">keycloak</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">techclient</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">BatqOpzPlIksUsqeZjgxcbAgrA0PQuFM</span><span class="delimiter">&quot;</span></span>
+            <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">client_credentials</span><span class="delimiter">&quot;</span></span>
+        <span class="key">provider</span>:
+          <span class="key">keycloak</span>:
+            <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:${keycloak.port}/realms/TestRealm</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use the API key method instead, simply configure an API key. Once an API key is configured, the OAuth2 authentication
+will be disabled.</p>
+</div>
+<div class="listingblock">
+<div class="title">API key configuration</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">archive-link-barcode-client</span>:
+  <span class="key">api-key</span>: <span class="string"><span class="content">changeme</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-22 02:16:04 UTC
+Last updated 2025-10-01 11:27:12 UTC
 </div>
 </div>
 <style>
