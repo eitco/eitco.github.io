@@ -1152,12 +1152,73 @@ unique identifier attributes will be used to create a selector passed on to the 
 The Content Repository Service will use this selector to perform an update on the existing entity.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_import_callbacks">Import callbacks</h3>
+<div class="paragraph">
+<p>Line import callback can be used to perform custom actions after a line was imported successfully. Callbacks are implemented
+as Spring beans that have to implement the interface <code>de.eitco.uis.mappers.common.AfterLineImportCallback</code>. The
+interface contains two methods, which are called either by the generic mapper or by the typed mapper. Only one callback
+implementation can be registered as a bean.</p>
+</div>
+<div class="listingblock">
+<div class="title">example callback implementation</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class TestLineImportCallback implements AfterLineImportCallback {
+
+    private final TypeDefinitionServiceClient typeDefinitionServiceClient;
+
+    public TestLineImportCallback(TypeDefinitionServiceClient typeDefinitionServiceClient) {
+        this.typeDefinitionServiceClient = typeDefinitionServiceClient;
+    }
+
+    @Override
+    public void afterGenericLineImport(
+        @NotNull List&lt;EcrId&gt; ids,
+        @NotNull List&lt;BatchOperation&gt; batchOperations,
+        @NotNull Map&lt;String, String&gt; line,
+        @NotNull Exchange exchange
+    ) {
+        TypedContainerServiceClient&lt;CustomAuditEntry&gt; serviceClient =
+            typeDefinitionServiceClient.getContainerServiceClient().byClass(CustomAuditEntry.class);
+
+        CustomAuditEntry auditEntry = serviceClient.createTypeInstance();
+        auditEntry.setCreatedIds(ids.stream().map(id -&gt; (Long) id.value()).toList());
+
+        serviceClient.createEntity(auditEntry);
+    }
+
+    @Override
+    public void afterTypedLineImport(
+        @NotNull List&lt;EcrId&gt; ids,
+        @NotNull List&lt;TypedBatchOperation&gt; batchOperations,
+        @NotNull Map&lt;String, String&gt; line,
+        @NotNull Exchange exchange
+    ) {
+
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The callback is executed after a line was imported successfully. Exceptions thrown by the callback are logged, but will
+not mark the line as failed.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-30 22:21:05 UTC
+Last updated 2025-10-01 11:19:15 UTC
 </div>
 </div>
 </body>

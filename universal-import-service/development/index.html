@@ -33,6 +33,7 @@
 <li><a href="#_content_preprocessing">Content preprocessing</a></li>
 <li><a href="#_attribute_preprocessing">Attribute preprocessing</a></li>
 <li><a href="#_conflict_resolution_strategies">Conflict resolution strategies</a></li>
+<li><a href="#_import_callbacks">Import callbacks</a></li>
 </ul>
 </li>
 <li><a href="#_importing_from_csf_files"><strong>Importing from CSF files</strong></a>
@@ -888,6 +889,67 @@ Overwriting existing entities must be enabled in the type definition in use.
 <p>Except for the default <code>SKIP</code> strategy, all other strategies require at least one <code>unique-identifier</code> attribute. The
 unique identifier attributes will be used to create a selector passed on to the Content Repository Service.
 The Content Repository Service will use this selector to perform an update on the existing entity.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_import_callbacks">Import callbacks</h3>
+<div class="paragraph">
+<p>Line import callback can be used to perform custom actions after a line was imported successfully. Callbacks are implemented
+as Spring beans that have to implement the interface <code>de.eitco.uis.mappers.common.AfterLineImportCallback</code>. The
+interface contains two methods, which are called either by the generic mapper or by the typed mapper. Only one callback
+implementation can be registered as a bean.</p>
+</div>
+<div class="listingblock">
+<div class="title">example callback implementation</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">TestLineImportCallback</span> <span class="directive">implements</span> AfterLineImportCallback {
+
+    <span class="directive">private</span> <span class="directive">final</span> TypeDefinitionServiceClient typeDefinitionServiceClient;
+
+    <span class="directive">public</span> TestLineImportCallback(TypeDefinitionServiceClient typeDefinitionServiceClient) {
+        <span class="local-variable">this</span>.typeDefinitionServiceClient = typeDefinitionServiceClient;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> afterGenericLineImport(
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;EcrId&gt; ids,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;BatchOperation&gt; batchOperations,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; line,
+        <span class="annotation">@NotNull</span> Exchange exchange
+    ) {
+        TypedContainerServiceClient&lt;CustomAuditEntry&gt; serviceClient =
+            typeDefinitionServiceClient.getContainerServiceClient().byClass(CustomAuditEntry.class);
+
+        CustomAuditEntry auditEntry = serviceClient.createTypeInstance();
+        auditEntry.setCreatedIds(ids.stream().map(id -&gt; (<span class="predefined-type">Long</span>) id.value()).toList());
+
+        serviceClient.createEntity(auditEntry);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> afterTypedLineImport(
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;EcrId&gt; ids,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;TypedBatchOperation&gt; batchOperations,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; line,
+        <span class="annotation">@NotNull</span> Exchange exchange
+    ) {
+
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The callback is executed after a line was imported successfully. Exceptions thrown by the callback are logged, but will
+not mark the line as failed.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -2495,7 +2557,7 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-30 22:21:05 UTC
+Last updated 2025-10-01 11:19:15 UTC
 </div>
 </div>
 <style>
