@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Universal Import Service 5.0.0</title>
+<title>Universal Import Service 5.1.0</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -18,7 +18,7 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_universal_import_service_5_0_0"><strong>Universal Import Service 5.0.0</strong></a>
+<li><a href="#_universal_import_service_5_1_0"><strong>Universal Import Service 5.1.0</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_configuration">Configuration</a></li>
 <li><a href="#_statistics">Statistics</a></li>
@@ -33,6 +33,7 @@
 <li><a href="#_content_preprocessing">Content preprocessing</a></li>
 <li><a href="#_attribute_preprocessing">Attribute preprocessing</a></li>
 <li><a href="#_conflict_resolution_strategies">Conflict resolution strategies</a></li>
+<li><a href="#_import_callbacks">Import callbacks</a></li>
 </ul>
 </li>
 <li><a href="#_importing_from_csf_files"><strong>Importing from CSF files</strong></a>
@@ -70,7 +71,7 @@
 <div id="content">
 <div style="page-break-after: always;"></div>
 <div class="sect1">
-<h2 id="_universal_import_service_5_0_0"><strong>Universal Import Service 5.0.0</strong></h2>
+<h2 id="_universal_import_service_5_1_0"><strong>Universal Import Service 5.1.0</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Universal Import Service is used to import data into arveo from third party systems. Currently, the service
@@ -312,6 +313,10 @@ names of the columns of the CSV file. An attribute mapping consists of the follo
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A randomly generated default value used when the line does not contain a value for a configured attribute mapping. Takes precedence over <code>default-value</code>. The possible values for this parameter are described below.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
 </tr>
@@ -362,6 +367,22 @@ The partial default values <code>local-date</code>, <code>local-time</code> and 
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Using the <code>generated-default-value</code> parameter, it is possible to generate random values for non-existing values in an
+imported file. The following options for random value generation exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UUID</code>: A random type 4 UUID string, generated using a pseudo random generator with a period of 2<sup>64</sup>. Note that the
+generated UUIDs are not cryptographically strong.</p>
+</li>
+<li>
+<p><code>CRYPTOGRAPHIC_UUID</code>: A cryptographically strong type 4 UUID. Generating these UUIDs requires more CPU resources
+compared to the weaker <code>UUID</code> variant.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Attribute mappings are configured for each mapper mode. For example, when the counting mode is used, the attribute
@@ -870,6 +891,67 @@ unique identifier attributes will be used to create a selector passed on to the 
 The Content Repository Service will use this selector to perform an update on the existing entity.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_import_callbacks">Import callbacks</h3>
+<div class="paragraph">
+<p>Line import callback can be used to perform custom actions after a line was imported successfully. Callbacks are implemented
+as Spring beans that have to implement the interface <code>de.eitco.uis.mappers.common.AfterLineImportCallback</code>. The
+interface contains two methods, which are called either by the generic mapper or by the typed mapper. Only one callback
+implementation can be registered as a bean.</p>
+</div>
+<div class="listingblock">
+<div class="title">example callback implementation</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">TestLineImportCallback</span> <span class="directive">implements</span> AfterLineImportCallback {
+
+    <span class="directive">private</span> <span class="directive">final</span> TypeDefinitionServiceClient typeDefinitionServiceClient;
+
+    <span class="directive">public</span> TestLineImportCallback(TypeDefinitionServiceClient typeDefinitionServiceClient) {
+        <span class="local-variable">this</span>.typeDefinitionServiceClient = typeDefinitionServiceClient;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> afterGenericLineImport(
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;EcrId&gt; ids,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;BatchOperation&gt; batchOperations,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; line,
+        <span class="annotation">@NotNull</span> Exchange exchange
+    ) {
+        TypedContainerServiceClient&lt;CustomAuditEntry&gt; serviceClient =
+            typeDefinitionServiceClient.getContainerServiceClient().byClass(CustomAuditEntry.class);
+
+        CustomAuditEntry auditEntry = serviceClient.createTypeInstance();
+        auditEntry.setCreatedIds(ids.stream().map(id -&gt; (<span class="predefined-type">Long</span>) id.value()).toList());
+
+        serviceClient.createEntity(auditEntry);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> afterTypedLineImport(
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;EcrId&gt; ids,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">List</span>&lt;TypedBatchOperation&gt; batchOperations,
+        <span class="annotation">@NotNull</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; line,
+        <span class="annotation">@NotNull</span> Exchange exchange
+    ) {
+
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The callback is executed after a line was imported successfully. Exceptions thrown by the callback are logged, but will
+not mark the line as failed.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1307,6 +1389,10 @@ the following parameters:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The default value used when the line does not contain a value for a configured attribute mapping. Must follow the same format rules as the other values in the column.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A randomly generated default value used when the line does not contain a value for a configured attribute mapping. Takes precedence over <code>default-value</code>. The possible values for this parameter are described below.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">number-format.patterm</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Format <a href="https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html">pattern</a> for numeric values.</p></td>
 </tr>
@@ -1357,6 +1443,22 @@ The partial default values <code>local-date</code>, <code>local-time</code> and 
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Using the <code>generated-default-value</code> parameter, it is possible to generate random values for non-existing values in an
+imported file. The following options for random value generation exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UUID</code>: A random type 4 UUID string, generated using a pseudo random generator with a period of 2<sup>64</sup>. Note that the
+generated UUIDs are not cryptographically strong.</p>
+</li>
+<li>
+<p><code>CRYPTOGRAPHIC_UUID</code>: A cryptographically strong type 4 UUID. Generating these UUIDs requires more CPU resources
+compared to the weaker <code>UUID</code> variant.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -1782,6 +1884,12 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GeneratedDefaultValue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional generated default value. Takes precedence over defaultValue.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.local-date</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
@@ -1968,6 +2076,12 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GeneratedDefaultValue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional generated default value. Takes precedence over defaultValue.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">referencing.document-attributes.&lt;key&gt;.local-date</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The local data for a date-time attribute used if the value does not contain a date. Must be in ISO-8601 format such as '2011-12-03'.</p></td>
@@ -2142,6 +2256,12 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 <td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.delimiter</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The delimiter of multivalued attributes.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributes.&lt;key&gt;.generated-default-value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GeneratedDefaultValue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional generated default value. Takes precedence over defaultValue.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -2437,7 +2557,7 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-05 15:27:35 UTC
+Last updated 2025-09-05 17:03:42 +0200
 </div>
 </div>
 <style>
