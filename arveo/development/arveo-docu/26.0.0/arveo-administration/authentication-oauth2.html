@@ -649,6 +649,93 @@ String modificationUserIdentifier = additionalUserIdentifiers.getModificationUse
 </div>
 </div>
 <div class="sect1">
+<h2 id="impersonation"><a class="anchor" href="#impersonation"></a>Impersonation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When a client communicates with the Content Repository Service, it has to send a token with each request. The
+information retrieved from this token will be used by the Repository Service, for example, to store the ID of the user
+in the <code>modification_user_id</code> field in the database when an entity was updated. The client might by a web application
+used by a human or another service.</p>
+</div>
+<div class="paragraph">
+<p>Sometimes users interact with a service that itself sends requests to the Content Repository Service. In those cases,
+the administrator has to decide whether the requests sent to the Content Repository Service have to contain information
+about the human user or not. In case the information about the human user is required, impersonation can be used.</p>
+</div>
+<div class="paragraph">
+<p>Consider a scenario where a user uploads documents using a web application to a project-specific service. This service
+performs some custom actions before uploading the document to the Content Repository Service. With impersonation, the
+ID of the human user will be stored in the version history of the document. Without impersonation, the version history
+will contain the ID of the technical user of the project-specific service.</p>
+</div>
+<div class="sect2">
+<h3 id="how_impersonation_works"><a class="anchor" href="#how_impersonation_works"></a>How impersonation works</h3>
+<div class="paragraph">
+<p>A service impersonating a user will add a <code>X-Impersonate-User</code> header to the request containing the name of the user to
+impersonate. The user&#8217;s original user token will be sent (in addition to the service&#8217;s token) in the <code>X-User-Token</code>
+header. The Content Repository Service will check if the service&#8217;s technical user is allowed to impersonate other users
+and will validate the signature and expiration time of the original user token. If those checks were successful, the service&#8217;s
+request will be authenticated as if it were sent directly by the human user.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enabling_impersonation"><a class="anchor" href="#enabling_impersonation"></a>Enabling impersonation</h3>
+<div class="paragraph">
+<p>The impersonation feature has to be enabled in the configuration of the Content Repository Service using the following
+parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">commons:
+  security:
+    oauth2:
+      impersonation-enabled: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Only technical users can impersonate other users. To identify a technical user, the token has to contain the following
+claim. In Keycloak this must be configured in the OAuth2 client used by the project-specific service to authenticate.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"technical-user" : true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition to that, the technical user has to be granted the authority <code>can-impersonate</code> to be allowed to impersonate
+other users. In Keycloak this authority must be granted to the service account user of the OAuth2 client used by the service.</p>
+</div>
+<div class="paragraph">
+<p>Last, impersonation has to be enabled in the project-specific service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">commons:
+  security:
+    oauth2:
+      client:
+        auto-impersonate: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>auto-impersonate</code> setting will automatically use the original user&#8217;s token, if one is available. If no user token
+is available, for example, in a scheduled background task, the service will fall back to it&#8217;s technical user
+authentication.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="inheriting_service_authorities"><a class="anchor" href="#inheriting_service_authorities"></a>Inheriting service authorities</h3>
+<div class="paragraph">
+<p>By default, a request using impersonation will only get the authorities of the impersonated user. It is possible to
+inherit the service&#8217;s authorities to the impersonated request. The final authorities will be the sum of the user&#8217;s
+authorities and the service&#8217;s authorities. To enable authority inheritance, the technical user of the service must
+have the <code>impersonate-inherit-authorities</code> authority (in addition to <code>can-impersonate</code>).
+In Keycloak this authority must be granted to the service account user of the OAuth2 client used by the service.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="keycloak"><a class="anchor" href="#keycloak"></a>Keycloak</h2>
 <div class="sectionbody">
 <div class="paragraph">
