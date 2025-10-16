@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">Document Conversion Service {service-version}</div>
+<div id="toctitle">Document Conversion Service 9.0.6-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_about_document_conversion_service"><strong>About Document Conversion Service</strong></a></li>
 <li><a href="#_configuration"><strong>Configuration</strong></a>
@@ -53,7 +53,6 @@
 </div>
 </div>
 <div id="content">
-<div style="page-break-after: always;"></div>
 <div class="sect1">
 <h2 id="_about_document_conversion_service"><strong>About Document Conversion Service</strong></h2>
 <div class="sectionbody">
@@ -139,12 +138,13 @@ sourceType and targetType match the requests.</p>
 <div class="title">Example of a rendering configuration</div>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">rendering:
-  - sourceType: application/pdf
-    targetType: image/jpe?g
-    plugin: my-pdf-to-image-plugin
-  - sourceType: .*
-    targetType: .*
-    plugin: my-fallback-plugin</code></pre>
+  useCases:
+    - sourceType: application/pdf
+      targetType: image/jpe?g
+      plugin: my-pdf-to-image-plugin
+    - sourceType: .*
+      targetType: .*
+      plugin: my-fallback-plugin</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -256,6 +256,159 @@ of the service. The plugins will be registered automatically.</p>
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_oss">Plugins contained in document-conversion-plugins-oss</h4>
 <div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<div class="paragraph">
+<p>Merges pdf files.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
 <h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</h5>
 <div class="paragraph">
 <p>Extracts text by using Apache Tika.</p>
@@ -337,9 +490,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
 <div class="paragraph">
-<p>Renders TIF to Pdf using IText.</p>
+<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -357,14 +510,59 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>image/tiff</p>
+<p>application/pdf</p>
 </li>
 </ul>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftomultipagetiffrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToMultiPageTiffRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
 <p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
 </li>
 </ul>
 </div></div></td>
@@ -490,9 +688,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
 <div class="paragraph">
-<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
+<p>Renders TIF to Pdf using IText.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -507,85 +705,6 @@ of the service. The plugins will be registered automatically.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/xhtml+xml</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
-<div class="paragraph">
-<p>Merges pdf files.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftomultipagetiffrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToMultiPageTiffRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
@@ -593,129 +712,10 @@ of the service. The plugins will be registered automatically.</p>
 </li>
 </ul>
 </div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
 <p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>image/jpeg</p>
-</li>
-<li>
-<p>image/png</p>
-</li>
-<li>
-<p>image/gif</p>
-</li>
-<li>
-<p>image/tiff</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
-<div class="paragraph">
-<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-<li>
-<p>application/xml</p>
-</li>
-<li>
-<p>text/html</p>
-</li>
-<li>
-<p>application/msword</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
-</li>
-<li>
-<p>application/vnd.ms-excel</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
-</li>
-<li>
-<p>application/vnd.ms-powerpoint</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
-</li>
-<li>
-<p>application/epub+zip</p>
-</li>
-<li>
-<p>application/vnd.ms-outlook</p>
-</li>
-<li>
-<p>application/rtf</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.presentation</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.spreadsheet</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.text</p>
-</li>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>text/plain</p>
 </li>
 </ul>
 </div></div></td>
@@ -2009,7 +2009,7 @@ request.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-10-16 00:27:27 UTC
+Last updated 2025-10-16 08:48:28 UTC
 </div>
 </div>
 </body>
