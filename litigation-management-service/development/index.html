@@ -19,23 +19,23 @@
 <div id="toc" class="toc2">
 <div id="toctitle">Litigation Management Service 1.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
-<li><a href="#_installation">1. Installation</a>
+<li><a href="#_installation"><strong>Installation</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_access_rights">1.1. Access rights</a></li>
+<li><a href="#_access_rights">Access rights</a></li>
 </ul>
 </li>
-<li><a href="#_data_model">2. Data model</a></li>
-<li><a href="#_creating_type_definitions_with_litigation_management">3. Creating type definitions with litigation management</a>
+<li><a href="#_data_model"><strong>Data model</strong></a></li>
+<li><a href="#_creating_type_definitions"><strong>Creating type definitions</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_using_inheritance_for_litigation_management">3.1. Using inheritance for litigation management</a></li>
+<li><a href="#_using_inheritance_for_litigation_management">Using inheritance for litigation management</a></li>
 </ul>
 </li>
-<li><a href="#_usage">4. Usage</a>
+<li><a href="#_usage"><strong>Usage</strong></a>
 <ul class="sectlevel2">
-<li><a href="#_creating_a_legal_case">4.1. Creating a legal case</a></li>
-<li><a href="#_adding_and_removing_a_case_from_a_collection">4.2. Adding and removing a case from a collection</a></li>
-<li><a href="#_assigning_a_collection_to_an_entity">4.3. Assigning a collection to an entity</a></li>
-<li><a href="#_resolving_a_case">4.4. Resolving a case</a></li>
+<li><a href="#_creating_a_legal_case">Creating a legal case</a></li>
+<li><a href="#_adding_and_removing_a_case_from_a_collection">Adding and removing a case from a collection</a></li>
+<li><a href="#_assigning_a_collection_to_an_entity">Assigning a collection to an entity</a></li>
+<li><a href="#_resolving_a_case">Resolving a case</a></li>
 </ul>
 </li>
 </ul>
@@ -48,7 +48,7 @@
 <p>The Litigation Management Service manages the relation between entities in the Content Repository Service and legal cases.</p>
 </div>
 <div class="paragraph">
-<p>When an entity is relevant for a legal case, it must not be deleted until the case is resolved. The Content Repository
+<p>If an entity is relevant for a legal case, it must not be deleted until the case is resolved. The Content Repository
 Service provides the litigation-hold feature that prohibits deletion of entities in litigation-hold. The Litigation
 Management Service extends this feature by managing collections of legal cases that are related to one or more entities.
 Each entity related to a collection of legal cases will be put under litigation-hold until all cases in the collection
@@ -57,7 +57,7 @@ are resolved.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_installation">1. Installation</h2>
+<h2 id="_installation"><strong>Installation</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Litigation Management Service is an extension of the Content Repository Service. It consists of a standalone
@@ -67,17 +67,17 @@ of the Content Repository Service, including the required type definitions, is a
 <code>litigation-management-service-content-repository-service</code>.</p>
 </div>
 <div class="sect2">
-<h3 id="_access_rights">1.1. Access rights</h3>
+<h3 id="_access_rights">Access rights</h3>
 <div class="paragraph">
 <p>The Litigation Management Service uses impersonation to authenticate its requests to the Content Repository Service.
 The impersonation feature must be enabled in the Content Repository Service using the property:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">commons</span>:
-  <span class="key">security</span>:
-    <span class="key">oauth2</span>:
-      <span class="key">impersonation-enabled</span>: <span class="string"><span class="content">true</span></span></code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">commons:
+  security:
+    oauth2:
+      impersonation-enabled: true</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -118,7 +118,7 @@ authorities. These authorities must be assigned to the service account user of t
 </div>
 </div>
 <div class="sect1">
-<h2 id="_data_model">2. Data model</h2>
+<h2 id="_data_model"><strong>Data model</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following diagram shows a simplified view of the data model used by the Litigation Management Service.</p>
@@ -144,8 +144,11 @@ is reset to null.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_creating_type_definitions_with_litigation_management">3. Creating type definitions with litigation management</h2>
+<h2 id="_creating_type_definitions"><strong>Creating type definitions</strong></h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The following paragraphs describe how to create type definitions with litigation management.</p>
+</div>
 <div class="paragraph">
 <p>To be able to manage the relation of legal cases to entities in the Content Repository Service, the type definitions
 containing the entities must meet some requirements. The type definitions must:</p>
@@ -168,10 +171,10 @@ containing the entities must meet some requirements. The type definitions must:<
 <code>de.eitco.ecr.lms.types.EntityWithLitigationManagement</code> interface as shown in the following example:</p>
 </div>
 <div class="listingblock">
-<div class="title">defining a type definition with litigation manegement</div>
+<div class="title">Defining a type definition with litigation management</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.CONTAINER)
-<span class="directive">public</span> <span class="type">interface</span> <span class="class">TestRecord</span> <span class="directive">extends</span> EntityWithLitigationManagement {
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+public interface TestRecord extends EntityWithLitigationManagement {
 
 }</code></pre>
 </div>
@@ -180,85 +183,85 @@ containing the entities must meet some requirements. The type definitions must:<
 <p>To use the interface, add the following dependency to your types module:</p>
 </div>
 <div class="listingblock">
-<div class="title">maven dependency</div>
+<div class="title">Maven dependency</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>litigation-management-service-type-definitions<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>1.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
-<span class="tag">&lt;/dependency&gt;</span></code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
+    &lt;artifactId&gt;litigation-management-service-type-definitions&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_inheritance_for_litigation_management">3.1. Using inheritance for litigation management</h3>
+<h3 id="_using_inheritance_for_litigation_management">Using inheritance for litigation management</h3>
 <div class="paragraph">
-<p>The Litigation Mangement Service can make use of the inheritance feature of the Content Repository Service. The following
+<p>The Litigation Management Service can make use of the inheritance feature of the Content Repository Service. The following
 example shows a simple record scenario with records, registers and documents. When the record is assigned to a case
 collection, all registers and documents of the record will be put under litigation-hold automatically. Once all legal
-cases are resolved, the litigation hold will be removed from the entire record including it&#8217;s documents and registers.
+cases are resolved, the litigation hold will be removed from the entire record including its documents and registers.
 This is achieved by inheriting the case collection ID and the litigation hold flag from the record.</p>
 </div>
 <div class="listingblock">
-<div class="title">record type definition</div>
+<div class="title">Record type definition</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.CONTAINER)
-<span class="directive">public</span> <span class="type">interface</span> <span class="class">TestRecord</span> <span class="directive">extends</span> EntityWithLitigationManagement {
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+public interface TestRecord extends EntityWithLitigationManagement {
 
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">register type definition</div>
+<div class="title">Register type definition</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.CONTAINER)
-<span class="directive">public</span> <span class="type">interface</span> <span class="class">TestRegister</span> <span class="directive">extends</span> EntityWithLitigationManagement {
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+public interface TestRegister extends EntityWithLitigationManagement {
 
-    <span class="annotation">@ForeignKey</span>(target = TestRecord.class, targetProperty = <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@CascadeDelete</span>
+    @ForeignKey(target = TestRecord.class, targetProperty = "id")
+    @CascadeDelete
     ContainerId getRecordId();
 
-    <span class="type">void</span> setRecordId(ContainerId recordId);
+    void setRecordId(ContainerId recordId);
 
-    <span class="annotation">@SystemProperty</span>(value = SystemPropertyName.RETENTION_DATE)
-    <span class="annotation">@InheritedProperty</span>(foreignKeyPropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">record_id</span><span class="delimiter">&quot;</span></span>, sourcePropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">retention_date</span><span class="delimiter">&quot;</span></span>)
+    @SystemProperty(value = SystemPropertyName.RETENTION_DATE)
+    @InheritedProperty(foreignKeyPropertyName = "record_id", sourcePropertyName = "retention_date")
     ZonedDateTime getRetentionDate();
 
-    <span class="type">void</span> setRetentionDate(ZonedDateTime retentionDate);
+    void setRetentionDate(ZonedDateTime retentionDate);
 
-    <span class="annotation">@InheritedProperty</span>(foreignKeyPropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">record_id</span><span class="delimiter">&quot;</span></span>, sourcePropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">case_collection_id</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@Override</span>
+    @InheritedProperty(foreignKeyPropertyName = "record_id", sourcePropertyName = "case_collection_id")
+    @Override
     ContainerId getCaseCollectionId();
 
-    <span class="annotation">@InheritedProperty</span>(foreignKeyPropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">record_id</span><span class="delimiter">&quot;</span></span>, sourcePropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">litigation_hold</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@Override</span>
-    <span class="type">boolean</span> isLitigationHold();
+    @InheritedProperty(foreignKeyPropertyName = "record_id", sourcePropertyName = "litigation_hold")
+    @Override
+    boolean isLitigationHold();
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">document type definition</div>
+<div class="title">Document type definition</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.DOCUMENT)
-<span class="directive">public</span> <span class="type">interface</span> <span class="class">TestDocument</span> <span class="directive">extends</span> EntityWithLitigationManagement {
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.DOCUMENT)
+public interface TestDocument extends EntityWithLitigationManagement {
 
-    <span class="annotation">@ForeignKey</span>(target = TestRegister.class, targetProperty = <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@CascadeDelete</span>
+    @ForeignKey(target = TestRegister.class, targetProperty = "id")
+    @CascadeDelete
     ContainerId getRegisterId();
-    <span class="type">void</span> setRegisterId(ContainerId registerId);
+    void setRegisterId(ContainerId registerId);
 
-    <span class="annotation">@SystemProperty</span>(value = SystemPropertyName.RETENTION_DATE)
-    <span class="annotation">@InheritedProperty</span>(foreignKeyPropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">register_id</span><span class="delimiter">&quot;</span></span>, sourcePropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">retention_date</span><span class="delimiter">&quot;</span></span>)
+    @SystemProperty(value = SystemPropertyName.RETENTION_DATE)
+    @InheritedProperty(foreignKeyPropertyName = "register_id", sourcePropertyName = "retention_date")
     ZonedDateTime getRetentionDate();
 
-    <span class="type">void</span> setRetentionDate(ZonedDateTime retentionDate);
+    void setRetentionDate(ZonedDateTime retentionDate);
 
-    <span class="annotation">@InheritedProperty</span>(foreignKeyPropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">register_id</span><span class="delimiter">&quot;</span></span>, sourcePropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">case_collection_id</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@Override</span>
+    @InheritedProperty(foreignKeyPropertyName = "register_id", sourcePropertyName = "case_collection_id")
+    @Override
     ContainerId getCaseCollectionId();
 
-    <span class="annotation">@InheritedProperty</span>(foreignKeyPropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">register_id</span><span class="delimiter">&quot;</span></span>, sourcePropertyName = <span class="string"><span class="delimiter">&quot;</span><span class="content">litigation_hold</span><span class="delimiter">&quot;</span></span>)
-    <span class="annotation">@Override</span>
-    <span class="type">boolean</span> isLitigationHold();
+    @InheritedProperty(foreignKeyPropertyName = "register_id", sourcePropertyName = "litigation_hold")
+    @Override
+    boolean isLitigationHold();
 }</code></pre>
 </div>
 </div>
@@ -266,23 +269,23 @@ This is achieved by inheriting the case collection ID and the litigation hold fl
 </div>
 </div>
 <div class="sect1">
-<h2 id="_usage">4. Usage</h2>
+<h2 id="_usage"><strong>Usage</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following examples show the basic usage of the service&#8217;s API.</p>
 </div>
 <div class="sect2">
-<h3 id="_creating_a_legal_case">4.1. Creating a legal case</h3>
+<h3 id="_creating_a_legal_case">Creating a legal case</h3>
 <div class="paragraph">
 <p>Legal cases contain an optional external ID that can be used to link the case to another entity or system containing
 more information about the case and an optional description.</p>
 </div>
 <div class="listingblock">
-<div class="title">creating a legal case</div>
+<div class="title">Creating a legal case</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">CaseManagementResourceClient client = caseManagementResourceClientFactory.newClient();
-<span class="predefined-type">String</span> caseDesc = <span class="string"><span class="delimiter">&quot;</span><span class="content">test-case-</span><span class="delimiter">&quot;</span></span> + UUIDGenerator.randomUUID();
-CaseCreationResult result = client.createCase(<span class="keyword">new</span> CaseInput(caseDesc, externalId, <span class="predefined-constant">null</span>, <span class="predefined-constant">false</span>, <span class="predefined-constant">null</span>));</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">CaseManagementResourceClient client = caseManagementResourceClientFactory.newClient();
+String caseDesc = "test-case-" + UUIDGenerator.randomUUID();
+CaseCreationResult result = client.createCase(new CaseInput(caseDesc, externalId, null, false, null));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -312,64 +315,64 @@ CaseCreationResult result = client.createCase(<span class="keyword">new</span> C
 </div>
 </div>
 <div class="sect2">
-<h3 id="_adding_and_removing_a_case_from_a_collection">4.2. Adding and removing a case from a collection</h3>
+<h3 id="_adding_and_removing_a_case_from_a_collection">Adding and removing a case from a collection</h3>
 <div class="paragraph">
 <p>Cases can be added to and removed from collections.</p>
 </div>
 <div class="listingblock">
-<div class="title">adding a case to a collection</div>
+<div class="title">Adding a case to a collection</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">client.addCaseToCollection(caseId, collectionId);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">client.addCaseToCollection(caseId, collectionId);</code></pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">removing a case from a collection</div>
+<div class="title">Removing a case from a collection</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">client.removeCaseFromCollection(caseId, collectionId);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">client.removeCaseFromCollection(caseId, collectionId);</code></pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">removing a case from all collections</div>
+<div class="title">Removing a case from all collections</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">client.removeCaseFromAllCollections(caseId);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">client.removeCaseFromAllCollections(caseId);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When a collection is empty after the case was removed, it will be deleted. The litigation-hold flag of entities assigned
+<p>If a collection is empty after the case was removed, it will be deleted. The litigation-hold flag of entities assigned
 to this collection will be reset to null.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_assigning_a_collection_to_an_entity">4.3. Assigning a collection to an entity</h3>
+<h3 id="_assigning_a_collection_to_an_entity">Assigning a collection to an entity</h3>
 <div class="paragraph">
 <p>Assigning a collection (which will contain at least one legal case) to an entity causes the litigation-hold flag of
 the entity being set to true.</p>
 </div>
 <div class="listingblock">
-<div class="title">assigning a collection</div>
+<div class="title">Assigning a collection</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">testDocumentId = documentClient.getIdentifier();
+<pre class="highlight"><code class="language-java" data-lang="java">testDocumentId = documentClient.getIdentifier();
 
-EntityId entityId = <span class="keyword">new</span> EntityId(testDocumentId.value());
+EntityId entityId = new EntityId(testDocumentId.value());
 
 caseManagementResourceClientFactory.newClient().assignCollectionToEntity(testCollectionId, entityId);</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_resolving_a_case">4.4. Resolving a case</h3>
+<h3 id="_resolving_a_case">Resolving a case</h3>
 <div class="paragraph">
-<p>When a case is resolved, it is removed from all collections and deleted.</p>
+<p>If a case is resolved, it is removed from all collections and deleted.</p>
 </div>
 <div class="listingblock">
-<div class="title">resolving a case</div>
+<div class="title">Resolving a case</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">CaseManagementResourceClient caseManagementResourceClient = caseManagementResourceClientFactory.newClient();
+<pre class="highlight"><code class="language-java" data-lang="java">CaseManagementResourceClient caseManagementResourceClient = caseManagementResourceClientFactory.newClient();
 caseManagementResourceClient.resolveCase(assignedCaseId);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>When a collection is empty after the case was removed, it will be deleted. The litigation-hold flag of entities assigned
+<p>If a collection is empty after the case was removed, it will be deleted. The litigation-hold flag of entities assigned
 to this collection will be reset to null.</p>
 </div>
 </div>
@@ -378,97 +381,8 @@ to this collection will be reset to null.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-10-15 23:20:06 UTC
+Last updated 2025-10-16 09:25:15 UTC
 </div>
 </div>
-<style>
-/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
-pre.CodeRay{background:#f7f7f8}
-.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
-.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
-.CodeRay .line-numbers strong{color:#000}
-table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
-table.CodeRay td{vertical-align:top;line-height:inherit}
-table.CodeRay td.line-numbers{text-align:right}
-table.CodeRay td.code{padding:0 0 0 .75em}
-.CodeRay .debug{color:#fff !important;background:#000080 !important}
-.CodeRay .annotation{color:#007}
-.CodeRay .attribute-name{color:#000080}
-.CodeRay .attribute-value{color:#700}
-.CodeRay .binary{color:#509}
-.CodeRay .comment{color:#998;font-style:italic}
-.CodeRay .char{color:#04d}
-.CodeRay .char .content{color:#04d}
-.CodeRay .char .delimiter{color:#039}
-.CodeRay .class{color:#458;font-weight:bold}
-.CodeRay .complex{color:#a08}
-.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
-.CodeRay .color{color:#099}
-.CodeRay .class-variable{color:#369}
-.CodeRay .decorator{color:#b0b}
-.CodeRay .definition{color:#099}
-.CodeRay .delimiter{color:#000}
-.CodeRay .doc{color:#970}
-.CodeRay .doctype{color:#34b}
-.CodeRay .doc-string{color:#d42}
-.CodeRay .escape{color:#666}
-.CodeRay .entity{color:#800}
-.CodeRay .error{color:#808}
-.CodeRay .exception{color:inherit}
-.CodeRay .filename{color:#099}
-.CodeRay .function{color:#900;font-weight:bold}
-.CodeRay .global-variable{color:#008080}
-.CodeRay .hex{color:#058}
-.CodeRay .integer,.CodeRay .float{color:#099}
-.CodeRay .include{color:#555}
-.CodeRay .inline{color:#000}
-.CodeRay .inline .inline{background:#ccc}
-.CodeRay .inline .inline .inline{background:#bbb}
-.CodeRay .inline .inline-delimiter{color:#d14}
-.CodeRay .inline-delimiter{color:#d14}
-.CodeRay .important{color:#555;font-weight:bold}
-.CodeRay .interpreted{color:#b2b}
-.CodeRay .instance-variable{color:#008080}
-.CodeRay .label{color:#970}
-.CodeRay .local-variable{color:#963}
-.CodeRay .octal{color:#40e}
-.CodeRay .predefined{color:#369}
-.CodeRay .preprocessor{color:#579}
-.CodeRay .pseudo-class{color:#555}
-.CodeRay .directive{font-weight:bold}
-.CodeRay .type{font-weight:bold}
-.CodeRay .predefined-type{color:inherit}
-.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
-.CodeRay .key{color:#808}
-.CodeRay .key .delimiter{color:#606}
-.CodeRay .key .char{color:#80f}
-.CodeRay .value{color:#088}
-.CodeRay .regexp .delimiter{color:#808}
-.CodeRay .regexp .content{color:#808}
-.CodeRay .regexp .modifier{color:#808}
-.CodeRay .regexp .char{color:#d14}
-.CodeRay .regexp .function{color:#404;font-weight:bold}
-.CodeRay .string{color:#d20}
-.CodeRay .string .string .string{background:#ffd0d0}
-.CodeRay .string .content{color:#d14}
-.CodeRay .string .char{color:#d14}
-.CodeRay .string .delimiter{color:#d14}
-.CodeRay .shell{color:#d14}
-.CodeRay .shell .delimiter{color:#d14}
-.CodeRay .symbol{color:#990073}
-.CodeRay .symbol .content{color:#a60}
-.CodeRay .symbol .delimiter{color:#630}
-.CodeRay .tag{color:#008080}
-.CodeRay .tag-special{color:#d70}
-.CodeRay .variable{color:#036}
-.CodeRay .insert{background:#afa}
-.CodeRay .delete{background:#faa}
-.CodeRay .change{color:#aaf;background:#007}
-.CodeRay .head{color:#f8f;background:#505}
-.CodeRay .insert .insert{color:#080}
-.CodeRay .delete .delete{color:#800}
-.CodeRay .change .change{color:#66f}
-.CodeRay .head .head{color:#f4f}
-</style>
 </body>
 </html>
