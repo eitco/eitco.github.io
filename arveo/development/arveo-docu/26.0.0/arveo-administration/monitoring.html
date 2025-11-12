@@ -873,21 +873,11 @@ a Collector instance is running on the same machine:</p>
 <div class="paragraph">
 <p>The following diagram shows the basic setup:</p>
 </div>
-<div class="literalblock kroki-error">
-<div class="title">Open Telemetry Collector</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre> +------------+               +--------+-----+    metrics   +---------------+
- |   Service  |               |              |-------------&gt;|   Prometheus  |
- |            |    OTLP       |              |              +---------------+
- |            |--------------&gt;|   Collector  |
- | Otel agent |               |              |    logs      +---------------+
- |            |               |              |-------------&gt;|     Loki      |
- +---+--------+               +--------------+              +---------------+
-                                      |
-                                      |      traces         +---------------+
-                                      +--------------------&gt;|    Jaeger     |
-                                                            +---------------+</pre>
+<img src="_images/42dc8e203214d21599acc99e4e32444dc2502441.svg" alt="relation-type-model">
 </div>
+<div class="title">Figure 1. Open Telemetry Collector</div>
 </div>
 <div class="paragraph">
 <p>The required configuration properties for the Collector to forward collected data to observability backends is described
