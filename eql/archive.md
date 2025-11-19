@@ -7,6 +7,7 @@ Here you can find documentation for any version of EQL deployed so far
  * [8.1.1](archive/8.1.1)
  * [8.1.0](archive/8.1.0)
  * [8.0.0](archive/8.0.0)
+ * [7.0.3](archive/7.0.3)
  * [7.0.2](archive/7.0.2)
  * [7.0.1](archive/7.0.1)
  * [7.0.0](archive/7.0.0)
