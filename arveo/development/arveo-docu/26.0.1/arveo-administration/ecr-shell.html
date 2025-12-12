@@ -407,7 +407,72 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>The arveo shell is an interactive command line application enabling arveo administrators to execute
-simple commands and queries on an arveo server. It comes as a jar named <code>ecr-shell.jar</code>. To run it simply call</p>
+simple commands and queries on an arveo server.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="running"><a class="anchor" href="#running"></a>Running</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A few basic configuration options have to be set for the arveo shell to be able to connect to the arveo
+service. All configuration options can be stored in a configuration file called <code>application.yaml</code> placed in the same
+directory as the shell&#8217;s executable jar file. Alternatively, configuration options can be passed as command line
+arguments.</p>
+</div>
+<div class="paragraph">
+<p>When the arveo shell is not running within a Kubernetes environment, the arveo service instance to
+connect to must be configured manually:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            content-repository-service:
+              - uri: "http://&lt;server&gt;:&lt;port&gt;" <i class="conum" data-value="1"></i><b>(1)</b>
+                metadata:
+                  api-version: 1.0.0
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-password: <i class="conum" data-value="2"></i><b>(2)</b>
+            provider: keycloak
+            client-id: "testclient"
+            client-secret: "&lt;secret&gt;"
+            authorization-grant-type: "password"
+            scope: "openid"
+          keycloak-device-code: <i class="conum" data-value="3"></i><b>(3)</b>
+            provider: keycloak
+            client-id: "testclient"
+            client-secret: "&lt;secret&gt;"
+            authorization-grant-type: "urn:ietf:params:oauth:grant-type:device_code"
+            scope: "openid"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>HTTP (or HTTPS) URL of the Content Repository Service</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Example client configuration for the password authentication method</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Example client configuration for the device code (default) authentication method</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The arveo shell is delivered as an executable Java application named <code>ecr-shell.jar</code>. To run it simply call</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -474,10 +539,6 @@ the shell should display information like this:</p>
 <pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;help
 AVAILABLE COMMANDS
 
-Authentication Command
-       logout: discards authentication to ecr system
-       login: authenticates to ecr system
-
 Built-In Commands
        help: Display help about available commands
        stacktrace: Display the full stacktrace of the last error.
@@ -487,17 +548,46 @@ Built-In Commands
        version: Show version info
        script: Read and execute commands from a file.
 
-Deletion Command
-       purge: Purges all entities of a given type that meet a constraint. If no constraint is given ALL entities will be purged.
-       delete: Deletes all entities of a given type that meet a constraint. Ff no constraint is given ALL entities will be deleted. If the type supports the recycle bin, the entities are moved to the recycle bin by default.
+authentication
+       logout: discards authentication to ecr system
+       login: authenticates to ecr system
 
-Import Command
+deletion
+       delete all: Deletes all entities of a given type. If the type supports the recycle bin, the entities are moved to the recycle bin by default.
+       purge: Purges all entities of a given type that meet a constraint.
+       delete: Deletes all entities of a given type that meet a constraint. If the type supports the recycle bin, the entities are moved to the recycle bin by default.
+       purge all: Purges all entities of a given type.
+
+download
+       download: Downloads content of the current version of a document
+       list-content-element-names: Lists the names of the content elements of a document
+       download-version: Downloads content of a specific version of a document
+       list-version-content-element-names: Lists the names of the content elements of a version of a document
+
+import
        analyze-import: checks ecr import json files for errors and creates their import plan
        import: imports ecr entities from json files
 
-Types Command
-       types, list-types: lists all types in the system
+jms-listeners
+       list-listeners: lists all JMS listeners in the system
+       disable-listener: disables a JMS listener
+       enable-listener: enables a JMS listener
+
+query
+       select: Queries the entities from a given type that meet a given constraint.
+
+scheduler
+       list-jobs, jobs: lists all jobs in the system
+       list-triggers, triggers: lists all job triggers in the system
+       trigger-job, trigger: triggers the job with the given name
+
+types
+       list-types, types: lists all types in the system
        type: inspects a type
+
+update
+       update-entity: Updates a single entity.
+       update: Updates multiple entities.
 
 
 
@@ -573,201 +663,83 @@ logged in as [user] with user id [numeric-user-id]</code></pre>
 <p>Depending on the configured authorization method, you will have to enter username or password or authorize the shell
 application by entering a code in the device authorization page of the IDP.</p>
 </div>
-<div class="paragraph">
-<p>So far the shell was able to contact the arveo system and authenticate you. Let us execute a simple query:</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To be able to use the default device code authentication method, the configured OAuth2 client in the IDP must support
+the OAuth 2.0 Device Authorization Grant.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="types"><a class="anchor" href="#types"></a>Types</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>In an arveo system there are several type registered. They define the customized scenario and are the core
-element of an arveo system. For more on types refer to the arveo developer documentation.</p>
-</div>
-<div class="paragraph">
-<p>We can get the names of the types registered by typing</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;types</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will list all available types in the system, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;types
-medical_record_patient_scenario_metadata
-folder_with_default_retention
-invoice
-child_entity
-named_meta_named_entity
-customer
-ecr:&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="configuration"><a class="anchor" href="#configuration"></a>Configuration</h2>
+<h2 id="commands"><a class="anchor" href="#commands"></a>Commands</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="configuration_properties"><a class="anchor" href="#configuration_properties"></a>Configuration Properties</h3>
-<div class="sect3">
-<h4 id="_ecr-shell"><a class="anchor" href="#_ecr-shell"></a>ecr-shell</h4>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">authorization-method</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AuthorizationMethod</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The authorization method to use. Possible values are PASSWORD, DEVICE_CODE and CLIENT_CREDENTIALS. Requires a configured OAuth2 client registration with a matching grant type.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">imports.directory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">File</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Optional default directory that contains the json files to import. Will be ignored when the directory option of the import command is used.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">imports.exclude</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to exclude in the import. Ignored when the exclude option of the import command is used.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">imports.include</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to include in the import. Ignored when the include option of the import command is used.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">output.date-format</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The date format to use when returning date fields from queries - defaults to ISO date.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">output.date-time-format</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The date time format to use when returning date time fields from queries - defaults to ISO date time.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">output.time-format</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time format to use when returning time fields from queries - defaults to ISO time.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">query.batch-size-limit</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default limit for the number of entities in a batch operation.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">query.page-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The default size of pages returned in a query.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>80</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.eager-loading</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the cache used for the type definitions will be eagerly populated.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-</tr>
-</tbody>
-</table>
+<h3 id="deletion"><a class="anchor" href="#deletion"></a>Deletion</h3>
 <div class="paragraph">
-<p>Since arveo shell uses spring to be configured, you have several possibilities to
-<a href="https://docs.spring.io/spring-boot/reference/features/external-config.html#page-title">configure properties</a> of the shell. You can specify properties as java system properties:</p>
+<p>The commands <code>delete</code>, <code>purge</code>, <code>delete all</code> and <code>purge all</code> can be used to delete entities from the archive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>delete all</code>: Deletes all entities of a given type. If the type supports the recycle bin, the entities are moved to the recycle bin by default.</p>
+</li>
+<li>
+<p><code>purge</code>: Purges all entities of a given type that meet a constraint.</p>
+</li>
+<li>
+<p><code>delete</code>: Deletes all entities of a given type that meet a constraint. If the type supports the recycle bin, the entities are moved to the recycle bin by default.</p>
+</li>
+<li>
+<p><code>purge all</code>: Purges all entities of a given type.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
+<div class="title">example</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">java -Dmy.property=myValue -jar ecr-shell-{arveo-version}.jar</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;delete --type simple_invoice --constraint "invoice_number = '2025#001'"</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<code>-Dmy.property=myValue</code> must be placed <strong>before</strong> <code>-jar</code>
-</td>
-</tr>
-</table>
 </div>
+<div class="sect2">
+<h3 id="download"><a class="anchor" href="#download"></a>Download</h3>
 <div class="paragraph">
-<p>Properties may be specified as program arguments:</p>
+<p>The <code>download</code> command downloads binary content of a document.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">java -jar ecr-shell-{arveo-version}.jar --my.property=myValue</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-26.0.1-SNAPSHOT.jar</code>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Additionally, properties can be written to a property or yaml file named <code>application.properties</code> or <code>application.yaml</code>
-respectively:</p>
-</div>
-<div class="paragraph">
-<p><code>application.yaml</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">my:
-  property: myValue</code></pre>
+<div class="ulist">
+<ul>
+<li>
+<p><code>download</code>: Downloads content of the current version of a document</p>
+</li>
+<li>
+<p><code>list-content-element-names</code>: Lists the names of the content elements of a document</p>
+</li>
+<li>
+<p><code>download-version</code>: Downloads content of a specific version of a document</p>
+</li>
+<li>
+<p><code>list-version-content-element-names</code>: Lists the names of the content elements of a version of a document</p>
+</li>
+</ul>
 </div>
 </div>
-<div class="paragraph">
-<p>arveo shell does use spring cloud config, so it may also be configured using the eitco config service. Its
-<code>spring.application.name</code> is <code>ecr-shell</code> so you can add the file above renamed to <code>ecr-shell.yaml</code> to your config
-service. arveo shell will automatically get the config servers url using the eitco service registry.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="import"><a class="anchor" href="#import"></a>Import</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="import"><a class="anchor" href="#import"></a>Import</h3>
 <div class="paragraph">
 <p>The import command scans a folder recursively for import descriptions and creates new arveo entities depending on this
 description. By default, the current folder is scanned and only <code>.json</code> files are read. This behaviour can be changed using the
 command line parameters <code>directory</code>, <code>include</code> and <code>exclude</code>.</p>
 </div>
-<div class="sect2">
-<h3 id="import_description_format"><a class="anchor" href="#import_description_format"></a>Import description format</h3>
+<div class="sect3">
+<h4 id="import_description_format"><a class="anchor" href="#import_description_format"></a>Import description format</h4>
 <div class="paragraph">
 <p>The import description is written in json - it is an object with one property <code>imports</code> which is a list:</p>
 </div>
@@ -877,8 +849,8 @@ attribute as specified by the type. Depending on the type the value must be spec
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="documents_with_content"><a class="anchor" href="#documents_with_content"></a>Documents with content</h3>
+<div class="sect3">
+<h4 id="documents_with_content"><a class="anchor" href="#documents_with_content"></a>Documents with content</h4>
 <div class="paragraph">
 <p>In arveo entities can be documents. This means that they have binary content attached. Content elements in
 arveo have a name defined by the type of the entity. Content can be given two ways: First using the property
@@ -930,8 +902,8 @@ directory of the shell. Alternatively, the url could also be an http(s) or data 
 <p>In this case the name of the content element is specified since only one content element exists.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="upsert"><a class="anchor" href="#upsert"></a>Upsert</h3>
+<div class="sect3">
+<h4 id="upsert"><a class="anchor" href="#upsert"></a>Upsert</h4>
 <div class="paragraph">
 <p>Sometimes it is required to create a new entity - but only if it does not exist yet. Should it exist it should only be
 updated. In such a situation a unique attribute is required to identify the entity. If such an attribute exists it can
@@ -976,8 +948,8 @@ be specified using the <code>collisionCheckAttribute</code> property:</p>
 "the_file" already exists, no new entity is created, but the entity is updated with the given properties and content instead.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="related_entities"><a class="anchor" href="#related_entities"></a>Related entities</h3>
+<div class="sect3">
+<h4 id="related_entities"><a class="anchor" href="#related_entities"></a>Related entities</h4>
 <div class="paragraph">
 <p>In some cases it is required to import several entities that relate to each other using foreign keys. In this case it
 is possible to refer to the id of other imported entities in integer attributes using the <code>symbolicName</code> property:</p>
@@ -1024,10 +996,112 @@ it will not change the order of the entities.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="jms_listeners"><a class="anchor" href="#jms_listeners"></a>JMS Listeners</h3>
+<div class="paragraph">
+<p>The JMS listeners can be used to list, enable or disable JMS listeners.</p>
 </div>
-<div class="sect1">
-<h2 id="update_command"><a class="anchor" href="#update_command"></a>Update command</h2>
-<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These commands require administrator privileges.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list-listeners</code>: lists all JMS listeners in the system</p>
+</li>
+<li>
+<p><code>disable-listener</code>: disables a JMS listener</p>
+</li>
+<li>
+<p><code>enable-listener</code>: enables a JMS listener</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="query"><a class="anchor" href="#query"></a>Query</h3>
+<div class="paragraph">
+<p>The <code>select</code> command can be used to search for entities in the archive.</p>
+</div>
+<div class="listingblock">
+<div class="title">example</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">select --from simple_invoice --where "invoice_number = '2025#001'"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="scheduler"><a class="anchor" href="#scheduler"></a>Scheduler</h3>
+<div class="paragraph">
+<p>The scheduler commands offer a means to manage the internal job scheduler of the Content Repository Service.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These commands require administrator privileges.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list-jobs</code>, <code>jobs</code>: lists all jobs in the system</p>
+</li>
+<li>
+<p><code>list-triggers</code>, <code>triggers</code>: lists all job triggers in the system</p>
+</li>
+<li>
+<p><code>trigger-job</code>, <code>trigger</code>: triggers the job with the given name</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="types"><a class="anchor" href="#types"></a>Types</h3>
+<div class="paragraph">
+<p>In an arveo system there are several type registered. They define the customized scenario and are the core
+element of an arveo system. For more on types refer to the arveo developer documentation.</p>
+</div>
+<div class="paragraph">
+<p>We can get the names of the types registered by typing</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;types</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will list all available types in the system, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;types
+medical_record_patient_scenario_metadata
+folder_with_default_retention
+invoice
+child_entity
+named_meta_named_entity
+customer
+ecr:&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="update_command"><a class="anchor" href="#update_command"></a>Update command</h3>
 <div class="paragraph">
 <p>The update command can be used to update one or multiple entities. The <code>update</code> command updates multiple entities
 identified by a selector, whereas the <code>update-entity</code> command updates a single entity identified by its ID.</p>
@@ -1159,6 +1233,7 @@ Updating the binary content of documents is not yet supported.
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
 <h2 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a>Troubleshooting</h2>
 <div class="sectionbody">
@@ -1214,6 +1289,154 @@ add the following to your shell&#8217;s configuration:</p>
 <p>This config is adapted to the most common scenario where keycloak is used as authentication service. You will need to
 get the correct client-id and client-secret from the arveo system configuration. In the most convenient way
 this is already configured in the eitco config service.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration"><a class="anchor" href="#configuration"></a>Configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="configuration_properties"><a class="anchor" href="#configuration_properties"></a>Configuration Properties</h3>
+<div class="sect3">
+<h4 id="_ecr-shell"><a class="anchor" href="#_ecr-shell"></a>ecr-shell</h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">authorization-method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AuthorizationMethod</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The authorization method to use. Possible values are PASSWORD, DEVICE_CODE and CLIENT_CREDENTIALS. Requires a configured OAuth2 client registration with a matching grant type.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>device-code</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.directory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional default directory that contains the json files to import. Will be ignored when the directory option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.exclude</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to exclude in the import. Ignored when the exclude option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to include in the import. Ignored when the include option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output.date-format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date format to use when returning date fields from queries - defaults to ISO date.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output.date-time-format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date time format to use when returning date time fields from queries - defaults to ISO date time.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output.time-format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time format to use when returning time fields from queries - defaults to ISO time.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">query.batch-size-limit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default limit for the number of entities in a batch operation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">query.page-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default size of pages returned in a query.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>80</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.eager-loading</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the cache used for the type definitions will be eagerly populated.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Since arveo shell uses spring to be configured, you have several possibilities to
+<a href="https://docs.spring.io/spring-boot/reference/features/external-config.html#page-title">configure properties</a> of the shell. You can specify properties as java system properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">java -Dmy.property=myValue -jar ecr-shell-{arveo-version}.jar</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>-Dmy.property=myValue</code> must be placed <strong>before</strong> <code>-jar</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Properties may be specified as program arguments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">java -jar ecr-shell-{arveo-version}.jar --my.property=myValue</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-26.0.1-SNAPSHOT.jar</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Additionally, properties can be written to a property or yaml file named <code>application.properties</code> or <code>application.yaml</code>
+respectively:</p>
+</div>
+<div class="paragraph">
+<p><code>application.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">my:
+  property: myValue</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>arveo shell does use spring cloud config, so it may also be configured using the eitco config service. Its
+<code>spring.application.name</code> is <code>ecr-shell</code> so you can add the file above renamed to <code>ecr-shell.yaml</code> to your config
+service. arveo shell will automatically get the config servers url using the eitco service registry.</p>
+</div>
 </div>
 </div>
 </div>
