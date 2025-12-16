@@ -1,0 +1,22 @@
+<head>
+    <meta property="symbolicVersion" content="25-x-x" />
+    <meta property="numericVersion" content="25.1.4" />
+</head>
+<body>
+<script>
+    var symbolicVersion = document.head.querySelector("[property~=symbolicVersion][content]").content;
+    var numericVersion = document.head.querySelector("[property~=numericVersion][content]").content;
+    var targetPage = "";
+    if(location.hash === "#arveo-getting-started"){
+        targetPage = "arveo-getting-started/getting-started.html";
+    }else{
+        targetPage = "index.html";
+    }
+
+    if(symbolicVersion.includes("SNAPSHOT")){
+        window.location.replace("https://eitco.github.io/arveo/development/arveo-docu/"+numericVersion+"/"+targetPage);
+    }else{
+        window.location.replace("https://eitco.github.io/arveo/"+ symbolicVersion +"/arveo-docu/"+numericVersion+"/"+targetPage);
+    }
+</script>
+</body>
