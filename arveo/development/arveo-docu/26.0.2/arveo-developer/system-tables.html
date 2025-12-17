@@ -170,7 +170,7 @@
     <a class="nav-link" href="../arveo-administration/jobs.html">System jobs</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../arveo-administration/vault.html">Using Hashicorp Vault</a>
+    <a class="nav-link" href="../arveo-administration/vault.html">Using Hashicorp Vault / OpenBao</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../commons/configuration-properties.html">Configuration Properties</a>
@@ -428,7 +428,7 @@ used:</p>
 </div>
 <div class="imageblock kroki">
 <div class="content">
-<img src="_images/b3599a974f80c06ef20fc206fe0309964f01960f.svg" alt="type-system-tables">
+<img src="_images/d2cea8fd5a1650eccfb8075a1361bbae5ad22d32.svg" alt="type-system-tables">
 </div>
 <div class="title">Figure 1. ERD of type system tables</div>
 </div>
@@ -466,6 +466,11 @@ used:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type_name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the type definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ecr_version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version of the Content Repository Service that created the tables for the type definition</p></td>
 </tr>
 </tbody>
 </table>
@@ -505,9 +510,14 @@ used:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage profile used by the content element</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ce_store_json</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ce_fulltext</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the content element uses the JSON field or not</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether fulltext extraction is enabled for the content element or not</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ce_fulltext_storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage type of the extracted fulltext data</p></td>
 </tr>
 </tbody>
 </table>
@@ -614,67 +624,6 @@ parent- and child-relationships to allow fast database queries in the tree.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="recovery_table"><a class="anchor" href="#recovery_table"></a>Recovery table</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The recovery table <em>ecr_recovery</em> is used for the <a href="../arveo-general/data-deletion.html#_recovery_log" class="xref page">recovery</a> feature.</p>
-</div>
-<div class="imageblock kroki">
-<div class="content">
-<img src="_images/6e7397513b1f0f6f597483ff5b86e5b27797740f.svg" alt="ecr-recovery-table">
-</div>
-<div class="title">Figure 3. ERD of ecr_recovery</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Columns of <em>ecr_recovery</em></caption>
-<colgroup>
-<col style="width: 20%;">
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">deleted_date</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Date and time at which the entity was deleted</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">entity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">jsonb</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A JSON representation of the deleted entity</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">entity_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the entity</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">keep_until</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The date and time until which to keep the entity in the recovery table</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the type definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The version ID of the deleted entity</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect1">
 <h2 id="keystore_tables"><a class="anchor" href="#keystore_tables"></a>Keystore tables</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -687,7 +636,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <div class="content">
 <img src="_images/8da1ef57823993117387e8cffa24bb6a4c68dd99.svg" alt="ecr-keystore-tables">
 </div>
-<div class="title">Figure 4. ERD of keystore tables</div>
+<div class="title">Figure 3. ERD of keystore tables</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Columns of ecr_keys_&lt;profile&gt;</caption>
