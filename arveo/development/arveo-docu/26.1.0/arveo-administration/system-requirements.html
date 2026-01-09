@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>System requirements :: arveo Documentation</title>
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/26.1.0/arveo-administration/system-requirements.html">
-    <link rel="prev" href="deployment-options.html">
+    <link rel="prev" href="installation.html">
     <link rel="next" href="authentication-oauth2.html">
     <meta name="generator" content="Antora 3.2.0-alpha.11">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
@@ -127,9 +127,6 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="installation.html">Installation</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="deployment-options.html">Deployment options</a>
-  </li>
   <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="system-requirements.html">System requirements</a>
   </li>
@@ -403,36 +400,10 @@
 </aside>
 <article class="doc">
 <h1 class="page">System requirements</h1>
-<div class="sect1">
-<h2 id="general_prerequisites"><a class="anchor" href="#general_prerequisites"></a>General prerequisites</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="firewall"><a class="anchor" href="#firewall"></a>Firewall</h3>
-<div class="paragraph">
-<p>Some firewall permissions are required. The IP addresses and the ports are customer-specific. In order to notify the provider of this, the customer must fill out the form customer-specific information.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="network_access"><a class="anchor" href="#network_access"></a>Network Access</h3>
-<div class="paragraph">
-<p>SSH access from the Eitco network to all customer-specific systems (including server) is required so that the installation can be carried out. Access to the official Ubuntu package sources is required. This is done either in the form of direct access via the Internet or by providing a local copy of the corresponding repository.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="reference_integration_system"><a class="anchor" href="#reference_integration_system"></a>Reference Integration System</h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>A reference system (in the form of a VM or similar) is required to test the system. There must be the same setup as on the customer client systems (i.e. the same web browser, with the same settings, etc). In addition, a terminal / RDP access is to be provided so that Eitco can test the client installation.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="web_browser"><a class="anchor" href="#web_browser"></a>Web browser</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>For the administration user interfaces the following web browsers are supported: Safari, Google Chrome, Microsoft Edge, Mozilla Firefox, each in the current version.</p>
+<p>This chapter describes the system requirements for an on premise installation.</p>
 </div>
 </div>
 </div>
@@ -442,11 +413,13 @@
 <div class="paragraph">
 <p>For the installation of the product, certain requirements for the hardware, software and infrastructure to be provided
 must be met.
-In a typical cloud environment each <em>arveo</em> service is deployed as a containerized application and is hosted and scaled by a cloud operating system.
-However, a different setup can be used, depending on the customer infrastructure and the load of the system (see <a href="deployment-options.html" class="xref page">Deployment Options</a>)</p>
+In a typical cloud environment each <em>arveo</em> service is deployed as a containerized application and is hosted
+and scaled by a cloud operating system. However, a different setup can be used, depending on the customer infrastructure
+and the load of the system.</p>
 </div>
 <div class="paragraph">
-<p>The following chapter describes the minimum CPU and RAM requirements of each <em>arveo</em> service in a production environment.</p>
+<p>The following chapter describes the minimum CPU and RAM requirements of each <em>arveo</em> service in a production
+environment.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Content services requirements</caption>
@@ -464,22 +437,22 @@ However, a different setup can be used, depending on the customer infrastructure
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Document Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content Repository Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4 x&gt; 2 GHz</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 32 GB</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Registry Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 512 MB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 128 MB</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Config Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 512 MB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 128 MB</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service (optional)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 512 MB</p></td>
 </tr>
@@ -493,11 +466,6 @@ However, a different setup can be used, depending on the customer infrastructure
 <td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 2 GB</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Federation Service (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1x &gt; 2 GHz</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 2 GB</p></td>
-</tr>
 </tbody>
 </table>
 <div class="admonitionblock warning">
@@ -507,8 +475,9 @@ However, a different setup can be used, depending on the customer infrastructure
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-The number of started services for each service group and the assigned CPU and RAM depends very much on the load and the number of documents and objects in the database. You should always monitor the system and scale up or down on demand.
-Especially service like document conversion or enterprise integration service can produce heavy load and require a lot of containers consuming RAM and CPU.
+The number of started services for each service group and the assigned CPU and RAM depends very much on the load and the
+number of documents and objects in the database. You should always monitor the system and scale up or down on demand.
+Especially services like the Document Conversion Service can produce heavy load and require a lot of containers consuming RAM and CPU.
 </td>
 </tr>
 </table>
@@ -532,15 +501,13 @@ and each service requires: &lt; 1 CPU, 256 MB for all services.
 <h2 id="typical_non_containerized_installation"><a class="anchor" href="#typical_non_containerized_installation"></a>Typical Non-Containerized Installation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Assuming that the installation is performed as spring boot services we recommend to set up a minimum of 3 machines. The database and the document service carry the highest load and should be deployed on separate machines. All other services and 3rd party services can run on one OS instance. Some services like Archive Link, Document Conversion may consume high CPU and RAM and can make it necessary to outsource them to separate machines,</p>
+<p>Assuming that the installation is performed as spring boot services we recommend to set up a minimum of 3 machines. The
+database and the Content Repository Service carry the highest load and should be deployed on separate machines. All other
+services and 3rd party services can run on one OS instance. Some services like Archive Link and the  Document Conversion
+Service may consume high CPU and RAM and can make it necessary to outsource them to separate machines.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>System machine 1 - <strong>database</strong>. The PostgreSQL database is installed here.</p>
-</li>
-</ul>
-</div>
+<div class="sect2">
+<h3 id="system_machine_1_database_the_postgresql_database_is_installed_here"><a class="anchor" href="#system_machine_1_database_the_postgresql_database_is_installed_here"></a>System machine 1 - Database. The PostgreSQL database is installed here.</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Requirements for the database machine</caption>
 <colgroup>
@@ -585,13 +552,9 @@ of the PostgreSQL database may be installed</p></td>
 </tr>
 </tbody>
 </table>
-<div class="ulist">
-<ul>
-<li>
-<p>System machine 2 - Document Service is installed here.</p>
-</li>
-</ul>
 </div>
+<div class="sect2">
+<h3 id="system_machine_2_content_repository_service_is_installed_here"><a class="anchor" href="#system_machine_2_content_repository_service_is_installed_here"></a>System machine 2 - Content Repository Service is installed here.</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Requirements for the <em>arveo</em> machine</caption>
 <colgroup>
@@ -639,18 +602,15 @@ based distribution, for example a current LTS version of Ubuntu</p></td>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The storage is meant for storing the <em>arveo</em> content objects of type <em>Document</em>, meaning binary content. All metadata and system properties are stored in the database, see System machine 1 above.
+The storage is meant for storing the <em>arveo</em> content objects of type <em>Document</em>, meaning binary content.
+All metadata and system properties are stored in the database, see System machine 1 above.
 </td>
 </tr>
 </table>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>System machine 3 - Here all other services of <em>arveo</em> are installed: see <a href="../arveo-general/content-services.html#_content__services" class="xref page"><strong>Content Services</strong></a>, <a href="../arveo-general/content-services.html#_3rd_party_services" class="xref page"><strong>3rd party services</strong></a></p>
-</li>
-</ul>
 </div>
+<div class="sect2">
+<h3 id="system_machine_3_here_all_other_services_of_arveo_are_installed_see_content_services_3rd_party_services"><a class="anchor" href="#system_machine_3_here_all_other_services_of_arveo_are_installed_see_content_services_3rd_party_services"></a>System machine 3 - Here all other services of <em>arveo</em> are installed: see <a href="../arveo-general/content-services.html#_content__services" class="xref page"><strong>Content Services</strong></a>, <a href="../arveo-general/content-services.html#_3rd_party_services" class="xref page"><strong>3rd party services</strong></a></h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Requirements for the Services machine</caption>
 <colgroup>
@@ -698,14 +658,15 @@ the same specification and a similar data set as the original system.
 </table>
 </div>
 <div class="paragraph">
-<p>For the <em>arveo</em> services 21 is required. All the other recommendations listed above are
+<p>For the <em>arveo</em> services Java 21 is required. All the other recommendations listed above are
 non-binding, but they have proven to work well. In some cases, other recommendations can be made, according to your
 individual project setup as well as the requirements of the project.</p>
 </div>
 </div>
 </div>
+</div>
 <nav class="pagination">
-  <span class="prev"><a href="deployment-options.html">Deployment options</a></span>
+  <span class="prev"><a href="installation.html">Installation</a></span>
   <span class="next"><a href="authentication-oauth2.html">OAuth Authentication</a></span>
 </nav>
 </article>

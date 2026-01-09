@@ -6,7 +6,7 @@
     <title>Installation :: arveo Documentation</title>
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/26.1.0/arveo-administration/installation.html">
     <link rel="prev" href="../arveo-getting-started/getting-started.html">
-    <link rel="next" href="deployment-options.html">
+    <link rel="next" href="system-requirements.html">
     <meta name="generator" content="Antora 3.2.0-alpha.11">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
@@ -127,9 +127,6 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="installation.html">Installation</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="deployment-options.html">Deployment options</a>
-  </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="system-requirements.html">System requirements</a>
   </li>
@@ -403,176 +400,159 @@
 <article class="doc">
 <h1 class="page">Installation</h1>
 <div class="sect1">
-<h2 id="general_concept"><a class="anchor" href="#general_concept"></a>General concept</h2>
+<h2 id="deployment_options"><a class="anchor" href="#deployment_options"></a>Deployment options</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>These instructions describe the installation procedure, the installation content and the items required for commissioning the product.
-We recommend controlling the rollout of the <em>arveo</em> services by a continuous integration process that provides all artefact required for the deployment of the required content services and your web solution and integrations.</p>
+<p><em>arveo</em> consists of several stateless services that allow <em>arveo</em> to automatically scale horizontally.
+Customers have the choice between an on-premise, cloud or hybrid installation.</p>
 </div>
 <div class="paragraph">
-<p>Depending on the underlying platform, deployment takes place via binary service artifacts that are deployed on pre-installed VMs or via containerized applications that are made available in the host cloud system.</p>
+<p>The best installation method and the actual steps necessary to set up the system are determined individually for each
+project.</p>
+</div>
+<div class="paragraph">
+<p>The deployment may be done as a:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Docker images (for the <em>arveo</em> services): A Docker image is a template that contains a set of instructions for
+creating a container. Several containers can be started from one image;</p>
+</li>
+<li>
+<p>Spring Boot application: Deployed as a self running service using an embedded tomcat servlet container;</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="on_premise_installation_by_eitco"><a class="anchor" href="#on_premise_installation_by_eitco"></a>On premise installation By Eitco</h2>
+<h2 id="eitco_cloud_stack"><a class="anchor" href="#eitco_cloud_stack"></a>EITCO cloud stack</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This chapter describes the compliant On Premise installation provided by Eitco. The configuration and deployment of all required artefacts is performed by Eitco or a partner by the automated deployment tool "Puppet".</p>
+<p>The <em>arveo</em> content services can be provided by EITCO in the Microsoft Azure Cloud in the tenant "eitco-cloud".
+An integration system and a production system are operated there for the customer.
+The solution is based on the EITCO cloud stack and is administered via an EITCO management cluster.</p>
 </div>
+<div class="sect2">
+<h3 id="architecture_overview"><a class="anchor" href="#architecture_overview"></a>Architecture overview</h3>
 <div class="paragraph">
-<p>The customer provides several virtual machines that are configured by Eitco with the automated deployment tool Puppet (<a href="#puppet">Puppet Deployment</a>) in order to ensure a problem-free software rollout in the customer system.</p>
-</div>
-<div class="paragraph">
-<p>Depending on the service level agreement Eitco can guarantee high availability, reliability and high performance at all times. The system has to be protected from manipulation attempts by technical or organizational measures. The data that is stored and managed in the system is protected via the API. The access and editing rights are managed with an attribute based access control (ABAC). More detailed information on this is provided in the relevant chapters of this manual.</p>
-</div>
-<div class="paragraph">
-<p>All changes to the system and the data are logged via the API, and the changes are traceable via
-the audit log. If auditing is activated, every database change is logged.
-In order to guarantee the atomicity of the transactions and to avoid inconsistent states, all are aborted transactions removed and rolled back.</p>
-</div>
-<div class="paragraph">
-<p>Access to all data (documents, metadata) is exclusively provided via the API, with the corresponding protection mechanisms so that the security of the data is guaranteed at all times.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="puppet"><a class="anchor" href="#puppet"></a>Puppet</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Puppet is open source software developed by Puppet Labs and is used for the automated configuration and deployment of software deliveries. It ensures the configuration management of servers with both Unix-like operating systems and the Windows operating system via network. The Ad-min-Tool allows the automated configuration of computers and servers as well as the services installed on them.
-The <em>arveo</em> services are installed and configured with Puppet. After the server has been provided, see <a href="system-requirements.html#_system_requirements" class="xref page">System Requirements</a>, the Puppet Agent is installed on it, which then takes care of setting up the environment and the actual application. The duration of the installation process can vary and requires an adequate internet connection. The individual installation components are installed in the form of .deb packages.
-The installation is completely automated and carried out remotely.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="installed_services"><a class="anchor" href="#installed_services"></a>Installed services</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><a href="../arveo-general/content-services.html#_3rd_party_services" class="xref page"><strong>3rd Party Services</strong></a></p>
+<p>The architecture for the administration and operation of customer solutions in Microsoft Azure was developed with the aim of</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>PostgreSQL 17.0 Database</p>
+<p>Guaranteed client separation of the respective customer environments</p>
 </li>
 <li>
-<p>21</p>
-</li>
-<li>
-<p>Keycloak Authentication Service</p>
-</li>
-<li>
-<p>Active MQ 6.1.7 Message Service Hub</p>
+<p>Customer-specific security and operational requirements can be implemented without impacting other customer environments.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="../arveo-general/content-services.html#_content__services" class="xref page"><strong>arveo Content Services</strong></a></p>
+<p>The architecture in the Microsoft Azure cloud is therefore based on the following principles:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Document Service</p>
+<p>Customer environments are logically and technically separated from each other. The technical separation is achieved,
+among other things, by hosting the customer environments in customer-specific VNets.</p>
 </li>
 <li>
-<p>Registry Service</p>
+<p>The customer environments are located in one tenant. This tenant is not exclusively available to one customer, but
+contains environments of other customers as well as infrastructure components of the EITCO cloud stack. The customer
+environments are managed as separate subscriptions within this tenant. The infrastructure components contained in the
+tenant include in particular those that serve the management of customer environments.</p>
 </li>
 <li>
-<p>Configuration Service</p>
+<p>An essential infrastructure component for the management of customer environments is the EITCO Management cluster,
+which is used to create and update the customer environments hosted in the tenant.</p>
 </li>
 <li>
-<p>Audit Service (optional)</p>
-</li>
-<li>
-<p>Document Conversion Service (optional)</p>
-</li>
-<li>
-<p>Enterprise Integration Service (optional)</p>
+<p>A customer environment is divided into multiple staging environments that are separate from each other. This separation
+is similar to the separation of customer environments by VNets.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p><strong>Customer Applications &amp; Services</strong></p>
+<p>Each staging environment contains a separate Kubernetes cluster with a loadbalancer, a Postgres database server, and
+other Azure components as needed. Thus, a staging environment has roughly the following structure:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Eitco or Customer application and integration services (typically web client and Apache Camel integration end pints)</p>
-</li>
-</ul>
+<div class="imageblock">
+<div class="content">
+<img src="_images/cluster-staging-environment.png" alt="staging environment">
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="order_of_services"><a class="anchor" href="#order_of_services"></a>Order of services</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Following you find the order of the service starts. The content services may not work before important services are started.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-All commands should be executed as root. When running as a non-root user, sudo should be set in front of systemctl.
-</td>
-</tr>
-</table>
+<div class="title">Figure 1. staging environment</div>
 </div>
 <div class="paragraph">
-<p>The services are initially started by Puppet.
-After the installation of <em>arveo</em> has been successfully completed, the customer applications can be started.
-Additional information on registration, user management and the use of the web client can be found in the user and admin manual.</p>
+<p>A staging environment is housed in a separate VNet. The Kubernetes cluster is usually implemented in the form of an
+"Azure Kubernetes Service (AKS)" cluster. Such a cluster includes a node pool consisting of a configurable number of
+similarly equipped Azure VMs. The number of VMs in the node pool and the configuration of these VMs is based on the
+requirements of the services to be provided. The VMs in the node pool are connected to a Kubernetes cluster with the
+help of the "Azure Kubernetes Service". In the following, the VMs in the node pool are also referred to as worker nodes.
+For the forwarding of requests to the services operated in the cluster, a load balancer is upstream of the cluster.
+The PostgreSQL database server is usually provided in the form of an "Azure Database for PostgreSQL flexible server".
+Inbound and outbound traffic can already be restricted at the VNet level, but is also restricted at other levels.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>PostgreSQL 17.0: systemctl start/stop postgresql</p>
-</li>
-<li>
-<p>Config Service: systemctl start/stop common_config_service.service</p>
-</li>
-<li>
-<p>Registry Service: systemctl start/stop common_registry_service.service</p>
-</li>
-<li>
-<p>Audit Service: systemctl start/stop common_audit.service (optional)</p>
-</li>
-<li>
-<p>Document Service: systemctl start/stop ecr_repository_service.service</p>
-</li>
-<li>
-<p><em>Document Conversion Service: systemctl start/stop common_document_conversion.service</em> (optional)</p>
-</li>
-<li>
-<p><em>Enterprise Integration Service: systemctl start/stop common_enterprise_integration.service</em> (optional)</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-The current status of the service can also be determined with systemctl status &lt;service&gt;.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="ssl_certificates"><a class="anchor" href="#ssl_certificates"></a>SSL Certificates</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>If all connections between the services are to be encrypted, SSL certificates are required. The following requirements apply:
-An <a href="authentication-x509.html" class="xref page">X-509 certificate</a> with an associated "private key" is required for each server. The certificate should be signed by an official CA or the company&#8217;s own CA. Self-signed certificates can also be used. The following special feature must be observed: the X509 extension “Subject Alternative Name” must contain all DNS names and IP addresses via which the respective systems are accessed.</p>
+<p>The services of the <em>arveo</em> archive system are operated on the Kubernetes cluster of each staging environment.
+In addition to the <em>arveo</em> services, however, a number of other services are operated there, which are either
+required by the <em>arveo</em> services or serve the monitoring and management of the cluster.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/cluster-overview.png" alt="overview">
+</div>
+<div class="title">Figure 2. overview</div>
+</div>
+<div class="paragraph">
+<p>The diagram above is intended to provide a rough understanding of the services operated on the Kubernetes cluster.
+This entirety of these services is shown in the blue area labeled "Kubernetes Workload". The requests for the services
+in the cluster usually arrive via a VPN connection to the network of the customer&#8217;s infrastructure. However, the services
+operated in the cluster can also make requests to systems in the customer&#8217;s infrastructure via this VPN connection,
+if necessary.</p>
+</div>
+<div class="paragraph">
+<p>All services relevant to operation are usually designed redundantly, i.e. there are either several active service
+instances or the active service instances are secured by passive service instances that become active in the event of a
+failure. The service instances are also distributed across the worker nodes of the Kubernetes cluster in such a way that
+even if a worker node fails, all services relevant to operation are still available.</p>
+</div>
+<div class="paragraph">
+<p>Communication between the service instances within the cluster is encrypted. This is achieved through the use of a
+service mesh. Requests made to the services in the cluster are forwarded to the worker node via the load balancer that
+is upstream of the cluster. On each worker node, an instance of an ingress controller is operated, which receives the
+incoming requests and forwards them to the responsible services within the cluster. TLS encryption is usually terminated
+at the ingress controller, then the responsible service instance is determined before the requests are forwarded to the
+service instance and are again encrypted via the cluster&#8217;s internal service mesh.</p>
+</div>
+<div class="paragraph">
+<p>Authentication to the <em>arveo</em> services is usually carried out using the OAuth 2.0 protocol. To manage access
+permissions and create OAuth 2.0 access tokens, Keycloak is used. The Keycloak service is also operated within the
+cluster and has a separate database within the PostgreSQL database system. Usually, the Keycloak service is connected to
+the customer&#8217;s identity provider to enable single sign-on for users. In the picture, Microsoft EntraID has been assumed
+as the customer&#8217;s identity provider as an example.</p>
+</div>
+<div class="paragraph">
+<p>The core of the archive system is the Content Repository Service. It is responsible for storing the binary data and
+metadata of the documents. The metadata for the documents is stored in a separate database within the PostgreSQL
+database system, the document content itself is usually stored in form of encrypted blobs in an Azure Storage Account.
+For the encryption of document content and for the storage of secrets, a key vault is operated in the cluster, which
+stores the secrets it manages encrypted on Azure disks.
+<a href="encryption.html#implementation_details_of_aes_encryption" class="xref page">Encryption and decryption</a> is performed by the Content
+Repository Service. In addition, the Content Repository Service uses a Message Broker Service (ActiveMQ) to manage tasks
+to be processed asynchronously, which also stores its data on Azure Disks.</p>
+</div>
+<div class="paragraph">
+<p>Depending on the requirements of the respective project, further <em>arveo</em> services are used, some of which are
+adapted to the specific project. The standard component shown in the figure is the Archive Link Service, which provides
+an HTTP Content Server interface with the help of which SAP systems can manage documents within the archive system.
+The archive data is often accessed by means of project-specific clients that are ultimately operated in the user&#8217;s
+browser. These clients usually do not access the Content Repository Service directly, but do so indirectly via an
+intermediary service, whose interface and range of functions are also project/client-specific. The project-specific
+service often also provides the client software components relevant for operation in the browser. The "API &amp; App
+Provisioning Service" shown in the image is intended to represent such a service as an example.</p>
+</div>
 </div>
 </div>
 </div>
@@ -580,7 +560,10 @@ An <a href="authentication-x509.html" class="xref page">X-509 certificate</a> wi
 <h2 id="the_system_identifier_system_id"><a class="anchor" href="#the_system_identifier_system_id"></a>The system identifier "system-id"</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Each <em>arveo</em> system has a unique identifier that is part of each entity- and version-id. This concept makes it possible to merge two systems into one. Two systems using the same system identifier cannot be merged because of duplicate entity- and version-ids. The system identifier is a numeric value starting at 0 that must be specified in the configuration file for each installation:</p>
+<p>Each <em>arveo</em> system has a unique identifier that is part of each entity- and version-id. This concept makes it
+possible to merge two systems into one. Two systems using the same system identifier cannot be merged because of
+duplicate entity- and version-ids. The system identifier is a numeric value starting at 0 that must be specified in the
+configuration file for each installation:</p>
 </div>
 <div class="listingblock">
 <div class="title">setting the system identifier</div>
@@ -593,43 +576,9 @@ An <a href="authentication-x509.html" class="xref page">X-509 certificate</a> wi
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="api_versioning"><a class="anchor" href="#api_versioning"></a>API versioning</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The content-repository-service&#8217;s REST API is versioned to allow blue/green deployments. The API version is managed
-separately from the general version of the service. The API version follows strict semantic versioning rules. Each one
-of the generated HTTP SDKs will automatically send the API version in a header called <code>X-Service-Version</code>. The
-loadbalancer used by the Java Spring HTTP SDK will automatically select a service instance with a compatible version
-based on the metadata of the service instance in the service registry (Eureka or Kubernetes). The REST endpoints of the
-service will reject requests with incompatible versions.</p>
-</div>
-<div class="paragraph">
-<p>The current API version is 1.0.0.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="licensing"><a class="anchor" href="#licensing"></a>Licensing</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The client software uses several 3rd party licenses. The list of licenses can be called up via the following link: <a href="https://&lt;customername&gt;.eitco.de/3rdpartylicenses.txt" class="bare">https://&lt;customername&gt;.eitco.de/3rdpartylicenses.txt</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="backups"><a class="anchor" href="#backups"></a>Backups</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The logs are on the db server in the directory /var/log/postgresql/backup.log.
-The database backup script is located at /var/lib/postgresql/backup.sh. This can also be started manually at any time. There should not yet be a folder with the current date under / backup / full /. If such a folder exists, it must be moved beforehand.
-The script is controlled by cron and is always started automatically at 10 p.m.</p>
-</div>
-</div>
-</div>
 <nav class="pagination">
   <span class="prev"><a href="../arveo-getting-started/getting-started.html">Getting Started</a></span>
-  <span class="next"><a href="deployment-options.html">Deployment options</a></span>
+  <span class="next"><a href="system-requirements.html">System requirements</a></span>
 </nav>
 </article>
   </div>
