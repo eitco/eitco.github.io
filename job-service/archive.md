@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Job Service deployed so far.
 
+ * [11.0.10](archive/11.0.10)
  * [11.0.9](archive/11.0.9)
  * [11.0.8](archive/11.0.8)
  * [11.0.6](archive/11.0.6)
