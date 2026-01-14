@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Litigation Management Service 1.0.0</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Litigation Management Service 1.0.0</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Litigation Management Service 1.0.0</div>
+<ul class="sectlevel1">
+<li><a href="#_installation"><strong>Installation</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_access_rights">Access rights</a></li>
+</ul>
+</li>
+<li><a href="#_data_model"><strong>Data model</strong></a></li>
+<li><a href="#_creating_type_definitions"><strong>Creating type definitions</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_using_inheritance_for_litigation_management">Using inheritance for litigation management</a></li>
+</ul>
+</li>
+<li><a href="#_usage"><strong>Usage</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_creating_a_legal_case">Creating a legal case</a></li>
+<li><a href="#_adding_and_removing_a_case_from_a_collection">Adding and removing a case from a collection</a></li>
+<li><a href="#_assigning_a_collection_to_an_entity">Assigning a collection to an entity</a></li>
+<li><a href="#_resolving_a_case">Resolving a case</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Litigation Management Service manages the relation between entities in the Content Repository Service and legal cases.</p>
+</div>
+<div class="paragraph">
+<p>If an entity is relevant for a legal case, it must not be deleted until the case is resolved. The Content Repository
+Service provides the litigation-hold feature that prohibits deletion of entities in litigation-hold. The Litigation
+Management Service extends this feature by managing collections of legal cases that are related to one or more entities.
+Each entity related to a collection of legal cases will be put under litigation-hold until all cases in the collection
+are resolved.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation"><strong>Installation</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Litigation Management Service is an extension of the Content Repository Service. It consists of a standalone
+service application providing the API and type definitions used to store legal cases and case collections. These
+type definitions must be present in the libs directory of the Content Repository Service. A containerized version
+of the Content Repository Service, including the required type definitions, is available in an image called
+<code>litigation-management-service-content-repository-service</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_access_rights">Access rights</h3>
+<div class="paragraph">
+<p>The Litigation Management Service uses impersonation to authenticate its requests to the Content Repository Service.
+The impersonation feature must be enabled in the Content Repository Service using the property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">commons:
+  security:
+    oauth2:
+      impersonation-enabled: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To allow the Litigation Management Service to update the litigation-hold flags of entities, it needs the following
+authorities. These authorities must be assigned to the service account user of the OAuth2 client used by the service:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Authority</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ECR_DSGVO_ADMIN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows the service to set the litigation-hold flag.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ECR_DSGVO_PRIVILEGED_DELETE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows the service to delete empty collections (which are retention-protected, too).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>can-impersonate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows the service to impersonate the actual user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>impersonate-inherit-authorities</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The authenticated request will inherit the service&#8217;s authorities in addition to the user&#8217;s own authorities.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_data_model"><strong>Data model</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following diagram shows a simplified view of the data model used by the Litigation Management Service.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-ditaa-md5-e68648d076a1aa9700eaafedb11207ae.png" alt="Diagram" width="1050" height="294">
+</div>
+</div>
+<div class="paragraph">
+<p>Legal cases are assigned to case collections using an n:m relation. Each case collection keeps track of the current
+number of related legal cases and is never empty. When the collection is created, it must contain one or more legal
+cases. As soon as the last case is resolved or removed from the collection, the empty collection is deleted.</p>
+</div>
+<div class="paragraph">
+<p>An entity can be assigned to one case collection. As long as this assignment exists, the litigation-hold flag
+of the entity will be true. When the collection is deleted because the last case was resolved, the litigation-hold flag
+is reset to null.</p>
+</div>
+<div class="paragraph">
+<p>The referential integrity of the data is ensured by foreign keys.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_type_definitions"><strong>Creating type definitions</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following paragraphs describe how to create type definitions with litigation management.</p>
+</div>
+<div class="paragraph">
+<p>To be able to manage the relation of legal cases to entities in the Content Repository Service, the type definitions
+containing the entities must meet some requirements. The type definitions must:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use retention protection</p>
+</li>
+<li>
+<p>Contain an attribute named <code>case_collection_id</code></p>
+</li>
+<li>
+<p>Define the required foreign keys to the case collection type.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The easiest way to assure that the type definitions meet the expected requirements, is to use the
+<code>de.eitco.ecr.lms.types.EntityWithLitigationManagement</code> interface as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Defining a type definition with litigation management</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+public interface TestRecord extends EntityWithLitigationManagement {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use the interface, add the following dependency to your types module:</p>
+</div>
+<div class="listingblock">
+<div class="title">Maven dependency</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.ecr.lms&lt;/groupId&gt;
+    &lt;artifactId&gt;litigation-management-type-definitions&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_inheritance_for_litigation_management">Using inheritance for litigation management</h3>
+<div class="paragraph">
+<p>The Litigation Management Service can make use of the inheritance feature of the Content Repository Service. The following
+example shows a simple record scenario with records, registers and documents. When the record is assigned to a case
+collection, all registers and documents of the record will be put under litigation-hold automatically. Once all legal
+cases are resolved, the litigation hold will be removed from the entire record including its documents and registers.
+This is achieved by inheriting the case collection ID and the litigation hold flag from the record.</p>
+</div>
+<div class="listingblock">
+<div class="title">Record type definition</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+public interface TestRecord extends EntityWithLitigationManagement {
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Register type definition</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.CONTAINER)
+public interface TestRegister extends EntityWithLitigationManagement {
+
+    @ForeignKey(target = TestRecord.class, targetProperty = "id")
+    @CascadeDelete
+    ContainerId getRecordId();
+
+    void setRecordId(ContainerId recordId);
+
+    @SystemProperty(value = SystemPropertyName.RETENTION_DATE)
+    @InheritedProperty(foreignKeyPropertyName = "record_id", sourcePropertyName = "retention_date")
+    ZonedDateTime getRetentionDate();
+
+    void setRetentionDate(ZonedDateTime retentionDate);
+
+    @InheritedProperty(foreignKeyPropertyName = "record_id", sourcePropertyName = "case_collection_id")
+    @Override
+    ContainerId getCaseCollectionId();
+
+    @InheritedProperty(foreignKeyPropertyName = "record_id", sourcePropertyName = "litigation_hold")
+    @Override
+    Boolean getLitigationHold();
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Document type definition</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Type(ObjectType.DOCUMENT)
+public interface TestDocument extends EntityWithLitigationManagement {
+
+    @ForeignKey(target = TestRegister.class, targetProperty = "id")
+    @CascadeDelete
+    ContainerId getRegisterId();
+    void setRegisterId(ContainerId registerId);
+
+    @SystemProperty(value = SystemPropertyName.RETENTION_DATE)
+    @InheritedProperty(foreignKeyPropertyName = "register_id", sourcePropertyName = "retention_date")
+    ZonedDateTime getRetentionDate();
+
+    void setRetentionDate(ZonedDateTime retentionDate);
+
+    @InheritedProperty(foreignKeyPropertyName = "register_id", sourcePropertyName = "case_collection_id")
+    @Override
+    ContainerId getCaseCollectionId();
+
+    @InheritedProperty(foreignKeyPropertyName = "register_id", sourcePropertyName = "litigation_hold")
+    @Override
+    Boolean getLitigationHold();
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage"><strong>Usage</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following examples show the basic usage of the service&#8217;s API.</p>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_legal_case">Creating a legal case</h3>
+<div class="paragraph">
+<p>Legal cases contain an optional external ID that can be used to link the case to another entity or system containing
+more information about the case and an optional description.</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating a legal case</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">CaseManagementResourceClient client = caseManagementResourceClientFactory.newClient();
+String caseDesc = "test-case-" + UUIDGenerator.randomUUID();
+CaseCreationResult result = client.createCase(new CaseInput(caseDesc, externalId, null, false, null));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>CaseInput</code> model class accepts five parameters:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The optional description</p>
+</li>
+<li>
+<p>The optional external ID</p>
+</li>
+<li>
+<p>The ID of the case collection to add the case to or null</p>
+</li>
+<li>
+<p>A boolean indicating whether to automatically create a new case collection containing the new case</p>
+</li>
+<li>
+<p>An optional description of the new case collection (only relevant if parameter 4 is true)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The returned result will contain the case&#8217;s ID and the collection&#8217;s ID if a new collection was created.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_adding_and_removing_a_case_from_a_collection">Adding and removing a case from a collection</h3>
+<div class="paragraph">
+<p>Cases can be added to and removed from collections.</p>
+</div>
+<div class="listingblock">
+<div class="title">Adding a case to a collection</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">client.addCaseToCollection(caseId, collectionId);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Removing a case from a collection</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">client.removeCaseFromCollection(caseId, collectionId);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Removing a case from all collections</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">client.removeCaseFromAllCollections(caseId);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If a collection is empty after the case was removed, it will be deleted. The litigation-hold flag of entities assigned
+to this collection will be reset to null.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_assigning_a_collection_to_an_entity">Assigning a collection to an entity</h3>
+<div class="paragraph">
+<p>Assigning a collection (which will contain at least one legal case) to an entity causes the litigation-hold flag of
+the entity being set to true.</p>
+</div>
+<div class="listingblock">
+<div class="title">Assigning a collection</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">testDocumentId = documentClient.getIdentifier();
+
+EntityId entityId = new EntityId(testDocumentId.value());
+
+caseManagementResourceClientFactory.newClient().assignCollectionToEntity(testCollectionId, entityId);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_resolving_a_case">Resolving a case</h3>
+<div class="paragraph">
+<p>If a case is resolved, it is removed from all collections and deleted.</p>
+</div>
+<div class="listingblock">
+<div class="title">Resolving a case</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">CaseManagementResourceClient caseManagementResourceClient = caseManagementResourceClientFactory.newClient();
+caseManagementResourceClient.resolveCase(assignedCaseId);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If a collection is empty after the case was removed, it will be deleted. The litigation-hold flag of entities assigned
+to this collection will be reset to null.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2026-01-14 08:56:11 UTC
+</div>
+</div>
+</body>
+</html>
