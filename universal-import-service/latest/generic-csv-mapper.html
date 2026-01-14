@@ -974,10 +974,10 @@ the following parameters:</p>
 <p><code>fileNames</code>: A list of file names that was parsed from the current line in the CSV file (never null)</p>
 </li>
 <li>
-<p><code>csvFilePath</code>: The directory that contains the CSV file (never null)</p>
+<p><code>contentPath</code>: The configured path used to find the actual files (might be null)</p>
 </li>
 <li>
-<p><code>contentPath</code>: The configured path used to find the actual files (might be null)</p>
+<p><code>context</code>: A <code>CsvImportContext</code> instance containing context information like the current Camel exchange and the mapper&#8217;s configuration.</p>
 </li>
 </ul>
 </div>
@@ -986,7 +986,7 @@ the following parameters:</p>
 file name that will be used in arveo and the position of the file in the original list of file names. How many <code>PreprocessedContent</code>
 instances are contained in the returned list depends on the preprocessor. For example, an implementation might take
 all files and merge them to a single PDF file. Other implementations might just wrap the returned streams for decryption.
-Custom implementation can extend the class <code>de.eitco.uis.mappers.common.AbstractContentPreprocessor</code> which contains a utility
+Custom implementations can extend the class <code>de.eitco.uis.mappers.common.AbstractContentPreprocessor</code> which contains a utility
 method to open new <code>FileInputStreams</code>.</p>
 </div>
 <div class="paragraph">
@@ -1032,13 +1032,7 @@ the following parameters:</p>
 <p><code>line</code>: The original line in the CSV being processed</p>
 </li>
 <li>
-<p><code>contentUploadMap</code>: A map containing the resolved content uploads (after being preprocessed)</p>
-</li>
-<li>
-<p><code>csvFilePath</code>: The path of the current CSV file</p>
-</li>
-<li>
-<p><code>typeDefinitionName</code>: The name of the type definition the attributes will be used for</p>
+<p><code>context</code>: A <code>CsvImportContext</code> instance containing context information like the current Camel exchange and the mapper&#8217;s configuration.</p>
 </li>
 </ul>
 </div>
@@ -1218,7 +1212,7 @@ not mark the line as failed.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-12-11 09:49:11 UTC
+Last updated 2026-01-14 09:25:07 UTC
 </div>
 </div>
 </body>
