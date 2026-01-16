@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>arveo shell :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/26.1.1/arveo-administration/ecr-shell.html">
+    <link rel="prev" href="../commons/configuration-properties.html">
+    <link rel="next" href="monitoring.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.11">
+    <link rel="stylesheet" href="../../../ui-assets/css/site.css">
+    <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand"> 
+      <img src="../../../ui-assets/img/arveo_WortBildmarke_NEG_500px.png" id="arveoLogo" style="vertical-align:middle;margin:10px 0px">
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search the docs">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://eitco.github.io">Home</a>
+        <!--<div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>-->
+        <!--<div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>-->
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arveo-docu" data-version="26.1.1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../arveo-general/product-summary.html">arveo Documentation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-general/product-summary.html">What is <em>arveo</em> - Content Services Platform (CSP)</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Architecture Overview</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/content-services.html">Content Services</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/technology-stack.html">Opensource Technology Stack</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Security</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/application-security.html">Application security</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/gobd.html">Compliance recommendations (GoBD)</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Store</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/data-storage.html">Persistence architecture</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-general/data-deletion.html">Data deletion</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-getting-started/getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Administration and Configuration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="installation.html">Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="system-requirements.html">System requirements</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Administration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="authentication-oauth2.html">OAuth Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="db-access.html">Database access</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="content-elements-storage.html">Storage locations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="renditions.html">Renditions</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="retention-container.html">Retention and Storage</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="encryption.html">Encryption</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="messaging.html">Configure Active MQ</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="database-schema-creation.html">Database schema creation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="audit.html">Audit</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="jobs.html">System jobs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="vault.html">Using Hashicorp Vault / OpenBao</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../commons/configuration-properties.html">Configuration Properties</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="ecr-shell.html">arveo shell</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="monitoring.html">Monitoring</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Developer</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Access Control</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/access-rights.html">Access rights</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/attribute-based-security.html">Attribute Based Access Control (ABAC)</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/permissions.html">Permissions on Type definitions</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Modelling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/entity-types.html">Entity types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/entity-annotations.html">Entity annotations</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/data-types.html">Data types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/system-fields.html">System fields</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/document-types.html">Document types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/container-types.html">Container types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/relation-types.html">Relation types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/folder-types.html">Folder types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/metadata-types.html">Metadata types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/validation.html">Validation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/inheritance.html">Inheritance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention-annotations.html">Retention document types</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/tenant-separation.html">Tenant separation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/advanced-schema-changes.html">Advanced database schema changes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-developer/repo-service.html">Repository Service</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-upload-data.html">Upload Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-data.html">Download Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-delete-objects.html">Delete Data</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-locking.html">Locking</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/repo-service-download-links-external-users.html">Download Links for External Users</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/versioning.html">Versioning</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/search-service.html">Search language</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/fulltext.html">Full text search in relational database</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/annotations.html">Annotations</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../arveo-developer/retention-introduction.html">Retention</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention.html">Retention periods</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/retention-cleanup-job.html">Cleanup job</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">SDKs</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/client-sdks.html">Client SDKs</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/sdk-and-batch-operations.html">Java SDK for Spring applications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/non-spring-sdk.html">Java SDK for non-Spring applications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/rest-api.html">REST API</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Events and messaging</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/events.html">Events</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/integration-service.html">Enterprise Integration Service</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Archetypes</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/slim-archetype.html">The Types archetype</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../arveo-developer/full-featured-archetype.html">The full-featured archetype</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../arveo-developer/system-tables.html">System Tables</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/compatibility-list.html">Compatibility List</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/release-notes.html">Release Notes</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../arveo-commons/glossary.html">Important Terminology</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">arveo Documentation</span>
+    <span class="version">26.1.1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../arveo-general/product-summary.html">arveo Documentation</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../arveo-general/product-summary.html">26.1.1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
+    <li>Administration and Configuration</li>
+    <li>Administration</li>
+    <li><a href="ecr-shell.html">arveo shell</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">arveo shell</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The arveo shell is an interactive command line application enabling arveo administrators to execute
+simple commands and queries on an arveo server.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="running"><a class="anchor" href="#running"></a>Running</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A few basic configuration options have to be set for the arveo shell to be able to connect to the arveo
+service. All configuration options can be stored in a configuration file called <code>application.yaml</code> placed in the same
+directory as the shell&#8217;s executable jar file. Alternatively, configuration options can be passed as command line
+arguments.</p>
+</div>
+<div class="paragraph">
+<p>When the arveo shell is not running within a Kubernetes environment, the arveo service instance to
+connect to must be configured manually:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            content-repository-service:
+              - uri: "http://&lt;server&gt;:&lt;port&gt;" <i class="conum" data-value="1"></i><b>(1)</b>
+                metadata:
+                  api-version: 1.0.0
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-password: <i class="conum" data-value="2"></i><b>(2)</b>
+            provider: keycloak
+            client-id: "testclient"
+            client-secret: "&lt;secret&gt;"
+            authorization-grant-type: "password"
+            scope: "openid"
+          keycloak-device-code: <i class="conum" data-value="3"></i><b>(3)</b>
+            provider: keycloak
+            client-id: "testclient"
+            client-secret: "&lt;secret&gt;"
+            authorization-grant-type: "urn:ietf:params:oauth:grant-type:device_code"
+            scope: "openid"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>HTTP (or HTTPS) URL of the Content Repository Service</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Example client configuration for the password authentication method</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Example client configuration for the device code (default) authentication method</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The arveo shell is delivered as an executable Java application named <code>ecr-shell.jar</code>. To run it simply call</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">java -jar ecr-shell-26.1.1.jar</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>java</code> must be available in the <code>PATH</code> environment variable. Also, as for the arveo service,
+java 21 is required for the shell.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This will start a shell which will look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">                                                                   .---.                           .---.     .---.
+   __________      _________    ___ ___             ____________   |   |______       __________    |   |     |   |
+ .´  .----.  `.  .´  .------'  |   .---'           ´   .--------'  |   .----.  `.  .´  .----.  `.  |   |     |   |
+ |   |____|   |  |   |         |   |      .-----.  |   |_______    |   |    |   |  |   |____|   |  |   |     |   |
+ |   .--------'  |   |         |   |      `-----´  `--------.   `  |   |    |   |  |   .--------'  |   |     |   |
+ |   |________   |   |______   |   |                ________|   |  |   |    |   |  |   |________   |   |__   |   |__
+  `-----------'   `---------'  '---'               '------------´  `---´    `---´   `-----------'  `------'  `------'
+
+
+version: 26.1.1                                                                      de.eitco.ecr:ecr-shell
+
+ecr:&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This assumes the shell is able to connect to a running arveo system. Refer to the <a href="#_arveo-unreachable">troubleshooting section</a>
+if this is not the case.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="executing_commands"><a class="anchor" href="#executing_commands"></a>Executing Commands</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this shell you can enter commands and queries. Let&#8217;s start with a simple but very important command: <code>help</code>. This command
+displays all commands available and is able to give more detailed information about them. When entering the command <code>help</code>
+the shell should display information like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;help
+AVAILABLE COMMANDS
+
+Built-In Commands
+       help: Display help about available commands
+       stacktrace: Display the full stacktrace of the last error.
+       clear: Clear the shell screen.
+       quit, exit: Exit the shell.
+       history: Display or save the history of previously run commands
+       version: Show version info
+       script: Read and execute commands from a file.
+
+authentication
+       logout: discards authentication to ecr system
+       login: authenticates to ecr system
+
+deletion
+       delete all: Deletes all entities of a given type. If the type supports the recycle bin, the entities are moved to the recycle bin by default.
+       purge: Purges all entities of a given type that meet a constraint.
+       delete: Deletes all entities of a given type that meet a constraint. If the type supports the recycle bin, the entities are moved to the recycle bin by default.
+       purge all: Purges all entities of a given type.
+
+download
+       download: Downloads content of the current version of a document
+       list-content-element-names: Lists the names of the content elements of a document
+       download-version: Downloads content of a specific version of a document
+       list-version-content-element-names: Lists the names of the content elements of a version of a document
+
+import
+       analyze-import: checks ecr import json files for errors and creates their import plan
+       import: imports ecr entities from json files
+
+jms-listeners
+       list-listeners: lists all JMS listeners in the system
+       disable-listener: disables a JMS listener
+       enable-listener: enables a JMS listener
+
+query
+       select: Queries the entities from a given type that meet a given constraint.
+
+scheduler
+       list-jobs, jobs: lists all jobs in the system
+       list-triggers, triggers: lists all job triggers in the system
+       trigger-job, trigger: triggers the job with the given name
+
+types
+       list-types, types: lists all types in the system
+       type: inspects a type
+
+update
+       update-entity: Updates a single entity.
+       update: Updates multiple entities.
+
+
+
+ecr:&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Depending on the actual version of the shell it may display further commands available.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since arveo shell is built using <a href="https://docs.spring.io/spring-shell/reference/index.html">spring shell</a>,
+the build-in commands are documented in the <a href="https://docs.spring.io/spring-shell/reference/commands/builtin/index.html">spring shell documentation</a>.
+Those commands focus on the shell functionality itself. Let us focus on arveo specific functionality instead.
+In order to do anything in an arveo system you need to be authenticated. To do this, use the <code>login</code> command:</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="authentication"><a class="anchor" href="#authentication"></a>Authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To authenticate use the <code>login</code> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;help login
+NAME
+       login - authenticates to ecr system
+
+SYNOPSIS
+       login --username String --password String --help
+
+OPTIONS
+       --username String
+       [Optional]
+
+       --password String
+       [Optional]
+
+       --help or -h
+       help for login
+       [Optional]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Typing</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">login</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will log you on the arveo system. It will print a message like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;login
+
+logged in as [user] with user id [numeric-user-id]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on the configured authorization method, you will have to enter username or password or authorize the shell
+application by entering a code in the device authorization page of the IDP.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To be able to use the default device code authentication method, the configured OAuth2 client in the IDP must support
+the OAuth 2.0 Device Authorization Grant.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="commands"><a class="anchor" href="#commands"></a>Commands</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="deletion"><a class="anchor" href="#deletion"></a>Deletion</h3>
+<div class="paragraph">
+<p>The commands <code>delete</code>, <code>purge</code>, <code>delete all</code> and <code>purge all</code> can be used to delete entities from the archive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>delete all</code>: Deletes all entities of a given type. If the type supports the recycle bin, the entities are moved to the recycle bin by default.</p>
+</li>
+<li>
+<p><code>purge</code>: Purges all entities of a given type that meet a constraint.</p>
+</li>
+<li>
+<p><code>delete</code>: Deletes all entities of a given type that meet a constraint. If the type supports the recycle bin, the entities are moved to the recycle bin by default.</p>
+</li>
+<li>
+<p><code>purge all</code>: Purges all entities of a given type.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">example</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;delete --type simple_invoice --constraint "invoice_number = '2025#001'"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="download"><a class="anchor" href="#download"></a>Download</h3>
+<div class="paragraph">
+<p>The <code>download</code> command downloads binary content of a document.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>download</code>: Downloads content of the current version of a document</p>
+</li>
+<li>
+<p><code>list-content-element-names</code>: Lists the names of the content elements of a document</p>
+</li>
+<li>
+<p><code>download-version</code>: Downloads content of a specific version of a document</p>
+</li>
+<li>
+<p><code>list-version-content-element-names</code>: Lists the names of the content elements of a version of a document</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="import"><a class="anchor" href="#import"></a>Import</h3>
+<div class="paragraph">
+<p>The import command scans a folder recursively for import descriptions and creates new arveo entities depending on this
+description. By default, the current folder is scanned and only <code>.json</code> files are read. This behaviour can be changed using the
+command line parameters <code>directory</code>, <code>include</code> and <code>exclude</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="import_description_format"><a class="anchor" href="#import_description_format"></a>Import description format</h4>
+<div class="paragraph">
+<p>The import description is written in json - it is an object with one property <code>imports</code> which is a list:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "imports" : []
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Every element of the list specifies one arveo entity. Thus it is mandatory that every description specifies
+its type name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "imports" : [
+    {
+      "type": "&lt;type-name&gt;"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Attribute values can be specified using the <code>properties</code> element:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "imports" : [
+    {
+      "type": "&lt;type-name&gt;",
+      "properties": {
+        "stringProperty": "string value",
+        "intProperty": 8,
+        "booleanProperty": true
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Those properties need to be defined by the given type. Additionally, the values given must adhere to the type of the
+attribute as specified by the type. Depending on the type the value must be specified as follows:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">data type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json type</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">binary</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">base64 string</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">uuid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string containing uuid format</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string in iso date format</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">decimal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number or string containing numerical</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string containing iso time format</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">real</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">datetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string containing iso zoned date time format</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json list containing elements adhering to the elements type</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="documents_with_content"><a class="anchor" href="#documents_with_content"></a>Documents with content</h4>
+<div class="paragraph">
+<p>In arveo entities can be documents. This means that they have binary content attached. Content elements in
+arveo have a name defined by the type of the entity. Content can be given two ways: First using the property
+<code>contentMap</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "imports": [
+    {
+      "type": "document_with_rendition",
+      "properties": {
+        "name": "shell-import",
+        "content_type": "text/plain"
+      },
+      "contentMap": {
+        "original": "file:../content/content.txt"
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the content element with the name <code>original</code> is assigned the binary content given by the
+file <code>../content/content.txt</code>. The file name is resolved relative to the file containing the reference NOT the working
+directory of the shell. Alternatively, the url could also be an http(s) or data url.</p>
+</div>
+<div class="paragraph">
+<p>Should the type only contain one content element, the element could also be given using the <code>content</code> property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "imports": [
+    {
+      "type": "document_with_one_content_element",
+      "properties": {
+        "name": "shell-import",
+        "content_type": "text/plain"
+      },
+      "content": "file:../content/content.txt"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the name of the content element is specified since only one content element exists.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="upsert"><a class="anchor" href="#upsert"></a>Upsert</h4>
+<div class="paragraph">
+<p>Sometimes it is required to create a new entity - but only if it does not exist yet. Should it exist it should only be
+updated. In such a situation a unique attribute is required to identify the entity. If such an attribute exists it can
+be specified using the <code>collisionCheckAttribute</code> property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "imports": [
+    {
+      "type": "named_file",
+      "symbolicName": "the_file",
+      "properties": {
+        "mime_type": "application/octet-stream",
+        "name": "the_file"
+      },
+      "contentMap": {
+        "ce1": "data:text/plain;charset=UTF-8,this_is_data",
+        "content": "data:text/plain;charset=US-ASCII,this_is_data"
+      },
+      "collisionCheckAttribute": "name",
+      "variables": {
+        "link": "false"
+      }
+    },
+    {
+      "type": "file_link",
+      "properties": {
+        "mime_type": "application/octet-stream",
+        "name": "the_link",
+        "target": "the_file"
+      },
+      "collisionCheckAttribute": "name"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the property <code>collisionCheckAttribute</code> is set to <code>name</code> in line 14. Note further that in line 8 it is set to
+"the_file". The attribute <code>name</code> is unique, so if this import is executed and an entity whose attribute <code>name</code> is set to
+"the_file" already exists, no new entity is created, but the entity is updated with the given properties and content instead.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="related_entities"><a class="anchor" href="#related_entities"></a>Related entities</h4>
+<div class="paragraph">
+<p>In some cases it is required to import several entities that relate to each other using foreign keys. In this case it
+is possible to refer to the id of other imported entities in integer attributes using the <code>symbolicName</code> property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "imports": [
+    {
+      "type": "named_file",
+      "symbolicName": "the_file",
+      "properties": {
+        "mime_type": "application/octet-stream",
+        "name": "the_file"
+      },
+      "contentMap": {
+        "ce1": "data:text/plain;charset=UTF-8,this_is_data",
+        "content": "data:text/plain;charset=US-ASCII,this_is_data"
+      },
+      "collisionCheckAttribute": "name",
+      "variables": {
+        "link": "false"
+      }
+    },
+    {
+      "type": "file_link",
+      "properties": {
+        "mime_type": "application/octet-stream",
+        "name": "the_link",
+        "target": "the_file"
+      },
+      "collisionCheckAttribute": "name"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the first entity is named <code>"the_file"</code> using the property <code>symbolicName</code> in line 5. Note further that in line
+24 the integer attribute <code>target</code> is assigned a string that is the symbolic name of the entity. The import command will
+create both entities in one batch setting the <code>target</code> attribute of the second entity to the id of the first entity.
+The import command will order the entities in a way so that referenced entities will be stored first. In this example
+it will not change the order of the entities.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="jms_listeners"><a class="anchor" href="#jms_listeners"></a>JMS Listeners</h3>
+<div class="paragraph">
+<p>The JMS listeners can be used to list, enable or disable JMS listeners.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These commands require administrator privileges.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list-listeners</code>: lists all JMS listeners in the system</p>
+</li>
+<li>
+<p><code>disable-listener</code>: disables a JMS listener</p>
+</li>
+<li>
+<p><code>enable-listener</code>: enables a JMS listener</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="query"><a class="anchor" href="#query"></a>Query</h3>
+<div class="paragraph">
+<p>The <code>select</code> command can be used to search for entities in the archive.</p>
+</div>
+<div class="listingblock">
+<div class="title">example</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">select --from simple_invoice --where "invoice_number = '2025#001'"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="scheduler"><a class="anchor" href="#scheduler"></a>Scheduler</h3>
+<div class="paragraph">
+<p>The scheduler commands offer a means to manage the internal job scheduler of the Content Repository Service.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These commands require administrator privileges.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list-jobs</code>, <code>jobs</code>: lists all jobs in the system</p>
+</li>
+<li>
+<p><code>list-triggers</code>, <code>triggers</code>: lists all job triggers in the system</p>
+</li>
+<li>
+<p><code>trigger-job</code>, <code>trigger</code>: triggers the job with the given name</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="types"><a class="anchor" href="#types"></a>Types</h3>
+<div class="paragraph">
+<p>In an arveo system there are several type registered. They define the customized scenario and are the core
+element of an arveo system. For more on types refer to the arveo developer documentation.</p>
+</div>
+<div class="paragraph">
+<p>We can get the names of the types registered by typing</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;types</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will list all available types in the system, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ecr:&gt;types
+medical_record_patient_scenario_metadata
+folder_with_default_retention
+invoice
+child_entity
+named_meta_named_entity
+customer
+ecr:&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="update_command"><a class="anchor" href="#update_command"></a>Update command</h3>
+<div class="paragraph">
+<p>The update command can be used to update one or multiple entities. The <code>update</code> command updates multiple entities
+identified by a selector, whereas the <code>update-entity</code> command updates a single entity identified by its ID.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">update [--type String] [--selector String] [--attributes String[]] --help</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>type: The name of the type definition containing the entities</p>
+</li>
+<li>
+<p>selector: An EQL expression identifying the entities. For example: <code>customer_name = EITCO</code>.</p>
+</li>
+<li>
+<p>attributes: One or more key-value-pairs with attributes separated by space</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">update-entity [--type String] [--id Long] [--attributes String[]] --help</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>type: The name of the type definition containing the entities</p>
+</li>
+<li>
+<p>id: The ID of the entity.</p>
+</li>
+<li>
+<p>attributes: One or more key-value-pairs with attributes separated by space</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Attribute values are expected to be entered in the following format:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Data type</th>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean string value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true, false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hello World!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ISO local date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-01-31</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ISO local time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18:02:03</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ISO DateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017-01-01T11:33:55Z</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Double</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">numeric with decimal separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.11</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer, Long, Short</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">numeric</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String representation of the enum constant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MY_CONSTANT</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Other data types like binary and array attributes are not yet supported.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Updating the binary content of documents is not yet supported.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">example</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">update-entity --type basic_document --id 4504424261091329 --attributes "customer_name=another customer" "a_string=another string"</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_arveo-unreachable"><a class="anchor" href="#_arveo-unreachable"></a>arveo system not reachable / no authentication configured</h3>
+<div class="paragraph">
+<p>If the login command fails with the following error message:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">ecr:&gt;login ecr-user password
+Did not find a client registration for the required grant type password
+Details of the error have been omitted. You can use the stacktrace command to print the full stacktrace.
+ecr:&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>the shell has no configuration for authentication. This could mean two things: Either the arveo system is not
+running or not reachable and thus the configuration (provided by the config service) is not accessible, or the
+configuration is missing.</p>
+</div>
+<div class="paragraph">
+<p>In the first case check whether the arveo system is up and running and reachable. By default, the shell
+assumes the service registry to be available at the well known location (<code><a href="http://localhost:8761" class="bare">http://localhost:8761</a></code>). If this is not the
+case in your environment, this can be overridden with the property <code>eureka.client.serviceUrl.defaultZone</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">java "-Deureka.client.serviceUrl.defaultZone=&lt;url-of-service-registry&gt;" -jar ecr-shell-{arveo-version}.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the second case you need to configure an oauth2 client registry, since the shell can only execute commands and queries to a running
+arveo system to which it should authenticate. In order to do so
+add the following to your shell&#8217;s configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-password:
+            provider: keycloak
+            client-id: &lt;your client id&gt;
+            client-secret: &lt;your client secret&gt;
+            authorization-grant-type: "password"
+            scope: "openid"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This config is adapted to the most common scenario where keycloak is used as authentication service. You will need to
+get the correct client-id and client-secret from the arveo system configuration. In the most convenient way
+this is already configured in the eitco config service.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration"><a class="anchor" href="#configuration"></a>Configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="configuration_properties"><a class="anchor" href="#configuration_properties"></a>Configuration Properties</h3>
+<div class="sect3">
+<h4 id="_ecr-shell"><a class="anchor" href="#_ecr-shell"></a>ecr-shell</h4>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">authorization-method</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AuthorizationMethod</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The authorization method to use. Possible values are PASSWORD, DEVICE_CODE and CLIENT_CREDENTIALS. Requires a configured OAuth2 client registration with a matching grant type.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>device-code</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.directory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional default directory that contains the json files to import. Will be ignored when the directory option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.exclude</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to exclude in the import. Ignored when the exclude option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imports.include</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default list of ant style matchers for files to include in the import. Ignored when the include option of the import command is used.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output.date-format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date format to use when returning date fields from queries - defaults to ISO date.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output.date-time-format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date time format to use when returning date time fields from queries - defaults to ISO date time.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output.time-format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time format to use when returning time fields from queries - defaults to ISO time.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">query.batch-size-limit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default limit for the number of entities in a batch operation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">query.page-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default size of pages returned in a query.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>80</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type-definitions.eager-loading</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set to true, the cache used for the type definitions will be eagerly populated.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Since arveo shell uses spring to be configured, you have several possibilities to
+<a href="https://docs.spring.io/spring-boot/reference/features/external-config.html#page-title">configure properties</a> of the shell. You can specify properties as java system properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">java -Dmy.property=myValue -jar ecr-shell-{arveo-version}.jar</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>-Dmy.property=myValue</code> must be placed <strong>before</strong> <code>-jar</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Properties may be specified as program arguments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">java -jar ecr-shell-{arveo-version}.jar --my.property=myValue</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-26.1.1.jar</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Additionally, properties can be written to a property or yaml file named <code>application.properties</code> or <code>application.yaml</code>
+respectively:</p>
+</div>
+<div class="paragraph">
+<p><code>application.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">my:
+  property: myValue</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>arveo shell does use spring cloud config, so it may also be configured using the eitco config service. Its
+<code>spring.application.name</code> is <code>ecr-shell</code> so you can add the file above renamed to <code>ecr-shell.yaml</code> to your config
+service. arveo shell will automatically get the config servers url using the eitco service registry.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../commons/configuration-properties.html">Configuration Properties</a></span>
+  <span class="next"><a href="monitoring.html">Monitoring</a></span>
+</nav>
+</article>
+  </div>
+</main>
+    <!-- The Modal -->
+    <div id="imageModalBox" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../ui-assets/js/site.js" data-ui-root-path="../../../ui-assets"></script>
+<script async src="../../../ui-assets/js/vendor/highlight.js"></script>
+<script async src="../../../ui-assets/js/modal.js"></script>
+<script src="../../../ui-assets/js/vendor/lunr.js"></script>
+<script src="../../../ui-assets/js/search-ui.js" id="search-ui-script" data-site-root-path="../../.." data-snippet-length="100" data-stylesheet="../../../ui-assets/css/search.css"></script>
+<script async src="../../../search-index.js"></script>
+  </body>
+</html>
