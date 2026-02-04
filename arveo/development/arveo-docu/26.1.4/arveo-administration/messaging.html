@@ -427,27 +427,9 @@ mechanism as the REST API.</p>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-When several <em>arveo</em> systems, that use different type definitions, are supposed to use one
-ActiveMQ cluster, it is required to configure separate system IDs for each <em>arveo</em> system.
-Otherwise, messages might get handled by the wrong system.
+Each <em>arveo</em> system uses dedicated queue names to separate messages between systems. Queue names are separated
+because they include the numeric <a href="installation.html#the_system_identifier_system_id" class="xref page">system ID</a>.
 </td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="title">configuring the system ID</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
-  server:
-    system:
-      system-id: 1 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The number must be between 1 and 32767.</td>
 </tr>
 </table>
 </div>
