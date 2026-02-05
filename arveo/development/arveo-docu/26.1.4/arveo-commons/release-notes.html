@@ -413,6 +413,10 @@
 <dd>
 <p>The service now handles outages of ActiveMQ properly (like setting rendition status to failed when message could not be enqueued).</p>
 </dd>
+<dt class="hdlist1">ECR-1715: Fixed checking of API version in loadbalancer for Kubernetes environments</dt>
+<dd>
+<p>The loadbalancer now filters service instances by API version correctly in Kubernetes environments.</p>
+</dd>
 </dl>
 </div>
 <div class="paragraph">
@@ -420,6 +424,19 @@
 </div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The property <code>ecr.server.kubernetes.annotation-name</code> has been replaced by <code>commons.loadbalancer-version-filter.version-property</code>.</p>
+</li>
+<li>
+<p>The property <code>ecr.server.kubernetes.annotation-namespace</code> has been replaced by <code>commons.loadbalancer-version-filter.annotation-namespace</code>.</p>
+</li>
+<li>
+<p>The default value for <code>annotation-namespace</code> was changed from <code>de.eitco.arveo</code> to <code>de.eitco</code>. The configuration of the pod annotations must be changed accordingly.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
