@@ -736,9 +736,18 @@ claim. In Keycloak this must be configured in the OAuth2 client used by the proj
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"technical-user" : true</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>In addition to that, the technical user has to be granted the authority <code>can-impersonate</code> to be allowed to impersonate
-other users. In Keycloak this authority must be granted to the service account user of the OAuth2 client used by the service.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The technical user has to be granted the authority <code>can-impersonate</code> to be allowed to impersonate
+other users. In Keycloak this authority must be granted to the service account user of the OAuth2 client used by the service.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Last, impersonation has to be enabled in the project-specific service:</p>
@@ -784,6 +793,19 @@ In Keycloak this authority must be granted to the service account user of the OA
 </div>
 <div class="paragraph">
 <p>By default, Keycloak will add several attributes of a user to an issed token like the user&#8217;s unique ID in the <code>sub</code> claim. Additional required claims like <code>aud</code> (audience) can be set using token mappers.</p>
+</div>
+<div class="sect2">
+<h3 id="adding_audience_entries_to_access_tokens"><a class="anchor" href="#adding_audience_entries_to_access_tokens"></a>Adding audience entries to access tokens</h3>
+<div class="paragraph">
+<p>Each <em>arveo</em> service expects it&#8217;s application name to be present in the audience (<code>aud</code>) claim of an access token. If the application name is not present, the service will deny access to it&#8217;s endpoints. To add audiences, Keycloak offers several different methods. For example, you can add a dedicated token mapper to add a custom audience in the client configuration in Keycloak as shown in the <a href="https://www.keycloak.org/docs/latest/server_admin/index.html#_oidc_clients">Keycloak documentation</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mapping_user_roles_to_authorities_in_access_tokens"><a class="anchor" href="#mapping_user_roles_to_authorities_in_access_tokens"></a>Mapping user roles to authorities in access tokens</h3>
+<div class="paragraph">
+<p>The actual privileges of a user are stored in the claim <code>authorities</code> (or <code>scope</code>) of the access tokens issued by Keycloak. Again, there are different ways to assign access rights to a user. A recommended way is using realm roles. Realm roles basically have a name, which must match the desired access right. For example, a user with administrative privileges in the Content Repository Service would have to be assigned to a realm role called <code>ECR_ADMIN</code>.
+To add the user&#8217;s realm roles to the <code>authorities</code> claim, add a dedicated mapper to the client in Keycloak used to get access tokens. The mapper mus be of type <code>User Realm Role</code>. Enter the claim name <code>authorities</code> in the mapper&#8217;s "Token Claim Name" field. This mapper will map all realm roles assigned to the user to the value of the <code>authorities</code> claim.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="using_active_directory_or_entra_id"><a class="anchor" href="#using_active_directory_or_entra_id"></a>Using Active Directory or Entra ID</h3>
@@ -860,6 +882,31 @@ If you use the <code>client_credentials</code> flow or if you already have creat
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When requests from a client to a service or between services fail with a 401 or 403 error code. The request was denied access to the service by Spring Security. Note that the client will still receive a 401 or 403 error code when the actual problem was cause by a request further down the chain between services. It might be necessary to analyze access problems between all services that were involved in the handling of the request.
+For example, the client might have requested a rendition which had to be generated first. For this, the Content Repository Service will send a request to the Document Conversion Service. When this request was denied access, the client will see a 401 or 403 error code.</p>
+</div>
+<div class="paragraph">
+<p>When a service denies access for a request, the first things to check are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Is the audience of the service contained in the <code>aud</code> claim of the access token?</p>
+</li>
+<li>
+<p>Are required authorities contained in the <code>authorities</code> and/or the <code>scope</code> claim?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Spring Security framework provides extensive logging capabilities to analyze access errors. To enable full logging, set the logger <code>org.springframework.security</code> to <code>TRACE</code> in all services involved in the request handling.</p>
 </div>
 </div>
 </div>
