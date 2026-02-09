@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>EITCO ArchiveLink 15.0.3-SNAPSHOT</title>
+<title>EITCO ArchiveLink 16.0.0-SNAPSHOT</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -15,9 +15,9 @@
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>EITCO ArchiveLink 15.0.3-SNAPSHOT</h1>
+<h1>EITCO ArchiveLink 16.0.0-SNAPSHOT</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO ArchiveLink 15.0.3-SNAPSHOT</div>
+<div id="toctitle">EITCO ArchiveLink 16.0.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_arveo_repository"><em>arveo</em> repository</a>
 <ul class="sectlevel2">
@@ -530,13 +530,13 @@ The ArchiveLink Shell also offers a "get-cert-info" command that can be used to 
 <div class="listingblock">
 <div class="title">example script</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="text">get-document localhost FS T20240521095500R35296357mCreate1
-get-document localhost FS T20240521095500R79888702mCreate2
-get-document localhost FS T20240521095500R93055795mCreate3
-post-document localhost AB T20240521095500R35296357mCreate1
-post-document localhost AB T20240521095500R79888702mCreate2
-post-document localhost AB T20240521095500R93055795mCreate3
-copy-document localhost FS T20240521095500R44724195mCreate4 localhost AB</code></pre>
+<pre class="CodeRay highlight"><code data-lang="text">get-document --server localhost --content-repository FS --doc-id T20240521095500R35296357mCreate1
+get-document --server localhost --content-repository FS --doc-id T20240521095500R79888702mCreate2
+get-document --server localhost --content-repository FS --doc-id T20240521095500R93055795mCreate3
+post-document --server localhost --content-repository AB --doc-id T20240521095500R35296357mCreate1
+post-document --server localhost --content-repository AB --doc-id T20240521095500R79888702mCreate2
+post-document --server localhost --content-repository AB --doc-id T20240521095500R93055795mCreate3
+copy-document --from-server localhost --from-content-repository FS --doc-id T20240521095500R44724195mCreate4 --to-server localhost --to-content-repository AB</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -570,7 +570,7 @@ be continued after a command has failed.
 <div class="sect3">
 <h4 id="_copy_document">copy-document</h4>
 <div class="paragraph">
-<p>Copies a document from one content repository to another.</p>
+<p>Copies a document with all components from one repository to another by fetching the document using a single "docGet" request.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. parameters</caption>
@@ -586,27 +586,27 @@ be continued after a command has failed.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fromServer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">from-server</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server to copy from</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fromContentRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">from-content-repository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository to copy from</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">toServer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">to-server</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the server to copy to</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">toContentRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">to-content-repository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content repository to copy to</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docProt (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-prot (optional)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document access settings.</p></td>
 </tr>
 </tbody>
@@ -618,7 +618,7 @@ be continued after a command has failed.
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The optional docProt parameter will override the configured default docProt setting in the configuration. There is a
+The optional doc-prot parameter will override the configured default docProt setting in the configuration. There is a
 difference between an empty string and null. An empty string will set no access settings, where null will tell the
 content repository to use the default access settings.
 </td>
@@ -628,14 +628,14 @@ content repository to use the default access settings.
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">copy-document server1 FS T20240521095500R93055795mCreate3 server2 AB crud</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">copy-document --from-server server1 --from-content-repository FS --doc-id T20240521095500R93055795mCreate3 --to-server server2 --to-content-repository AB --doc-prot crud</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_delete">delete</h4>
+<h4 id="_copy_document_safe">copy-document-safe</h4>
 <div class="paragraph">
-<p>Deletes a document or a component from the archive.</p>
+<p>Copies a document with all components from one repository to another by fetching the content of each component content with a separate "get" request.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 2. parameters</caption>
@@ -651,34 +651,56 @@ content repository to use the default access settings.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">from-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server to copy from</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contentRepository</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">from-content-repository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository to copy from</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to delete</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">component (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set, only this component will be deleted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">to-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the server to copy to</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">to-content-repository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content repository to copy to</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-prot (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document access settings.</p></td>
 </tr>
 </tbody>
 </table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The optional doc-prot parameter will override the configured default docProt setting in the configuration. There is a
+difference between an empty string and null. An empty string will set no access settings, where null will tell the
+content repository to use the default access settings.
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">delete server1 FS T20240521095500R93055795mCreate3 component1</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">copy-document-safe --from-server server1 --from-content-repository FS --doc-id T20240521095500R93055795mCreate3 --to-server server2 --to-content-repository AB --doc-prot crud</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_get_cert_info">get-cert-info</h4>
+<h4 id="_delete">delete</h4>
 <div class="paragraph">
-<p>Returns information about the certificate of the configured authId (see configuration).</p>
+<p>Deletes a document or a single component of a document.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. parameters</caption>
@@ -698,22 +720,30 @@ content repository to use the default access settings.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contentRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to delete</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">component (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set, only this component will be deleted</p></td>
 </tr>
 </tbody>
 </table>
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">get-cert-info server1 FS</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">delete --server server1 --content-repository FS --doc-id T20240521095500R93055795mCreate3 --component component1</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_get_document_info">get-document-info</h4>
+<h4 id="_get_cert_info">get-cert-info</h4>
 <div class="paragraph">
-<p>Returns information about a specific document.</p>
+<p>Performs a get-cert request on the specified server and content repository.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. parameters</caption>
@@ -733,36 +763,22 @@ content repository to use the default access settings.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contentRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to delete</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">component (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If set, only information for this component will be returned</p></td>
 </tr>
 </tbody>
 </table>
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">get-document-info server1 FS T20240521095500R93055795mCreate3 component1</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">get-cert-info --server server1 --content-repository FS</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_get_document">get-document</h4>
+<h4 id="_get_doc_info">get-doc-info</h4>
 <div class="paragraph">
-<p>Downloads a specific document with all components.</p>
-</div>
-<div class="paragraph">
-<p>The document will be stored in the configured documents directory in a subfolder named like the document&#8217;s ID. Each
-component will be stored in a file with the name of the component and the extension .data accompanied by an additional
-file containing the component&#8217;s content type. The content type file is also named like the component but with the
-extension .contentType.</p>
+<p>Retrieves information about a specific document or a specific component.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 5. parameters</caption>
@@ -782,43 +798,36 @@ extension .contentType.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contentRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to delete</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">component (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If set, only information for this component will be returned</p></td>
 </tr>
 </tbody>
 </table>
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">get-document server1 FS T20240521095500R93055795mCreate3</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">get-doc-info --server server1 --content-repository FS --doc-id T20240521095500R93055795mCreate3 --component component1</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_list_servers">list-servers</h4>
+<h4 id="_get_document">get-document</h4>
 <div class="paragraph">
-<p>Lists all configured servers. This does not actually perform a request against any configured server, but is meant to
-be used to check the configuration.</p>
-</div>
-<div class="listingblock">
-<div class="title">example</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">list-servers</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_post_document">post-document</h4>
-<div class="paragraph">
-<p>Uploads a specific document with all components.</p>
+<p>Downloads a document from the specified repository by fetching the document using a single "docGet" request.</p>
 </div>
 <div class="paragraph">
-<p>The document&#8217;s data is read from the configured documents directory. See <a href="#_get_document">get-document</a> for information about the
-expected structure.</p>
+<p>The document will be stored in the configured documents directory in a subfolder named like the document&#8217;s ID. Each
+component will be stored in a file with the name of the component and the extension .data accompanied by an additional
+file containing the component&#8217;s content type. The content type file is also named like the component but with the
+extension .contentType.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 6. parameters</caption>
@@ -838,44 +847,32 @@ expected structure.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contentRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to delete</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">docProt (optional)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Document access settings.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to download</p></td>
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The optional docProt parameter will override the configured default docProt setting in the configuration. There is a
-difference between an empty string and null. An empty string will set no access settings, where null will tell the
-content repository to use the default access settings.
-</td>
-</tr>
-</table>
-</div>
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">post-document server1 FS T20240521095500R93055795mCreate3 crud</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">get-document --server server1 --content-repository FS --doc-id T20240521095500R93055795mCreate3</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_put_cert">put-cert</h4>
+<h4 id="_get_document_safe">get-document-safe</h4>
 <div class="paragraph">
-<p>Uploads the configured certificate to the server (see configuration).</p>
+<p>Downloads a document from the specified repository by fetching the content of each component content with a separate "get" request.</p>
+</div>
+<div class="paragraph">
+<p>The document will be stored in the configured documents directory in a subfolder named like the document&#8217;s ID. Each
+component will be stored in a file with the name of the component and the extension .data accompanied by an additional
+file containing the component&#8217;s content type. The content type file is also named like the component but with the
+extension .contentType.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 7. parameters</caption>
@@ -895,22 +892,43 @@ content repository to use the default access settings.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contentRepository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to download</p></td>
 </tr>
 </tbody>
 </table>
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">put-cert server1 FS</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">get-document-safe --server server1 --content-repository FS --doc-id T20240521095500R93055795mCreate3</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_get_server_info">get-server-info</h4>
+<h4 id="_list_servers">list-servers</h4>
 <div class="paragraph">
-<p>Retrieves information for a configured server.</p>
+<p>Lists all configured servers. This does not actually perform a request against any configured server, but is meant to
+be used to check the configuration.</p>
+</div>
+<div class="listingblock">
+<div class="title">example</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">list-servers</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_post_document">post-document</h4>
+<div class="paragraph">
+<p>Uploads a document to the specified server and content repository.</p>
+</div>
+<div class="paragraph">
+<p>The document&#8217;s data is read from the configured documents directory. See <a href="#_get_document">get-document</a> for information about the
+expected structure.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 8. parameters</caption>
@@ -930,7 +948,99 @@ content repository to use the default access settings.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">contentRepository (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the document to upload</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doc-prot (optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document access settings.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The optional doc-prot parameter will override the configured default docProt setting in the configuration. There is a
+difference between an empty string and null. An empty string will set no access settings, where null will tell the
+content repository to use the default access settings.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">example</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">post-document --server server1 --content-repository FS --doc-id T20240521095500R93055795mCreate3 --doc-prot crud</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_put_cert">put-cert</h4>
+<div class="paragraph">
+<p>Performs a put-cert request on the specified server and content repository.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the content repository</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">example</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">put-cert --server server1 --content-repository FS</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_server_info">server-info</h4>
+<div class="paragraph">
+<p>Performs a server info request for a specific server.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. parameters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content-repository (optional)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If set, only information about this content repository will be returned</p></td>
 </tr>
 </tbody>
@@ -938,7 +1048,7 @@ content repository to use the default access settings.
 <div class="listingblock">
 <div class="title">example</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">get-server-info server1 FS</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">server-info --server server1 --content-repository FS</code></pre>
 </div>
 </div>
 </div>
@@ -1199,7 +1309,7 @@ will be disabled.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-02-09 03:16:09 UTC
+Last updated 2026-02-09 14:54:04 UTC
 </div>
 </div>
 <style>
