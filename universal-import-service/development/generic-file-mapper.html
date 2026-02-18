@@ -883,12 +883,44 @@ returns true in this method will be used.</p>
 placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_file_import_statistics">File import statistics</h3>
+<div class="paragraph">
+<p>The file mapper collects statistics containing the number of imported files as well as counters for failed and skipped
+files. These statistics can be retrieved using the actuator endpoints of the Universal Import Service. Additionally, the
+file mapper can export a statistics file at configurable intervals. These statistics files will contain the number of
+imported, failed and skipped files since the last export of the statistics. The export of the statistics files can be
+configured as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">statistics files configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  file:
+    file-import-1:
+      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"
+      statistics-export-cron-schedule: "*/5 * * * * ?"
+      statistics-export-path: "${project.build.testOutputDirectory}/content/statistics"
+      statistics-export-filename: "$routeId$@$timestamp$.statistics"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The value for the generated file names can contain the placeholders <code>$routeId$</code> for the ID of the current route, and
+<code>$timestamp$</code> for the current date and time. Using timestamps, multiple statistics files can be created. Without timestamp,
+each export will overwrite the created file.</p>
+</div>
+<div class="paragraph">
+<p>If <code>statistics-export-path</code> is not configured, no statistics files will be exported,
+but the statistics will still be logged at <code>INFO</code> level. If the <code>statistics-export-cron-schedule</code> is empty, statistics
+will neither be logged nor exported to files (this is the default configuration).</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-02-18 13:23:42 UTC
+Last updated 2026-02-18 14:39:18 UTC
 </div>
 </div>
 </body>

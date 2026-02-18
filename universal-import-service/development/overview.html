@@ -493,7 +493,10 @@ the Camel routes. In the following example, three CSV import routes and one file
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
   file:
     file-import-1:
-      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"</code></pre>
+      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"
+      statistics-export-cron-schedule: "*/5 * * * * ?"
+      statistics-export-path: "${project.build.testOutputDirectory}/content/statistics"
+      statistics-export-filename: "$routeId$@$timestamp$.statistics"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -557,7 +560,7 @@ Skipped: 5</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-02-18 13:23:42 UTC
+Last updated 2026-02-18 14:39:18 UTC
 </div>
 </div>
 </body>
