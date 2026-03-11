@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Clustering</title>
+<title>Introduction</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -164,18 +164,18 @@ window.onload = function() {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO Job Service 12.0.1</div>
+<div id="toctitle">EITCO Job Service 12.1.0</div>
 <ul class="sectlevel1">
+<li><a href="#_introduction"><strong>Introduction</strong></a></li>
+<li><a href="#_writing_jobs"><strong>Writing jobs</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_annotation_based_job_registration">Annotation based job registration</a></li>
+<li><a href="#_programmatic_job_registration">Programmatic job registration</a></li>
+</ul>
+</li>
 <li><a href="#_clustering"><strong>Clustering</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_disable_job_execution_on_individual_jobservice_instances">Disable job execution on individual JobService instances</a></li>
-<li><a href="#_rest_interface">REST Interface</a></li>
-<li><a href="#_providing_job_implementations">Providing job implementations</a></li>
-</ul>
-</li>
-<li><a href="#_database"><strong>Database</strong></a>
-<ul class="sectlevel2">
-<li><a href="#_database_table_creation">Database table creation</a></li>
 </ul>
 </li>
 <li><a href="#_miscellaneous"><strong>Miscellaneous</strong></a>
@@ -190,100 +190,143 @@ window.onload = function() {
 </div>
 </div>
 <div id="content">
-<div style="page-break-after: always;"></div>
 <div class="sect1">
-<h2 id="_clustering"><strong>Clustering</strong></h2>
+<h2 id="_introduction"><strong>Introduction</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The job service is designed to be used in cluster mode: that is several JobService instances care jointly about executing the scheduled jobs and strive to achieve a perfect load balancing between all JobService instances in the cluster. All JobService instances can change the triggers that define which jobs are to be triggered and when these jobs are to be triggered.</p>
-</div>
-<div class="paragraph">
-<p>The synchronization of the JobService instances is done by using a common database instance and leverages row-locks as synchronization mechanism. Hence all JobService instances must have access to very same database tables.</p>
-</div>
-<div class="paragraph">
-<p>The JobService is not multi-tenant capable! The JobService will currently fail to start if there are several tenants configured.</p>
-</div>
-<div class="paragraph">
-<p>Cluster mode is enabled by default via the following default properties in the <code>application.yaml</code></p>
-</div>
-<div class="listingblock">
-<div class="title">JobService Configuration</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">  quartz:
-    job-store-type: "jdbc"
-    jdbc:
-      initialize-schema: "NEVER"
-    properties:
-      org:
-        quartz:
-          jobStore:
-            driverDelegateClass: "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate"
-            isClustered: true
-            tablePrefix: "ECQZ_"
-          scheduler:
-            instanceId: "AUTO"</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_disable_job_execution_on_individual_jobservice_instances">Disable job execution on individual JobService instances</h3>
-<div class="paragraph">
-<p>By default, all JobService instances will jointly take care of executing jobs and strive to achieve a perfect load balancing between all JobService instances in the cluster.
-The execution of job&#8217;s on individual JobService instances can disabled, such that these instances will not participate in executing  jobs.
-This can be achieved by setting the configuration option <code>spring.quartz.standbyOnlyScheduler</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">JobService Configuration</div>
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  quartz:
-    standbyOnlyScheduler: true</code></pre>
+<p>The Job Service is a distributed job scheduling and execution service built on top of the Quartz Scheduler framework.
+It provides a REST interface for managing scheduled jobs and triggers, allowing you to define when and how frequently jobs should be executed.
+The service is designed to operate in a clustered environment where multiple instances work together to execute jobs in a load-balanced manner.
+All job scheduling data and synchronization is managed through a shared database, ensuring consistency across all service instances in the cluster.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_rest_interface">REST Interface</h3>
-<div class="paragraph">
-<p>The REST interface allows the following:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Editing the triggers that define which jobs shall be executed at what time.</p>
-</li>
-<li>
-<p>Retrieving information about:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>available/known job types that could be scheduled</p>
-</li>
-<li>
-<p>the properties of the configured triggers</p>
-</li>
-<li>
-<p>when the triggers did fire last and when they will fire next</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>There is no way to add new job implementations via the REST interface.</p>
-</div>
-<div class="paragraph">
-<p>Once the service is started you can access the API documentation located at:
-   <code><a href="http://localhost:50001/" class="bare">http://localhost:50001/</a></code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_providing_job_implementations">Providing job implementations</h3>
+<div class="sect1">
+<h2 id="_writing_jobs"><strong>Writing jobs</strong></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The job implementations must be provided in terms of Java classes that implement the interface <code>org.quartz.Job</code>.
-All JobService instances in a cluster will compete for executing all pending jobs. Hence, the Java classes that implement the jobs must be available on all JobService instances in the cluster.</p>
+All JobService instances in a cluster will compete for executing all pending jobs. Hence, the Java classes that implement
+the jobs must be available on all JobService instances in the cluster.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When a job implementation must not be executed concurrently, annotate the job class with <code>@DisallowConcurrentExecution</code>.
+This ensures that the job is never executed by more than one Job Service instance in the cluster at the same time.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The JAR file containing the job implementation classes must be a Spring Boot starter. It must be added to the classpath
+of the job service by placing it in the directory defined by the parameter <code>loader.path</code> used to start the service.
+The starter must register the required Spring beans for the jobs. The <code>test-jobs</code> module in the source code repository of the
+Job Service can be used as an example for such a starter.</p>
+</div>
+<div class="paragraph">
+<p>The following Maven dependencies are required to implement jobs:</p>
 </div>
 <div class="listingblock">
-<div class="title">Example for an Job implementation</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.quartz-scheduler&lt;/groupId&gt;
+    &lt;artifactId&gt;quartz&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-autoconfigure&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;cmn-job-service-common&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_annotation_based_job_registration">Annotation based job registration</h3>
+<div class="paragraph">
+<p>The easiest way to register a job is to use annotations. By adding <code>@JobDetails</code> to your job implementation, the <code>JobDetail</code> will be automatically created. You can also use <code>@CronTrigger</code> or <code>@SimpleTrigger</code> to automatically create triggers for the job.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for an annotated Job implementation</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@JobDetails(name = "AnnotatedTestJob", group = "test", description = "Test job for annotation-based job execution") <i class="conum" data-value="1"></i><b>(1)</b>
+@CronTrigger(name = "AnnotatedTestJobTrigger1", group = "test", cronExpression = "0/5 * * * * ?") <i class="conum" data-value="2"></i><b>(2)</b>
+@CronTrigger(name = "AnnotatedTestJobTrigger2", group = "test", cronExpression = "0 0 0 * * ?", jobConfigurationKey = "test-jobs.test-job-1.config") <i class="conum" data-value="3"></i><b>(3)</b>
+public class AnnotatedTestJob implements Job {
+
+    private static final Logger LOGGER = Logger.getLogger(AnnotatedTestJob.class);
+
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+
+        LOGGER.info(() -&gt; "Executing AnnotatedTestJob");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@JobDetails</code> annotation defines the name, group, and description of the job.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@CronTrigger</code> annotation defines a cron trigger for the job.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A second cron trigger with job configuration data loaded from the Job Service&#8217;s configuration at the specified key.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To make the JobService aware of the annotated job, you need to register it as a Spring bean:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for registering an annotated Job as a bean</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Job annotatedTestJob() {
+    return new AnnotatedTestJob();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, if you use classpath scanning, you can simply add <code>@Component</code> to your job class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_programmatic_job_registration">Programmatic job registration</h3>
+<div class="paragraph">
+<p>If you need more control over the job registration or prefer to separate job implementations from their configuration, you can register jobs programmatically. This approach involves three steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Implement the <code>org.quartz.Job</code> interface.</p>
+</li>
+<li>
+<p>Register a <code>JobDetail</code> as a Spring bean, preferably using <code>JobDetailFactoryBean</code>.</p>
+</li>
+<li>
+<p>Register a trigger for the job, preferably using <code>CronTriggerFactoryBean</code> or <code>SimpleTriggerFactoryBean</code>.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_implementing_the_job">Implementing the Job</h4>
+<div class="paragraph">
+<p>The job implementation is a Java class that implements the <code>org.quartz.Job</code> interface.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for a Job implementation</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class SampleJob implements Job {
 
@@ -302,71 +345,158 @@ All JobService instances in a cluster will compete for executing all pending job
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Dependency injection will work properly when Job class is instantiated using JobDetail-Beans</td>
+<td>Dependency injection will work properly when the job class is instantiated via a <code>JobDetailFactoryBean</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Code your logic into the execute method</td>
+<td>Implement your logic within the <code>execute</code> method.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can pass configuration data from the trigger to the job using the <em>job data map</em> which can be set in the trigger
+factory bean and then accessed using the <code>JobExecutionContext</code>.
+</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The Java classes that implement the interface <code>org.quartz.Job</code> are instantiated using a constructor without parameters. A new  java object is created for each execution.</p>
+<p>Note that a new instance of the job class is created for each execution using its default constructor.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_registering_the_jobdetail">Registering the JobDetail</h4>
+<div class="paragraph">
+<p>To make a job available to the scheduler, it must be registered as a <code>JobDetail</code>. While Quartz requires <code>JobDetail</code> objects, it is highly recommended to use Spring&#8217;s <code>JobDetailFactoryBean</code>. This ensures that Spring handles the instantiation of the job class, allowing for dependency injection (e.g., via <code>@Autowired</code>).</p>
 </div>
 <div class="paragraph">
-<p>These job implementations can not be referenced directly from job triggers, but need to be "registered" with the scheduler. These registrations result in <code>JobDetail</code>-objects/<code>JobDetailFactoryBean</code>-beans that have names and can be referenced from job triggers by that name.
-To make use of spring based dependency injection in Job classes the <code>JobDetail</code>-objects ultimately required by the QUARTZ implementation must not be instantiated manually. One should make use of <code>JobDetailFactoryBean</code>-beans to let spring create the <code>JobDetail</code>-objects.
-The registration of <code>JobDetailFactoryBean</code>-beans is done via spring-boot auto-configuration.
-The name of the <code>JobDetail</code>-objects created via <code>JobDetailFactoryBean</code>-beans is the name of the bean! So you can reference the <code>JobDetail</code> by the name of the bean (and the <code>group</code>- name which defaults to <code>DEFAULT</code> if not specified) when creating triggers for the <code>JobDetail</code>.
-The job implementation classes will usually be bundled in a jar file containing a <code>META-INF/spring.factories</code> manifest file that specifies a configuration Bean, which defines <code>JobDetailFactoryBean</code>-Beans that define the jobs that can be executed. These <code>JobDetailFactoryBean</code>-beans do reference the Java classes that implement the interface <code>org.quartz.Job</code> and do specify additional properties/configuration parameters.</p>
+<p>The name of the <code>JobDetail</code> will be the name of the Spring bean (unless explicitly specified otherwise), and the default group is <code>DEFAULT</code>.</p>
 </div>
 <div class="listingblock">
-<div class="title">META-INF/spring.factories</div>
+<div class="title">Example for a JobDetail bean definition</div>
 <div class="content">
-<pre class="highlight"><code class="language-ini" data-lang="ini">org.springframework.boot.autoconfigure.EnableAutoConfiguration=de.eitco.commons.job.service.test.testjobs.TestJobRegistrationConfiguration</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Example for a JobDetail-Bean</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
-    public JobDetailFactoryBean alienCheckJobDetail() {
-        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
-        jobDetailFactory.setJobClass(SampleJob.class); <i class="conum" data-value="1"></i><b>(1)</b>
-        jobDetailFactory.setDescription("Invoke Alien check ...");
-        jobDetailFactory.setDurability(true); <i class="conum" data-value="2"></i><b>(2)</b>
-        return jobDetailFactory;
-    }</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public JobDetailFactoryBean alienCheckJobDetail() {
+    JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+    jobDetailFactory.setJobClass(SampleJob.class); <i class="conum" data-value="1"></i><b>(1)</b>
+    jobDetailFactory.setDescription("Invoke Alien check ...");
+    jobDetailFactory.setDurability(true); <i class="conum" data-value="2"></i><b>(2)</b>
+    return jobDetailFactory;
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The Job implementation class to use</td>
+<td>Specify the job implementation class.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Usually set to true, such that the job detail is not deleted, when it is no longer referenced by any trigger.</td>
+<td>Setting durability to <code>true</code> ensures the job detail is not deleted when it&#8217;s no longer referenced by any trigger.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_registering_the_trigger">Registering the Trigger</h4>
+<div class="paragraph">
+<p>Once the <code>JobDetail</code> is registered, you can define one or more triggers for it. For programmatic registration, it is recommended to use Spring&#8217;s <code>CronTriggerFactoryBean</code> or <code>SimpleTriggerFactoryBean</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for a CronTrigger bean definition</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public CronTriggerFactoryBean alienCheckTrigger(JobDetail alienCheckJobDetail) {
+    CronTriggerFactoryBean factoryBean = new CronTriggerFactoryBean();
+    factoryBean.setJobDetail(alienCheckJobDetail); <i class="conum" data-value="1"></i><b>(1)</b>
+    factoryBean.setCronExpression("0 0 0 * * ?"); <i class="conum" data-value="2"></i><b>(2)</b>
+    factoryBean.setDescription("Trigger for Alien check job");
+    return factoryBean;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Reference the <code>JobDetail</code> bean. Spring will automatically inject the <code>JobDetail</code> created by the <code>JobDetailFactoryBean</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Define the schedule using a cron expression.</td>
 </tr>
 </table>
 </div>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
-<h2 id="_database"><strong>Database</strong></h2>
+<h2 id="_clustering"><strong>Clustering</strong></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_database_table_creation">Database table creation</h3>
 <div class="paragraph">
-<p>The data base tables are created by the JobService at startup via the liquibase script:
-<code>job-service\core\src\main\resources\liquibase-changeLog.xml</code>
-The script defines a custom table prefix for all the QUARTZ tables to prevent table-collisions if some other library or service uses the same database schema. Otherwise the change log simply includes the standard liquibase script provided by the QUARTZ implementation:
-<code>/org/quartz/impl/jdbcjobstore/liquibase.quartz.init.xml</code></p>
+<p>The job service is designed to be used in cluster mode: that is several JobService instances care jointly about executing
+the scheduled jobs and strive to achieve a perfect load balancing between all JobService instances in the cluster. All
+JobService instances can change the triggers that define which jobs are to be triggered and when these jobs are to be
+triggered.</p>
 </div>
 <div class="paragraph">
-<p>The QUARTZ implementation can take care of creating the database tables itself, but that solution caused problems in cluster mode.</p>
+<p>The synchronization of the JobService instances is done by using a common database instance and leverages row-locks as
+synchronization mechanism. Hence all JobService instances must have access to very same database tables.</p>
+</div>
+<div class="paragraph">
+<p>The JobService is not multi-tenant capable! The JobService will currently fail to start if there are several tenants configured.</p>
+</div>
+<div class="paragraph">
+<p>Cluster mode is enabled by default via the following default properties in the <code>application.yaml</code></p>
+</div>
+<div class="listingblock">
+<div class="title">Default JobService Configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  quartz:
+    job-store-type: "jdbc"
+    jdbc:
+      initialize-schema: "NEVER"
+    properties:
+      org:
+        quartz:
+          jobStore:
+            driverDelegateClass: "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate"
+            isClustered: true
+            tablePrefix: "ECQZ_"
+          scheduler:
+            instanceId: "AUTO"
+            instanceName: "job-service-scheduler"
+            jmx:
+              export: false
+          threadPool:
+            threadCount: 50
+            makeThreadsDaemons: true</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_disable_job_execution_on_individual_jobservice_instances">Disable job execution on individual JobService instances</h3>
+<div class="paragraph">
+<p>By default, all JobService instances will jointly take care of executing jobs and strive to achieve a perfect load
+balancing between all JobService instances in the cluster.
+The execution of job&#8217;s on individual JobService instances can be disabled, such that these instances will not
+participate in executing  jobs.
+This can be achieved by setting the configuration option <code>spring.quartz.standbyOnlyScheduler</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">JobService Configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">job-service:
+  standbyOnlyScheduler: true</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -490,24 +620,12 @@ The script defines a custom table prefix for all the QUARTZ tables to prevent ta
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>Here are some more references:</p>
-</div>
-<div class="paragraph">
-<p><a href="https://dzone.com/articles/adding-quartz-to-spring-boot" class="bare">https://dzone.com/articles/adding-quartz-to-spring-boot</a></p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.javarticles.com/2016/03/quartz-scheduler-model.html" class="bare">https://www.javarticles.com/2016/03/quartz-scheduler-model.html</a></p>
-</div>
-<div class="paragraph">
-<p><a href="https://jeroenbellen.com/configuring-a-quartz-scheduler-in-a-clustered-spring-boot-application/" class="bare">https://jeroenbellen.com/configuring-a-quartz-scheduler-in-a-clustered-spring-boot-application/</a></p>
-</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-02-06 15:05:14 UTC
+Last updated 2026-03-11 08:58:03 UTC
 </div>
 </div>
 </body>
