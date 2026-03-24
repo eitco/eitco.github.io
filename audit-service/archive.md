@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Audit Service deployed so far
 
+ * [10.0.1](archive/10.0.1)
  * [10.0.0](archive/10.0.0)
  * [9.0.8](archive/9.0.8)
  * [9.0.7](archive/9.0.7)
