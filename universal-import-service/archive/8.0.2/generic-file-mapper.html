@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Untitled</title>
+<title>Generic file mapper</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -435,13 +435,188 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="article">
 <div id="header">
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_generic_file_mapper"><strong>Generic file mapper</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The generic file mapper is the default implementation of the <code>FileMapper</code> interface contained in the service. It can
+import files from a configurable directory into arveo. Properties of the files, for example parts of the path of file
+name, can be extracted as attributes of the arveo entities.</p>
+</div>
+<div class="paragraph">
+<p>The mapper operates in two phases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Phase 1: Collect properties of the file to import. These can be parts of the path, the length or type of the file.</p>
+</li>
+<li>
+<p>Phase 2: Map collected properties to arveo attributes.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_property_collection">Property collection</h3>
+<div class="paragraph">
+<p>Which properties to collect is configurable. Properties can be extracted from the path and file name by position or by
+using a regular expression. The path is split using the system&#8217;s path separator. The file name can be split using a
+configurable separator. The value of each property is a string that can be mapped to an attribute using the attribute
+mappings described below.</p>
+</div>
+<div class="sect3">
+<h4 id="_positional_properties">Positional properties</h4>
+<div class="paragraph">
+<p>Positional properties are collected from the path or file name, after it is split into an array of strings either by using
+the path separator or the configured file name separator character. The position can be given as a positive or negative
+integer. A positive integer (starting at 1) defines the position from left to right. A negative integer (starting at -1)
+defines the position from right to left. For example, in the path <code>/path/to/my/file.txt</code>, the position <code>1</code> would match
+<code>path</code> and the position <code>-2</code> would match <code>my</code>. Likewise, when the file name is used to collect a property and the file
+name separator is configured as <code>_</code>, the position <code>2</code> in the file name <code>invoice_20250982.pdf</code> would match <code>20250982</code>
+(the extension is stripped from the file name by default).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_regular_expression_properties">Regular expression properties</h4>
+<div class="paragraph">
+<p>Properties can be extracted from the path or file name using a regular expression. The expression can use capturing
+groups. The number of the group that contains the property can be configured. For example, the regular expression
+<code>[-,_]([A-Z]{2})$</code> could be used to parse the language <code>DE</code> as two upper-case characters at the end of the file name
+<code>EITCO_arveo-secom_Produktportfolio_DE.pdf</code>. The extension is removed from the filename by default before the expression
+is matched against the file name.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_property_mapping">Property mapping</h4>
+<div class="paragraph">
+<p>Properties to collect are configured using a map, where the keys are the names of the properties. These names can then
+be used in the attribute mappings. Each map entry can contain the following settings. Note that only one way to collect
+a property can be used for each individual property.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. attribute mapping parameters</caption>
+<caption class="title">Table 1. property mapping options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">position-in-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Position in the path split by path separator char. Positive or negative integer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">position-in-file-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Position in the file name split by file name separator char. Positive or negative integer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">path-regex</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Regular expression matched on the path</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file-name-regex</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Regular expression matched on the file name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">remove-extension</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to remove the extension from the path or file name. Default is true.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each regular expression has two settings:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. regular expression settings</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">regular expression</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the number of the group containing the value (default is 0 for entire expression).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_predefined_properties">Predefined properties</h4>
+<div class="paragraph">
+<p>The mapper provides some predefined properties that can be used in attribute mappings without additional configuration
+in the property mappings.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. predefined properties</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Absolute path of the file (string)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File name (string including extension)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_parent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of the file&#8217;s parent directory (string)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_length</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Length of the file (long)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_extension</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extension of the file name only (string)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_last_modified</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last modified timestamp of the file (in IS0-8601 format)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attribute_mapping">Attribute mapping</h3>
+<div class="paragraph">
+<p>The collected properties (and the predefined properties) are mapped to arveo attributes in the attribute mappings.
+The key of each attribute mapping must be a collected or predefined property name. Each attribute mapping can use
+the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. attribute mapping parameters</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -552,7 +727,7 @@ default <code>local-date</code>, <code>local-time</code> or <code>zone-id</code>
 <table>
 <tr>
 <td class="icon">
-<div class="title">Tip</div>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
 The partial default values <code>local-date</code>, <code>local-time</code> and <code>zone-id</code> will not be used for empty values. Use the
@@ -578,9 +753,174 @@ compared to the weaker <code>UUID</code> variant.</p>
 </ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_example_configuration">Example configuration</h3>
+<div class="paragraph">
+<p>The generic file mapper supports individual configurations for each configured import route as shown in the following
+example:</p>
+</div>
+<div class="listingblock">
+<div class="title">configuring the generic mapper</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  file:
+    file-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      uri: "file://..."
+  generic-file-mapper:
+    settings:
+      file-import-1: <i class="conum" data-value="2"></i><b>(2)</b>
+        type-definition-name: "files"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The ID of the import route for the configured directory</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The ID of the configuration for the generic file mapper. Must match the ID of the import route.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example shows how to configure the generic file mapper. The example collects three properties and maps
+these and one of the predefined properties to attributes.</p>
+</div>
+<div class="listingblock">
+<div class="title">example configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">generic-file-mapper:
+  settings:
+    file-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
+      conflict-resolution-strategy: UPDATE_ATTRIBUTES
+      skip-empty-documents: true
+      type-definition-name: "files" <i class="conum" data-value="2"></i><b>(2)</b>
+      properties: <i class="conum" data-value="3"></i><b>(3)</b>
+        parent-name:
+          position-in-path: -2
+        drive-name:
+          position-in-path: 1
+        language:
+          file-name-regex:
+            expression: "[-,_]([A-Z]{2})$"
+            group: 1
+      attributes: <i class="conum" data-value="4"></i><b>(4)</b>
+        _name:
+          attribute-name: file_name
+          type: STRING
+          unique-identifier: true
+        parent-name:
+          attribute-name: parent_name
+          type: STRING
+        language:
+          attribute-name: language
+          type: STRING
+        drive-name:
+          attribute-name: drive_name
+          type: STRING</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Name of the configuration. Must match the name of the configured import route.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Name of the type definition to import into</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Map of collected properties</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Mapping from properties to attributes</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extensions">Extensions</h3>
+<div class="paragraph">
+<p>The generic file importer provides an extension mechanism that allows preprocessing of imported files, for example to
+perform decryption. To use this extension mechanism, a bean of type <code>de.eitco.uis.mappers.common.FilePreprocessor</code> must
+be registered with a custom Spring Boot Starter. <code>FilePreprocessors</code> can influence the way the actual content of the
+file is read, as well as properties like file length, name and path. This mechanism can also be used to provide
+attributes that will be added to the arveo entity created for the file. This allows to implement an import that reads
+files from a directory that do not contain the actual content to import, but a link to another file containing the
+actual content and a collection of attributes to import.</p>
+</div>
+<div class="paragraph">
+<p>A second extension mechanism allows to resolve attributes from arbitrary sources for an imported file. For example,
+the extension could read a YAML file containing additional attributes. To use this extension mechanism, a bean of type
+<code>de.eitco.uis.mappers.common.AttributesProvider</code> must be registered. The attributes returned by an <code>AttributesProvider</code>
+are added after the regular attribute mapping was performed. So it is possible to overwrite already resolved attributes
+using an <code>AttributesProvider</code>.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to register several <code>FilePreprocessor</code> and <code>AttributesProvider</code> beans. The bean used for a specific
+import route is selected by calling the bean&#8217;s <code>usedForRoute</code> method with the ID of the route. The first bean found that
+returns true in this method will be used.</p>
+</div>
+<div class="paragraph">
+<p>The required classes for the extensions are contained in the following artifact:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.uis&lt;/groupId&gt;
+    &lt;artifactId&gt;universal-import-mappers-common&lt;/artifactId&gt;
+    &lt;version&gt;${import.service.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable custom extensions, the Jar containing the Spring Boot Starter (and any additional Jar, if required) must be
+placed in the directory configured as loader path of the service using the <code>-Dloader.path</code> parameter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_file_import_statistics">File import statistics</h3>
+<div class="paragraph">
+<p>The file mapper collects statistics containing the number of imported files as well as counters for failed and skipped
+files. These statistics can be retrieved using the actuator endpoints of the Universal Import Service. Additionally, the
+file mapper can export a statistics file at configurable intervals. These statistics files will contain the number of
+imported, failed and skipped files since the last export of the statistics. The export of the statistics files can be
+configured as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">statistics files configuration</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  file:
+    file-import-1:
+      uri: "file://${project.build.testOutputDirectory}/content?noop=true&amp;moveFailed=.error"
+      statistics-export-cron-schedule: "*/5 * * * * ?"
+      statistics-export-path: "${project.build.testOutputDirectory}/content/statistics"
+      statistics-export-filename: "$routeId$@$timestamp$.statistics"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The value for the generated file names can contain the placeholders <code>$routeId$</code> for the ID of the current route, and
+<code>$timestamp$</code> for the current date and time. Using timestamps, multiple statistics files can be created. Without timestamp,
+each export will overwrite the created file.</p>
+</div>
+<div class="paragraph">
+<p>If <code>statistics-export-path</code> is not configured, no statistics files will be exported,
+but the statistics will still be logged at <code>INFO</code> level. If the <code>statistics-export-cron-schedule</code> is empty, statistics
+will neither be logged nor exported to files (this is the default configuration).</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-03-24 23:21:13 UTC
+Last updated 2026-03-25 08:46:14 UTC
 </div>
 </div>
 </body>

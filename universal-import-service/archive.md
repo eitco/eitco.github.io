@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Universal Import Service deployed so far.
 
+ * [8.0.2](archive/8.0.2)
  * [8.0.1](archive/8.0.1)
  * [8.0.0](archive/8.0.0)
  * [7.0.1](archive/7.0.1)
