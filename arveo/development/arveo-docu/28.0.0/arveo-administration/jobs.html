@@ -512,11 +512,10 @@ configuration file for the Job Service.
 </div>
 </div>
 <div class="sect1">
-<h2 id="find_abandoned_content_elements_job"><a class="anchor" href="#find_abandoned_content_elements_job"></a>Find abandoned content elements job</h2>
+<h2 id="archive_consistency_check_job"><a class="anchor" href="#archive_consistency_check_job"></a>Archive consistency check job</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>arveo provides a system job that can be used to scan a storage profile for content elements that are no longer referenced by an entity in the database. This job is intended to be triggered manually to perform cleanup operations after system failures.
-The job writes the IDs of identified abandoned content elements to a file. The content elements will not be deleted from the storage.</p>
+<p>arveo provides a system job that can be used to scan a storage profile for content elements that are either missing or no longer referenced by an entity in the database (abandoned content). This job is intended to be triggered manually to check the consistency of an archive. Found missing and abandoned content IDs are written to database tables.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -531,15 +530,27 @@ Depending on the number of content elements in the storage and the number of ent
 </table>
 </div>
 <div class="paragraph">
-<p>The job requires two parameters:</p>
+<p>The job requires several parameters:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>profile: The name of the storage profile to scan</p>
+<p><code>profile</code>: The name of the storage profile to scan.</p>
 </li>
 <li>
-<p>fileName: A path to a file that will contain the IDs of identified abandonded content elements.</p>
+<p><code>truncateTempTablesWhenFinished</code> (default: <code>true</code>): Whether to truncate the temporary tables used during the process after the job has finished.</p>
+</li>
+<li>
+<p><code>doubleCheckAbandonedIds</code> (default: <code>false</code>): If set to <code>true</code>, the job will only double-check the IDs already present in the <code>ECR_ABANDONED_CONTENT_IDS</code> table against the database.</p>
+</li>
+<li>
+<p><code>doubleCheckMissingIds</code> (default: <code>false</code>): If set to <code>true</code>, the job will only double-check the IDs already present in the <code>ECR_MISSING_CONTENT_IDS</code> table against the storage.</p>
+</li>
+<li>
+<p><code>storageToDatabaseBatchSize</code> (default: 1000): The size of the batches of storage object IDs written to the temporary database table.</p>
+</li>
+<li>
+<p><code>databaseToDatabaseBatchSize</code> (default: 1000): The size of the batches of database content IDs copied from the content table(s) to the temporary database table.</p>
 </li>
 </ul>
 </div>
@@ -550,17 +561,89 @@ Depending on the number of content elements in the storage and the number of ent
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The storage profile must be a "real" profile. The bucket organizer plugin, wich distributes content over several actual profiles, does not support listing all content IDs and cannot be used for the job.
+The <code>doubleCheckAbandonedIds</code> and <code>doubleCheckMissingIds</code> parameters must not be set to <code>true</code> simultaneously.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The storage profile must be a "real" profile. The bucket organizer plugin, which distributes content over several actual profiles, does not support listing all content IDs and cannot be used for the job.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The <a href="ecr-shell.html" class="xref page">ecr-shell</a> can be used to trigger the job. The following example shows how to run the job with the two parameters mentioned above:</p>
+<p>The job uses several database tables for its operations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ECR_TEMP_DATABASE_CONTENT_IDS</code>: Stores all content IDs found in the database for the given profile while the job is running.</p>
+</li>
+<li>
+<p><code>ECR_TEMP_STORAGE_CONTENT_IDS</code>: Stores all content IDs found in the storage profile while the job is running.</p>
+</li>
+<li>
+<p><code>ECR_MISSING_CONTENT_IDS</code>: Stores content IDs that are referenced in the database but are missing from the storage.</p>
+</li>
+<li>
+<p><code>ECR_ABANDONED_CONTENT_IDS</code>: Stores content IDs that exist in the storage but are no longer referenced in the database.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All of these database tables are arveo type definitions that can be queried using the API or the <a href="ecr-shell.html" class="xref page">ecr-shell</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="chunk_content_ids"><a class="anchor" href="#chunk_content_ids"></a>Chunk content IDs</h3>
+<div class="paragraph">
+<p>The consistency check job processes every individual <a href="content-elements-storage.html#chunking" class="xref page">chunk</a> of a content element. For this purpose, the job uses the chunk content ID of each chunk.</p>
+</div>
+<div class="paragraph">
+<p>If a content element is not chunked, the chunk content ID is identical to the content ID. If a content element is split into multiple chunks, the chunk content IDs are composed of the base content ID, followed by an underscore (<code>_</code>) and the chunk number (starting with <code>0</code>).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>First chunk (index 0)</strong>: The ID is the same as the base content ID (e.g., <code>my-content-id</code>).</p>
+</li>
+<li>
+<p><strong>Subsequent chunks</strong>: The ID includes the chunk number (e.g., <code>my-content-id_1</code>, <code>my-content-id_2</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The job stores these chunk-level IDs in the database tables mentioned above. Consequently, the <code>Delete abandoned content elements job</code> also operates on these individual chunk IDs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="double_checking"><a class="anchor" href="#double_checking"></a>Double checking</h3>
+<div class="paragraph">
+<p>The double checking mechanism allows for an additional verification of previously identified issues.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Double checking abandoned IDs</strong>: This mode is useful when you have a list of abandoned content and want to ensure they are still abandoned before deletion. The job will copy all IDs from <code>ECR_ABANDONED_CONTENT_IDS</code> to the temporary table, collect all IDs from the database, and then update <code>ECR_ABANDONED_CONTENT_IDS</code> with only those that are still not referenced.</p>
+</li>
+<li>
+<p><strong>Double checking missing IDs</strong>: This mode is useful to verify if missing content has been restored or was perhaps only temporarily unavailable. The job will copy IDs from <code>ECR_MISSING_CONTENT_IDS</code> to the temporary database table, scan the storage profile, and update <code>ECR_MISSING_CONTENT_IDS</code> with only those that are still missing.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <a href="ecr-shell.html" class="xref page">ecr-shell</a> can be used to trigger the job. The following example shows how to run the job for a profile:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger ecr-find-abandoned-content "{\"profile\":\"fsProfileHeap\",\"fileName\":\"c:/contentids.csv\"}"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger-job --jobName ecr-check-archive-consistency --options "{\"profile\":\"fsProfileHeap\"}"</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -569,25 +652,37 @@ The storage profile must be a "real" profile. The bucket organizer plugin, wich 
 <h2 id="delete_abandoned_content_elements_job"><a class="anchor" href="#delete_abandoned_content_elements_job"></a>Delete abandoned content elements job</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The file written by the find abandoned content elements job can be used as an input for the delete abandoned content elements job to actually delete the content from the storage. This job, too, is not triggered automatically but must be triggered manually. The ecr-shell can be used to trigger the job as shown below:</p>
+<p>The <code>ECR_ABANDONED_CONTENT_IDS</code> table populated by the archive consistency check job is used as an input for the delete abandoned content elements job to actually delete the content from the storage. This job, too, is not triggered automatically but must be triggered manually. The ecr-shell can be used to trigger the job as shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger ecr-delete-abandoned-content "{\"profile\":\"fsProfileHeap\",\"fileName\":\"c:/contentids.csv\"}"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger-job --jobName ecr-delete-abandoned-content --options "{\"profile\":\"fsProfileHeap\"}"</code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It is strongly recommended to double-check the identified abandoned content IDs before deleting them permanently.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>The job will delete the blobs in batches. The size of the batches can be configured in the configuration file for the
-content repository service. The default batch size is 1000.</p>
+<p>The job requires two parameters:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
-  server:
-    jobs:
-      delete-abandoned-content:
-        batch-size: 1000</code></pre>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>profile</code>: The name of the storage profile to delete the blobs from.</p>
+</li>
+<li>
+<p><code>batchSize</code> (default: 1000): How many blobs will be deleted from the storage in one operation.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
