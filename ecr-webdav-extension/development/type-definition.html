@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Base Interfaces</title>
+<title>Base interfaces</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -441,17 +441,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The webdav extension provides specialized annotations and base interfaces to access documents and folders by webdav api.</p>
+<p>The WebDAV extension provides specialized annotations and base interfaces to access documents and folders by WebDAV API.</p>
 </div>
 <div class="sect3">
-<h4 id="_base_interfaces">Base Interfaces</h4>
+<h4 id="_base_interfaces">Base interfaces</h4>
 <div class="paragraph">
-<p>The extension provides several base interfaces that your type definitions should extend to gain webdav functionality:</p>
+<p>The extension provides several base interfaces that your type definitions should extend to gain WebDAV functionality:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>de.eitco.ecr.dav.extensions.type.definitions.MandatoryDavProperties</code>: The base interface for all webdav-enabled resources. It defines the properties an arveo type definition needs to implement a dav resource e.g. dav live properties.</p>
+<p><code>de.eitco.ecr.dav.extensions.type.definitions.MandatoryDavProperties</code>: The base interface for all WebDAV-enabled resources. It defines the properties an <em>arveo</em> type definition needs to implement a dav resource e.g. dav live properties.</p>
 </li>
 <li>
 <p><code>de.eitco.ecr.dav.extensions.type.definitions.DavContent</code>: Extends <code>MandatoryDavProperties</code> and works as base interface for all dav content resource type definitions.</p>
@@ -462,18 +462,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <div class="sect4">
-<h5 id="_defining_a_simple_webdav_content">Defining a simple webdav content</h5>
+<h5 id="_defining_a_simple_webdav_content">Defining a simple WebDAV content</h5>
 <div class="paragraph">
-<p>The extension can be used for any content that requires webdav functionality. To do so, your type definition should extend <code>DavContent</code>.</p>
+<p>The extension can be used for any content that requires WebDAV functionality. To do so, your type definition should extend <code>DavContent</code>.</p>
 </div>
 <div class="paragraph">
-<p>This way it will have all relevant <a href="https://datatracker.ietf.org/doc/html/rfc4918#section-15">webdav live properties</a>. All other
-webdav properties ("dead" properties) will - by default - be stored as arveo variables. The variable name will be the properties xml namespace followed by a pipe (<code>|</code>) and its element name, the variable value will be a text representation of the properties xml value.</p>
+<p>This way it will have all relevant <a href="https://datatracker.ietf.org/doc/html/rfc4918#section-15">WebDAV live properties</a>. All other
+WebDAV properties ("dead" properties) will - by default - be stored as <em>arveo</em> variables. The variable name will be the properties xml namespace followed by a pipe (<code>|</code>) and its element name, the variable value will be a text representation of the properties xml value.</p>
 </div>
 <div class="paragraph">
 <p>This way any arbitrary property can be set at runtime. The downside of storing the properties as variables is that searches
-have fewer features and database indices will be more complex. If you have a specific set of properties you expect on every member of a given type, you can specify them as arveo properties in your type. The webdav extension will automatically expose them as
-webdav "dead" properties. You may specify the properties' <a href="https://datatracker.ietf.org/doc/html/rfc4918#section-4.4">webdav specific name</a> using the annotation <code>de.eitco.ecr.dav.extensions.type.definitions.XmlName</code>. If omitted the namespace of a property defaults to <code>http://dav.eitco.ecr.de/index-data/&lt;type-name&gt;</code> and the element name to its field name.</p>
+have fewer features and database indices will be more complex. If you have a specific set of properties you expect on every member of a given type, you can specify them as <em>arveo</em> properties in your type. The WebDAV extension will automatically expose them as
+WebDAV "dead" properties. You may specify the properties' <a href="https://datatracker.ietf.org/doc/html/rfc4918#section-4.4">webdav specific name</a> using the annotation <code>de.eitco.ecr.dav.extensions.type.definitions.XmlName</code>. If omitted the namespace of a property defaults to <code>http://dav.eitco.ecr.de/index-data/&lt;type-name&gt;</code> and the element name to its field name.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -503,13 +503,13 @@ public interface MyDavContent1 extends DavContent { // <b class="conum">(1)</b>
 <div class="colist arabic">
 <ol>
 <li>
-<p><code>MyDavContent1</code> extends <code>DavContent</code>, which provides it with all the necessary webdav properties (file name, content type etc.).</p>
+<p><code>MyDavContent1</code> extends <code>DavContent</code>, which provides it with all the necessary WebDAV properties (file name, content type etc.).</p>
 </li>
 <li>
 <p>It then specifies, that it can only be part of a collection of the type <code>MyDavCollection</code></p>
 </li>
 <li>
-<p>It adds the custom property <code>arbitrary_integer</code>, which will be represent on the dav api as <code>&lt;arbritrary_integer xmlns="\http://dav.eitco.ecr.de/index-data/my_dav_content1"&gt;[integer value]&lt;/arbritrary_integer&gt;</code></p>
+<p>It adds the custom property <code>arbitrary_integer</code>, which will be represented on the DAV API as <code>&lt;arbritrary_integer xmlns="\http://dav.eitco.ecr.de/index-data/my_dav_content1"&gt;[integer value]&lt;/arbritrary_integer&gt;</code></p>
 </li>
 <li>
 <p>It also adds the custom property <code>arbitrary_double</code>, which will be represented as <code>&lt;scale xmlns="\https://content.example.com/example/name/space"&gt;[double value]&lt;/scale&gt;</code></p>
@@ -519,15 +519,15 @@ public interface MyDavContent1 extends DavContent { // <b class="conum">(1)</b>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_type_transition">Type Transition</h4>
+<h4 id="_type_transition">Type transition</h4>
 <div class="paragraph">
-<p>Type transition is the automatic change of resource types during updates based on its properties. This is necessary since in webdav objects are created by <code>PUT</code> or <code>MKCOL</code> requests where no meta-data can be specified. If your project defines several arveo types to be accessible by webdav, you need to define how they can be recognized by their meta-data. To do so, implement one or more type transition rules.</p>
+<p>Type transition is the automatic change of resource types during updates based on its properties. This is necessary since in WebDAV objects are created by <code>PUT</code> or <code>MKCOL</code> requests where no meta-data can be specified. If your project defines several <em>arveo</em> types to be accessible by WebDAV, you need to define how they can be recognized by their meta-data. To do so, implement one or more type transition rules.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="proto-resources">Object Creation and Proto Resources</h4>
+<h4 id="proto-resources">Object creation and proto resources</h4>
 <div class="paragraph">
-<p>When a new object is created by webdav, it is either a collection resource or content resource (depending on whether it is created by <code>PUT</code> or <code>MKCOL</code>). In that state it will be typed with the according proto resource type.</p>
+<p>When a new object is created by WebDAV, it is either a collection resource or content resource (depending on whether it is created by <code>PUT</code> or <code>MKCOL</code>). In that state it will be typed with the according proto resource type.</p>
 </div>
 <div class="paragraph">
 <p>If you have several dav collection resource types or dav content resource types in your project, you need to specify whose are your proto content and proto collection resource. Your proto resources may not have any mandatory fields that do not have default values, since those fields cannot be set in the creation calls. To specify a dav resource type as proto resource, annotate it with <code>de.eitco.ecr.dav.extensions.type.definitions.ProtoDavResource</code> as the example class <code>de.eitco.ecr.dav.types.MyDavProtoContent</code> does:</p>
@@ -562,9 +562,9 @@ public interface MyDavProtoContent extends DavContent { // <b class="conum">(2)<
 <p>If you only have one dav collection resource or one dav content resource you do not need to specify it explicitly as proto resource. Note that it will be assumed to be a proto resource automatically and thus may not have mandatory properties without default values.</p>
 </div>
 <div class="sect4">
-<h5 id="type-transition-rule">Implementing a Type Transition Rule</h5>
+<h5 id="type-transition-rule">Implementing a type transition rule</h5>
 <div class="paragraph">
-<p>If you have several dav content or dav collection resources you need to implement the interface <code>de.eitco.ecr.dav.extensions.type.definitions.TypeTransitionRule</code> to determine the correct type given an objects properties.</p>
+<p>If you have several DAV content or DAV collection resources you need to implement the interface <code>de.eitco.ecr.dav.extensions.type.definitions.TypeTransitionRule</code> to determine the correct type given an objects properties.</p>
 </div>
 <div class="paragraph">
 <p>To implement a type transition rule, create a class that implements the <code>TypeTransitionRule</code> interface and register it as a Spring <code>@Component</code>.</p>
@@ -634,7 +634,7 @@ public interface MyDavProtoContent extends DavContent { // <b class="conum">(2)<
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-04-15 22:13:21 UTC
+Last updated 2026-04-16 12:55:37 UTC
 </div>
 </div>
 </body>
