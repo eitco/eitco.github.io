@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Base Interfaces</title>
+<title>Base interfaces</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -444,7 +444,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The ILM extension provides specialized annotations and base interfaces to manage document retention and legal holds.</p>
 </div>
 <div class="sect4">
-<h5 id="_base_interfaces">Base Interfaces</h5>
+<h5 id="_base_interfaces">Base interfaces</h5>
 <div class="paragraph">
 <p>The extension provides several base interfaces that your type definitions should extend to gain ILM functionality:</p>
 </div>
@@ -486,7 +486,7 @@ public interface MyIlmContent extends IlmContent {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_adding_ilm_functionality_to_custom_arveo_types">Adding ILM functionality to custom arveo types</h5>
+<h5 id="_adding_ilm_functionality_to_custom_arveo_types">Adding ILM functionality to custom <em>arveo</em> types</h5>
 <div class="paragraph">
 <p>To add ILM functionality to your custom arveo types, they must extend one of the base interfaces:</p>
 </div>
@@ -521,13 +521,13 @@ public interface MyIlmContent extends IlmContent {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_type_transition">Type Transition</h5>
+<h5 id="_type_transition">Type transition</h5>
 <div class="paragraph">
 <p>Type transition is the automatic change of resource types during updates based on its properties. This is necessary since ilm is defined on top of webdav, where objects are created by <code>PUT</code> or <code>MKCOL</code> requests where no meta-data can be specified. If your project defines several arveo types to be accessible by ilm, you need to define how they can be recognized by their meta-data. To do so, implement one or more type transition rules.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="proto-resources">Object Creation and Proto Resources</h5>
+<h5 id="proto-resources">Object creation and proto resources</h5>
 <div class="paragraph">
 <p>When a new object is created by ilm, it is either a collection resource or content resource (depending on whether it is created by <code>PUT</code> or <code>MKCOL</code>). In that state it will be typed with the according proto resource type.</p>
 </div>
@@ -547,7 +547,7 @@ public interface MyIlmProtoContent extends IlmContent {
 <p>If you only have one ilm collection resource or one ilm content resource you do not need to specify it explicitly as proto resource. Note that it will be assumed to be a proto resource automatically and thus may not have mandatory properties without default values.</p>
 </div>
 <div class="sect5">
-<h6 id="type-transition-rule">Implementing a Type Transition Rule</h6>
+<h6 id="type-transition-rule">Implementing a Type transition rule</h6>
 <div class="paragraph">
 <p>If you have several ilm content or ilm collection resources you need to implement the interface <code>de.eitco.ecr.dav.extensions.type.definitions.TypeTransitionRule</code> to determine the correct type given an objects properties.</p>
 </div>
@@ -642,7 +642,7 @@ public interface MyIlmProtoContent extends IlmContent {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_ilm_and_archive_link">Ilm and Archive Link</h5>
+<h5 id="_ilm_and_archive_link">ILM and Archive Link</h5>
 <div class="paragraph">
 <p>Ilm specifies archive link references. An ilm archive link reference is an ilm content resource with</p>
 </div>
@@ -738,18 +738,18 @@ public interface MyArchiveLinkComponent extends ArchiveLinkComponent { // <b cla
 <div class="ulist">
 <ul>
 <li>
-<p>document archive link references <code>de.eitco.ecr.ilm.IlmArchiveLinkReference</code></p>
+<p>document Archive Link references <code>de.eitco.ecr.ilm.IlmArchiveLinkReference</code></p>
 </li>
 <li>
-<p>component archive link references <code>de.eitco.ecr.ilm.IlmArchiveLinkComponentReference</code></p>
+<p>component Archive Link references <code>de.eitco.ecr.ilm.IlmArchiveLinkComponentReference</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The document archive link reference is an ilm type and thus may have ilm managed retention properties (<code>expiration_date</code> and <code>legal_hold</code>) which is translated to arveo retention properties as for any other ilm resource. It also references its corresponding archive link document with a foreign key configured to cascade on delete. If a request tries to delete the archive link document, this would try to delete the archive link document reference, which will fail if this violates its retention constraints, thus failing the transaction with a retention violation exception.</p>
+<p>The document Archive Link reference is an ILM type and thus may have ilm managed retention properties (<code>expiration_date</code> and <code>legal_hold</code>) which is translated to arveo retention properties as for any other ilm resource. It also references its corresponding archive link document with a foreign key configured to cascade on delete. If a request tries to delete the Archive Link document, this would try to delete the Archive Link document reference, which will fail if this violates its retention constraints, thus failing the transaction with a retention violation exception.</p>
 </div>
 <div class="paragraph">
-<p>The component archive link reference builds on top of that: It holds a foreign key to the archive link reference that references the archive link document its referenced archive link component belongs to. This foreign key has two purposes:</p>
+<p>The component Archive Link reference builds on top of that: It holds a foreign key to the archive link reference that references the Archive Link document its referenced Archive Link component belongs to. This foreign key has two purposes:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -762,14 +762,14 @@ public interface MyArchiveLinkComponent extends ArchiveLinkComponent { // <b cla
 </ol>
 </div>
 <div class="paragraph">
-<p>Additionally, the archive link component reference has a foreign key to an archive link component. This foreign key is also configured as cascade delete, using the same technique as archive link document references to deny delete requests to the referenced archive link component, if the archive link component reference is under retention or litigation hold.</p>
+<p>Additionally, the Archive Link component reference has a foreign key to an Archive Link component. This foreign key is also configured as cascade delete, using the same technique as Archive Link document references to deny delete requests to the referenced Archive Link component, if the Archive Link component reference is under retention or litigation hold.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-04-16 02:42:07 UTC
+Last updated 2026-04-16 08:12:06 UTC
 </div>
 </div>
 </body>

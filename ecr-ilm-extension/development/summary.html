@@ -440,17 +440,92 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 </div>
 <div id="content">
-<div class="paragraph">
-<p>You can start a complete test environment (including dependencies like arveo) using the <code>test/system-test</code> module:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>add dependencies to your project</p>
+<div class="ulist">
+<ul>
+<li>
+<p>add <a href="#dependency-types"><code>de.eitco.ecr.ilm:ecr-ilm-extension-type-definitions:2.0.0-SNAPSHOT</code></a> to your <code>backend/type-definitions</code> module</p>
+<div class="ulist">
+<ul>
+<li>
+<p>also activate the annotation processor in <a href="#dependency-types"><code>de.eitco.ecr.ilm:ecr-ilm-extension-type-definitions:2.0.0-SNAPSHOT</code></a></p>
+</li>
+</ul>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">cd test/system-test
-mvn -Denv</code></pre>
+</li>
+<li>
+<p>add <a href="#dependency-service"><code>de.eitco.ecr.ilm:ecr-ilm-extension-backend:2.0.0-SNAPSHOT</code></a> to your <code>packaging/service</code> module</p>
+<div class="ulist">
+<ul>
+<li>
+<p>adapt its <a href="#configuration-service">security configuration</a></p>
+</li>
+</ul>
 </div>
+</li>
+<li>
+<p>add <a href="#dependency-ecr"><code>de.eitco.ecr.ilm:ecr-ilm-extension-backend-ecr:2.0.0-SNAPSHOT</code></a> to your <code>packaging/content-repository-service</code> module</p>
+</li>
+</ul>
 </div>
-<div class="paragraph">
-<p>The environment will remain active until you press 'Enter' in the terminal.</p>
+</li>
+<li>
+<p>adapt your type definitions</p>
+<div class="ulist">
+<ul>
+<li>
+<p>make your type definition registry implement <code>IlmTypeRegistration</code></p>
+</li>
+<li>
+<p>make the document types you want to be accessible by ilm extend <code>IlmContent</code></p>
+</li>
+<li>
+<p>if you have custom archive link types:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>annotate those with <code>@ArchiveLinkType</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>do this for archive link components as well as archive link documents</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>if you are using the default archive link types</p>
+<div class="ulist">
+<ul>
+<li>
+<p>register the default archive link reference types <code>IlmArchiveLinkReference</code> and <code>IlmArchiveLinkComponentReference</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>if you have several ilm accessible document types you need to</p>
+<div class="ulist">
+<ul>
+<li>
+<p>specify a <a href="#proto-resources">proto content type</a></p>
+</li>
+<li>
+<p>provide <a href="#type-transition-rule">transition rules</a> to recognize a type by its properties</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 <div id="footer">

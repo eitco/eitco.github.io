@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Untitled</title>
+<title>Building the project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -441,6 +441,93 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
+<p>The project follows a modular structure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>extension/</code>: Contains the core ILM logic.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>extension/api/</code>: API definitions for the ILM extension.</p>
+</li>
+<li>
+<p><code>extension/backend/</code>: Backend implementation of the ILM logic, including retention and legal hold property handlers.</p>
+</li>
+<li>
+<p><code>extension/type-definitions/</code>: Annotations and processors for defining ILM-enabled types.</p>
+</li>
+<li>
+<p><code>extension/xml-types/</code>: XML type definitions for ILM communication.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>backend/</code>: Example implementation using the extension.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>backend/type-definitions/</code>: Example arveo type definitions (e.g., <code>MyArchiveLinkDocument</code>, <code>MyArchiveLinkComponent</code>) that use the extension&#8217;s annotations.</p>
+</li>
+<li>
+<p><code>backend/api/</code>: Example service API.</p>
+</li>
+<li>
+<p><code>backend/implementation/</code>: Implementation of the example service.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>packaging/</code>: Modules for packaging the application.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>packaging/service/</code>: Packages the example spring boot service.</p>
+</li>
+<li>
+<p><code>packaging/content-repository-service/</code>: Packages a customized arveo content repository image including the example type definitions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>frontend/</code>: Example web frontend (Angular).</p>
+</li>
+<li>
+<p><code>test/</code>: System tests for verifying the end-to-end functionality.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_building_the_project">Building the project</h3>
+<div class="paragraph">
+<p>To build the entire project, including the extension and the example implementation, run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">mvn clean install</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will generate:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An executable JAR in <code>packaging/service/target</code>.</p>
+</li>
+<li>
+<p>Docker images for the service and the customized content repository.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_the_example_environment">Running the example environment</h3>
+<div class="paragraph">
 <p>You can start a complete test environment (including dependencies like arveo) using the <code>test/system-test</code> module:</p>
 </div>
 <div class="listingblock">
@@ -451,6 +538,26 @@ mvn -Denv</code></pre>
 </div>
 <div class="paragraph">
 <p>The environment will remain active until you press 'Enter' in the terminal.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_debugging">Debugging</h3>
+<div class="paragraph">
+<p>To debug the service in your IDE:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start the environment without the service: <code>mvn -Denv -Dservice.skip</code>.</p>
+</li>
+<li>
+<p>Run <code>de.eitco.ecr.ilm.service.IlmExampleServiceStandaloneApplication</code> in debug mode from your IDE.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Configuration templates for the test environment can be found in <code>test/system-test/src/test/resource-templates/config</code>.</p>
+</div>
 </div>
 </div>
 <div id="footer">

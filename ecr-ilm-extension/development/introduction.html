@@ -441,16 +441,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>You can start a complete test environment (including dependencies like arveo) using the <code>test/system-test</code> module:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">cd test/system-test
-mvn -Denv</code></pre>
-</div>
+<p>The <code>ecr-ilm</code> project provides an Information Lifecycle Management (ILM) extension for the <em>arveo</em> Content Repository. It allows managing the lifecycle of documents, specifically those linked via SAP ArchiveLink.</p>
 </div>
 <div class="paragraph">
-<p>The environment will remain active until you press 'Enter' in the terminal.</p>
+<p>Since ILM is specified on top of WebDAV, a lot of this documentation repeats the documentation of the <a href="https://eitco.github.io/ecr-webdav-extension/development/index.html"><em>arveo</em> WebDAV extension</a>.</p>
+</div>
+<div class="paragraph">
+<p>The project is structured into two main parts:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>The ILM extension</strong>: Located in the <code>extension</code> submodule, this contains the core logic and reusable components for ILM. Those modules can be used to add ILM functionality to your <em>arveo</em>-based project.</p>
+</li>
+<li>
+<p><strong>The example implementation</strong>: The rest of the project (backend, frontend, packaging) serves as an example of how to use and integrate the extension to your project.</p>
+</li>
+</ol>
 </div>
 </div>
 <div id="footer">
