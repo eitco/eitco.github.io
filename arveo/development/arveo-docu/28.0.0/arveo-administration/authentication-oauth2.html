@@ -549,13 +549,13 @@ The values to set for the different flows are shown in the following table:</p>
 <h2 id="access_tokens_and_openid_connect"><a class="anchor" href="#access_tokens_and_openid_connect"></a>Access tokens and OpenID Connect</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The arveo services retrieve required information about the user from the access token. The <em>authentication</em> of the user is done by validating the signature of the JSON web token (JWT) or by introspecting the opaque token submitted in the request. <em>Authorization-</em> and additional information of the user like name, e-mail or custom attributes are retrieved from the access token&#8217;s claims.</p>
+<p>The <em>arveo</em> services retrieve required information about the user from the access token. The <em>authentication</em> of the user is done by validating the signature of the JSON web token (JWT) or by introspecting the opaque token submitted in the request. <em>Authorization-</em> and additional information of the user like name, e-mail or custom attributes are retrieved from the access token&#8217;s claims.</p>
 </div>
 <div class="paragraph">
-<p>Each arveo service checks the audience (<em>aud</em>) claim of a JWT to ensure that the user is authorized to access the service. The <em>aud</em> claim must contain the service&#8217;s name. The following table contains the names of the services.</p>
+<p>Each <em>arveo</em> service checks the audience (<em>aud</em>) claim of a JWT to ensure that the user is authorized to access the service. The <em>aud</em> claim must contain the service&#8217;s name. The following table contains the names of the services.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">audiences</caption>
+<caption class="title">Audiences</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -595,7 +595,7 @@ The values to set for the different flows are shown in the following table:</p>
 <p>The information read from the access token can be used in ABAC security methods to check a user&#8217;s access rights. Sometimes the information in the access tokens might not be sufficient. For example, information about a user&#8217;s group memberships might be too big to be stored in an access token. For situations like this, the OpenID Connect (OIDC) user information endpoint can be used to load additional information about a user. Information loaded using OIDC is added to the security context and is available in ABAC security methods, too. To activate this feature, the following configuration parameter must be set:</p>
 </div>
 <div class="listingblock">
-<div class="title">enabling OIDC</div>
+<div class="title">Enabling OIDC</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">commons:
   security:
@@ -609,7 +609,7 @@ The values to set for the different flows are shown in the following table:</p>
 <p>By default, the URI of the user info endpoint is determined automatically by using the configured issuer URL of the resource-server configuration. Alternatively, the issuer URI for the OIDC lookup can be configured as shown below:</p>
 </div>
 <div class="listingblock">
-<div class="title">configuring the issuer-uri</div>
+<div class="title">Configuring the issuer-uri</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">commons:
   security:
@@ -647,7 +647,7 @@ The external ID used in the mapping is read from the subject claim of the token 
 <p>The automatic assignment of internal IDs can be deactivated as shown below:</p>
 </div>
 <div class="listingblock">
-<div class="title">deactivating automatic internal ID assignment</div>
+<div class="title">Deactivating automatic internal ID assignment</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">commons:
   security:
@@ -669,7 +669,7 @@ The external ID used in the mapping is read from the subject claim of the token 
 <p>A client can access the additional identifiers in the <code>ModificationInformation</code> returned for each entity:</p>
 </div>
 <div class="listingblock">
-<div class="title">accessing additional identifiers</div>
+<div class="title">Accessing additional identifiers</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">AdditionalUserIdentifiers additionalUserIdentifiers = entity.getModificationInformation().getAdditionalUserIdentifiers();
 String creationUserIdentifier = additionalUserIdentifiers.getCreationUserIdentifier();

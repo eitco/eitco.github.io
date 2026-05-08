@@ -498,7 +498,7 @@ configuration file for the Job Service.
 <p>Enabling or disabling a job in either the Content Repository Service or the external Job Service decides where a job will run. The following example shows how to disable certain system jobs. The same configuration can be used for the Content Repository Service and the Job Service.</p>
 </div>
 <div class="listingblock">
-<div class="title">disabling jobs</div>
+<div class="title">Disabling jobs</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
   server:
@@ -623,17 +623,17 @@ The storage profile must be a "real" profile. The bucket organizer plugin, which
 </div>
 </div>
 <div class="sect2">
-<h3 id="double_checking"><a class="anchor" href="#double_checking"></a>Double checking</h3>
+<h3 id="double_checking"><a class="anchor" href="#double_checking"></a>Double-checking</h3>
 <div class="paragraph">
-<p>The double checking mechanism allows for an additional verification of previously identified issues.</p>
+<p>The double-checking mechanism allows for an additional verification of previously identified issues.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Double checking abandoned IDs</strong>: This mode is useful when you have a list of abandoned content and want to ensure they are still abandoned before deletion. The job will copy all IDs from <code>ECR_ABANDONED_CONTENT_IDS</code> to the temporary table, collect all IDs from the database, and then update <code>ECR_ABANDONED_CONTENT_IDS</code> with only those that are still not referenced.</p>
+<p><strong>Double-checking abandoned IDs</strong>: This mode is useful when you have a list of abandoned content and want to ensure they are still abandoned before deletion. The job will copy all IDs from <code>ECR_ABANDONED_CONTENT_IDS</code> to the temporary table, collect all IDs from the database, and then update <code>ECR_ABANDONED_CONTENT_IDS</code> with only those that are still not referenced.</p>
 </li>
 <li>
-<p><strong>Double checking missing IDs</strong>: This mode is useful to verify if missing content has been restored or was perhaps only temporarily unavailable. The job will copy IDs from <code>ECR_MISSING_CONTENT_IDS</code> to the temporary database table, scan the storage profile, and update <code>ECR_MISSING_CONTENT_IDS</code> with only those that are still missing.</p>
+<p><strong>Double-checking missing IDs</strong>: This mode is useful to verify if missing content has been restored or was perhaps only temporarily unavailable. The job will copy IDs from <code>ECR_MISSING_CONTENT_IDS</code> to the temporary database table, scan the storage profile, and update <code>ECR_MISSING_CONTENT_IDS</code> with only those that are still missing.</p>
 </li>
 </ul>
 </div>
