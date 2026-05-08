@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Folder type :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/folder-types.html">
-    <link rel="prev" href="relation-types.html">
-    <link rel="next" href="metadata-types.html">
+    <title>Type definitions :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/type-definitions.html">
+    <link rel="prev" href="../arveo-administration/monitoring.html">
+    <link rel="next" href="access-rights.html">
     <meta name="generator" content="Antora 3.2.0-alpha.11">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
@@ -190,7 +190,7 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Developer</span>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="type-definitions.html">Type definitions</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -233,7 +233,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="relation-types.html">Relation types</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="folder-types.html">Folder types</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -392,8 +392,7 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>Data Modeling</li>
-    <li><a href="folder-types.html">Folder types</a></li>
+    <li><a href="type-definitions.html">Type definitions</a></li>
   </ul>
 </nav>
 </div>
@@ -402,29 +401,36 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Folder type</h1>
+<h1 class="page">Type definitions</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>The following chapter provides a more detailed overview of the type <code>Folder</code>.</p>
+<p>Type definitions describe the domain model of your content repository.
+They define the structure of object types and provide a stable contract for working with content in code.</p>
 </div>
 <div class="paragraph">
-<p>A <code>Folder</code> is an entity that is organized in a file system like tree structure. A <code>Folder</code> can contain custom metadata
-attributes. Documents can be <em>filed</em> in a <code>Folder</code>.</p>
+<p>In arveo, type definitions are represented by Java or Kotlin interfaces.
+Each interface corresponds to one type and is used by the framework to map repository properties to strongly typed methods.</p>
 </div>
 <div class="paragraph">
-<p>A <code>Folder</code> consists of the following components:</p>
+<p>A type definition contains custom attributes.
+These attributes are defined by Java Bean methods in the interface:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Technical meta information, which is filled by <em>arveo</em> and cannot be changed, see <a href="#_system_properties"><strong>System properties</strong></a>.</p>
+<p>A getter method (<code>getXyz()</code> or <code>isXyz()</code> for boolean values)</p>
 </li>
 <li>
-<p>Typed folder type metadata according to a schema defined for the document type.</p>
+<p>A setter method (<code>setXyz(&#8230;&#8203;)</code>)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Any number of versions can be created for a <code>Folder</code>. All the versions are traceable in the repository and can be referenced via independent IDs.</p>
+<p>By adding these bean-style getter and setter methods, you declare which custom attributes exist for the type.</p>
+</div>
+<div class="paragraph">
+<p>The system will create the corresponding database schema automatically.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -433,15 +439,155 @@ attributes. Documents can be <em>filed</em> in a <code>Folder</code>.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Only documents can be <em>filed</em> in a <code>Folder</code>. To enable the filing feature, add the <em>@FilingEnabled</em> annotation to your
-document type.
+The JavaDoc comments from the type definition interfaces will be used as descriptions for the type definition and its attributes.
+This is especially important when arveo is connected to an AI application using the MCP service.
+Meaningful comments for each type definition and attribute will provide crucial context information for the AI application.
 </td>
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="attribute_data_types"><a class="anchor" href="#attribute_data_types"></a>Attribute data types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The return type of a getter defines the data type of the corresponding attribute.
+Supported types include primitives and wrappers (for example <code>int</code>/<code>Integer</code>, <code>long</code>/<code>Long</code>, <code>boolean</code>/<code>Boolean</code>), <code>String</code>, <code>BigDecimal</code>, <code>UUID</code>, <code>byte[]</code>, date/time types, enums, and selected list types.</p>
+</div>
+<div class="paragraph">
+<p>For the full list of supported Java types and their database mapping, see <a href="data-types.html" class="xref page">Data Types</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="optional_features_via_annotations"><a class="anchor" href="#optional_features_via_annotations"></a>Optional features via annotations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Type definitions can enable additional behavior through annotations on the interface and on attribute methods.
+Examples include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>access checks and security (<code>@AccessChecks</code>, <code>@Security</code>, <code>@SecurityProperty</code>)</p>
+</li>
+<li>
+<p>auditing and lifecycle behavior (<code>@Audit</code>, <code>@OptimisticLocking</code>, <code>@RecycleBin</code>, <code>@RetentionProtected</code>, <code>@OverwriteAllowed</code>)</p>
+</li>
+<li>
+<p>schema and naming customization (<code>@TableName</code>, <code>@Name</code>, <code>@TypeId</code>, <code>@SkipAutomaticSchemaCreation</code>)</p>
+</li>
+<li>
+<p>constraints and defaults (<code>@Mandatory</code>, <code>@Optional</code>, <code>@Unique</code>, <code>@ReadOnly</code>, <code>@DefaultValue</code>)</p>
+</li>
+<li>
+<p>indexing and performance options (<code>@Indexed</code>, <code>@Index</code>, <code>@IndexedForTextMatching</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For all available annotations and their exact semantics, see <a href="entity-annotations.html" class="xref page">Annotations</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="example"><a class="anchor" href="#example"></a>Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The example below shows a simple type definition that defines attributes for invoices.</p>
+</div>
+<div class="listingblock">
+<div class="title">example type definition</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/**
+ * This type definition contains invoices.
+ */
+@Type(ObjectType.DOCUMENT)
+public interface SimpleInvoice {
+
+    @SystemProperty(SystemPropertyName.ID)
+    DocumentId getId();
+
+    /**
+     * This attribute contains the invoice number.
+     */
+    @ReadOnly
+    String getInvoiceNumber();
+
+    void setInvoiceNumber(String invoiceNumber);
+
+    /**
+     * This attribute contains the total amount of the invoice.
+     */
+    @Mandatory
+    double getAmount();
+
+    void setAmount(double amount);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <a href="../arveo-getting-started/getting-started.html#step_1__type_definitions" class="xref page">getting started</a> guide contains detailed
+information about how to create type definitions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="registration"><a class="anchor" href="#registration"></a>Registration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Type definitions are activated by registering them in a <code>TypeDefinitionRegistration</code>.
+A <code>TypeDefinitionRegistration</code> provides the classes that should be processed as type definitions (for example via <code>getRegisteredClasses()</code> or <code>@Register</code> annotations on the registration class).</p>
+</div>
+<div class="listingblock">
+<div class="title">example type definition registration</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Register(SimpleInvoice.class)
+public class MyTypeRegistration implements TypeDefinitionRegistration {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To make the registration effective at runtime, register your <code>TypeDefinitionRegistration</code> as a Spring bean.
+In Spring Boot applications, <code>MyTypeConfiguration</code> can be registered automatically via auto-configuration metadata.
+For this, annotate the configuration class with <code>@AutoConfiguration</code> and add it to the <code>AutoConfiguration.imports</code> file.</p>
+</div>
+<div class="listingblock">
+<div class="title">spring boot auto-configuration</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@AutoConfiguration
+public class MyTypeConfiguration {
+
+    @Bean
+    public TypeDefinitionRegistration typeDefinitions() {
+        return new MyTypeRegistration();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">auto configuration imports file</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">auto configuration imports content</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">com.example.types.MyTypeConfiguration</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The final step is to package your type definition project in a jar file and add it to the classpath of the Content
+Repository Service. To do so, add the jar to the directory that is configured as the location for classpath
+extensions using <code>-Dloader.path=&lt;path&gt;</code>.</p>
+</div>
+</div>
+</div>
 <nav class="pagination">
-  <span class="prev"><a href="relation-types.html">Relation types</a></span>
-  <span class="next"><a href="metadata-types.html">Metadata types</a></span>
+  <span class="prev"><a href="../arveo-administration/monitoring.html">Monitoring</a></span>
+  <span class="next"><a href="access-rights.html">Access rights</a></span>
 </nav>
 </article>
   </div>
