@@ -7,7 +7,7 @@
     <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-administration/monitoring.html">
     <link rel="prev" href="ecr-shell.html">
     <link rel="next" href="../arveo-developer/type-definitions.html">
-    <meta name="generator" content="Antora 3.2.0-alpha.11">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
   </head>
@@ -873,21 +873,11 @@ a Collector instance is running on the same machine:</p>
 <div class="paragraph">
 <p>The following diagram shows the basic setup:</p>
 </div>
-<div class="literalblock kroki-error">
-<div class="title">Open Telemetry Collector</div>
+<div class="imageblock kroki">
 <div class="content">
-<pre> +------------+               +--------+-----+    metrics   +---------------+
- |   Service  |               |              |-------------&gt;|   Prometheus  |
- |            |    OTLP       |              |              +---------------+
- |            |--------------&gt;|   Collector  |
- | Otel agent |               |              |    logs      +---------------+
- |            |               |              |-------------&gt;|     Loki      |
- +---+--------+               +--------------+              +---------------+
-                                      |
-                                      |      traces         +---------------+
-                                      +--------------------&gt;|    Jaeger     |
-                                                            +---------------+</pre>
+<img src="_images/42dc8e203214d21599acc99e4e32444dc2502441.svg" alt="relation-type-model">
 </div>
+<div class="title">Figure 1. Open Telemetry Collector</div>
 </div>
 <div class="paragraph">
 <p>The required configuration properties for the Collector to forward collected data to observability backends is described
