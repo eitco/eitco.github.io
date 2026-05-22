@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Uploading data :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/repo-service-upload-data.html">
-    <link rel="prev" href="repo-service.html">
-    <link rel="next" href="repo-service-download-data.html">
+    <title>Java SDK for Spring applications :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/sdk-developer-guide.html">
+    <link rel="prev" href="client-sdks.html">
+    <link rel="next" href="discovery-and-authentication.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
@@ -260,7 +260,7 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="repo-service.html">Repository Service</a>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="repo-service-upload-data.html">Upload Data</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -304,7 +304,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="client-sdks.html">Client SDKs</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="sdk-developer-guide.html">Java SDK for Spring applications</a>
 <ul class="nav-list">
@@ -395,8 +395,7 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li><a href="repo-service.html">Repository Service</a></li>
-    <li><a href="repo-service-upload-data.html">Upload Data</a></li>
+    <li><a href="sdk-developer-guide.html">Java SDK for Spring applications</a></li>
   </ul>
 </nav>
 </div>
@@ -405,14 +404,164 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Uploading data</h1>
+<h1 class="page">Java SDK for Spring applications</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Content, annotations (see below) and metadata can be uploaded as a coherent document. 0-n content elements of different content types are possible. Each content element is named. As a result, you get a globally unique ID (DocumentID), which can be used to reference content, annotations and / or just metadata of the latest version of the document. It is possible to clone content elements from one document to another, creating a copy of the content on the storage. For that, a <em>ContentReference</em> can be supplied when the document is created.</p>
+<p>This guide provides practical examples for the most common tasks when working with the <em>arveo</em> Java SDK for Spring applications.
+All examples are taken from the integration test suite to ensure they stay up to date.</p>
 </div>
 <div class="listingblock">
-<div class="title">Example: Upload a document with new content</div>
+<div class="title">Maven dependency of the Client SDK for Spring applications</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+   &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
+   &lt;artifactId&gt;ecr-sdk-http&lt;/artifactId&gt;
+   &lt;version&gt;28.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="obtaining_sdk_clients"><a class="anchor" href="#obtaining_sdk_clients"></a>Obtaining SDK clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SDK provides several client classes that can be injected using Spring Dependency Injection. The clients are organized roughly in three layers. The first layer is the <code>TypeDefinitionServiceClient</code>, which is the main entry point of the API and operates on the level of all type definitions. The second layer provides service clients for a specific type definition. A <code>ServiceClient</code> operates on the entities contained in the type definition and provides methods like create, get, search, update, and delete. Clients on the third layer are bound to a single entity. <code>EntityClients</code> provide methods to read, update or delete.</p>
+</div>
+<div class="sect2">
+<h3 id="typedefinitionserviceclient"><a class="anchor" href="#typedefinitionserviceclient"></a>TypeDefinitionServiceClient</h3>
+<div class="paragraph">
+<p>The <code>TypeDefinitionServiceClient</code> is the main entry point for the API. It can be injected as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">Injecting the TypeDefinitionServiceClient</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+protected TypeDefinitionServiceClient typeDefinitionServiceClient;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>From this client, you can obtain typed service clients for all entity types:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>getDocumentServiceClient()</code> – for document types</p>
+</li>
+<li>
+<p><code>getContainerServiceClient()</code> – for container types</p>
+</li>
+<li>
+<p><code>getFolderServiceClient()</code> – for folder types</p>
+</li>
+<li>
+<p><code>getRelationServiceClient()</code> – for relation types</p>
+</li>
+<li>
+<p><code>getMetaDataServiceClient()</code> – for metadata types</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="searchclient"><a class="anchor" href="#searchclient"></a>SearchClient</h3>
+<div class="paragraph">
+<p>The <code>SearchClient</code> provides various search endpoints. It can be injected as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">Injecting the SearchClient</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+private SearchClient searchClient;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="batchoperationserviceclient"><a class="anchor" href="#batchoperationserviceclient"></a>BatchOperationServiceClient</h3>
+<div class="paragraph">
+<p>The <code>BatchOperationServiceClient</code> provides methods for batch create, update, and delete operations. It can be injected as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">Injecting the BatchOperationServiceClient</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+protected BatchOperationServiceClient batchOperationServiceClient;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s usage is described in the <a href="batch-operations.html" class="xref page">Batch operations</a> chapter.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating_typed_service_clients"><a class="anchor" href="#creating_typed_service_clients"></a>Creating typed service clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Typed service clients are bound to a specific type definition. They can be obtained either by the Java class representing the type or by the type name.</p>
+</div>
+<div class="sect2">
+<h3 id="by_java_class"><a class="anchor" href="#by_java_class"></a>By Java class</h3>
+<div class="paragraph">
+<p>The recommended way to obtain a typed service client is by using the Java class that represents the type definition:</p>
+</div>
+<div class="listingblock">
+<div class="title">Obtaining a typed service client by class</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedDocumentServiceClient&lt;ThirdInterface&gt; serviceClient = typeDefinitionServiceClient
+    .getDocumentServiceClient().byClass(ThirdInterface.class);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="by_type_name"><a class="anchor" href="#by_type_name"></a>By type name</h3>
+<div class="paragraph">
+<p>Alternatively, a service client can be obtained by the name of the type definition. This is useful when working with the generic API:</p>
+</div>
+<div class="listingblock">
+<div class="title">Obtaining a service client by type name</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">DocumentServiceClient namedFile = typeDefinitionServiceClient.getDocumentServiceClient().byName("named_file");</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating_entities"><a class="anchor" href="#creating_entities"></a>Creating entities</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="creating_a_container"><a class="anchor" href="#creating_a_container"></a>Creating a container</h3>
+<div class="paragraph">
+<p>Containers are created using the <code>TypedContainerServiceClient</code>. First, create a type instance, populate its attributes, and then call <code>createEntity()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating a container</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedContainerServiceClient&lt;Person&gt; serviceClient =
+    typeDefinitionServiceClient.getContainerServiceClient().byClass(Person.class);
+
+String firstName = UUID.randomUUID().toString();
+
+Person person = serviceClient.createTypeInstance();
+person.setSurname("Simpson");
+person.setProcedureDate(ZonedDateTime.now());
+person.setFirstName(firstName);
+person.setBreakTime(LocalTime.MIDNIGHT);
+person.setBirthday(LocalDate.EPOCH);
+
+serviceClient.createEntity(person);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating_a_document"><a class="anchor" href="#creating_a_document"></a>Creating a document</h3>
+<div class="paragraph">
+<p>Documents are created using the <code>TypedDocumentServiceClient</code> in the same pattern:</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating a document</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedDocumentServiceClient&lt;SingleContentDocument&gt; serviceClient =
     typeDefinitionServiceClient.getDocumentServiceClient().byClass(SingleContentDocument.class); <i class="conum" data-value="1"></i><b>(1)</b>
@@ -432,261 +581,258 @@ TypedDocumentClient&lt;SingleContentDocument&gt; client =
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The typeDefinitionServiceClient is an instance of TypeDefinitionServiceClient, that can be injected.</td>
+<td>Get the typed service client</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The actual content is passed as an InputStream.</td>
+<td>Load binary content</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The type definition SingleContentDocument uses only the default content definition, hence the default name is used.</td>
+<td>Assign binary content to a content element</td>
 </tr>
 </table>
 </div>
-<div class="listingblock">
-<div class="title">Example: Upload a document with cloned content</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedDocumentServiceClient&lt;TypedTargetDocument&gt; serviceClient =
-    typeDefinitionServiceClient.getDocumentServiceClient().byClass(TypedTargetDocument.class); <i class="conum" data-value="1"></i><b>(1)</b>
-
-TypedTargetDocument document = serviceClient.createTypeInstance();
-
-DocumentContentReference reference = new DocumentContentReference(documentId, "s3stuff"); <i class="conum" data-value="2"></i><b>(2)</b>
-
-TypedDocumentClient&lt;TypedTargetDocument&gt; client =
-    serviceClient.create(new TypedDocumentInput&lt;&gt;(document, Map.of("content", reference)));</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The typeDefinitionServiceClient is an instance of TypeDefinitionServiceClient, that can be injected.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Here the documentId is the ID of an already existing document that uses the default content definition.</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="title">Example: Upload a document with Base64 encoded data</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Base64EncodedData data = new Base64EncodedData(base64Data);<i class="conum" data-value="1"></i><b>(1)</b>
-Map&lt;String, ContentUpload&gt; contentElements = Map.of("content", new ContentUpload(data));<i class="conum" data-value="2"></i><b>(2)</b>
-
-serviceClient.create(new TypedDocumentInput&lt;&gt;(contentElements, document));<i class="conum" data-value="3"></i><b>(3)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Wrap the Base64 encoded data in a new <code>Base64EncodedData</code> instance</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Create a content upload with the created <code>Base64EncodedData</code></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Upload the document</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="validating_uploaded_content"><a class="anchor" href="#validating_uploaded_content"></a>Validating uploaded content</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>There are several different ways to validate the content of an uploaded document. The method to use depends on the requirements of the client application. Some applications might already have computed a hash of the content while others might offload this to the server.</p>
+<p>For larger files, it is recommended to use the <a href="repo-service-upload-data.html#resumable_uploads" class="xref page">TUS Upload Service</a>, which provides an API for resumable uploads.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="validating_content_on_the_client_side"><a class="anchor" href="#validating_content_on_the_client_side"></a>Validating content on the client side</h3>
+<h3 id="creating_a_folder"><a class="anchor" href="#creating_a_folder"></a>Creating a folder</h3>
 <div class="paragraph">
-<p>When content is uploaded to a type definition that supports content metadata, the server computes an SHA-256 hash for the received data and returns it in the result of the upload request. The client can use this hash value to compare the data received by the server with the original data. The following example shows how to compare the hash values:</p>
+<p>Folders are created using the <code>TypedFolderServiceClient</code>. Note that folders require additional parameters like a name and a parent:</p>
 </div>
 <div class="listingblock">
-<div class="title">Example: Checking hash values on the client side</div>
+<div class="title">Creating a folder</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">ContentTest entity = client.create(input).getEntity(); <i class="conum" data-value="1"></i><b>(1)</b>
-Hash hash = entity.getContent().get("content").getHash(); <i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final TypedFolderServiceClient&lt;TypedTargetFolder&gt; serviceClient =
+    typeDefinitionServiceClient.getFolderServiceClient().byClass(TypedTargetFolder.class);
 
-Hash expectedHash = Hash.sha256Hash(inputStream, 1000000, tempFile); <i class="conum" data-value="3"></i><b>(3)</b>
-Assert.assertEquals(expectedHash, hash);</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The document is uploaded using a type definition service client</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Get the hash returned from the server. <code>getContent</code> is a getter for the system property <code>SystemPropertyName.CONTENT</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Use <code>de.eitco.ecr.common.Hash</code> to compute the expected hash</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The <code>TypedDocumentServiceClient</code> offers an additional method to validate uploaded content. The <code>createAndValidate</code> method automatically computes a hash of the uploaded data and compares it with the hash value returned from the server. If the two hashes do not match, a <code>HashValidationException</code> is thrown and the created document will be purged.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example: Using the createAndValidate method</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedDocumentServiceClient&lt;ContentTest&gt; client = typeDefinitionServiceClient
-    .getDocumentServiceClient().byClass(ContentTest.class);
+final TypedTargetFolder typeInstance = serviceClient.createTypeInstance();
+typeInstance.setCertificates("certificates");
+typeInstance.setIssuer("issuer");
 
-ContentUpload contentUpload = new ContentUpload(data);
-
-Map&lt;String, ContentUpload&gt; content = Map.of("content", contentUpload);
-
-ContentTest instance = client.createTypeInstance();
-TypedDocumentInput&lt;ContentTest&gt; input = new TypedDocumentInput&lt;&gt;(content, instance);
-
-client.createAndValidate(input);</code></pre>
+final TypedFolderClient&lt;TypedTargetFolder&gt; client = serviceClient.create(new TypedFolderInput&lt;&gt;(UUID.randomUUID().toString(), null, typeInstance));</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="validating_content_on_the_server_side"><a class="anchor" href="#validating_content_on_the_server_side"></a>Validating content on the server side</h3>
+<h3 id="creating_a_relation"><a class="anchor" href="#creating_a_relation"></a>Creating a relation</h3>
 <div class="paragraph">
-<p>It is also possible to pass a hex representation of an SHA-256 hash code of the uploaded content to the server. If such a hash is present, the server will compare the computed hash value with the one specified by the client. If the values do not match, the upload fails and the uploaded file will not be stored.</p>
+<p>Relations connect two entities (parent and child). They are created using the <code>TypedRelationServiceClient</code>:</p>
 </div>
 <div class="listingblock">
-<div class="title">Example: Checking hash values on the server side</div>
+<div class="title">Creating a relation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Hash hash = Hash.sha256Hash(inputStream, 1000000, tempFile); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final TypedRelationServiceClient&lt;TypedContainerContainerRelation&gt; relationServiceClient =
+    typeDefinitionServiceClient.getRelationServiceClient().byClass(TypedContainerContainerRelation.class);
 
-ContentUpload contentUpload = new ContentUpload(
-    "lorem_ipsum.txt", <i class="conum" data-value="2"></i><b>(2)</b>
-    null, <i class="conum" data-value="3"></i><b>(3)</b>
-    null, <i class="conum" data-value="4"></i><b>(4)</b>
-    data,
-    hash
-);
+final TypedContainerContainerRelation relation = relationServiceClient.createTypeInstance();
+relation.setNumber(99L);
 
-Map&lt;String, ContentUpload&gt; content = Map.of("content", contentUpload);
-
-ContentTest document = client.createTypeInstance();
-TypedDocumentInput&lt;ContentTest&gt; input = new TypedDocumentInput&lt;&gt;(content, document);
-
-client.create(input);</code></pre>
+final TypedRelationClient&lt;TypedContainerContainerRelation&gt; client = relationServiceClient.create(
+    new TypedRelationInput&lt;&gt;(sourceClient.getIdentifier(), targetClient.getIdentifier(), relation));</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Use <code>de.eitco.ecr.common.Hash</code> to compute the hash</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The filename</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>null for the length, will be computed by the server</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>null for the content type, will be computed by the server</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="validating_the_content_of_an_existing_document"><a class="anchor" href="#validating_the_content_of_an_existing_document"></a>Validating the content of an existing document</h3>
+<h3 id="creating_multiple_entities"><a class="anchor" href="#creating_multiple_entities"></a>Creating multiple entities</h3>
 <div class="paragraph">
-<p>The <code>TypedDocumentServiceClient</code> provides a method called <code>hashMatches</code> that can be used to check if the content of an existing document is valid. The client has to provide the expected hash, the document&#8217;s ID and the name of the content element to check. An additional parameter called <code>loadContent</code> defines if the server should use the hash value stored in the database or if it should load the content from the storage and compute a new hash value to compare. It is possible to check the content of a specific version of a document, too.</p>
+<p>Multiple entities of the same type can be created in one call using <code>createEntities()</code>:</p>
 </div>
 <div class="listingblock">
-<div class="title">Example: Checking hash values of an existing document</div>
+<div class="title">Creating multiple containers at once</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Hash hash = Hash.sha256Hash(inputStream, 1000000, tempFile);
-boolean hashMatches = documentServiceClient.hashMatches(documentId, "content", hash, false);</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedContainerServiceClient&lt;TypedTargetContainer&gt; serviceClient =
+    typeDefinitionServiceClient.getContainerServiceClient().byClass(TypedTargetContainer.class);
+
+TypedTargetContainer container1 = serviceClient.createTypeInstance();
+container1.setCertificates("Certificates1");
+container1.setPropertySameNameDifferentType("SameNameDifferentType1");
+container1.setIssuer("Issuer1");
+
+TypedTargetContainer container2 = serviceClient.createTypeInstance();
+container1.setCertificates("Certificates2");
+container1.setPropertySameNameDifferentType("SameNameDifferentType2");
+container1.setIssuer("Issuer2");
+
+List&lt;TypedContainerClient&lt;TypedTargetContainer&gt;&gt; clients = serviceClient.createEntities(container1, container2);</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="resumable_uploads"><a class="anchor" href="#resumable_uploads"></a>Resumable uploads</h2>
+<h2 id="read_entities"><a class="anchor" href="#read_entities"></a>Read entities</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In some situations uploading large files might fail because of timeouts or an unstable network connection. For these
-situations, arveo supports resumable uploads using the <a href="http://tus.io">tus</a> protocol. On the server side, an
-additional service is used that provides the tus API and stores uploaded files in the filesystem. The Content Repository
-Service retrieves uploaded files from the upload service and stores them just as any regular content. When the content
-was stored successfully, the uploaded file is deleted from the upload service&#8217;s storage automatically. In case storing
-the content in the Content Repository Service has failed, the uploaded file is not removed, giving the client the
-opportunity to re-try storing the content without having to upload the entire file again.</p>
+<p>Use the entity identifier with the type-specific service client to load an entity client.
+The entity client gives access to the typed entity and to the generic representation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">DocumentId identifier = documentClient.getGenericClient().getEntity()
+    .getIdentifier();
+
+TypedDocumentServiceClient&lt;ThirdInterface&gt; serviceClient = typeDefinitionServiceClient
+    .getDocumentServiceClient().byClass(ThirdInterface.class);
+
+TypedDocumentClient&lt;ThirdInterface&gt; otherDocumentClient = serviceClient.get(identifier);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="searching_for_entities"><a class="anchor" href="#searching_for_entities"></a>Searching for entities</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SDK provides a fluent API for building search queries.</p>
+</div>
+<div class="sect2">
+<h3 id="simple_field_search"><a class="anchor" href="#simple_field_search"></a>Simple field search</h3>
+<div class="paragraph">
+<p>The most common search pattern filters entities by a field value. The result can be retrieved as an unpaged list:</p>
+</div>
+<div class="listingblock">
+<div class="title">Searching containers by a field value</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedContainerClient&lt;Person&gt;&gt; list = serviceClient.where()
+    .entity().field("first_name").equalTo().value(firstName).holds().unpaged();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="unique_result"><a class="anchor" href="#unique_result"></a>Unique result</h3>
+<div class="paragraph">
+<p>When exactly one result is expected, use <code>uniqueResult()</code> which returns an <code>Optional</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Searching for a unique entity</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">Optional&lt;TypedDocumentClient&lt;TypedSourceDocument&gt;&gt; searchedOptional = serviceClient.where().entity()
+    .field("session_id").equalTo().value(sessionID).holds().uniqueResult();</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>The following example shows how to use the tus client in combination with the arveo SDK to use
-resumable uploads. The tus client can be obtained using the following dependency:</p>
+<p>For more details on search operations, see <a href="search-service.html" class="xref page">Search language</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="updating_entities"><a class="anchor" href="#updating_entities"></a>Updating entities</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Updating a typed entity works through the entity client returned by create, get, or search.
+The update input contains the new attribute values:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
-    &lt;artifactId&gt;tus-upload-service-client-spring&lt;/artifactId&gt;
-    &lt;version&gt;${tus-upload-service.version}&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">DocumentWithRdbFullText document = serviceClient.createTypeInstance();
+document.setDocumentName("some name");
+client = client.updateAttributes(document);</code></pre>
 </div>
+</div>
+<div class="sect2">
+<h3 id="updating_multiple_entities"><a class="anchor" href="#updating_multiple_entities"></a>Updating multiple entities</h3>
+<div class="paragraph">
+<p>Multiple entities of the same type can be updated at once using <code>updateAttributesAndReturn()</code>. The entities to update are identified by their IDs:</p>
 </div>
 <div class="listingblock">
-<div class="title">Example: Resumable uploads</div>
+<div class="title">Updating multiple containers</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">File file = new File(baseDirectory + "/src/test/resources/documents/lorem_ipsum.txt");
-String uploadId;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">container1 = serviceClient.createTypeInstance();
+container1.setCertificates("Certificates1-updated");
+container1.setPropertySameNameDifferentType("SameNameDifferentType1-updated");
+container1.setIssuer("Issuer1-updated");
 
-try (TusClient tusClient = tusClientFactory.newClient()) { <i class="conum" data-value="1"></i><b>(1)</b>
+container2 = serviceClient.createTypeInstance();
+container2.setCertificates("Certificates2-updated");
+container2.setPropertySameNameDifferentType("SameNameDifferentType2-updated");
+container2.setIssuer("Issuer2-updated");
 
-    TusUpload upload = new TusUpload(new FileInputStream(file), "lorem-ipsum.txt", file.length());
-    uploadId = tusClient.resumeOrCreateUpload(upload, 100 * 1024); <i class="conum" data-value="2"></i><b>(2)</b>
-}
+ContainerId id1 = clients.get(0).getIdentifier();
+ContainerId id2 = clients.get(1).getIdentifier();
+clients = serviceClient.updateAttributesAndReturn(LinkedOrderedMap.of(id1, container1, id2, container2));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another way to update multiple entities is using the update method of the service client and a selector that identifies the entities to update:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using a selector to update</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedTargetDocument typeInstance = serviceClient.createTypeInstance();
+typeInstance.setCertificates("other certificates");
+typeInstance.setIssuer("other issuer");
 
-TypedDocumentServiceClient&lt;Files&gt; serviceClient =
-    typeDefinitionServiceClient.getDocumentServiceClient().byClass(Files.class);
+Expression&lt;Boolean&gt; expression = EcrQueryLanguage.condition()
+    .entity().field("issuer").equalTo().value(this.issuer).holds();
 
-Files document = serviceClient.createTypeInstance();
-document.setFilename("lorem_ipsum.txt");
+List&lt;TypedDocumentClient&lt;TypedTargetDocument&gt;&gt; clients =
+    serviceClient.updateAttributesAndReturn(expression, typeInstance);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="create_or_update_upsert"><a class="anchor" href="#create_or_update_upsert"></a>Create or update (upsert)</h3>
+<div class="paragraph">
+<p>The SDK provides methods to perform create-or-update (upsert) operations. The entity to update is identified by an EQL selector. If a matching entity is found, it is updated. If no matching entity is found, a new entity is created:</p>
+</div>
+<div class="listingblock">
+<div class="title">Performing an upsert operation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedContainerServiceClient&lt;Person&gt; serviceClient =
+    typeDefinitionServiceClient.getContainerServiceClient().byClass(Person.class);
 
-AsyncUploadReference uploadReference = new AsyncUploadReference(uploadId, "lorem_ipsum.txt"); <i class="conum" data-value="3"></i><b>(3)</b>
-Map&lt;String, ContentReference&gt; contentReferences = Map.of("content", uploadReference);
+LocalDate birthday = LocalDate.of(1995, Month.SEPTEMBER, 16);
 
-TypedDocumentClient&lt;Files&gt; typedDocumentClient =
-    serviceClient.create(new TypedDocumentInput&lt;&gt;(document, contentReferences));</code></pre>
+Person person = serviceClient.createTypeInstance();
+person.setBirthday(birthday);
+person.setSurname("Smith");
+person.setFirstName("John");
+person.setBreakTime(LocalTime.NOON);
+person.setProcedureDate(ZonedDateTime.now());
+
+TypedContainerClient&lt;Person&gt; client = serviceClient.createOrUpdate(
+    EcrQueryLanguage.condition().entity().field(PersonNames.FIRST_NAME).equalTo().value("John").holds(), <i class="conum" data-value="1"></i><b>(1)</b>
+    person,
+    Set.of(PersonNames.PROCEDURE_DATE) <i class="conum" data-value="2"></i><b>(2)</b>
+);</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Create a new TusClient using the injectable TusClientFactory.</td>
+<td>The selector that uniquely identifies the entity to update</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Remember the unique ID of the upload.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Reference the uploaded file using its ID for the document creation call for the Content Repository Service.</td>
+<td>(Optional) names of attributes that will not be updated in case the entity already exists. All other attributes (excluding read only attributes) will be updated.</td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deleting_entities"><a class="anchor" href="#deleting_entities"></a>Deleting entities</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Entities can be deleted using the <code>deleteAndReturn()</code> method on the service client. This method returns the deleted entities:</p>
+</div>
+<div class="listingblock">
+<div class="title">Deleting an entity</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final List&lt;TypedTargetContainer&gt; deleted = serviceClient.deleteAndReturn(client.getIdentifier());</code></pre>
+</div>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="repo-service.html">Repository Service</a></span>
-  <span class="next"><a href="repo-service-download-data.html">Download Data</a></span>
+  <span class="prev"><a href="client-sdks.html">Client SDKs</a></span>
+  <span class="next"><a href="discovery-and-authentication.html">Service discovery and authentication</a></span>
 </nav>
 </article>
   </div>

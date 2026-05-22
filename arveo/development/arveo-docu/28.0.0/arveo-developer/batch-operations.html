@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Java SDK for Spring applications :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/sdk-and-batch-operations.html">
-    <link rel="prev" href="client-sdks.html">
+    <title>Untitled :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/batch-operations.html">
+    <link rel="prev" href="discovery-and-authentication.html">
     <link rel="next" href="non-spring-sdk.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
@@ -302,22 +302,25 @@
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <span class="nav-text">SDKs</span>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="client-sdks.html">Client SDKs</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="sdk-developer-guide.html">Java SDK for Spring applications</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="discovery-and-authentication.html">Service discovery and authentication</a>
+  </li>
   <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="sdk-and-batch-operations.html">Java SDK for Spring applications</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="non-spring-sdk.html">Java SDK for non-Spring applications</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="rest-api.html">REST API</a>
+    <a class="nav-link" href="batch-operations.html">Batch Operations</a>
   </li>
 </ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="non-spring-sdk.html">Java SDK for non-Spring applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="rest-api.html">REST API</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -392,8 +395,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li>SDKs</li>
-    <li><a href="sdk-and-batch-operations.html">Java SDK for Spring applications</a></li>
+    <li><a href="sdk-developer-guide.html">Java SDK for Spring applications</a></li>
+    <li><a href="batch-operations.html">Batch Operations</a></li>
   </ul>
 </nav>
 </div>
@@ -402,267 +405,6 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Java SDK for Spring applications</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>The SDK contains the general API for accessing <em>arveo</em>. The SDK can be used both
-to access the <em>arveo</em> via HTTP and to use the <em>arveo</em> as an embedded library.</p>
-</div>
-<div class="listingblock">
-<div class="title">Maven dependency of the Client SDK for usage via HTTP</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-   &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
-   &lt;artifactId&gt;ecr-sdk-http&lt;/artifactId&gt;
-   &lt;version&gt;28.0.0-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Maven dependency of the Client SDK for embedded usage</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-   &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
-   &lt;artifactId&gt;ecr-embedded&lt;/artifactId&gt;
-   &lt;version&gt;28.0.0-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The SDK offers both a generic API, where attributes of objects are mapped as a generic map, and a typed API. The typed
-API uses classes to be created by the project that represent the objects with the attributes.
-The main entry point for the API is the class <em>de.eitco.ecr.sdk.TypeDefinitionServiceClient</em>. An instance of this class
-can be obtained using Spring Dependency Injection. With the methods</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>getDocumentServiceClient()</p>
-</li>
-<li>
-<p>getContainerServiceClient()</p>
-</li>
-<li>
-<p>getFolderServiceClient()</p>
-</li>
-<li>
-<p>getRelationServiceClient()</p>
-</li>
-<li>
-<p>getMetaDataServiceClient()</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>you obtain a client factory that can be used to create a service client for a specific type definition. This service client
-can then be used to create new objects or load existing objects. For created or loaded objects, one in turn receives an
-entity client that offers methods for accessing the object. Special version clients are also available for concrete
-versions of entities.</p>
-</div>
-<div class="paragraph">
-<p>The <a href="../arveo-getting-started/getting-started.html" class="xref page">getting started guide</a> contains an example that demonstrates
-how to use the typed API in a Spring application.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="accessing_the_content_repository_service"><a class="anchor" href="#accessing_the_content_repository_service"></a>Accessing the content repository service</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The client SDK must be able to find an instance of the content repository service and it must authenticate requests it
-sends to the service instance.</p>
-</div>
-<div class="sect2">
-<h3 id="service_discovery"><a class="anchor" href="#service_discovery"></a>Service discovery</h3>
-<div class="paragraph">
-<p>The SDK uses service discovery to find an instance of the content repository service. By default, the Eureka Service Registry
-is used for service discovery. Each service registers itself in Eureka, and clients (or other services) can retrieve a list
-of available instances from Eureka. When the Eureka Service Registry is not running on the same machine as the client
-application, it&#8217;s URL must be configured:</p>
-</div>
-<div class="listingblock">
-<div class="title">Eureka Service URL</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
-  client:
-    serviceUrl:
-      defaultZone: "http://service-registry-host:8761/eureka/"</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-When more than one instance of a service is returned from the service registry, the clients automatically perform load
-balancing and failover.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>In scenarios where the Eureka Service Registry is not used (like Kubernetes), the available service instance(s) must be
-configured manually.</p>
-</div>
-<div class="listingblock">
-<div class="title">manually configuring service instances</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
-  client:
-    enabled: false
-
-spring:
-  cloud:
-    discovery:
-      client:
-        simple:
-          instances:
-            content-repository-service:
-              - uri: "http://server1:12345"
-              - uri: "http://server2:12345"</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-In Kubernetes installations only one instance of the Content Repository Service using the Kubernetes service name must
-be configured. Failover and load balancing is performed by Kubernetes. Alternatively, the Kubernetes Discovery Client
-can be enabled using <code>spring.cloud.kubernetes.enabled=true</code>. Note that additional RBAC privileges are required to use the
-Kubernetes Discovery Client.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="authentication"><a class="anchor" href="#authentication"></a>Authentication</h3>
-<div class="paragraph">
-<p>The service uses OAuth2 to authenticate requests. A client application must retrieve a token from the IDP and send it
-as a bearer token in the Authentication header of each request. The client SDK automatically retrieves tokens from
-the IDP. It also automatically refreshes expired tokens. To be able to retrieve tokens from the IDP, the SDK must
-either authenticate using a username and password or using a client secret. Both ways are configured as shown below:</p>
-</div>
-<div class="listingblock">
-<div class="title">OAuth2 configuration (username and password)</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          keycloak-password:
-            provider: keycloak
-            client-id: "your-client-id"
-            client-secret: "your-client-secret"
-            authorization-grant-type: "password"
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: "http://localhost:${keycloak.port}/realms/TestRealm"</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-The client secret can be omitted for public clients. The actual username and password are set in the application
-code as shown in the <a href="../arveo-getting-started/getting-started.html#implementing_the_tool" class="xref page">getting started guide</a>.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="title">OAuth2 configuration (client secret)</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          keycloak-secret:
-            provider: keycloak
-            client-id: "your-client-id"
-            client-secret: "your-client-secret"
-            authorization-grant-type: "client_credentials"
-        provider:
-          keycloak:
-            issuer-uri: "http://localhost:${keycloak.port}/realms/TestRealm"</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="using_the_sdk_in_a_non_web_application"><a class="anchor" href="#using_the_sdk_in_a_non_web_application"></a>Using the SDK in a non-web application</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The SDK can be used both in applications that provide web functionality like REST endpoints and in applications that
-do not contain any web functionality. For non-web applications, some differences need to be considered.</p>
-</div>
-<div class="sect2">
-<h3 id="dependencies"><a class="anchor" href="#dependencies"></a>Dependencies</h3>
-<div class="paragraph">
-<p>By default, the SDK contains an OAuth2 client implementation that relies on some web-related spring beans. For non-web
-applications, a different OAuth2 client implementation is available. The default implementation needs to be excluded
-from the SDK dependency and replaced by the non-web implementation as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
-    &lt;artifactId&gt;ecr-sdk-http&lt;/artifactId&gt;
-    &lt;version&gt;${ecr.version}&lt;/version&gt;
-    &lt;exclusions&gt;
-        &lt;exclusion&gt;
-            &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
-            &lt;artifactId&gt;cmn-spring-security5-oauth2-client&lt;/artifactId&gt;
-        &lt;/exclusion&gt;
-    &lt;/exclusions&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
-    &lt;artifactId&gt;cmn-spring-security5-oauth2-client-non-web&lt;/artifactId&gt;
-    &lt;version&gt;${commons-oauth2-version}&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The current version of the OAuth2 client can be found in the Nexus.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="application_initialization"><a class="anchor" href="#application_initialization"></a>Application initialization</h3>
-<div class="paragraph">
-<p>The SDK contains some dependencies that cause Spring to initialize some web functionality automatically. This can cause
-problems like missing spring security configuration errors. Non-web applications can simply turn off all of Springs
-web functionality by using the <code>SpringApplicationBuilder</code> class as shown in the following example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@SpringBootApplication
-public class MyApplication {
-
-	public static void main(String[] args) {
-		new SpringApplicationBuilder(MyApplication.class)
-			.web(WebApplicationType.NONE)
-			.run(args);
-	}
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
 <div class="sect1">
 <h2 id="batch_operations"><a class="anchor" href="#batch_operations"></a>Batch Operations</h2>
 <div class="sectionbody">
@@ -1106,7 +848,7 @@ List&lt;EcrId&gt; ids = batchOperationServiceClient.performTypedBatchOperations(
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="client-sdks.html">Client SDKs</a></span>
+  <span class="prev"><a href="discovery-and-authentication.html">Service discovery and authentication</a></span>
   <span class="next"><a href="non-spring-sdk.html">Java SDK for non-Spring applications</a></span>
 </nav>
 </article>

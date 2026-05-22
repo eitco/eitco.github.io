@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Versioning :: arveo Documentation</title>
-    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/versioning.html">
-    <link rel="prev" href="repo-service-download-links-external-users.html">
-    <link rel="next" href="search-service.html">
+    <title>Untitled :: arveo Documentation</title>
+    <link rel="canonical" href="https://eitco.github.io/arveo-docu/28.0.0/arveo-developer/discovery-and-authentication.html">
+    <link rel="prev" href="sdk-developer-guide.html">
+    <link rel="next" href="batch-operations.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../ui-assets/css/site.css">
     <link rel="stylesheet" href="../../../ui-assets/css/custom.css">
@@ -275,7 +275,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="repo-service-download-links-external-users.html">Download Links for External Users</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="versioning.html">Versioning</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -308,7 +308,7 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="sdk-developer-guide.html">Java SDK for Spring applications</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="discovery-and-authentication.html">Service discovery and authentication</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -395,8 +395,8 @@
   <ul>
     <li><a href="../arveo-general/product-summary.html">arveo Documentation</a></li>
     <li>Developer</li>
-    <li><a href="repo-service.html">Repository Service</a></li>
-    <li><a href="versioning.html">Versioning</a></li>
+    <li><a href="sdk-developer-guide.html">Java SDK for Spring applications</a></li>
+    <li><a href="discovery-and-authentication.html">Service discovery and authentication</a></li>
   </ul>
 </nav>
 </div>
@@ -405,41 +405,70 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Versioning</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>The goal of using the concept of versioning is to create and work with version-safe archives and track the history of each change in the system.</p>
-</div>
-</div>
-</div>
 <div class="sect1">
-<h2 id="versioning_basics"><a class="anchor" href="#versioning_basics"></a>Versioning basics</h2>
+<h2 id="service_discovery"><a class="anchor" href="#service_discovery"></a>Service discovery</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>All entity types in <em>arveo</em> may have a version, which itself is an optional attribute.
-The attributes of the entity types specify in their definition whether they are versioned. If an entity
-type has at least one versioned attribute, a version table is created.
-The version number of an existing entity is automatically created and can be retrieved via the system property
-version_number.</p>
+<p>The SDK uses service discovery to find an instance of the content repository service. By default, the Eureka Service Registry
+is used for service discovery. Each service registers itself in Eureka, and clients (or other services) can retrieve a list
+of available instances from Eureka. When the Eureka Service Registry is not running on the same machine as the client
+application, it&#8217;s URL must be configured:</p>
 </div>
-<div class="paragraph">
-<p>In the version table, the version changes to the metadata are listed, as well as the changes to one or more content
-elements. Optionally you can specify a Unicode version comment.
-Each version gets a version ID, which is unique for this bundle of version tables. The version id allows a developer to
-retrieve content and metadata of exactly this version of the entity.
-Using the API a developer can query all versions including their metadata and content elements for each entity ID or
-version ID. It is ensured that the existing content of a version is not changed or deleted by a new version, but there is an exception to this rule, which does allow to overwrite a version change.</p>
+<div class="listingblock">
+<div class="title">Eureka Service URL</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
+  client:
+    serviceUrl:
+      defaultZone: "http://service-registry-host:8761/eureka/"</code></pre>
 </div>
-<div class="admonitionblock note">
+</div>
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-There is a function that allows you to make a change without having to note it in the version table. And there is
-a way to forbid this for a certain entity type.
+When more than one instance of a service is returned from the service registry, the clients automatically perform load
+balancing and failover.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In scenarios where the Eureka Service Registry is not used (like Kubernetes), the available service instance(s) must be
+configured manually.</p>
+</div>
+<div class="listingblock">
+<div class="title">manually configuring service instances</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
+  client:
+    enabled: false
+
+spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            content-repository-service:
+              - uri: "http://server1:12345"
+              - uri: "http://server2:12345"</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In Kubernetes installations only one instance of the Content Repository Service using the Kubernetes service name must
+be configured. Failover and load balancing is performed by Kubernetes. Alternatively, the Kubernetes Discovery Client
+can be enabled using <code>spring.cloud.kubernetes.enabled=true</code>. Note that additional RBAC privileges are required to use the
+Kubernetes Discovery Client.
 </td>
 </tr>
 </table>
@@ -447,151 +476,207 @@ a way to forbid this for a certain entity type.
 </div>
 </div>
 <div class="sect1">
-<h2 id="implementation_of_versioning"><a class="anchor" href="#implementation_of_versioning"></a>Implementation of versioning</h2>
+<h2 id="authentication"><a class="anchor" href="#authentication"></a>Authentication</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The concept of versioning is implemented using the annotation <em>@Versioned</em>, which is defined by the interface <em>Versioned</em>.
-This annotation defines if an attribute of a type is versioned or not (when placed on a getter) or if all attributes
-of a type are versioned or not (when placed on a type). When the annotation is present on a type and on a getter in
-the type, the annotation on the getter wins.</p>
+<p>The service uses OAuth2 to authenticate requests. A client application must retrieve a token from the IDP and send it
+as a bearer token in the Authentication header of each request. The client SDK automatically retrieves tokens from
+the IDP. It also automatically refreshes expired tokens. To be able to retrieve tokens from the IDP, the SDK must
+either authenticate using a username and password or using a client secret. Both ways are configured as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="title">OAuth2 configuration (username and password)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-password:
+            provider: keycloak
+            client-id: "your-client-id"
+            client-secret: "your-client-secret"
+            authorization-grant-type: "password"
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: "http://localhost:${keycloak.port}/realms/TestRealm"</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The client secret can be omitted for public clients. The actual username and password are set in the application
+code as shown in the <a href="../arveo-getting-started/getting-started.html#implementing_the_tool" class="xref page">getting started guide</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">OAuth2 configuration (client secret)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak-secret:
+            provider: keycloak
+            client-id: "your-client-id"
+            client-secret: "your-client-secret"
+            authorization-grant-type: "client_credentials"
+        provider:
+          keycloak:
+            issuer-uri: "http://localhost:${keycloak.port}/realms/TestRealm"</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="switching_the_authentication_context"><a class="anchor" href="#switching_the_authentication_context"></a>Switching the authentication context</h3>
+<div class="paragraph">
+<p>In some cases, an application needs to perform operations with different credentials at runtime. For example, a service
+might need to switch from a regular user context to a technical client context to perform administrative operations.
+The SDK provides the <code>AuthenticationContextSwitch</code> class for this purpose. It implements <code>AutoCloseable</code>, so it can
+be used in a try-with-resources block. When the block is exited, the previous authentication context is automatically
+restored.</p>
+</div>
+<div class="sect3">
+<h4 id="defining_credential_beans"><a class="anchor" href="#defining_credential_beans"></a>Defining credential beans</h4>
+<div class="paragraph">
+<p>To use <code>AuthenticationContextSwitch</code>, you first need to define credential beans in your Spring configuration.
+For username/password authentication, use <code>RegistrationAwareUsernamePasswordAuthenticationToken</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Defining username/password credentials</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Bean
+@Qualifier("ecr-user")
+public RegistrationAwareUsernamePasswordAuthenticationToken ecrUser() {
+    return new RegistrationAwareUsernamePasswordAuthenticationToken("ecr-user", "password");
+}</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>The following example of an object of type <em>Container</em> contains an attribute "name", which is a versioned attribute.
-The other attribute "counter" in this example is marked as not versioned.</p>
+<p>For client credentials (service-to-service) authentication, use <code>ClientRegistrationAwareClientCredentialsAuthentication</code>:</p>
 </div>
+<div class="listingblock">
+<div class="title">Defining client credentials</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Bean
+@Qualifier("techclient")
+public ClientRegistrationAwareClientCredentialsAuthentication techClientCredentials() {
+    return new ClientRegistrationAwareClientCredentialsAuthentication("techclient", "keycloak-client-credentials");
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="injecting_credentials"><a class="anchor" href="#injecting_credentials"></a>Injecting credentials</h4>
 <div class="paragraph">
-<p>Example:</p>
+<p>The credential beans can then be injected into your components using <code>@Autowired</code> and <code>@Qualifier</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Injecting username/password credentials</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+@Qualifier("ecr-user")
+protected RegistrationAwareUsernamePasswordAuthenticationToken ecrUserCredentials;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Injecting client credentials</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Autowired
+@Qualifier("techclient")
+protected ClientRegistrationAwareClientCredentialsAuthentication techClientCredentials;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="switching_to_a_different_authentication_context"><a class="anchor" href="#switching_to_a_different_authentication_context"></a>Switching to a different authentication context</h4>
+<div class="paragraph">
+<p>Use <code>AuthenticationContextSwitch</code> in a try-with-resources block. All SDK calls within the block will be executed
+with the specified credentials. When the block is exited, the original authentication context is restored:</p>
+</div>
+<div class="listingblock">
+<div class="title">Switching to client credentials</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">try (AuthenticationContextSwitch ignored = new AuthenticationContextSwitch(techClientCredentials)) {
+
+    UserId myId = userIdServiceClient.getMyId();</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using_the_sdk_in_a_non_web_application"><a class="anchor" href="#using_the_sdk_in_a_non_web_application"></a>Using the SDK in a non-web application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SDK can be used both in applications that provide web functionality like REST endpoints and in applications that
+do not contain any web functionality. For non-web applications, some differences need to be considered.</p>
+</div>
+<div class="sect2">
+<h3 id="dependencies"><a class="anchor" href="#dependencies"></a>Dependencies</h3>
+<div class="paragraph">
+<p>By default, the SDK contains an OAuth2 client implementation that relies on some web-related spring beans. For non-web
+applications, a different OAuth2 client implementation is available. The default implementation needs to be excluded
+from the SDK dependency and replaced by the non-web implementation as shown in the following example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.CONTAINER)
-@OverwriteAllowed
-public interface TypedSourceContainer {
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
+    &lt;artifactId&gt;ecr-sdk-http&lt;/artifactId&gt;
+    &lt;version&gt;${ecr.version}&lt;/version&gt;
+    &lt;exclusions&gt;
+        &lt;exclusion&gt;
+            &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+            &lt;artifactId&gt;cmn-spring-security5-oauth2-client&lt;/artifactId&gt;
+        &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;cmn-spring-security5-oauth2-client-non-web&lt;/artifactId&gt;
+    &lt;version&gt;${commons-oauth2-version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The current version of the OAuth2 client can be found in the Nexus.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="application_initialization"><a class="anchor" href="#application_initialization"></a>Application initialization</h3>
+<div class="paragraph">
+<p>The SDK contains some dependencies that cause Spring to initialize some web functionality automatically. This can cause
+problems like missing spring security configuration errors. Non-web applications can simply turn off all of Springs
+web functionality by using the <code>SpringApplicationBuilder</code> class as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@SpringBootApplication
+public class MyApplication {
 
-    @Name("counter")
-    @Versioned(false)
-    int getCounter();
-
-    @Name("name")
-    @Versioned
-    String getName();
+	public static void main(String[] args) {
+		new SpringApplicationBuilder(MyApplication.class)
+			.web(WebApplicationType.NONE)
+			.run(args);
+	}
 }</code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="data_model_for_versioning"><a class="anchor" href="#data_model_for_versioning"></a>Data model for versioning</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The actual search table only contains the current status of metadata and system fields.
-In the version table, however, all entities and their versions including the metadata are listed. Only versioned
-attributes are included in the version table. A current internal version counter (1.,2&#8230;&#8203;n) is maintained in the system
-column <em>version_number</em>.</p>
-</div>
-<div class="paragraph">
-<p>During versioning the service counts up the internal version counter by incrementing the value of the system
-column version_number by 1. The value is stored in the version table.</p>
-</div>
-<div class="paragraph">
-<p>Changes to non-versioned fields cannot be tracked because they are not written to the version table.
-To prevent accidental overwriting of such fields, optimistic locking can be activated.
-In this case, a certain property is defined to let the system know, a certain version of an entity is outdated.</p>
-</div>
-<div class="sect2">
-<h3 id="optimistic_locking"><a class="anchor" href="#optimistic_locking"></a>Optimistic locking</h3>
-<div class="paragraph">
-<p>Activating the optimistic locking prevents overwriting for versioned fields. When simultaneously editing an entity and trying to overwrite saved changes of another user, an error message is thrown. Overwriting is not thus possible. Hence, through activating the optimistic locking on an entity type definition (using the annotation <em>@OptimisticLocking</em>), you prevent data corruption.</p>
-</div>
-<div class="paragraph">
-<p>Optimistic locking is used only for single updates, not for batch updates.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="structure_of_the_version_system_table"><a class="anchor" href="#structure_of_the_version_system_table"></a>Structure of the version system table</h3>
-<div class="paragraph">
-<p>The version system table consists of the following columns (this is not a complete excerpt):</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Structure of the system table</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">column</th>
-<th class="tableblock halign-left valign-top">db data type</th>
-<th class="tableblock halign-left valign-top">java data type</th>
-<th class="tableblock halign-left valign-top">nullable?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bigserial</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">entity_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">modification_date</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ZonedDateTime</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">modification_user_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int8</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version_comment</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">version_number</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In this table, <em>version_id</em> is the primary key. The foreign key <em>entity_id</em> references the corresponding entity table.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="version_id"><a class="anchor" href="#version_id"></a>Version ID</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The version ID has the following structure:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>[12bit System id][14bit Type Definition id][38bit Version id]</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The system ID is an internal requirement. It is followed by a type definition ID. The third part is the version id in the database. The composed version id is unique in <em>arveo</em> system.</p>
-</div>
-</div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="repo-service-download-links-external-users.html">Download Links for External Users</a></span>
-  <span class="next"><a href="search-service.html">Search language</a></span>
+  <span class="prev"><a href="sdk-developer-guide.html">Java SDK for Spring applications</a></span>
+  <span class="next"><a href="batch-operations.html">Batch Operations</a></span>
 </nav>
 </article>
   </div>
