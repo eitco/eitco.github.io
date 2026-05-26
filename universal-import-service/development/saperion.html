@@ -462,8 +462,8 @@ between the STK and arveo for data migration.</p>
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
   saperion:
     saperion-import-1: <i class="conum" data-value="1"></i><b>(1)</b>
-      uri: "file://${project.build.testOutputDirectory}/saperion-export?antInclude=**.json&amp;moveFailed=.error" <i class="conum" data-value="2"></i><b>(2)</b>
-      statistics: "file://${project.build.testOutputDirectory}/saperion-export/statistics" <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+      uri: "file://${project.build.directory}/saperion-export1?antInclude=**.json&amp;moveFailed=.error" <i class="conum" data-value="2"></i><b>(2)</b>
+      statistics: "file://${project.build.testOutputDirectory}/saperion-export1/statistics" <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -514,7 +514,287 @@ used depends on the return value of the <code>isGeneric</code> method that must 
 <code>usedForRoute</code> method with the configured import route&#8217;d ID.</p>
 </div>
 <div class="sect3">
-<h4 id="_example_implementation">Example implementation</h4>
+<h4 id="_configurable_revision_mappers">Configurable revision mappers</h4>
+<div class="paragraph">
+<p>The generic Saperion mapper module provides two configurable <code>SaperionRevisionMapper</code> implementations that can be used
+without writing custom code. Both are configured entirely through application properties under the prefix
+<code>universal-import-service.generic-saperion-mapper</code>.</p>
+</div>
+<div class="sect4">
+<h5 id="_simplesaperionrevisionmapper">SimpleSaperionRevisionMapper</h5>
+<div class="paragraph">
+<p>The <code>SimpleSaperionRevisionMapper</code> creates one <em>arveo</em> document entity for each imported Saperion document. The version
+history is imported by creating a <code>DocumentBatchImportWithHistoryOperation</code>. Because <em>arveo</em> documents have a fixed
+number of content elements, each Saperion content element must be mapped to a specific <em>arveo</em> content element by its
+position in the Saperion document structure.</p>
+</div>
+<div class="listingblock">
+<div class="title">configuration example for the simple mapper</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-saperion-mapper:
+    simple:
+      saperion-import-2: <i class="conum" data-value="1"></i><b>(1)</b>
+        type-definition: example_v81 <i class="conum" data-value="2"></i><b>(2)</b>
+        document-id-attribute: saperion_id <i class="conum" data-value="3"></i><b>(3)</b>
+        attribute-field-mappings: <i class="conum" data-value="4"></i><b>(4)</b>
+          EX8_DOCNR: document_number
+          EX8_DOCNAME: document_name
+          EX8_ARCDATE: document_date
+          EX8_COMMENT: comment
+          EX8_LANGUAGE: language
+        variable-mappings: <i class="conum" data-value="5"></i><b>(5)</b>
+          SYSCLIENTNAME: sys_client_name
+          SVPARTID: sv_part_id
+        content-element-position-mappings: <i class="conum" data-value="6"></i><b>(6)</b>
+          1: content</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The key corresponds to the import route ID</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the target <em>arveo</em> type definition</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Optional attribute that will contain the Saperion document ID</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Mapping of Saperion DDC field names to <em>arveo</em> attribute names</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Mapping of Saperion variable names to <em>arveo</em> variable names</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Mapping of numerical content element positions (1-based, depth-first traversal) to <em>arveo</em> content element names</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following common settings are available for attribute mapping:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>attribute-field-mappings</code> – maps Saperion DDC field names to <em>arveo</em> attribute names</p>
+</li>
+<li>
+<p><code>attribute-system-field-mappings</code> – maps Saperion system field names to <em>arveo</em> attribute names</p>
+</li>
+<li>
+<p><code>attribute-variable-mappings</code> – maps Saperion variables (root element only) to <em>arveo</em> attribute names</p>
+</li>
+<li>
+<p><code>variable-mappings</code> – maps Saperion variables to <em>arveo</em> variables (the target type definition must support variables)</p>
+</li>
+<li>
+<p><code>document-id-attribute</code> – optional <em>arveo</em> attribute name that will receive the Saperion document ID</p>
+</li>
+<li>
+<p><code>revision-id-attribute</code> – optional <em>arveo</em> attribute name that will receive the Saperion revision ID</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_referencingsaperionrevisionmapper">ReferencingSaperionRevisionMapper</h5>
+<div class="paragraph">
+<p>The <code>ReferencingSaperionRevisionMapper</code> uses a more complex data model: it creates a container entity with the
+document&#8217;s metadata and version history, and separate document entities for each content element. The document entities
+are connected to the container using a foreign key. Each document entity stores a list of version numbers, making it
+possible to determine which container version references which content element.</p>
+</div>
+<div class="listingblock">
+<div class="title">configuration example for the referencing mapper</div>
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-saperion-mapper:
+    referencing:
+      saperion-import-3: <i class="conum" data-value="1"></i><b>(1)</b>
+        type-definition: example_v8_containers <i class="conum" data-value="2"></i><b>(2)</b>
+        document-type-definition: example_v8_documents <i class="conum" data-value="3"></i><b>(3)</b>
+        document-id-attribute: saperion_id
+        revision-id-attribute: saperion_revision_id
+        reference-field-name: container_id <i class="conum" data-value="4"></i><b>(4)</b>
+        version-number-array-field-name: version_numbers <i class="conum" data-value="5"></i><b>(5)</b>
+        attribute-field-mappings:
+          EX8_DOCNR: document_number
+          EX8_DOCNAME: document_name
+          EX8_ARCDATE: document_date
+          EX8_COMMENT: comment
+          EX8_LANGUAGE: language
+        variable-mappings:
+          SYSCLIENTNAME: sys_client_name
+          SVPARTID: sv_part_id</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The key corresponds to the import route ID</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the container type definition for the version history</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The name of the document type definition for the content elements</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The name of the attribute in the document type definition containing the foreign key to the container (must be of type long)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The name of the integer array attribute in the document type definition that stores the version numbers referencing this document</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_extensibility_through_plugins">Extensibility through plugins</h4>
+<div class="paragraph">
+<p>The configurable revision mappers can be extended using several plugin interfaces. Implementations of these interfaces must
+be provided as Spring Beans and are selected based on the route ID through their <code>usedForRoute</code> method.</p>
+</div>
+<div class="sect4">
+<h5 id="_attributespostprocessor">AttributesPostProcessor</h5>
+<div class="paragraph">
+<p>The <code>AttributesPostProcessor</code> interface allows custom post-processing of mapped attributes. After the mapper
+has collected and mapped all attributes according to the configuration, an <code>AttributesPostProcessor</code> can
+transform, add, or filter attributes before they are passed to the <em>arveo</em> import operation. The processor receives
+the attribute map along with a <code>SaperionImportContext</code> that provides access to the current <code>Exchange</code>, <code>RevisionList</code>,
+<code>Revision</code>, and the mapper configuration properties.</p>
+</div>
+<div class="listingblock">
+<div class="title">SaperionAttributesPostProcessor interface</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface AttributesPostProcessor {
+
+    /**
+     * Determines whether the specified route ID is applicable for processing.
+     */
+    boolean usedForRoute(@NotNull String routeId);
+
+    /**
+     * Processes the given attributes map within the provided Saperion import context and
+     * returns a transformed map of attributes. This method is responsible for mapping,
+     * transforming, or filtering attributes based on the context configuration.
+     */
+    @NotNull Map&lt;String, Object&gt; processAttributes(
+        @NotNull Map&lt;String, Object&gt; attributes,
+        @NotNull SaperionImportContext context
+    );
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_revisioncontentprovider">RevisionContentProvider</h5>
+<div class="paragraph">
+<p>The <code>RevisionContentProvider</code> interface allows overriding the default content retrieval logic. If a provider is
+registered for the current route, it is used instead of the default content loading mechanism. This can be useful when
+content needs to be fetched from an alternative source or needs to be transformed before import.</p>
+</div>
+<div class="listingblock">
+<div class="title">RevisionContentProvider interface</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface RevisionContentProvider {
+
+    /**
+     * Determines whether the specified route ID is applicable for processing.
+     */
+    boolean usedForRoute(String routeId);
+
+    /**
+     * Loads the actual content of the revision.
+     */
+    ContentUpload getRevisionContent(SaperionImportContext context, RevisionContentElement contentElement);
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_variablespostprocessor">VariablesPostProcessor</h5>
+<div class="paragraph">
+<p>The <code>VariablesPostProcessor</code> interface allows custom post-processing of mapped variables. When the target type
+definition supports variables, the mapper collects and maps variables according to the <code>variable-mappings</code> configuration.
+A <code>VariablesPostProcessor</code> can then transform, add, or filter variables before they are passed to the <em>arveo</em> import
+operation. Like the other plugin interfaces, it receives the variable map along with a <code>SaperionImportContext</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">VariablesPostProcessor interface</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface VariablesPostProcessor {
+
+    /**
+     * Determines whether the specified route ID is applicable for processing.
+     */
+    boolean usedForRoute(@NotNull String routeId);
+
+    /**
+     * Processes the given variables map within the provided Saperion import context and
+     * returns a transformed map of variables. This method is responsible for mapping,
+     * transforming, or filtering variables based on the context configuration.
+     */
+    @NotNull Map&lt;String, Object&gt; processVariables(
+        @NotNull Map&lt;String, Object&gt; attributes,
+        @NotNull SaperionImportContext context
+    );
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_contentelementmapper">ContentElementMapper</h5>
+<div class="paragraph">
+<p>The <code>ContentElementMapper</code> interface allows custom mapping of imported <code>RevisionContentElement</code> instances to <em>arveo</em> content
+element names.</p>
+</div>
+<div class="listingblock">
+<div class="title">ContentElementMapper interface</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">/**
+ * ContentElementMappers map imported RevisionContentElements from Saperion to arveo content element names.
+ */
+public interface ContentElementMapper {
+
+    /**
+     * Returns the name of the arveo content element that will store the content of the Saperion RevisionContentElement.
+     * If this method returns null, the RevisionContentElement will be ignored.
+     */
+    @Nullable
+    String getContentElementName(
+        @NotNull RevisionContentElement revisionContentElement,
+        @NotNull SaperionImportContext context
+    );
+
+    /**
+     * Determines whether the specified route ID is applicable for processing.
+     */
+    boolean usedForRoute(@NotNull String routeId);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_custom_mapper_implementations">Custom mapper implementations</h4>
+<div class="paragraph">
+<p>If the configurable mappers do not cover a specific use case, custom <code>SaperionRevisionMapper</code> implementations can be
+created.</p>
+</div>
 <div class="paragraph">
 <p>The following example shows the implementation of a mapper using the typed API to import document version histories.
 Each document entity will contain one content element.</p>
@@ -640,7 +920,7 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-05-25 22:21:10 UTC
+Last updated 2026-05-26 12:26:51 UTC
 </div>
 </div>
 </body>
