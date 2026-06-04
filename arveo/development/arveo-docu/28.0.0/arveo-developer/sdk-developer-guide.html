@@ -702,6 +702,60 @@ TypedDocumentClient&lt;ThirdInterface&gt; otherDocumentClient = serviceClient.ge
 </div>
 </div>
 <div class="sect2">
+<h3 id="search_for_date_and_time_values"><a class="anchor" href="#search_for_date_and_time_values"></a>Search for date and time values</h3>
+<div class="paragraph">
+<p>Date, time, and date-time attributes can be used as typed values in fluent search queries.</p>
+</div>
+<div class="listingblock">
+<div class="title">Searching by date</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedContainerServiceClient&lt;Person&gt; personServiceClient = typeDefinitionServiceClient
+    .getContainerServiceClient().byClass(Person.class);
+
+Optional&lt;TypedContainerClient&lt;Person&gt;&gt; result = personServiceClient.where()
+    .entity().field("birthday")
+    .equalTo().value(LocalDate.of(1959, Month.FEBRUARY, 3))
+    .and().entity().field("first_name").equalTo().value(name1)
+    .holds().firstResult();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Searching by time</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedContainerServiceClient&lt;Person&gt; personServiceClient = typeDefinitionServiceClient
+    .getContainerServiceClient().byClass(Person.class);
+
+Optional&lt;TypedContainerClient&lt;Person&gt;&gt; result = personServiceClient.where()
+    .entity().field("break_time").equalTo().value(LocalTime.of(12, 0))
+    .and().entity().field("first_name").equalTo().value(name2)
+    .holds().firstResult();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Searching by ZonedDateTime</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedContainerServiceClient&lt;Person&gt; personServiceClient = typeDefinitionServiceClient
+    .getContainerServiceClient().byClass(Person.class);
+
+ZonedDateTime zonedDateTime = ZonedDateTime.of(
+    1997,
+    Month.AUGUST.getValue(),
+    29,
+    12,
+    0,
+    0,
+    0,
+    ZoneOffset.UTC
+);
+
+Optional&lt;TypedContainerClient&lt;Person&gt;&gt; result = personServiceClient.where()
+    .entity().field("procedure_date").equalTo().value(zonedDateTime)
+    .and().entity().field("first_name").equalTo().value(name3)
+    .holds().firstResult();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="unique_result"><a class="anchor" href="#unique_result"></a>Unique result</h3>
 <div class="paragraph">
 <p>When exactly one result is expected, use <code>uniqueResult()</code> which returns an <code>Optional</code>:</p>
