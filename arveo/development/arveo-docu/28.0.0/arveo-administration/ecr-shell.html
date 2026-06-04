@@ -571,6 +571,9 @@ jms-listeners
         list-listeners: lists all JMS listeners in the system
 query
         select: Queries the entities from a given type that meet a given constraint.
+reset
+        reset-rendition: Resets the rendition status for documents identified by the given selector.
+        reset-full-text: Resets the full-text extraction status for documents identified by the given selector.
 scheduler
         list-triggers: lists all job triggers in the system
         list-jobs: lists all jobs in the system
@@ -1548,6 +1551,88 @@ These commands require administrator privileges.
 <div class="title">example</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">select --from simple_invoice --where "invoice_number = '2025#001'"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="reset"><a class="anchor" href="#reset"></a>Reset</h3>
+<div class="paragraph">
+<p>The reset commands can be used to reset failed rendition or full-text extraction statuses for document versions
+identified by a selector. This allows the corresponding processing jobs to retry the failed operation.</p>
+</div>
+<div class="paragraph">
+<p><code>reset-rendition</code>: Resets the rendition status for documents identified by the given selector.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">--type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the document type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">--selector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An EQL selector that identifies the documents.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">--rendition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the rendition content element to reset.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>reset-full-text</code>: Resets the full-text extraction status for documents identified by the given selector.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">--type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the document type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">--selector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An EQL selector that identifies the documents.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">--rendition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element whose full-text extraction status should be reset.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">examples</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">reset-rendition --type document_with_rendition --selector "name = 'invoice-001'" --rendition rendition
+reset-full-text --type document_with_rdb_full_text --selector "document_name = 'invoice-001.pdf'" --rendition content1</code></pre>
 </div>
 </div>
 </div>
