@@ -847,6 +847,229 @@ List&lt;EcrId&gt; ids = batchOperationServiceClient.performTypedBatchOperations(
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="fluent_batch_api"><a class="anchor" href="#fluent_batch_api"></a>Fluent Batch API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SDK provides a fluent builder API as an alternative to constructing <code>TypedBatch*Operation</code> objects manually.
+The entry point is <code>BatchOperationServiceClient#startBatch()</code>, which returns a <code>BatchBuilder</code>.
+Each operation is configured step by step through a chain of method calls and the whole batch is submitted
+atomically by calling <code>commit()</code> at the end of the chain.</p>
+</div>
+<div class="sect2">
+<h3 id="starting_a_batch"><a class="anchor" href="#starting_a_batch"></a>Starting a batch</h3>
+<div class="paragraph">
+<p>A batch is started by calling <code>startBatch()</code> on a <code>BatchOperationServiceClient</code> instance.
+After adding all desired operations with the builder methods described below, <code>commit()</code> executes
+them in a single transaction and returns the IDs of all affected entities in insertion order.</p>
+</div>
+<div class="paragraph">
+<p>To add more than one operation, call <code>andThen()</code> after completing an operation to return to the
+<code>BatchBuilder</code> and add the next one.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating_entities"><a class="anchor" href="#creating_entities"></a>Creating entities</h3>
+<div class="paragraph">
+<p>The fluent API supports creating containers, documents, folders, meta entities and relations.
+All create operations are started with <code>.create()</code>, followed by the entity type selector.</p>
+</div>
+<div class="sect3">
+<h4 id="creating_a_container"><a class="anchor" href="#creating_a_container"></a>Creating a container</h4>
+<div class="listingblock">
+<div class="title">Creating a container with the fluent batch API</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;EcrId&gt; ids = batchOperationServiceClient.startBatch()
+    .create()
+    .container()
+    .of(TypedSourceContainer.class)
+    .setAttributes(c -&gt; {
+        c.setNumber(42L);
+        c.setString("fluent-api-test");
+    })
+    .withUpdateCounter(1)
+    .commit();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="creating_a_folder"><a class="anchor" href="#creating_a_folder"></a>Creating a folder</h4>
+<div class="paragraph">
+<p>For folders, the location within the folder hierarchy must be specified after the attributes.
+Use <code>inRootFolder()</code> to place the new folder at the root level, followed by <code>named()</code> to set
+the folder name.</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating a folder with the fluent batch API</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;EcrId&gt; ids = batchOperationServiceClient.startBatch()
+    .create()
+    .folder()
+    .of(TypedTargetFolder.class)
+    .setAttributes(f -&gt; f.setIssuer("fluent-folder-issuer"))
+    .withUpdateCounter(1)
+    .inRootFolder()
+    .named(UUID.randomUUID().toString())
+    .commit();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating_multiple_interdependent_entities_in_one_batch"><a class="anchor" href="#creating_multiple_interdependent_entities_in_one_batch"></a>Creating multiple interdependent entities in one batch</h3>
+<div class="paragraph">
+<p>Multiple create operations can be combined in one batch. When one entity must reference another
+entity that is created in the same batch, a virtual ID is passed to the entity type selector
+(e.g. <code>.container(sourceVid)</code>). Later operations can use that virtual ID to establish the
+reference before any entity has been persisted.</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating two containers and a relation between them in one batch</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">VirtualContainerId sourceVid = new VirtualContainerId(); <i class="conum" data-value="1"></i><b>(1)</b>
+VirtualContainerId targetVid = new VirtualContainerId(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+List&lt;EcrId&gt; ids = batchOperationServiceClient.startBatch()
+    .create()
+    .container(sourceVid) <i class="conum" data-value="3"></i><b>(3)</b>
+    .of(TypedSourceContainer.class)
+    .setAttributes(c -&gt; {
+        c.setNumber(1L);
+        c.setString("source");
+    })
+    .withUpdateCounter(1)
+    .andThen() <i class="conum" data-value="4"></i><b>(4)</b>
+    .create()
+    .container(targetVid)
+    .of(TypedTargetContainer.class)
+    .setAttributes(c -&gt; c.setCertificates("target"))
+    .withUpdateCounter(1)
+    .andThen()
+    .create()
+    .relation()
+    .of(TypedContainerContainerRelation.class)
+    .setAttributes(r -&gt; {
+        r.setNumber(0L);
+        r.setString("relation");
+    })
+    .withUpdateCounter(1)
+    .from(sourceVid) <i class="conum" data-value="5"></i><b>(5)</b>
+    .to(targetVid)
+    .commit(); <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Virtual ID for the source container — used later to reference it from the relation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Virtual ID for the target container — used later to reference it from the relation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The source container is registered under <code>sourceVid</code> so subsequent operations can reference its ID</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>andThen()</code> returns to the <code>BatchBuilder</code> to add the next operation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><code>from()</code> and <code>to()</code> reference the virtual IDs of the containers created earlier in the same batch</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><code>commit()</code> submits all three operations as a single atomic transaction and returns the created IDs</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="upsert_semantics"><a class="anchor" href="#upsert_semantics"></a>Upsert semantics</h3>
+<div class="paragraph">
+<p>By default a create operation fails if an entity already exists. To perform an upsert instead,
+call <code>orUpdate()</code> or <code>orOverride()</code> directly after <code>create()</code> and before selecting the entity type.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>orUpdate()</code> — if a matching entity exists, update it (attributes not in the input are left
+unchanged).</p>
+</li>
+<li>
+<p><code>orOverride()</code> — if a matching entity exists, replace it entirely with the input data.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both methods accept a selector condition that identifies the potentially existing entity, followed
+by an optional call to <code>ignoringAttributes()</code> to exclude certain attributes from the update.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="updating_and_deleting_entities"><a class="anchor" href="#updating_and_deleting_entities"></a>Updating and deleting entities</h3>
+<div class="paragraph">
+<p>Use <code>.update()</code> or <code>.overwrite()</code> to modify existing entities. <code>.update()</code> merges the supplied
+values into the existing entity, leaving unspecified attributes unchanged. <code>.overwrite()</code> replaces
+the entity entirely.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>.delete()</code> to remove an entity by its ID:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">batchOperationServiceClient.startBatch()
+    .delete()
+    .byId(containerId)
+    .commit();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Bulk deletes by type and condition are also supported via <code>.delete().from(TypeClass.class).where().limit(n)</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="precondition_checks"><a class="anchor" href="#precondition_checks"></a>Precondition checks</h3>
+<div class="paragraph">
+<p><code>expect()</code> adds a precondition assertion to the batch. The batch fails atomically if the
+condition is not satisfied at execution time, preventing the write operations from running.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>noneExists()</code> — fails if any matching entity exists</p>
+</li>
+<li>
+<p><code>anyExists()</code> — fails if no matching entity exists</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both are followed by <code>.of(TypeClass.class)</code> to select the type to search and then a filter
+condition.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">batchOperationServiceClient.startBatch()
+    .expect()
+    .noneExists()
+    .of(MyContainer.class)
+    .entity().field("name").equalTo().value("duplicate").holds()
+    .andThen()
+    .create()
+    .container()
+    .of(MyContainer.class)
+    .setAttributes(c -&gt; c.setName("duplicate"))
+    .withUpdateCounter(1)
+    .commit();</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="discovery-and-authentication.html">Service discovery and authentication</a></span>
   <span class="next"><a href="non-spring-sdk.html">Java SDK for non-Spring applications</a></span>
