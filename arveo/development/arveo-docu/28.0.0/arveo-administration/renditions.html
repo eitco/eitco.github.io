@@ -834,6 +834,152 @@ plugins of the Document Conversion Service.
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="thumbnails"><a class="anchor" href="#thumbnails"></a>Thumbnails</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A thumbnail is a special kind of rendition that contains a preview image of a single, selectable page of another
+content element. Thumbnails are typically used to show a preview of a document in a frontend. Like ordinary renditions,
+thumbnails are created automatically and asynchronously by the Document Conversion Service, and their availability can
+be tracked using the rendition status map described above.</p>
+</div>
+<div class="paragraph">
+<p>A thumbnail is declared on a document type using the <code>@Thumbnail</code> annotation. The annotation defines a content element
+that holds the thumbnail image of another content element:</p>
+</div>
+<div class="listingblock">
+<div class="title">A document type definition with a thumbnail</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
+@ContentElement(name = "pdf", contentType = "application/pdf") <i class="conum" data-value="1"></i><b>(1)</b>
+@Thumbnail(name = "thumbnail", sourceElement = "pdf")          <i class="conum" data-value="2"></i><b>(2)</b>
+public interface DocumentWithThumbnail {
+    // ...
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The source content element a thumbnail should be generated for.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The thumbnail content element. It is created automatically from the first page of the <code>pdf</code> content element.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A thumbnail behaves like a regular content element: it is identified by its <code>name</code>, it can be addressed by that name,
+and its creation status is reported in the rendition status map of the document.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Thumbnail</code> annotation is repeatable. The same source content element can therefore have several thumbnails in
+different formats, each declared with its own <code>name</code> and <code>contentType</code>, for example a JPEG and a PNG thumbnail:</p>
+</div>
+<div class="listingblock">
+<div class="title">A document type definition with multiple thumbnail formats</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Type(ObjectType.DOCUMENT)
+@ContentElement(name = "pdf", contentType = "application/pdf")
+@Thumbnail(name = "thumbnailJpeg", sourceElement = "pdf", contentType = "image/jpeg") <i class="conum" data-value="1"></i><b>(1)</b>
+@Thumbnail(name = "thumbnailPng", sourceElement = "pdf", contentType = "image/png")   <i class="conum" data-value="2"></i><b>(2)</b>
+public interface DocumentWithThumbnails {
+    // ...
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A JPEG thumbnail of the <code>pdf</code> content element.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A PNG thumbnail of the same content element, stored under a different name.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>@Thumbnail</code> annotation accepts the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Parameters of <code>@Thumbnail</code></caption>
+<colgroup>
+<col style="width: 25%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">parameter</th>
+<th class="tableblock halign-left valign-top">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the thumbnail content element. The thumbnail is accessible under this name like a regular content element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sourceElement</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the content element the thumbnail is generated from.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">page</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The zero-based page of the source content used to generate the thumbnail. Only applies to multi-page content types. Defaults to <code>0</code> (the first page).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contentType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The target content type (a mime type string) of the thumbnail image. Defaults to <code>image/jpeg</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">profile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage profile used to store the thumbnail content element (optional). If empty, the system tries to find a suitable profile by checking, in order, for a profile named <code>type-definition-name-content-element-name</code>, then <code>type-definition-name</code>, and finally a default profile. If none is found, an exception is thrown.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="reading_thumbnails_in_the_client"><a class="anchor" href="#reading_thumbnails_in_the_client"></a>Reading thumbnails in the client</h3>
+<div class="paragraph">
+<p>The SDK provides <code>readThumbnail</code> methods to load the thumbnail image of a content element. They are available both on
+the document client (for the latest version) and on the version client (for a specific version):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>de.eitco.ecr.sdk.document.TypedDocumentClient.readThumbnail(String, MediaType)</code></p>
+</li>
+<li>
+<p><code>de.eitco.ecr.sdk.document.TypedDocumentVersionClient.readThumbnail(String, MediaType)</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">try (InputStream thumbnail = documentClient.readThumbnail("pdf", MediaType.IMAGE_JPEG)) {
+    // use the preview image, e.g. stream it to a frontend
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first parameter is the name of the <strong>source</strong> content element (<code>pdf</code> in the example above), not the name of the
+thumbnail content element. The second parameter selects the desired format: the system returns the thumbnail of that
+source element whose configured <code>contentType</code> matches the requested MIME type. The match is a proper media-type
+comparison (case-insensitive and independent of parameter order), not a plain string comparison. This is how the
+different formats configured for one source element are addressed — for example <code>MediaType.IMAGE_JPEG</code> returns the JPEG
+thumbnail and <code>MediaType.IMAGE_PNG</code> returns the PNG thumbnail. The method returns an <code>InputStream</code> with the thumbnail&#8217;s
+image data.</p>
+</div>
+<div class="paragraph">
+<p>If the requested MIME type is <code>null</code>, the first thumbnail configured for the source element is returned. A
+<code>ResourceNotFoundException</code> is thrown if the source element has no thumbnail at all, and a <code>RenditionUnavailableException</code>
+is thrown if no thumbnail with the requested content type is configured for it.</p>
+</div>
+</div>
+</div>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="content-elements-storage.html">Storage locations</a></span>
   <span class="next"><a href="retention-container.html">Retention and Storage</a></span>
