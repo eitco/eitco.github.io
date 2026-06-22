@@ -445,13 +445,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_consultant_leitfaden"><strong>Consultant-Leitfaden</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Dieser Leitfaden richtet sich an technische Consultants, die den Universal Import Service fuer konkrete Importvorhaben
+<p>Dieser Leitfaden richtet sich an technische Consultants, die den Universal Import Service für konkrete Importvorhaben
 konfigurieren. Es wird keine Entwicklung vorausgesetzt. Die beschriebenen Szenarien basieren auf der bestehenden
 Produktdokumentation und den Systemtests.</p>
 </div>
 <div class="paragraph">
-<p>Der Service liest Dateien aus konfigurierten Eingangsverzeichnissen, wandelt Metadaten in arveo-Attribute um und legt
-Dokumente oder Container in arveo an. Die Konfiguration erfolgt in YAML-Dateien.</p>
+<p>Der Service liest Dateien aus konfigurierten Eingangsverzeichnissen, wandelt Metadaten in <em>arveo</em>-Attribute um und legt
+Dokumente oder Container in <em>arveo</em> an. Die Konfiguration erfolgt in YAML-Dateien.</p>
+</div>
+<div class="paragraph">
+<p>Der Service kann verschiedene Arten von Quellen (csv, csf, filesytem, ..) verarbeiten, die als Szenarien bezeichnet werden. Bei der folgenden Konfiguration sind entsprechende Schlüsselwörter zu beachten.</p>
 </div>
 <div class="sect2">
 <h3 id="_grundprinzip">Grundprinzip</h3>
@@ -464,7 +467,7 @@ Dokumente oder Container in arveo an. Die Konfiguration erfolgt in YAML-Dateien.
 <p>Eine Route legt fest, wo der Service Quelldateien findet.</p>
 </li>
 <li>
-<p>Eine Mapper-Konfiguration legt fest, wie die gelesenen Daten nach arveo uebertragen werden.</p>
+<p>Eine Mapper-Konfiguration legt fest, wie die gelesenen Daten nach <em>arveo</em> übertragen werden.</p>
 </li>
 </ol>
 </div>
@@ -486,7 +489,7 @@ Dokumente oder Container in arveo an. Die Konfiguration erfolgt in YAML-Dateien.
 </div>
 </div>
 <div class="paragraph">
-<p>Die wichtigsten URI-Parameter fuer dateibasierte Routen sind:</p>
+<p>Die wichtigsten URI-Parameter für dateibasierte Routen sind:</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -501,26 +504,105 @@ Dokumente oder Container in arveo an. Die Konfiguration erfolgt in YAML-Dateien.
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verzeichnis, aus dem importiert werden soll.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>antInclude</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter fuer Dateien, die verarbeitet werden sollen, zum Beispiel <code><strong>/*.csv</code> oder <code></strong>.json</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filter für Unterverzeichnisse, die verarbeitet werden sollen, zum Beispiel <code><strong>/import/verarbeitet/</strong>/<strong>.</strong></code>.  Dieser Parameter ist case-sensitive!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antExclude</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filter für Unterverzeichnisse, die ausgeschlossen werden sollen, zum Beispiel <code><strong>/mock/</strong>/<strong>.</strong></code>. Dieser Parameter hat Vorrang vor dem antInclude und ist case-sensitive!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exclude</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filter für Dateinamen, die ausgeschlossen werden sollen, zum Beispiel <code>.*fertig.txt</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>move</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zielordner für Dateien, die erfolgreich verarbeitet wurden, zum Beispiel <code>.done</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>moveFailed</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Zielordner fuer Dateien, die nicht erfolgreich verarbeitet wurden, zum Beispiel <code>.error</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zielordner für Dateien, die nicht erfolgreich verarbeitet wurden, zum Beispiel <code>.error</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recursive=true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Es werden auch Unterverzeichnisse durchsucht.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delete=false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dateien werden nach dem Import nicht gelöscht.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>noop=true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Die Quelldatei bleibt im Eingangsordner liegen. Das ist vor allem fuer Test- oder Kontrollszenarien hilfreich.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Die Quelldatei bleibt im Eingangsordner liegen. Das ist vor allem für Test- oder Kontrollszenarien hilfreich.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Die URI folgt dem Apache-Camel-Format fuer File-Endpunkte. Weitere Parameter wie Include-/Exclude-Filter,
+<p>Die URI folgt dem Apache-Camel-Format für File-Endpunkte. Weitere Parameter wie Include-/Exclude-Filter,
 Verschiebeverhalten, Polling-Intervalle oder Locking sind in der
 <a href="https://camel.apache.org/components/next/file-component.html">Apache Camel File Component Dokumentation</a> beschrieben.
-Fuer Importkonfigurationen sollten nur Parameter verwendet werden, die im Zielbetrieb fachlich abgestimmt sind. Besonders
+Für Importkonfigurationen sollten nur Parameter verwendet werden, die im Zielbetrieb fachlich abgestimmt sind. Besonders
 <code>delete</code>, <code>move</code>, <code>moveFailed</code>, <code>noop</code>, <code>readLock</code> und Filterparameter beeinflussen, ob Quelldateien nach dem Import
-erhalten bleiben, verschoben oder geloescht werden.</p>
+erhalten bleiben, verschoben oder gelöscht werden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_komplexere_importkonstellationen">"komplexere" Importkonstellationen</h3>
+<div class="paragraph">
+<p>Oft sollen verschiedene Importkonstellationen implementiert werden. z.B. unterschiedliche Quellen in dasselbe / oder unterschiedliche Archive.</p>
+</div>
+<div class="paragraph">
+<p>In einer YAML- Datei können beliebig viele Routen konfiguriert werden. Somit kann eine Instanz des Universal Import Service mehrere Routen parallel abarbeiten.</p>
+</div>
+<div class="paragraph">
+<p>In der Route kann mit thread-pool-size: xx angegeben werden, mit wie vielen Thraeds maximal eine Route abgearbeitet werden soll,</p>
+</div>
+<div class="paragraph">
+<p>Im folgenden Beispiel werden bis zu 10 Threads parallel genutzt.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  csv:
+    csv-kundenakten:
+      uri: "file:///data/import/csv?antInclude=**/*.csv&amp;moveFailed=.error"
+      statistics: "file:///data/import/csv/statistics"
+      thread-pool-size: 10
+  generic-csv-mapper:
+    settings:
+      csv-kundenakten:
+        type-definition-name: kundenakte</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der Universal Import Service ist PlugIn fähig. Somit kann sein Verhalten auf kundenspezifische Anforderungen angepasst werden. Ein Plugin wird in Java implementiert und als jar verpackt. Dieses muss beim Start des Universal Import Service im loader.path liegen,
+welcher zum Start des Universal Import Service angegeben wurde.</p>
+</div>
+<div class="paragraph">
+<p>Ein PlugIn implementiert das entsprechende Interface z.B. AttributesPreprocessor und implementiert die erforderlichen Methoden um das gewünschte Verhalten zu erzielen.</p>
+</div>
+<div class="paragraph">
+<p>Erprobte Szenarien für PlugIns sind:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Anpassungen der Metadaten</p>
+</li>
+<li>
+<p>Mergen / transformieren von Content vor dem Import</p>
+</li>
+<li>
+<p>nachbearbeitende Schritte nach dem Import</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Für die Implementierung von Universal Import Service PlugIns sei auf die entsprechende Entwickler Dokumentation verwiesen.</p>
 </div>
 </div>
 <div class="sect2">
@@ -542,27 +624,27 @@ erhalten bleiben, verschoben oder geloescht werden.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile beschreibt genau ein Dokument.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CSV Simple</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ein arveo-Dokument je CSV-Zeile, optional mit einem oder mehreren Content-Elementen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ein <em>arveo</em>-Dokument je CSV-Zeile, optional mit einem oder mehreren Content-Elementen.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile enthaelt mehrere Dateinamen, die als getrennte Dokumente entstehen sollen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile enthält mehrere Dateinamen, die als getrennte Dokumente entstehen sollen.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CSV Counting</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Mehrere arveo-Dokumente je CSV-Zeile. Der Platzhalter <code>${contentElementNumber}</code> unterscheidet die Dokumente.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile beschreibt einen fachlichen Datensatz und mehrere Dateien sollen daran haengen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile beschreibt einen fachlichen Datensatz und mehrere Dateien sollen daran hängen.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CSV Referencing</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ein Container mit Metadaten und separate Dokumente fuer die Dateien. Die Dokumente verweisen per Fremdschluessel auf den Container.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ein Container mit Metadaten und separate Dokumente für die Dateien. Die Dokumente verweisen per Fremdschlüssel auf den Container.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Saperion-CSF-Dateien sollen importiert werden.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CSF</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CSV-aehnlicher Import mit zusaetzlicher Auswertung des CSF-Headers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV-ähnlicher Import mit zusätzlicher Auswertung des CSF-Headers.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Dateien liegen direkt in Ordnern und Metadaten stecken im Pfad oder Dateinamen.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">File</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ein arveo-Dokument je Datei. Attribute werden aus Dateiname, Pfad oder Dateieigenschaften gebildet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ein <em>arveo</em>-Dokument je Datei. Attribute werden aus Dateiname, Pfad oder Dateieigenschaften gebildet.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Saperion-STK-JSON-Export mit Historie soll migriert werden.</p></td>
@@ -575,7 +657,7 @@ erhalten bleiben, verschoben oder geloescht werden.</p>
 <div class="sect2">
 <h3 id="_gemeinsame_mapper_einstellungen">Gemeinsame Mapper-Einstellungen</h3>
 <div class="paragraph">
-<p>Diese Einstellungen kommen in CSV-, CSF- und File-Szenarien regelmaessig vor:</p>
+<p>Diese Einstellungen kommen in CSV-, CSF- und File-Szenarien regelmässig vor:</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -603,8 +685,8 @@ erhalten bleiben, verschoben oder geloescht werden.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>skip-empty-documents</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn <code>true</code>, werden Datensaetze ohne binaeren Inhalt uebersprungen.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> fuer reine Dokumentimporte, <code>false</code> wenn Metadaten ohne Datei erlaubt sind.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn <code>true</code>, werden Datensätze ohne binären Inhalt übersprungen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> für reine Dokumentimporte, <code>false</code> wenn Metadaten ohne Datei erlaubt sind.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>conflict-resolution-strategy</code></p></td>
@@ -615,13 +697,13 @@ erhalten bleiben, verschoben oder geloescht werden.</p>
 </table>
 <div class="paragraph">
 <p>Fuer Updates, Overwrite und Skip-Erkennung sollte mindestens ein Attribut mit <code>unique-identifier: true</code> konfiguriert
-werden. Ohne eindeutige Kennung kann der Service bestehende Objekte nicht verlaesslich finden.</p>
+werden. Ohne eindeutige Kennung kann der Service bestehende Objekte nicht verlässlich finden.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_attribute_konfigurieren">Attribute konfigurieren</h3>
 <div class="paragraph">
-<p>Attribute werden als Mapping von einem Quellfeld auf ein arveo-Attribut beschrieben.</p>
+<p>Attribute werden als Mapping von einem Quellfeld auf ein <em>arveo</em>-Attribut beschrieben.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -647,7 +729,7 @@ werden. Ohne eindeutige Kennung kann der Service bestehende Objekte nicht verlae
 </div>
 </div>
 <div class="paragraph">
-<p>Der konkrete Ort des <code>attributes</code>-Blocks haengt vom Importszenario ab:</p>
+<p>Der konkrete Ort des <code>attributes</code>-Blocks hängt vom Importszenario ab:</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -659,7 +741,7 @@ werden. Ohne eindeutige Kennung kann der Service bestehende Objekte nicht verlae
 <tr>
 <th class="tableblock halign-left valign-top">Szenario</th>
 <th class="tableblock halign-left valign-top">Pfad in der YAML</th>
-<th class="tableblock halign-left valign-top">Quelle der linken Schluessel</th>
+<th class="tableblock halign-left valign-top">Quelle der linken Schlüssel</th>
 </tr>
 </thead>
 <tbody>
@@ -697,7 +779,7 @@ werden. Ohne eindeutige Kennung kann der Service bestehende Objekte nicht verlae
 </table>
 <div class="paragraph">
 <p><code>&lt;route-id&gt;</code> steht fuer den Namen der Route, zum Beispiel <code>csv-kundenakten</code>, <code>csf-incident</code> oder <code>file-dokumente</code>.
-Der Name muss exakt mit dem Schluessel unter <code>universal-import-service.csv</code>, <code>csf</code> oder <code>file</code> uebereinstimmen.</p>
+Der Name muss exakt mit dem Schlüssel unter <code>universal-import-service.csv</code>, <code>csf</code> oder <code>file</code> uebereinstimmen.</p>
 </div>
 <div class="paragraph">
 <p>Der linke Schluessel, hier zum Beispiel <code>invoice_number</code>, ist das Feld aus der Quelle. Bei CSV und CSF ist das der
@@ -709,7 +791,7 @@ Eigenschaft.</p>
 Mehrfachwerte werden mit <code>array: true</code> und einem <code>delimiter</code> konfiguriert.</p>
 </div>
 <div class="paragraph">
-<p>Leere Werte werden als <code>null</code> uebertragen. Soll ein vorhandener Wert bei einem Update aktiv geloescht werden, kann der
+<p>Leere Werte werden als <code>null</code> uebertragen. Soll ein vorhandener Wert bei einem Update aktiv gelöscht werden, kann der
 Null-Platzhalter verwendet werden:</p>
 </div>
 <div class="listingblock">
@@ -721,11 +803,14 @@ Null-Platzhalter verwendet werden:</p>
     default-value: "$null"</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Außerdem kann der <code>default-value</code> verwendet werden, um in Felder in Arveo mit einem Standardwert zu füllen, die in der CSV.Datei nicht als Spalte enthalten sind.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_csv_import">CSV-Import</h3>
 <div class="paragraph">
-<p>CSV-Routen stehen unter <code>universal-import-service.csv</code>. Das CSV-Trennzeichen gilt fuer alle CSV-Routen und wird ueber
+<p>CSV-Routen stehen unter <code>universal-import-service.csv</code>. Das CSV-Trennzeichen gilt für alle CSV-Routen und wird ueber
 <code>camel.dataformat.csv.delimiter</code> gesetzt.</p>
 </div>
 <div class="listingblock">
@@ -776,14 +861,14 @@ camel:
 </div>
 <div class="paragraph">
 <p><code>csv-field-name</code> nennt die CSV-Spalte mit Dateinamen. <code>content-path</code> ist der Ordner, in dem diese Dateien liegen, wenn
-die CSV nur Dateinamen und keine vollstaendigen Pfade enthaelt. <code>position-mappings</code> ordnet die Dateiliste Content-
+die CSV nur Dateinamen und keine vollständigen Pfade enthält. <code>position-mappings</code> ordnet die Dateiliste Content-
 Elementen zu. Die erste Datei hat Position <code>0</code>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_csv_counting">CSV Counting</h4>
 <div class="paragraph">
-<p>Counting eignet sich, wenn eine CSV-Zeile mehrere Dateien enthaelt und jede Datei ein eigenes Dokument werden soll.</p>
+<p>Counting eignet sich, wenn eine CSV-Zeile mehrere Dateien enthält und jede Datei ein eigenes Dokument werden soll.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -816,7 +901,7 @@ in <code>prefix</code>, <code>suffix</code> oder <code>default-value</code> genu
 <h4 id="_csv_referencing">CSV Referencing</h4>
 <div class="paragraph">
 <p>Referencing eignet sich, wenn ein fachlicher Datensatz als Container importiert wird und jede Datei als eigenes
-Dokument an diesen Container angehaengt wird.</p>
+Dokument an diesen Container angehängt wird.</p>
 </div>
 <div class="listingblock">
 <div class="content">
