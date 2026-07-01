@@ -69,20 +69,14 @@ of the Content Repository Service, including the required type definitions, is a
 <div class="sect2">
 <h3 id="_access_rights">Access rights</h3>
 <div class="paragraph">
-<p>The Litigation Management Service uses impersonation to authenticate its requests to the Content Repository Service.
-The impersonation feature must be enabled in the Content Repository Service using the property:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">commons:
-  security:
-    oauth2:
-      impersonation-enabled: true</code></pre>
-</div>
+<p>The Litigation Management Service uses the OAuth2 token exchange (RFC 8693) feature to perform requests on behalf of an
+actual user. An OAuth2 client with the "Standard Token Exchange" flow must be available in Keycloak.</p>
 </div>
 <div class="paragraph">
 <p>To allow the Litigation Management Service to update the litigation-hold flags of entities, it needs the following
-authorities. These authorities must be assigned to the service account user of the OAuth2 client used by the service:</p>
+authorities. These authorities must be mapped to the <code>service-authorities</code> claim of the tokens issued for the Keycloak
+client. Alternatively, the authorities can be added as hardcoded realm roles to the client and mapped to the authorities
+claim together with the user&#8217;s realm roles.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -103,14 +97,6 @@ authorities. These authorities must be assigned to the service account user of t
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ECR_DSGVO_PRIVILEGED_DELETE</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Allows the service to delete empty collections (which are retention-protected, too).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>can-impersonate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allows the service to impersonate the actual user.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>impersonate-inherit-authorities</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The authenticated request will inherit the service&#8217;s authorities in addition to the user&#8217;s own authorities.</p></td>
 </tr>
 </tbody>
 </table>
@@ -381,7 +367,7 @@ to this collection will be reset to null.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-01 00:38:06 UTC
+Last updated 2026-07-01 11:33:37 UTC
 </div>
 </div>
 </body>
