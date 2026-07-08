@@ -418,45 +418,14 @@
 <h2 id="service_discovery"><a class="anchor" href="#service_discovery"></a>Service discovery</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The SDK uses service discovery to find an instance of the content repository service. By default, the Eureka Service Registry
-is used for service discovery. Each service registers itself in Eureka, and clients (or other services) can retrieve a list
-of available instances from Eureka. When the Eureka Service Registry is not running on the same machine as the client
-application, it&#8217;s URL must be configured:</p>
-</div>
-<div class="listingblock">
-<div class="title">Eureka Service URL</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
-  client:
-    serviceUrl:
-      defaultZone: "http://service-registry-host:8761/eureka/"</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-When more than one instance of a service is returned from the service registry, the clients automatically perform load
-balancing and failover.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>In scenarios where the Eureka Service Registry is not used (like Kubernetes), the available service instance(s) must be
-configured manually.</p>
+<p>The SDK uses service discovery to find an instance of the content repository service. In Kubernetes environments, the
+Kubernetes service discovery mechanism is used. Alternatively, it is possible to configure the available service
+instances manually:</p>
 </div>
 <div class="listingblock">
 <div class="title">manually configuring service instances</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
-  client:
-    enabled: false
-
-spring:
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spring:
   cloud:
     discovery:
       client:
@@ -464,7 +433,11 @@ spring:
           instances:
             content-repository-service:
               - uri: "http://server1:12345"
-              - uri: "http://server2:12345"</code></pre>
+                metadata:
+                  api-version: 1.0.0
+              - uri: "http://server2:12345"
+                metadata:
+                  api-version: 1.0.0</code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">

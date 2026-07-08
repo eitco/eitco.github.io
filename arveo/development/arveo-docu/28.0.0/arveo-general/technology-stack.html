@@ -416,7 +416,10 @@
 <article class="doc">
 <h1 class="page">Opensource Technology Stack</h1>
 <div class="paragraph">
-<p>The technology stack has been chosen to ensure creating high-performance, cloud- and client-capable and scalable state-of-the-art (micro) services with a modern web user interface. Our chose tech stack enables the implementation of both small projects, which only consist of a single component in the backend, and large projects with various distributed components. The created components are deployable both locally on the customer&#8217;s hardware and
+<p>The technology stack has been chosen to ensure creating high-performance, cloud- and client-capable and scalable
+state-of-the-art (micro) services with a modern web user interface. Our chosen tech stack enables the implementation of
+both small projects, which only consist of a single component in the backend, and large projects with various distributed
+components. The created components are deployable both locally on the customer&#8217;s hardware and
 in a cloud environment.</p>
 </div>
 <div class="paragraph">
@@ -430,7 +433,7 @@ in a cloud environment.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The implementation of the backend components has been done in Java and Kotlin. The Spring Framework is
+<p>The implementation of the backend components has been done in Java. The Spring Framework is
 used as the basis. Spring is an Open Source (Apache License) framework that has existed since 2004 with a large and very
 active developer community. The framework has a modular structure, which is why it is suitable for both simple and complex
 applications. It provides dependency injection, externalized configuration, and assistance with things like database
@@ -462,96 +465,6 @@ web applications and also offers support for SSO technologies such as OAuth and 
 <div class="ulist">
 <ul>
 <li>
-<p>Spring Cloud</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Spring Cloud is a collection of additional Spring components that provide the typical functionality required in a
-distributed or cloud application. The individual components can be used independently of one another and partly consist
-of integrable dependencies as well as independent applications. Which of the Spring Cloud components are used therefore
-depends entirely on the project requirements. Spring Cloud applications can be operated in managed cloud environments
-such as Cloud Foundry.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Spring Cloud Config</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Spring Cloud Config offers a central configuration service as well as a client library for components that consume the
-configuration. In a Spring Boot application, it is sufficient to add the corresponding dependency. From then on, Spring
-will automatically read from the configuration service if it is available. The configuration data can be stored in simple
-files, in a database, a Git repository or in a protected repository such as Vault.</p>
-</div>
-<div class="paragraph">
-<p>In a distributed application with several components running on different machines, Spring Cloud Config can be used to
-implement central management for the configuration of all components.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Spring Cloud Bus</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Spring Cloud Bus provides a bus for communication between the components or for connecting external components. The
-communication is based on the AMQP protocol and requires a backend such as RabbitMQ or ActiveMQ. With the help of the
-bus, e.g. Notify components when their configuration in the configuration service has changed.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Eureka</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Eureka is a Spring Cloud component provided by Netflix that provides a service registry. A service registry is a central
-directory of all service instances. A service or a client application therefore only needs to know the URL of the service
-registry in order to access one of the other services. Eureka is an independently executable component and offers a
-client library for access to the registry.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Hystrix</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Hystrix is a Spring Cloud component provided by Netflix that can be imagined as a fuse in an electrical installation. If
-one component of a cloud environment fails, Hystrix can isolate it from the other components to prevent further failures.
-Another instance of the component can then provide the functionality.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Zuul</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Zuul is a Spring Cloud component provided by Netflix that provides an API gateway. An API gateway acts like a reverse
-proxy and hides the individual microservices from a client application. The client application only knows the API
-gateway and does not have to worry about the URLs of the various services.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Ribbon</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Ribbon is a Spring Cloud component provided by Netflix that provides a client-side load balancer.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
 <p>Archetypes</p>
 </li>
 </ul>
@@ -559,10 +472,9 @@ gateway and does not have to worry about the URLs of the various services.</p>
 <div class="paragraph">
 <p>There are Maven archetypes that can be used to easily start a new project based on our technology stack. Different
 archetypes are available for different types of applications. The generated projects contain a Jenkins file with a
-preconfigured CI environment including static code analysis with sonar, OWASP dependency checks, load tests based on
-JMeter, a release mechanism at the push of a button and an optional teams hook. Also included are packaging modules
-with which the application can be packaged as a Linux daemon or as a Windows service and IDE configuration files for
-IntelliJ and Eclipse.</p>
+preconfigured CI environment including static code analysis with sonar, dependency checks, a release mechanism at the push
+of a button and an optional teams hook. Also included are packaging modules
+with which the application can be packaged as a standalone application or as a Windows service.</p>
 </div>
 <div class="ulist">
 <ul>

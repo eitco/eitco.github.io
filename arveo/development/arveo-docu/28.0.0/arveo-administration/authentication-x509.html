@@ -496,20 +496,6 @@ the user using OAuth2 by setting <code>security.x509.enabled=false</code> and le
 </table>
 </div>
 <div class="paragraph">
-<p>To notify other services or clients using the Registry Service to use SSL for arveo instances, the Eureka
-service registry client <em>of the registered service</em> must be configured to register the HTTPS URL of the arveo
-service in the registry as shown below:</p>
-</div>
-<div class="listingblock">
-<div class="title">registering HTTPS URLs in the service registry</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">eureka:
-  instance:
-    nonSecurePortEnabled: false
-    securePortEnabled: true</code></pre>
-</div>
-</div>
-<div class="paragraph">
 <p>To extract the name of the user from the certificate, a regular expression is used to parse the subject
 of the certificate. By default, the value of the CN property is used for the username.
 This behavior can be influenced by defining your own regular expression. The regular
