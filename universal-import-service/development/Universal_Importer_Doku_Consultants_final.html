@@ -372,7 +372,7 @@ welcher zum Start des Universal Import Service angegeben wurde.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile enthält mehrere Dateinamen, die als getrennte Dokumente entstehen sollen.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CSV Counting</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Mehrere <em>arveo</em>-Dokumente je CSV-Zeile. Der Platzhalter <code>${contentElementNumber}</code> unterscheidet die Dokumente.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mehrere <em>arveo</em>-Dokumente je CSV-Zeile. Der Platzhalter <code>${ contentElementNumber}</code> unterscheidet die Dokumente.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile beschreibt einen fachlichen Datensatz und mehrere Dateien sollen daran hängen.</p></td>
@@ -1061,49 +1061,36 @@ Logdatei und die Art der protokollierten Meldungen konfigurieren.</p>
 <div class="sect2">
 <h3 id="_service_discovery">Service-Discovery</h3>
 <div class="paragraph">
-<p>Der Service ist als Discovery-Client konfiguriert. In klassischen <em>arveo</em>-Umgebungen meldet er sich bei Eureka an und
-findet darüber andere Services. Für eine Eureka-Umgebung werden typischerweise diese Werte gesetzt:</p>
+<p>Der Service muss andere <em>arveo</em>-Services (insbesondere den Content Repository Service) finden, um Dokumente und Container
+ablegen zu können.</p>
+</div>
+<div class="paragraph">
+<p>Es gibt zwei unterstützte Betriebsarten:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Kubernetes Service-Discovery</strong> – wenn der Service in Kubernetes betrieben wird, kann er die Plattform-Service-Discovery
+verwenden. Die Ziel-Services werden dabei über die Kubernetes-Mechanismen (Services/Endpoints) aufgelöst. Die
+Kubernetes-Konfiguration der Zielplattform muss mit der Betriebsdokumentation abgeglichen werden.</p>
+</li>
+<li>
+<p><strong>Simple LoadBalancer</strong> – in allen anderen Umgebungen (z.B. klassische Installationen auf VMs oder lokale Setups) muss die
+statische Discovery über den Simple LoadBalancer von Spring Cloud verwendet werden. Dabei wird jede zu verwendende
+Instanz eines Ziel-Service einzeln eingetragen.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_beispiel_simple_loadbalancer">Beispiel: Simple LoadBalancer</h4>
+<div class="paragraph">
+<p>Beim Simple LoadBalancer werden die Ziel-Services unter <code>spring.cloud.discovery.client.simple.instances</code> konfiguriert.
+Der Schlüssel unter <code>instances</code> ist der logische Service-Name, unter dem der Service angesprochen wird. Für den
+Dokumentenimport ist das der <code>content-repository-service</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">eureka:
-  instance:
-    preferIpAddress: true
-  client:
-    serviceUrl:
-      defaultZone: "http://eureka.example.local:8761/eureka/"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><code>defaultZone</code> muss auf die Eureka-URL der Zielumgebung zeigen. <code>preferIpAddress: true</code> ist sinnvoll, wenn Services sich
-gegenseitig über IP-Adressen erreichen sollen. In Test- oder Einzelservice-Installationen kann die Registrierung
-deaktiviert werden:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">eureka:
-  client:
-    registerWithEureka: false
-    fetchRegistry: false</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Wenn der Service in Kubernetes betrieben wird und die Plattform-Service-Discovery verwendet werden soll, muss die
-Kubernetes-Konfiguration der Zielplattform mit der Betriebsdokumentation abgeglichen werden. Dann sollte nicht parallel
-eine unpassende Eureka-Registrierung aktiv sein.</p>
-</div>
-<div class="paragraph">
-<p>In Umgebungen, in denen weder die Eureka Service Registry noch Kubernetes verwendet werden soll, kann das Service-Discovery
-auch komplett manuell konfiguriert werden. Dabei muss jede zu verwendende Instanz des Content Repository Service einzeln
-eingetragen werden:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">eureka:
-  client:
-    enabled: false
-
-spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     discovery:
       client:
@@ -1113,6 +1100,32 @@ spring:
               - uri: "http://127.0.0.1:39001"
                 metadata:
                   api-version: 1.0.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>uri</code> zeigt auf die Adresse der Ziel-Instanz. Über <code>metadata.api-version</code> wird die passende API-Version des Ziel-Service
+angegeben.</p>
+</div>
+<div class="paragraph">
+<p>Sollen mehrere Instanzen desselben Service für die Lastverteilung genutzt werden, können unter dem Service-Namen mehrere
+Einträge angegeben werden. Der LoadBalancer verteilt die Aufrufe dann auf die gelisteten Instanzen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            content-repository-service:
+              - uri: "http://10.0.0.11:39001"
+                metadata:
+                  api-version: 1.0.0
+              - uri: "http://10.0.0.12:39001"
+                metadata:
+                  api-version: 1.0.0</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1211,7 +1224,7 @@ persistente Volumes eingebunden sind, wenn Dateien nach einem Neustart erhalten 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-06-30 22:21:12 UTC
+Last updated 2026-07-08 15:41:31 UTC
 </div>
 </div>
 </body>
