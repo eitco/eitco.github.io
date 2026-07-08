@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">eql - eitco query language 9.0.2</div>
+<div id="toctitle">eql - eitco query language 10.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_eitco_query_language"><strong>EITCO Query Language</strong></a>
 <ul class="sectlevel2">
@@ -34,15 +34,6 @@
 <ul class="sectlevel2">
 <li><a href="#_page_definition">Page Definition</a></li>
 <li><a href="#_filtering">Filtering</a></li>
-</ul>
-</li>
-<li><a href="#_solr_eql"><strong>Solr EQL</strong></a>
-<ul class="sectlevel2">
-<li><a href="#_solr_eql_usage">Solr EQL Usage</a></li>
-<li><a href="#_solr_eql_expressions">Solr EQL Expressions</a></li>
-<li><a href="#_solr_hit_score">Solr Hit Score</a></li>
-<li><a href="#_solr_highlighting">Solr Highlighting</a></li>
-<li><a href="#_acl_filter_extension">ACL filter extension</a></li>
 </ul>
 </li>
 <li><a href="#_jooq"><strong>JOOQ</strong></a></li>
@@ -66,7 +57,7 @@
 <p>The EITCO query language provides a unified interface for searches. Hence, this documentation addresses developers, mainly those who use java (or any JVM compatible language). However, there is also a port for Typescript.</p>
 </div>
 <div class="paragraph">
-<p>EQL is agnostic of the actual implementation of the search. While still a lot of searches are made on classical relational databases, more and more are executed on NoSQL databases. The language EQL is independent of the actual search implementation, however, there are some specifics that will only work for specific search implementations. Currently, there are implementations for SQL, in-memory searches and Solr.</p>
+<p>EQL is agnostic of the actual implementation of the search. While still a lot of searches are made on classical relational databases, more and more are executed on NoSQL databases. The language EQL is independent of the actual search implementation, however, there are some specifics that will only work for specific search implementations. Currently, there are implementations for SQL and in-memory searches.</p>
 </div>
 <div class="paragraph">
 <p>There are several ways to search using EQL. All have a common entry point: <code>de.eitco.commons.query.language.api.SearchService</code>.</p>
@@ -566,388 +557,6 @@ In case of an in-memory search it would assume a class like the following:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_solr_eql"><strong>Solr EQL</strong></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_solr_eql_usage">Solr EQL Usage</h3>
-<div class="paragraph">
-<p>If you want to use the Solr EQL visitor, there are two ways to do this. If you want to search in an existing Solr you can use 1). If you want to get a Solr query string you can use 2).</p>
-</div>
-<div class="paragraph">
-<p>1) With <em>SolrSearchService</em></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">        try (SolrSearchService searchService = new SolrSearchService(solrClient, Map.of())) {
-            Expression&lt;Boolean&gt; expression = Eql.condition().contextReference("id").equalTo().value(47).holds();</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The first thing you will need is a <em>SolrClient</em> (from SolrJ). You also need a <em>SolrSearchService</em>. The <em>SolrSearchService</em> needs two parameters. The first parameter is the previously created <em>SolrClient</em> and the second parameter is an optional <em>map</em> of information about the current schema in the solr collection for the query. Finally, you will need an EQL Expression. In chapter <a href="#_solr_eql_expressions">Solr EQL Expressions</a> the individual Solr Expressions are presented. Whenever you create the queries above, you can create a <em>SearchRequest</em> and put the variables in the instantiation. Moreover, you can add a <em>PageDefinition</em>. In this example we used <em>PageDefinition.oneElement()</em>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">            SearchRequest searchRequest = new SearchRequest(PageDefinition.oneElement(), expression, queryExtension);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>2) With <em>&lt;Expression&gt;.get.accept</em>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    eqlElement.get().accept(new ToSolrEqlElementVisitor(schema), null)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this way you get the search string out of the EQL Expression. You can add the Visitor to the <em>accept</em> method. This will return the result search string.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_solr_eql_expressions">Solr EQL Expressions</h3>
-<div class="paragraph">
-<div class="title">Calling <strong>equal to</strong>:</div>
-<p>The input value must be matched exactly in the search result.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("text").equalTo().value("value")
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "text:\"value\"",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>like</strong>:</div>
-<p>You can add a wildcard to the input value. In the EQL you can use two different wildcards for example <em>?</em> for a single character or <em>*</em> for multiple characters. The result is based on the wildcard you are defined in the input value.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("text").like().value("test*")
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "text:test*",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>contains</strong>:</div>
-<p>The input value must be somewhere in the search result. Also, you can find a string in an array list.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("text").contains().value("test")
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "text:test",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>in</strong>:</div>
-<p>The input value can contain multiply entries (array). The result gets the results out of the input array based on the field.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("text").in().values("A", "B", "C")
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "text:(A || B || C)",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>and</strong> or <strong>or</strong>:</div>
-<p>Connect two Expression with <em>and</em>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("text").contains().value("test")
-                    .and(Eql.condition().contextReference("other").equalTo().value("value").holds())
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "text:test &amp;&amp; other:\"value\"",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>greater than</strong>:</div>
-<p>The result is bigger than the input value.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("field").greaterThan().value("value1")
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "field:[value1 TO *]",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>less than</strong>:</div>
-<p>The result is smaller than the input value.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("field").lessThan().value("value1")
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "field:[* TO value1]",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>between</strong>:</div>
-<p>The result is between two input values without the left outermost and right outermost result.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("column1")
-                    .between().value(1).value(10)
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "column1:{1 TO 10}",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>between inclusive</strong>:</div>
-<p>The result is between two input values with the left outermost and right outermost result.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("column2")
-                    .betweenInclusive().value(200).value(500)
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "column2:[200 TO 500]",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>between right inclusive</strong>:</div>
-<p>The result is between two input values with the right outermost and without the left outermost result.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("column3")
-                    .betweenRightInclusive().value(111).value(999)
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "column3:{111 TO 999]",</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Calling <strong>between left inclusive</strong>:</div>
-<p>The result is between two input values with the left outermost and without the right outermost result.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">                Eql.condition()
-                    .contextReference("column4")
-                    .betweenLeftInclusive().value("A").value("Z")
-                    .holds(),</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>                "column4:[A TO Z}",</pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_solr_hit_score">Solr Hit Score</h3>
-<div class="paragraph">
-<p>In Solr you can create a filter query with a hit score. The hit score is calculated from the number of requests linked with <strong>and</strong> or <strong>or</strong>.</p>
-</div>
-<div class="paragraph">
-<p>Example:</p>
-</div>
-<div class="paragraph">
-<p>You have three entries in your Solr collection in the field "testfeld"</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Entry</th>
-<th class="tableblock halign-left valign-top">Field</th>
-<th class="tableblock halign-left valign-top">Content</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">testfeld</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Arveo EQL Test</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">testfeld</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Arveo EQL 1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">testfeld</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Arveo EQL 2</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>If you now use the following query:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">Eql.condition()
-.contextReference("testfeld").contains().value("Arveo")
-.or(Eql.condition().contextReference("testfeld").contains().value("EQL").holds())
-.or(Eql.condition().contextReference("testfeld").contains().value("Test").holds())
-.holds()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>All three entries would be returned as a result. Entry 2 and 3 would have a hit score of <strong>2.0</strong> and the 1st entry would have a hit score of <strong>3.0</strong>.</p>
-</div>
-<div class="paragraph">
-<p>If you are using the EQL QueryExtensions, a hit score can be specified that must be met for the result. In the example we defined a hit-score of 1.0 for the minimum.</p>
-</div>
-<div class="listingblock">
-<div class="title">Set hit score:</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">            SolrHitScoreQueryExtension queryExtension = new SolrHitScoreQueryExtension(1.0);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{!frange l=1.0}query($q)</pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_solr_highlighting">Solr Highlighting</h3>
-<div class="paragraph">
-<p>In Solr you can create a highlighting query extension. The highlighting will be added at the end of the query string.</p>
-</div>
-<div class="listingblock">
-<div class="title">Set acl as solr filter:</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">List&lt;QueryExtension&gt; queryExtensions = new ArrayList&lt;&gt;();
-queryExtensions.add(new SolrHighlightingQueryExtension(500));
-SearchRequest searchRequest = new SearchRequest(PageDefinition.oneElement(), expression, solrSearchOptions, queryExtensions);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Returns:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-url-parameter" data-lang="url-parameter">&amp;hl=true&amp;hl.method=unified&amp;hl.fragsize=500&amp;hl.tag.pre=&lt;em&gt;&amp;hl.tag.post=&lt;/em&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>More detail information about the highlighting you can find at the following at this url <a href="https://solr.apache.org/guide/8_11/highlighting.html" class="bare">https://solr.apache.org/guide/8_11/highlighting.html</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_acl_filter_extension">ACL filter extension</h3>
-<div class="paragraph">
-<p>The ACL filter extension uses a plugin that extends Solr with ACL checking functionality. The plugin&#8217;s
-documentation can be found in the Access Control Service documentation.</p>
-</div>
-<div class="paragraph">
-<p>The extension makes it possible to define a filter query based on a minimum ACL right the user must have to be able to
-find the documents.</p>
-</div>
-<div class="listingblock">
-<div class="title">Example filter query</div>
-<div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{!aclright userId=111 aclAssignmentId=222 granted=3}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The extension is used as shown in the example below:</p>
-</div>
-<div class="listingblock">
-<div class="title">Usage of the ACL filter extension</div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java"></code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_jooq"><strong>JOOQ</strong></h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -960,13 +569,13 @@ Basically, the SearchServices uses a JOOQ <code>DSLContext</code> to provide que
 <div class="listingblock">
 <div class="title">Instantiation of a JooqSearchService</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">JooqSearchService&lt;Record, Object&gt; searchService = JooqSearchService.buildRecordSearchService()
-    .select()
-    .fields(DSL.asterisk()) <i class="conum" data-value="1"></i><b>(1)</b>
-    .fromTable(DSL.table(DSL.name("patients")))<i class="conum" data-value="2"></i><b>(2)</b>
-    .withContext(dslContext)<i class="conum" data-value="3"></i><b>(3)</b>
-    .defaultEqlTranslation()
-    .build();</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">JooqSearchService&lt;Record&gt; searchService = JooqSearchService.buildRecordSearchService()
+        .select()
+        .fields(DSL.asterisk()) <i class="conum" data-value="1"></i><b>(1)</b>
+        .fromTable(DSL.table(DSL.name("patients")))<i class="conum" data-value="2"></i><b>(2)</b>
+        .withContext(dslContext)<i class="conum" data-value="3"></i><b>(3)</b>
+        .defaultEqlTranslation()
+        .build();</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -997,11 +606,11 @@ a generic table (as used in the example), a table generated by the JOOQ code gen
 <div class="title">Usage of the search service</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">Optional&lt;Record&gt; patient_id = searchService.where()
-    .contextReference("patient_id")
-    .equalTo()
-    .value(738)
-    .holds()
-    .uniqueResult();</code></pre>
+        .contextReference("patient_id")
+        .equalTo()
+        .value(738)
+        .holds()
+        .uniqueResult();</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1446,7 +1055,7 @@ Default Order (only <em>Order Parser</em>)
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-05-04 09:54:39 UTC
+Last updated 2026-07-08 08:39:04 UTC
 </div>
 </div>
 </body>
