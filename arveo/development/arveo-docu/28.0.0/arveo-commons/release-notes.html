@@ -414,101 +414,91 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_28_0_0_snapshot_july_10_2026"><a class="anchor" href="#release_notes_28_0_0_snapshot_july_10_2026"></a>Release notes 28.0.0-SNAPSHOT (July 10, 2026)</h2>
+<h2 id="release_notes_28_0_0_snapshot_july_13_2026"><a class="anchor" href="#release_notes_28_0_0_snapshot_july_13_2026"></a>Release notes 28.0.0-SNAPSHOT (July 13, 2026)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
 <div class="content">
 <div class="paragraph">
-<p><strong class="big">Finished stories and bugs</strong></p>
+<p><strong class="big">New Features</strong></p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">ECR-1682: Check storage for missing entries</dt>
-<dd>
-<p>A new system job that scans a type definition for missing blobs on the storage was added.</p>
-</dd>
-<dt class="hdlist1">ECR-1724: Content references to empty content elements are now possible</dt>
-<dd>
-<p>Several bugfixes regarding the referencing and reading of empty content elements.</p>
-</dd>
-<dt class="hdlist1">ECR-1743: Serialization issues because of changed HTTP return codes in DatabaseConstraintViolation</dt>
-<dd>
-<p>Changed HTTP status codes in DatabaseConstraintViolationException were changed back to 400 to avoid (de-)serialization issues.</p>
-</dd>
-<dt class="hdlist1">ECR-1745: RetryRenditionsJob causes high database load</dt>
-<dd>
-<p>The RetryRenditionsJob is no longer executed in parallel.</p>
-</dd>
-<dt class="hdlist1">ECR-1752: Update Quartz scheduler version to 2.5.2</dt>
-<dd>
-<p>The version of the Quartz scheduler was updated to 2.5.2. This mitigates CVE-2026-27727.</p>
-</dd>
-<dt class="hdlist1">ECR-1753: Added limit for concurrent message listener executions</dt>
-<dd>
-<p>To avoid system overload, the number of concurrent JMS message listener executions is now limited to 10 (configurable).</p>
-</dd>
-<dt class="hdlist1">ECR-1755: Server does not update renditions when content was updated</dt>
-<dd>
-<p>Fixed updating of renditions when content was updated.</p>
-</dd>
-<dt class="hdlist1">ECR-1758: Update to Spring Boot 4.0.4 to mitigate CVE-2026-22732</dt>
-<dd>
-<p>Updated Spring Boot and Spring Security to mitigate CVE-2026-22732.</p>
-</dd>
-<dt class="hdlist1">ECR-1762: Fixed Swagger UI</dt>
-<dd>
-<p>The Swagger UI is displayed correctly again.</p>
-</dd>
-<dt class="hdlist1">ECR-1763: Added API method to retrieve type definition access rights</dt>
-<dd>
-<p>A new API method was added that returns the current user&#8217;s access rights for all type definitions.</p>
-</dd>
-<dt class="hdlist1">ECR-1776: Made generic API index data handling more forgiving</dt>
-<dd>
-<p>The generic API now accepts arveo property values as strings if their format is valid. Numerical property values can also be provided by any java.lang.Number implementation.</p>
-</dd>
-<dt class="hdlist1">ECR-1777: Replaced custom impersonation mechanism with OAuth2 standard token exchange</dt>
-<dd>
-<p>The way services perform calls on behalf of a human user was changed. It now uses the OAuth2 standard token exchange mechanism.</p>
-</dd>
-<dt class="hdlist1">ECR-1779: Added descriptions to type definitions, attributes and system fields</dt>
-<dd>
-<p>Descriptions are now available via API to support AI applications.</p>
-</dd>
-<dt class="hdlist1">ECR-1783: Removed reference to outdated snapshot version of eitco-oss-commons-parent</dt>
-<dd>
-<p>Removed an invalid dependency to an outdated snapshot version of eitco-oss-commons-parent.</p>
-</dd>
-<dt class="hdlist1">ECR-1801: Empty content information on version import</dt>
-<dd>
-<p>Fixed a bug in the version history import that resulted in empty content information for a document-version without changed content.</p>
-</dd>
-<dt class="hdlist1">ECR-1804: Added thumbnail renditions</dt>
-<dd>
-<p>Type definitions can now contain special rendition content elements for thumbnails.</p>
-</dd>
-<dt class="hdlist1">ECR-1809: Added reset commands to ecr-shell</dt>
-<dd>
-<p>The ecr-shell now offers commands to reset the rendition- and full-text-extraction status.</p>
-</dd>
-<dt class="hdlist1">ECR-1810: Fixed an error message during create rendition if related document-version is missing</dt>
-<dd>
-<p>The server no longer logs an error when a create-rendition message is received for a version that does not exist any more.</p>
-</dd>
-<dt class="hdlist1">ECR-1811: Automatic detection of Database name conflicts fixed</dt>
-<dd>
-<p>The automatic detection of database object name collisions was fixed. This only affects database object names with a length &gt; 63 chars.</p>
-</dd>
-<dt class="hdlist1">ECR-1819: Fluent batch API for Java and C# SDK clients</dt>
-<dd>
-<p>A fluent builder API for batch operations is now available in the Java and C# SDK clients. The API supports create, update, overwrite, delete, upsert (create-or-update / create-or-overwrite), and assertion operations for containers, documents, folders, metadata, and relations.</p>
-</dd>
-<dt class="hdlist1">ECR-1844: Removed support for Eureka Service Registry</dt>
-<dd>
-<p>The support for the Netflix Eureka Service Registry was removed. If still required, it can be added by placing the required libraries in the configured libs folder.</p>
-</dd>
-</dl>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1682: A new system job that scans a type definition for missing blobs on the storage was added.</p>
+</li>
+<li>
+<p>ECR-1763: A new API method was added that returns the current user&#8217;s access rights for all type definitions.</p>
+</li>
+<li>
+<p>ECR-1779: Descriptions are now available via API to support AI applications.</p>
+</li>
+<li>
+<p>ECR-1804: Type definitions can now contain special rendition content elements for thumbnails.</p>
+</li>
+<li>
+<p>ECR-1809: The ecr-shell now offers commands to reset the rendition- and full-text-extraction status.</p>
+</li>
+<li>
+<p>ECR-1819: A fluent builder API for batch operations is now available in the Java and C# SDK clients. The API supports create, update, overwrite, delete, upsert (create-or-update / create-or-overwrite), and assertion operations for containers, documents, folders, metadata, and relations.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1752: The version of the Quartz scheduler was updated to 2.5.2. This mitigates CVE-2026-27727.</p>
+</li>
+<li>
+<p>ECR-1753: To avoid system overload, the number of concurrent JMS message listener executions is now limited to 10 (configurable).</p>
+</li>
+<li>
+<p>ECR-1758: Updated Spring Boot and Spring Security to mitigate CVE-2026-22732.</p>
+</li>
+<li>
+<p>ECR-1776: The generic API now accepts arveo property values as strings if their format is valid. Numerical property values can also be provided by any java.lang.Number implementation.</p>
+</li>
+<li>
+<p>ECR-1777: The way services perform calls on behalf of a human user was changed. It now uses the OAuth2 standard token exchange mechanism.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1724: Several bugfixes regarding the referencing and reading of empty content elements.</p>
+</li>
+<li>
+<p>ECR-1743: Changed HTTP status codes in DatabaseConstraintViolationException were changed back to 400 to avoid (de-)serialization issues.</p>
+</li>
+<li>
+<p>ECR-1745: The RetryRenditionsJob is no longer executed in parallel.</p>
+</li>
+<li>
+<p>ECR-1755: Fixed updating of renditions when content was updated.</p>
+</li>
+<li>
+<p>ECR-1762: The Swagger UI is displayed correctly again.</p>
+</li>
+<li>
+<p>ECR-1783: Removed an invalid dependency to an outdated snapshot version of eitco-oss-commons-parent.</p>
+</li>
+<li>
+<p>ECR-1801: Fixed a bug in the version history import that resulted in empty content information for a document-version without changed content.</p>
+</li>
+<li>
+<p>ECR-1810: The server no longer logs an error when a create-rendition message is received for a version that does not exist any more.</p>
+</li>
+<li>
+<p>ECR-1811: The automatic detection of database object name collisions was fixed. This only affects database object names with a length &gt; 63 chars.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
@@ -516,14 +506,12 @@
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Impersonation configuration</dt>
-<dd>
-<p>The custom impersonation feature was replaced with the OAuth2 standard token exchange. See the chapter_OAuth2 Authentication_
-in the documentation for details on how to configure Keycloak and the services.</p>
-</dd>
-</dl>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1777: The custom impersonation feature was replaced with the OAuth2 standard token exchange. See the chapter OAuth2 Authentication in the documentation for details on how to configure Keycloak and the services.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
