@@ -701,6 +701,241 @@ It is strongly recommended to double-check the identified abandoned content IDs 
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="retry_renditions_job"><a class="anchor" href="#retry_renditions_job"></a>Retry renditions job</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>arveo automatically creates <a href="renditions.html" class="xref page">renditions</a> for the content elements of a document. If the creation of a rendition fails, the affected document version is marked for a retry. The retry renditions job (<code>ecr-retry-renditions</code>) periodically searches for these document versions and re-enqueues the rendition creation for them.</p>
+</div>
+<div class="paragraph">
+<p>The job runs per document type definition. A trigger is created automatically for every document type definition that has at least one content element with a configured source element (i.e. a rendition). The job is never executed concurrently for the same type definition.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The job only processes document versions whose rendition status has been set to RESET. It does not automatically pick up renditions that failed in the past. Before starting the job, the status of the failed renditions has to be reset manually, for example using the <a href="ecr-shell.html#_reset" class="xref page"><code>reset-rendition</code> command</a> of the ecr-shell. See <a href="renditions.html#_reset_status_of_failed_renditions" class="xref page">Reset status of failed renditions</a> for the available options.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The job requires the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-definition-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the document type definition to process.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>retry-renditions-batch-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of document versions to process in one run of the job. If this parameter is not set, a batch size of <code>0</code> is used and no document versions are processed.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The job is enabled and scheduled by default. Its behaviour is configured under <code>ecr.server.jobs.retry-renditions</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Retry renditions job configuration (defaults shown)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    jobs:
+      retry-renditions:
+        enabled: true            # if false, the job is disabled and no trigger is created
+        schedule: true           # if false, no trigger is created, but the job can still be triggered manually
+        cron-expression: "0 */5 * * * ?"
+        batch-size: 1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the job is scheduled automatically, the parameters above are filled with the values from the configuration. See the <a href="../commons/configuration-properties.html#_ecr_server_jobs" class="xref page">configuration reference</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>The job can also be triggered manually using the <a href="ecr-shell.html" class="xref page">ecr-shell</a>. Both parameters have to be provided:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger-job --jobName ecr-retry-renditions --options "{\"type-definition-name\":\"my_document\",\"retry-renditions-batch-size\":1000}"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="retry_full_text_extraction_job"><a class="anchor" href="#retry_full_text_extraction_job"></a>Retry full text extraction job</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The retry full text extraction job (<code>ecr-retry-full-text-extraction</code>) is the counterpart of the retry renditions job for the <a href="../arveo-developer/fulltext.html" class="xref page">full text extraction</a>. If the full text extraction of a content element fails, the affected document version is marked for a retry. The job periodically searches the full text table of a type definition for these entries and re-enqueues the full text extraction for them.</p>
+</div>
+<div class="paragraph">
+<p>The job runs per document type definition. A trigger is created automatically for every document type definition that has at least one content element with full text extraction enabled. The job is never executed concurrently for the same type definition.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The job only processes document versions whose full text extraction status has been set to RESET. It does not automatically pick up extractions that failed in the past. Before starting the job, the status of the failed extractions has to be reset manually, for example using the <a href="ecr-shell.html#_reset" class="xref page"><code>reset-full-text</code> command</a> of the ecr-shell.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The job requires the following parameters:</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-definition-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the document type definition to process.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>retry-full-text-extraction-batch-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of document versions to process in one run of the job. If this parameter is not set, a batch size of <code>0</code> is used and no document versions are processed.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The job is enabled and scheduled by default. Its behaviour is configured under <code>ecr.server.jobs.retry-full-text-extraction</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Retry full text extraction job configuration (defaults shown)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    jobs:
+      retry-full-text-extraction:
+        enabled: true            # if false, the job is disabled and no trigger is created
+        schedule: true           # if false, no trigger is created, but the job can still be triggered manually
+        cron-expression: "0 */5 * * * ?"
+        batch-size: 1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the job is scheduled automatically, the parameters above are filled with the values from the configuration. See the <a href="../commons/configuration-properties.html#_ecr_server_jobs" class="xref page">configuration reference</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>The job can also be triggered manually using the <a href="ecr-shell.html" class="xref page">ecr-shell</a>. Both parameters have to be provided:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger-job --jobName ecr-retry-full-text-extraction --options "{\"type-definition-name\":\"my_document\",\"retry-full-text-extraction-batch-size\":1000}"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="purge_content_job"><a class="anchor" href="#purge_content_job"></a>Purge content job</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When document versions are deleted using the delete method, only their database entries are removed immediately. The actual content elements (blobs) in the storage are removed asynchronously by the purge content job (<code>ecr-purge-content</code>). For this purpose, the delete operation adds an entry containing the version ID and the content information to a system queue table. The purge content job then processes this table and removes the corresponding blobs from the storage.</p>
+</div>
+<div class="paragraph">
+<p>The job processes two queue tables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ECR_PURGE_CONTENT_ELEMENTS</code>: Content elements of deleted document versions.</p>
+</li>
+<li>
+<p><code>ECR_PURGE_UNREFERENCED_CONTENT_ELEMENTS</code>: Content elements that are no longer referenced (for example after a version has been overwritten).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If a content element of an entry could not be removed from the storage, the entry is marked as failed (<code>FAILURE = true</code>) and skipped in subsequent runs, so that the problem can be resolved manually.</p>
+</div>
+<div class="paragraph">
+<p>The job does not require any parameters to be started. It always processes the queue tables described above. The number of entries processed in one run is taken from the configuration <code>ecr.server.jobs.purge-content.batch-size</code> (default: <code>500</code>).</p>
+</div>
+<div class="paragraph">
+<p>The job is enabled and scheduled by default. Its behaviour is configured under <code>ecr.server.jobs.purge-content</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Purge content job configuration (defaults shown)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">ecr:
+  server:
+    jobs:
+      purge-content:
+        enabled: true            # if false, the job is disabled and no trigger is created
+        schedule: true           # if false, no trigger is created, but the job can still be triggered manually
+        cron-expression: "0 */15 * ? * *"
+        batch-size: 500</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See the <a href="../commons/configuration-properties.html#_ecr_server_jobs" class="xref page">configuration reference</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>The job can also be triggered manually using the <a href="ecr-shell.html" class="xref page">ecr-shell</a>. No options are required:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">trigger-job --jobName ecr-purge-content</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The delete method of the <a href="../arveo-developer/retention-cleanup-job.html" class="xref page">retention cleanup job</a> is one of the operations that fill the <code>ECR_PURGE_CONTENT_ELEMENTS</code> queue table. The purge content job is therefore also responsible for removing the content of entities deleted by the retention cleanup job. The differences between the delete and the purge method are described in the <a href="../arveo-developer/retention-cleanup-job.html" class="xref page">retention cleanup job documentation</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="retention_cleanup_job"><a class="anchor" href="#retention_cleanup_job"></a>Retention cleanup job</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The retention cleanup job (<code>ecr-retention-cleanup</code>) removes entities whose retention period has expired and that are not currently in litigation hold status. Like the jobs above, it can run in the internal scheduler of the repository service or in a separate Job Service instance.</p>
+</div>
+<div class="paragraph">
+<p>The job and its required parameters (in particular <code>type-definition-name</code> and <code>retention-cleanup-retention-end-time</code>) are documented in detail on a dedicated page: <a href="../arveo-developer/retention-cleanup-job.html" class="xref page">Retention cleanup job</a>.</p>
+</div>
+</div>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="audit.html">Audit</a></span>
   <span class="next"><a href="vault.html">Using Hashicorp Vault / OpenBao</a></span>

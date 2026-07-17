@@ -586,10 +586,15 @@ use an individual dead letter queue as described in <a href="https://activemq.ap
 <h3 id="reset_status_of_failed_renditions"><a class="anchor" href="#reset_status_of_failed_renditions"></a>Reset status of failed renditions</h3>
 <div class="paragraph">
 <p>The status of failed renditions can be set to RESET (-2) either by using the API method
-<code>de.eitco.ecr.sdk.document.TypedDocumentServiceClient.resetFailedRenditionStatus</code> or simply by setting the value in the
+<code>de.eitco.ecr.sdk.document.TypedDocumentServiceClient.resetFailedRenditionStatus</code>, by using the
+<a href="ecr-shell.html#_reset" class="xref page"><code>reset-rendition</code> command</a> of the ecr-shell, or simply by setting the value in the
 database directly. A system job polls the database and will enqueue new rendition messages in ActiveMQ to re-try to
 create the renditions. The interval in which the job polls the database can be configured using the parameter
 <code>retry-renditions.cron-expression</code> (see <a href="../commons/configuration-properties.html#_ecr_server_messaging" class="xref page">configuration properties</a>).</p>
+</div>
+<div class="paragraph">
+<p>The system job that retries the creation of failed renditions is described in
+<a href="jobs.html#_retry_renditions_job" class="xref page">Retry renditions job</a>.</p>
 </div>
 </div>
 <div class="sect2">

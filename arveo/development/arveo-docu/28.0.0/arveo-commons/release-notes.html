@@ -507,6 +507,12 @@
 <li>
 <p>ECR-1849: The wrongly generated c# client code for DocumentResource.ReadContentAs() was fixed by updating the asdl dependency  to a fixed version.</p>
 </li>
+<li>
+<p>ECR-1858: The write concurrency must be limited to prevent heap space exhaustion as the Azure
+blob storage library allocates a 4 MiB sized buffer for each ongoing upload which can easily cause OutOfMemoryErrors
+during large batch uploads. Use the newly introduced new storage plugin settings <code>maxWriteConcurrency</code> (default 32)
+to fix this.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -519,6 +525,9 @@
 <ul>
 <li>
 <p>ECR-1777: The custom impersonation feature was replaced with the OAuth2 standard token exchange. See the chapter OAuth2 Authentication in the documentation for details on how to configure Keycloak and the services.</p>
+</li>
+<li>
+<p>ECR-1858: Introduced new storage plugin settings <code>maxWriteConcurrency</code> (default 32) and <code>writeAcquireWarnMillis</code> (default 250) for all chunking storage plugins (File system, S3, Azure blob). They bound the number of chunks written to a storage backend concurrently per storage profile, which reduces heap memory consumption during large batch uploads.</p>
 </li>
 </ul>
 </div>

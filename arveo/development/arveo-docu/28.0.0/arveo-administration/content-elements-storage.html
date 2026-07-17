@@ -882,6 +882,49 @@ encryption algorithm.
 are currently available:</p>
 </div>
 <div class="sect2">
+<h3 id="global_settings"><a class="anchor" href="#global_settings"></a>Global Settings</h3>
+<div class="paragraph">
+<p>The following settings are supported by all storage plugins that extend <code>AbstractChunkingStoragePlugin</code>, which includes
+the built-in File system, AWS, NetAPP or EMC Elastic Cloud Storage and Azure blob storage plugins. They control how many chunks may be
+written to the storage backend concurrently. Because there is one plugin instance per storage profile, these settings
+bound the number of in-flight uploads for the whole profile, not just for a single upload request. They can be configured
+in the <code>pluginSettings</code> map of a storage profile like any other plugin-specific setting.</p>
+</div>
+<div class="paragraph">
+<p>Limiting the write concurrency reduces the heap memory consumed during large batch uploads, because fewer chunks are held
+in memory at the same time.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Global settings of the chunking storage plugins</caption>
+<colgroup>
+<col style="width: 20%;">
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxWriteConcurrency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of chunks that may be written to the storage backend concurrently for this storage profile. A value
+  of <code>0</code> or less means unlimited concurrency.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">writeAcquireWarnMillis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time in milliseconds a thread waits for a free write slot before a warning is logged. The warning indicates that
+  the configured <code>maxWriteConcurrency</code> causes contention. The thread keeps waiting for a slot after the warning is logged.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">250</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
 <h3 id="_file_system"><a class="anchor" href="#_file_system"></a>File system</h3>
 <div class="paragraph">
 <p>Class name: <em>de.eitco.ecr.storage.plugin.filesystem.FileSystemPlugin</em>.</p>
