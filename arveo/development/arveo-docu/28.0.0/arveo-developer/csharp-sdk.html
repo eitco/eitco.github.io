@@ -431,34 +431,59 @@ provided by this SDK.</p>
 <h2 id="anatomy_of_the_sdk"><a class="anchor" href="#anatomy_of_the_sdk"></a>Anatomy of the SDK</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The SDK is shipped as the NuGet package <code>Eitco.Ecr.Sdk</code> and is made up of two complementary parts:</p>
+<p>The SDK is shipped as the NuGet package <code>Eitco.Ecr.Sdk</code> and is made up of three complementary layers that build on
+top of each other:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Generated resource clients</dt>
+<dt class="hdlist1">Generated resource clients (low level)</dt>
 <dd>
-<p>The bulk of the API surface is generated from the service descriptions. For every service of <em>arveo</em>
-there is a <strong>resource interface</strong> in the
-namespace <code>de.eitco.ecr.common.http</code> — for example <code>DocumentResource</code>, <code>ContainerDataResource</code>,
-<code>FolderDataResource</code>, <code>RelationResource</code>, <code>MetaDataResource</code>, <code>TypeDefinitionResource</code>, <code>SearchResource</code> and
-<code>BatchOperationResource</code>. Each interface declares the operations as default methods and provides a nested
-<code>Implementation</code> class that performs the actual HTTP calls. The generated model and identifier classes (such as
-<code>Document</code>, <code>Container</code>, <code>DocumentId</code> or <code>TypeDefinitionName</code>) live in sibling namespaces like
-<code>de.eitco.ecr.common.document</code> and <code>de.eitco.ecr.common.identifier</code>.</p>
+<p>The bulk of the wire protocol is generated from the service descriptions. For every service of <em>arveo</em>
+there is a <strong>resource interface</strong> in the namespace <code>de.eitco.ecr.common.http</code> — for example <code>DocumentResource</code>,
+<code>ContainerDataResource</code>, <code>FolderDataResource</code>, <code>RelationResource</code>, <code>MetaDataResource</code>, <code>TypeDefinitionResource</code>,
+<code>SearchResource</code> and <code>BatchOperationResource</code>. Each interface declares the operations as default methods and
+provides a nested <code>Implementation</code> class that performs the actual HTTP calls. The generated model and identifier
+classes (such as <code>Container</code>, <code>Document</code>, <code>DocumentId</code> or <code>TypeDefinitionName</code>) live in sibling namespaces like
+<code>de.eitco.ecr.common.document</code> and <code>de.eitco.ecr.common.identifier</code>. This layer stays available for advanced or
+backwards-compatible use.</p>
 </dd>
-<dt class="hdlist1">Hand-written convenience API</dt>
+<dt class="hdlist1">Generic service and entity clients (mid level)</dt>
 <dd>
-<p>On top of the generated clients, the SDK adds manually written classes under <code>sdk/</code> — most notably the fluent
-<strong>batch builder</strong> API in <code>de.eitco.ecr.sdk.batch.builder</code> (<code>BatchBuilder</code>, <code>BatchCreationBuilder</code>,
-<code>BatchUpdateBuilder</code>, …) and the <strong>EQL condition builder</strong> (<code>EcrConditionBuilder</code>). It also contributes a small set
-of <code>partial</code> query-element classes in <code>de.eitco.ecr.common.search.eql</code> (such as <code>VariableEquals</code>) that integrate
-the <em>arveo</em> specifics into the EQL query language.</p>
+<p>On top of the generated clients the SDK adds a hand-written <strong>convenience layer</strong> in the namespace
+<code>de.eitco.ecr.sdk</code> that mirrors the mid layer of the Java SDK. It introduces two kinds of clients:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>service client</strong> is bound to a whole type definition and is the entry point for creating, reading, searching,
+updating and deleting the entities of that type — for example <code>ContainerServiceClient</code>, <code>DocumentServiceClient</code>,
+<code>FolderServiceClient</code>, <code>MetaDataServiceClient</code> and <code>RelationServiceClient</code>.</p>
+</li>
+<li>
+<p>An <strong>entity client</strong> is bound to one concrete entity and offers the operations that act on exactly that entity —
+for example <code>ContainerClient</code>, <code>DocumentClient</code> or <code>FolderClient</code>. Versioned entities additionally expose their
+version history through <strong>version clients</strong> such as <code>ContainerVersionClient</code>.</p>
+<div class="paragraph">
+<p>All service clients implement <code>IEntityServiceClient&lt;…&gt;</code>, all entity clients implement <code>IEntityClient&lt;…&gt;</code>; the
+versioned variants add <code>IVersionedEntityServiceClient&lt;…&gt;</code> and <code>IVersionedEntityClient&lt;…&gt;</code>. The
+<a href="#the-ecrclient-entry-point"><code>EcrClient</code></a> class ties everything together.</p>
+</div>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Hand-written builders (high level)</dt>
+<dd>
+<p>On top of that, the SDK adds the fluent <strong>batch builder</strong> API in <code>de.eitco.ecr.sdk.batch.builder</code>
+(<code>BatchBuilder</code>, <code>BatchCreationBuilder</code>, <code>BatchUpdateBuilder</code>, …) and the <strong>EQL condition builder</strong>
+(<code>EcrConditionBuilder</code>). It also contributes a small set of <code>partial</code> query-element classes in
+<code>de.eitco.ecr.common.search.eql</code> (such as <code>VariableEquals</code>) that integrate the <em>arveo</em> specifics into the
+EQL query language.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The low-level HTTP plumbing — the <code>HttpExecutor</code> type used throughout the generated code — comes from the
-<code>Eitco.Asdl.Runtime</code> package, which is referenced as a dependency of the SDK.</p>
+<p>The low-level HTTP plumbing — the <code>HttpExecutor</code> type used throughout — comes from the <code>Eitco.Asdl.Runtime</code>
+package, which is referenced as a dependency of the SDK.</p>
 </div>
 <div class="listingblock">
 <div class="title">NuGet package reference of the C# SDK</div>
@@ -472,7 +497,7 @@ the <em>arveo</em> specifics into the EQL query language.</p>
 <h2 id="authentication_and_the_httpexecutor"><a class="anchor" href="#authentication_and_the_httpexecutor"></a>Authentication and the HttpExecutor</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Every resource client is built around an <code>HttpExecutor</code>, which encapsulates the target URL, the HTTP request
+<p>Every client is ultimately built around an <code>HttpExecutor</code>, which encapsulates the target URL, the HTTP request
 parameters and the headers sent with each call. To authenticate against <em>arveo</em>, an OAuth2 access token
 is obtained from the identity provider (Keycloak in the test environment) and added as a bearer token header to the
 executor.</p>
@@ -580,68 +605,64 @@ Executor = new HttpExecutor(
 </table>
 </div>
 <div class="paragraph">
-<p>This single executor can be shared by all resource clients — it carries the authentication and the base URL, and
-each resource client appends its own service path (for example <code>api/documents</code> or <code>api/containers</code>) on top of it.</p>
+<p>This single executor can be shared by all clients — it carries the authentication and the base URL.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="obtaining_resource_clients"><a class="anchor" href="#obtaining_resource_clients"></a>Obtaining resource clients</h2>
+<h2 id="the-ecrclient-entry-point"><a class="anchor" href="#the-ecrclient-entry-point"></a>The EcrClient entry point</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A resource client is created from an <code>HttpExecutor</code> by instantiating the nested <code>Implementation</code> class of the
-corresponding resource interface. Assigning it to the interface type keeps the application code decoupled from the
-implementation:</p>
+<p>The <code>EcrClient</code> is the entry point into the generic convenience layer. It wraps the shared <code>HttpExecutor</code> and hands
+out the service clients, one factory method per object type. This mirrors the Java SDK&#8217;s
+<code>TypeDefinitionServiceClient</code>:</p>
 </div>
 <div class="listingblock">
-<div class="title">Creating resource clients from an executor</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentResource documents = new DocumentResource.Implementation(executor);
-ContainerDataResource containers = new ContainerDataResource.Implementation(executor);
-TypeDefinitionResource typeDefinitions = new TypeDefinitionResource.Implementation(executor);</code></pre>
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">EcrClient ecr = new(executor);
+
+ContainerServiceClient containers = ecr.Containers("field_type_container");
+DocumentServiceClient documents = ecr.Documents("simple_invoice");
+FolderServiceClient folders = ecr.Folders("my_folder_type");
+MetaDataServiceClient metas = ecr.Metas("my_meta_type");
+RelationServiceClient relations = ecr.Relations("my_relation_type");</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Each <code>Implementation</code> also offers constructors that take a target URL <code>string</code> or an existing <code>HttpClient</code>
-directly, which is convenient when no shared executor is needed:</p>
-</div>
-<div class="listingblock">
-<div class="title">Alternative construction</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentResource documents = new DocumentResource.Implementation("https://arveo.example.com");</code></pre>
-</div>
+<p>Each factory method accepts either the string id of a type definition (as shown above) or a <code>TypeDefinitionName</code>.
+A service client can also be constructed directly from an executor and a <code>TypeDefinitionName</code> when no shared
+<code>EcrClient</code> is needed, for example <code>new ContainerServiceClient(executor, new TypeDefinitionName { Id = "…" })</code>.</p>
 </div>
 <div class="paragraph">
-<p>Alternatively, the generated <code>ApiEntryPoint</code> class exposes factory methods (<code>NewDocumentResource()</code>,
-<code>NewContainerDataResource()</code>, <code>NewSearchResource()</code>, …) that return a fluent <code>HttpClientBuilder</code> for configuring the
-client target.</p>
+<p>The most important members of the entities returned by the clients are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Identifier</code> — the typed id of the entity (for example <code>ContainerId</code> or <code>DocumentId</code>).</p>
+</li>
+<li>
+<p><code>Attributes</code> — the <code>Dictionary&lt;string, object?&gt;</code> of field values.</p>
+</li>
+<li>
+<p><code>VersionInformation</code> and <code>ModificationInformation</code> — version and audit metadata.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="selecting_a_type_definition"><a class="anchor" href="#selecting_a_type_definition"></a>Selecting a type definition</h2>
+<h2 id="listing_type_definitions"><a class="anchor" href="#listing_type_definitions"></a>Listing type definitions</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Almost every operation is scoped to a type definition, which is identified by its name. The <code>TypeDefinitionName</code>
-class carries the type&#8217;s <code>Id</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">TypeDefinitionName typeDefinition = new()
-{
-    Id = "simple_invoice"
-};</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The available type definitions of a repository can be listed with the <code>TypeDefinitionResource</code>:</p>
+<p>The type definitions available in the repository are listed through the <code>EcrClient</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing all type definitions</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">TypeDefinitionResource client = new TypeDefinitionResource.Implementation(fixture.Executor);
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">EcrClient ecr = new(fixture.Executor);
 
-Dictionary&lt;TypeDefinitionId, TypeDefinition?&gt;? result = client.GetAllDefinitions();
+IReadOnlyDictionary&lt;TypeDefinitionId, TypeDefinition?&gt; result = ecr.TypeDefinitions();
 
 foreach (var (id, typeDef) in result)
 {
@@ -655,14 +676,15 @@ foreach (var (id, typeDef) in result)
 <h2 id="working_with_containers"><a class="anchor" href="#working_with_containers"></a>Working with containers</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Containers are metadata-only entities. They are created with the <code>ContainerDataResource</code> by passing the type
-definition and a <code>CreateContainersInput</code> that holds one <code>ContainerInput</code> per container. Attributes are supplied as a
-<code>Dictionary&lt;string, object&gt;</code> keyed by the field name:</p>
+<p>Containers are metadata-only entities. They are created through the <code>ContainerServiceClient</code>, which is obtained
+from the <code>EcrClient</code> for a specific type definition. Attributes are supplied as a <code>Dictionary&lt;string, object&gt;</code>
+keyed by the field name:</p>
 </div>
 <div class="listingblock">
 <div class="title">Creating a container</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">ContainerDataResource client = new ContainerDataResource.Implementation(fixture.Executor); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">EcrClient ecr = new(fixture.Executor); <i class="conum" data-value="1"></i><b>(1)</b>
+ContainerServiceClient containers = ecr.Containers("field_type_container"); <i class="conum" data-value="2"></i><b>(2)</b>
 
 int integerField = 1;
 long longField = 2000000000000000;
@@ -675,45 +697,33 @@ DateTimeOffset dateTimeField = new(2023, 1, 1, 12, 30, 0, TimeSpan.Zero);
 List&lt;int&gt; integerListField = new List&lt;int&gt; { 1, 2, 3 };
 List&lt;string&gt; stringListField = new List&lt;string&gt; { "one", "two", "three" };
 
-TypeDefinitionName typeDefinition = new()
+ContainerClient client = containers.Create(new ContainerInput
 {
-    Id = "field_type_container"
-}; <i class="conum" data-value="2"></i><b>(2)</b>
-
-List&lt;Container?&gt;? containers = client.NewContainers(typeDefinition, new CreateContainersInput
+    Attributes = new Dictionary&lt;string, object&gt; <i class="conum" data-value="3"></i><b>(3)</b>
     {
-        Inputs =
-        [
-            new ContainerInput
-            {
-                Attributes = new Dictionary&lt;string, object&gt; <i class="conum" data-value="3"></i><b>(3)</b>
-                {
-                    ["integer_field"] = integerField,
-                    ["long_field"] = longField,
-                    ["double_field"] = doubleField,
-                    ["string_field"] = stringField,
-                    ["boolean_field"] = booleanField,
-                    ["time_field"] = timeField,
-                    ["date_field"] = dateField,
-                    ["date_time_field"] = dateTimeField,
-                    ["int_list"] = integerListField,
-                    ["string_list"] = stringListField
-                }
-            }
-        ]
+        ["integer_field"] = integerField,
+        ["long_field"] = longField,
+        ["double_field"] = doubleField,
+        ["string_field"] = stringField,
+        ["boolean_field"] = booleanField,
+        ["time_field"] = timeField,
+        ["date_field"] = dateField,
+        ["date_time_field"] = dateTimeField,
+        ["int_list"] = integerListField,
+        ["string_list"] = stringListField
     }
-);</code></pre>
+});</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Create the container client from the shared executor.</td>
+<td>Create the entry point from the shared executor.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Select the type definition the new container belongs to.</td>
+<td>Obtain the container service client for the target type definition.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -722,28 +732,27 @@ List&lt;Container?&gt;? containers = client.NewContainers(typeDefinition, new Cr
 </table>
 </div>
 <div class="paragraph">
-<p>The created entity is returned with its server-assigned identity. The most important members of an entity are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>Identifier</code> — the typed ID of the entity (for example <code>ContainerId</code> or <code>DocumentId</code>).</p>
-</li>
-<li>
-<p><code>Attributes</code> — the <code>Dictionary&lt;string, object?&gt;</code> of field values.</p>
-</li>
-<li>
-<p><code>VersionInformation</code> and <code>ModificationInformation</code> — version and audit metadata.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>A container can be loaded again by its identifier:</p>
+<p><code>Create</code> returns a <code>ContainerClient</code> bound to the created container. Its <code>Container</code> property (an alias for the
+generic <code>Entity</code> property) exposes the persisted entity with its server-assigned identity:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">Container? loaded = client.Read(typeDefinition, container.Identifier);</code></pre>
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">Container container = client.Container; <i class="conum" data-value="1"></i><b>(1)</b>
+
+Assert.Equal(integerField, container.Attributes["integer_field"]);
+Assert.Equal(longField, container.Attributes["long_field"]);
+Assert.Equal(doubleField, container.Attributes["double_field"]);
+Assert.Equal(stringField, container.Attributes["string_field"]);
+Assert.Equal(booleanField, container.Attributes["boolean_field"]);</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The created container, with the attributes echoed back by the server.</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="field_type_mapping"><a class="anchor" href="#field_type_mapping"></a>Field type mapping</h3>
@@ -813,47 +822,109 @@ with its natural CLR type before placing it into the attribute dictionary.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="the_entity_lifecycle"><a class="anchor" href="#the_entity_lifecycle"></a>The entity lifecycle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An entity client offers the operations that act on the one entity it is bound to. The following example walks a
+container through its full lifecycle — read it back by id, update it and finally delete it:</p>
+</div>
+<div class="listingblock">
+<div class="title">Reading a container by its id</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">ContainerClient loaded = containers.Get(created.Identifier); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>Get</code> loads the entity immediately; <code>NewClient</code> would return a client that loads it lazily on first access.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Updating a container</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">ContainerClient updated = created.Update(new ContainerInput
+{
+    Attributes = new Dictionary&lt;string, object?&gt; { ["integer_field"] = 2 }
+}); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Only the attributes present in the input are changed; all others keep their value. <code>Update</code> returns a new
+client bound to the updated entity.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Deleting a container</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">updated.Delete(); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>After deletion the entity can no longer be read.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Both <code>Update</code> and <code>Delete</code> identify the bound entity by its id, so they work regardless of how the client was
+obtained. Folders (<code>FolderServiceClient</code> / <code>FolderClient</code>) and relations (<code>RelationServiceClient</code> /
+<code>RelationClient</code>) follow exactly the same pattern.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="working_with_documents"><a class="anchor" href="#working_with_documents"></a>Working with documents</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Documents extend the attribute model of containers with binary content. They are created with the
-<code>DocumentResource.NewDocuments</code> method. In addition to its attributes, a <code>DocumentInput</code> carries a <code>Content</code>
-dictionary that maps content element names to <code>ContentUpload</code> instances. A <code>ContentUpload</code> provides the file name
-and the binary payload as a <code>Stream</code>:</p>
+<p>Documents extend the attribute model of containers with binary content. They are created through the
+<code>DocumentServiceClient</code>:</p>
 </div>
 <div class="listingblock">
-<div class="title">Creating the document client</div>
+<div class="title">Creating the document service client</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentResource client = new DocumentResource.Implementation(fixture.Executor) as DocumentResource;</code></pre>
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">EcrClient ecr = new(fixture.Executor);
+DocumentServiceClient documents = ecr.Documents("simple_invoice"); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The document service client for the <code>simple_invoice</code> type definition.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>The attributes and one content element (here a small in-memory <code>byte[]</code>) are passed to <code>NewDocuments</code>:</p>
+<p>In addition to its attributes, a <code>DocumentInput</code> carries a <code>Content</code> dictionary that maps content element names to
+<code>ContentUpload</code> instances. A <code>ContentUpload</code> provides the file name and the binary payload as a <code>Stream</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Uploading a document with content</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">List&lt;Document?&gt;? result = client.NewDocuments(typeDefinition, new CreateDocumentsInput
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentClient client = documents.Create(new DocumentInput
 {
-    Inputs =
-    [
-        new DocumentInput
+    Attributes = new Dictionary&lt;string, object&gt;() <i class="conum" data-value="1"></i><b>(1)</b>
+    {
+        ["invoice_number"] = invoiceNumber,
+        ["amount"] = amount
+    },
+    Content = new Dictionary&lt;string, ContentUpload&gt;() <i class="conum" data-value="2"></i><b>(2)</b>
+    {
+        ["content"] = new() <i class="conum" data-value="3"></i><b>(3)</b>
         {
-            Attributes = new Dictionary&lt;string, object&gt;() <i class="conum" data-value="1"></i><b>(1)</b>
-            {
-                ["invoice_number"] = invoiceNumber,
-                ["amount"] = amount
-            },
-            Content = new Dictionary&lt;string, ContentUpload&gt;() <i class="conum" data-value="2"></i><b>(2)</b>
-            {
-                ["content"] = new() <i class="conum" data-value="3"></i><b>(3)</b>
-                {
-                    Filename = filename,
-                    Data = new MemoryStream(content)
-                }
-            }
+            Filename = filename,
+            Data = new MemoryStream(content)
         }
-    ]
+    }
 });</code></pre>
 </div>
 </div>
@@ -874,23 +945,18 @@ and the binary payload as a <code>Stream</code>:</p>
 </table>
 </div>
 <div class="paragraph">
-<p>The returned <code>Document</code> exposes the uploaded content through its <code>ContentInformation</code> dictionary, where each entry
-carries metadata such as <code>FileName</code> and <code>Size</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">ContentInformation? info = document.ContentInformation["content"];
-Console.WriteLine($"{info.FileName} ({info.Size} bytes)");</code></pre>
-</div>
+<p>The returned <code>DocumentClient</code> exposes the uploaded document through its <code>Document</code> property, whose
+<code>ContentInformation</code> dictionary carries metadata such as <code>FileName</code> and <code>Size</code> per content element.</p>
 </div>
 <div class="sect2">
 <h3 id="reading_documents_and_content"><a class="anchor" href="#reading_documents_and_content"></a>Reading documents and content</h3>
 <div class="paragraph">
-<p>A document is loaded by its identifier with <code>Read</code>:</p>
+<p>A document is loaded again by its identifier:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">document = client.Read(typeDefinition, document.Identifier);</code></pre>
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentClient reloaded = documents.Get(client.Identifier);
+Document read = reloaded.Document;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -899,38 +965,43 @@ name:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">Stream? data = client.ReadContent(typeDefinition, document.Identifier, "content");</code></pre>
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">using Stream? downloaded = reloaded.ReadContent("content");</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>DocumentResource</code> provides a rich set of related operations, including:</p>
+<p>The <code>DocumentClient</code> and <code>DocumentServiceClient</code> build on the generated <code>DocumentResource</code>, which provides a rich
+set of further operations, including ranged and rendition-aware content downloads (<code>ReadContentRanged</code>,
+<code>ReadContentAs</code>, <code>ReadThumbnail</code>), version handling and folder placement.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>ReadContentRanged</code> / <code>ReadContentOfVersionRanged</code> — partial (range) downloads.</p>
-</li>
-<li>
-<p><code>ReadContentAs</code> — request a specific content type, falling back to a rendition if available.</p>
-</li>
-<li>
-<p><code>ReadThumbnail</code> / <code>ReadThumbnailOfVersion</code> — thumbnail renditions.</p>
-</li>
-<li>
-<p><code>GetVersions</code>, <code>ReadVersion</code>, <code>ImportDocumentWithHistory</code> — version handling.</p>
-</li>
-<li>
-<p><code>MoveDocumentToFolder</code>, <code>RemoveDocumentFromFolder</code>, <code>GetParentFolder</code> — folder placement.</p>
-</li>
-<li>
-<p><code>GetAnnotations</code>, <code>UpdateAnnotations</code> — annotation management.</p>
-</li>
-</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="versioned_entities"><a class="anchor" href="#versioned_entities"></a>Versioned entities</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Containers, documents, folders and relations keep a version history. Their service clients implement
+<code>IVersionedEntityServiceClient&lt;…&gt;</code> and their entity clients implement <code>IVersionedEntityClient&lt;…&gt;</code>, which add the
+overwrite and version operations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">ContainerClient container = containers.Get(id);
+
+// version metadata of the current version
+VersionInformation info = container.VersionInformation;
+
+// the first page of versions, ordered by version number
+Page&lt;ContainerVersionClient&gt; versions = container.GetVersions();
+
+// a specific version
+ContainerVersionClient version = container.GetVersion(someVersionId);</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>For large files, prefer the resumable TUS upload service described in
-<a href="repo-service-upload-data.html#resumable_uploads" class="xref page">Uploading data</a> over a single <code>NewDocuments</code> call.</p>
-</div>
+<p>Meta entities (<code>MetaDataServiceClient</code> / <code>MetaEntityClient</code>) are the exception: they are identified by a composite
+primary key (<code>MetaDataId</code>), are not versioned and cannot be overwritten, so they implement only the non-versioned
+<code>IEntityServiceClient&lt;…&gt;</code> / <code>IEntityClient&lt;…&gt;</code> contracts.</p>
 </div>
 </div>
 </div>
@@ -938,34 +1009,38 @@ name:</p>
 <h2 id="searching_for_entities"><a class="anchor" href="#searching_for_entities"></a>Searching for entities</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Searches are issued through the data resource of the corresponding entity type (<code>ContainerDataResource.Find</code>,
-<code>DocumentResource.Find</code>, …) or through the <code>SearchResource</code> for generic and cross-type searches. They accept a
-<code>SearchRequest</code> and return a <code>Page&lt;T&gt;</code> of results.</p>
+<p>Every service client is a search entry point: <code>Search(SearchRequest)</code> returns a <code>Page&lt;T&gt;</code> of entity clients for the
+matching entities, mirroring the Java SDK&#8217;s <code>search(&#8230;&#8203;)</code>. The filter condition of a search is an EQL expression:</p>
+</div>
+<div class="listingblock">
+<div class="title">Searching for containers</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">Expression&lt;bool?&gt; condition =
+    Eql.Where(Eql.Field&lt;string&gt;("string_field").EqualTo(marker)); <i class="conum" data-value="1"></i><b>(1)</b>
+
+Page&lt;ContainerClient&gt; page = containers.Search(new SearchRequest
+{
+    PageDefinition = new PageDefinition { Size = 10, Order = []},
+    Filter = condition
+}); <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Build the EQL filter condition with the fluent <code>Eql</code> API.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>Search</code> returns a <code>Page&lt;ContainerClient&gt;</code>; the matching entities are available through its <code>Result</code> list.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>The <code>SearchResource</code> offers, among others:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>SearchGeneric</code> / <code>SearchEntities</code> — search entities across types.</p>
-</li>
-<li>
-<p><code>SearchChildDocuments</code> / <code>SearchDescendantDocuments</code> — documents within a folder hierarchy.</p>
-</li>
-<li>
-<p><code>SearchChildFolders</code> / <code>SearchDescendantFolders</code> — folders within a folder hierarchy.</p>
-</li>
-<li>
-<p><code>SearchRelated</code> — entities reachable through relations.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The filter condition of a search is an EQL expression. The SDK ships a fluent <code>EcrConditionBuilder&lt;T&gt;</code> that wraps
-the EQL <code>Eql.Where(&#8230;&#8203;)</code> builder, and contributes <em>arveo</em>-specific query elements (such as
-<code>VariableEquals</code>, <code>VariableIsDefined</code> and <code>VariableIsUndefined</code>) for filtering on entity variables. For details on
-the query language itself, see <a href="search-service.html" class="xref page">Search language</a> and the
+<p>The SDK also ships a fluent <code>EcrConditionBuilder&lt;T&gt;</code> that wraps the EQL <code>Eql.Where(&#8230;&#8203;)</code> builder and contributes
+<em>arveo</em>-specific query elements (such as <code>VariableEquals</code>, <code>VariableIsDefined</code> and <code>VariableIsUndefined</code>).
+For details on the query language itself, see <a href="search-service.html" class="xref page">Search language</a> and the
 <a href="https://eitco.github.io/eql/latest/">EQL documentation</a>.</p>
 </div>
 </div>
@@ -979,24 +1054,31 @@ operations to be composed and committed as a single atomic transaction. It is bu
 <code>BatchOperationResource</code> and is the recommended way to perform multiple operations at once.</p>
 </div>
 <div class="paragraph">
-<p>A batch is started from the <code>BatchBuilder</code>, operations are appended fluently, and <code>Commit()</code> executes them and
-returns the IDs of the affected entities. Within a batch, an entity that has not been persisted yet can already be
-referenced by other operations through a <strong>virtual ID</strong>.</p>
+<p>A batch is started with <code>EcrClient.StartBatch()</code>, which returns a <code>BatchBuilder</code>. Operations are appended fluently,
+and <code>Commit()</code> executes them and returns the IDs of the affected entities. Within a batch, an entity that has not
+been persisted yet can already be referenced by other operations through a <strong>virtual ID</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="title">Composing and committing a batch</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">List&lt;EcrId&gt; ids = batchBuilder
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">List&lt;EcrId&gt; ids = ecr.StartBatch()
     .Create()                                  <i class="conum" data-value="1"></i><b>(1)</b>
         .Container()                           <i class="conum" data-value="2"></i><b>(2)</b>
             .Of(containerType)
-            // ... supply attributes ...
+            .WithAttributes(new Dictionary&lt;string, object&gt;
+            {
+                ["integer_field"] = 1,
+                ["string_field"] = firstMarker
+            })
         .AndThen()                             <i class="conum" data-value="3"></i><b>(3)</b>
     .Create()
-        .Document()
-            .Of(documentType)
-            // ... supply attributes and content ...
-        .AndThen()
+        .Container()
+            .Of(containerType)
+            .WithAttributes(new Dictionary&lt;string, object&gt;
+            {
+                ["integer_field"] = 2,
+                ["string_field"] = secondMarker
+            })
     .Commit();                                 <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
@@ -1014,33 +1096,14 @@ an overload accepting a virtual ID lets later operations reference this entity.<
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>AndThen()</code> returns to the batch builder to add further operations.</td>
+<td><code>AndThen()</code> returns to the batch builder to add further operations. The last operation before <code>Commit()</code> is
+finished without it.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td><code>Commit()</code> executes the whole batch as one atomic transaction and returns the affected entity IDs.</td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>The builder also supports:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>Expect()</code> — add a precondition that must hold at execution time, otherwise the batch fails.</p>
-</li>
-<li>
-<p><code>Read()</code> — load an existing entity into the batch result.</p>
-</li>
-<li>
-<p><code>Update()</code> / <code>Overwrite()</code> — merge values into, or fully replace, an existing entity.</p>
-</li>
-<li>
-<p><code>Delete()</code> — delete a single entity <code>ById(&#8230;&#8203;)</code>, or perform a conditional bulk delete via
-<code>From(typeDefinition).Where().Limit(n).Where(condition)</code>.</p>
-</li>
-</ul>
 </div>
 <div class="paragraph">
 <p>The generic batch concepts and semantics are described in more detail in <a href="batch-operations.html" class="xref page">batch-operations.adoc</a>.</p>
@@ -1053,7 +1116,9 @@ an overload accepting a virtual ID lets later operations reference this entity.<
 <div class="paragraph">
 <p>The resource <code>Implementation</code> classes register exception factories for the common error types of
 <em>arveo</em>. When a request fails, the response body is deserialized into a <code>CommonException</code> (or
-<code>CommonCheckedException</code>) and thrown, so failures surface as typed .NET exceptions rather than raw HTTP errors.</p>
+<code>CommonCheckedException</code>) and thrown, so failures surface as typed .NET exceptions rather than raw HTTP errors. The
+convenience layer adds <code>EntityNotFoundException</code>, which an entity client throws when an update or delete does not
+affect any entity because it no longer exists or is hidden by an access rule.</p>
 </div>
 </div>
 </div>

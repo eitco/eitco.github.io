@@ -844,6 +844,149 @@ plugins of the Document Conversion Service.
 </div>
 </div>
 <div class="sect1">
+<h2 id="pdfa_renditions"><a class="anchor" href="#pdfa_renditions"></a>PDF/A renditions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>PDF/A is an ISO-standardized version of PDF designed for the long-term preservation of electronic documents. arveo
+can create a PDF/A rendition of a content element like any other rendition. Instead of the ordinary PDF content type, the
+special content type <code>application/vnd.eitco.pdf-a</code> is used for the rendition:</p>
+</div>
+<div class="listingblock">
+<div class="title">A document type definition with a PDF/A rendition</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ContentElement(name = "original") <i class="conum" data-value="1"></i><b>(1)</b>
+@Rendition(name = "rendition", sourceElement = "original", contentType = "application/vnd.eitco.pdf-a") <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The content element containing the original content.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The PDF/A rendition content element. The content type <code>application/vnd.eitco.pdf-a</code> requests a PDF/A rendition instead
+of a plain PDF rendition.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Because a PDF/A document is also a valid PDF document, a PDF/A rendition is treated as compatible with the <code>application/pdf</code>
+content type. It can therefore be read by requesting the source content element as an <code>application/pdf</code> document, for
+example via <code>TypedDocumentClient.readContentAs</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">try (InputStream pdf = documentClient.readContentAs("original", MediaType.APPLICATION_PDF)) {
+    // use the PDF/A rendition, e.g. archive or stream it
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To maintain compatibility with client applications, the content type reported in the metadata of a PDF/A rendition will always be the standard <code>application/pdf</code> type.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="conformance_levels"><a class="anchor" href="#conformance_levels"></a>Conformance levels</h3>
+<div class="paragraph">
+<p>The PDF/A standard defines several conformance levels. The desired conformance level can optionally be specified by adding
+the <code>conformance</code> parameter to the content type of the rendition, for example
+<code>application/vnd.eitco.pdf-a;conformance=PDFA_2B</code>. If the parameter is omitted, the rendition is created with conformance
+level PDF/A-1b.</p>
+</div>
+<div class="paragraph">
+<p>The value of the <code>conformance</code> parameter must be one of the following values (defined by the enum
+<code>de.eitco.commons.conversion.service.common.PDFAConformanceLevel</code>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">PDF/A conformance levels</caption>
+<colgroup>
+<col style="width: 25%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">value</th>
+<th class="tableblock halign-left valign-top">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NONE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No PDF/A conformance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_1A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-1a - accessible compliance with the PDF/A-1 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_1B</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-1b - basic compliance with the PDF/A-1 standard (the default when no conformance is specified).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_2A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-2a - accessible compliance with the PDF/A-2 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_2B</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-2b - basic compliance with the PDF/A-2 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_2U</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-2u - Unicode compliance with the PDF/A-2 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_3A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-3a - accessible compliance with the PDF/A-3 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_3B</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-3b - basic compliance with the PDF/A-3 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_3U</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-3u - Unicode compliance with the PDF/A-3 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-4 - compliance with the PDF/A-4 standard for archival purposes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_4E</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-4e - engineering documents compliance with the PDF/A-4 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDFA_4F</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-4f - compliance with the PDF/A-4 standard, including support for external references such as object streams or file attachments.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Whether a particular conformance level can be produced for a given source content type depends on the plugins available
+on the classpath of the Document Conversion Service.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="thumbnails"><a class="anchor" href="#thumbnails"></a>Thumbnails</h2>
 <div class="sectionbody">
 <div class="paragraph">
