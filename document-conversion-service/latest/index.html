@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">Document Conversion Service 11.0.0</div>
+<div id="toctitle">Document Conversion Service 11.1.0</div>
 <ul class="sectlevel1">
 <li><a href="#_about_document_conversion_service"><strong>About Document Conversion Service</strong></a></li>
 <li><a href="#_configuration"><strong>Configuration</strong></a>
@@ -50,6 +50,8 @@
 <li><a href="#_open_telemetry">Open Telemetry</a></li>
 </ul>
 </li>
+<li><a href="#_release_notes"><strong>Release Notes</strong></a></li>
+<li><a href="#_release_notes_11_1_0_july_17_2026">Release notes 11.1.0 (July 17, 2026)</a></li>
 </ul>
 </div>
 </div>
@@ -250,16 +252,16 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-oss&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_oss">Plugins contained in document-conversion-plugins-oss</h4>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
 <div class="paragraph">
-<p>Merges pdf files.</p>
+<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -284,41 +286,14 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>application/pdf</p>
+<p>image/jpeg</p>
 </li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftomultipagetiffrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToMultiPageTiffRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
 <li>
-<p>application/pdf</p>
+<p>image/png</p>
 </li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
+<li>
+<p>image/gif</p>
+</li>
 <li>
 <p>image/tiff</p>
 </li>
@@ -329,9 +304,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
 <div class="paragraph">
-<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
+<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -349,7 +324,7 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>application/vnd.ms-outlook</p>
+<p>application/xhtml+xml</p>
 </li>
 </ul>
 </div></div></td>
@@ -386,42 +361,6 @@ of the service. The plugins will be registered automatically.</p>
 <ul>
 <li>
 <p>image/tiff</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/xhtml+xml</p>
 </li>
 </ul>
 </div></div></td>
@@ -510,87 +449,6 @@ of the service. The plugins will be registered automatically.</p>
 <ul>
 <li>
 <p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders txt to pdf with openpdf.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>image/jpeg</p>
-</li>
-<li>
-<p>image/png</p>
-</li>
-<li>
-<p>image/gif</p>
-</li>
-<li>
-<p>image/tiff</p>
 </li>
 </ul>
 </div></div></td>
@@ -723,6 +581,150 @@ of the service. The plugins will be registered automatically.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftomultipagetiffrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToMultiPageTiffRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from pdf to TIFF Pages by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders txt to pdf with openpdf.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<div class="paragraph">
+<p>Merges pdf files.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -845,7 +847,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-jadice&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -979,7 +981,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
     &lt;artifactId&gt;document-conversion-plugins-ms-graph&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1223,7 +1225,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-ms-azure&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1371,7 +1373,7 @@ If you want to use this plugin you need an Amazon AWS account (also named <stron
     &lt;artifactId&gt;document-conversion-plugins-amazon-aws&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1550,7 +1552,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-e-iceblue&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1639,7 +1641,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-itext&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1759,7 +1761,7 @@ XRechnung XML data. It is using the <code>x-rechnung-toolkit-service</code> to c
     &lt;artifactId&gt;document-conversion-plugins-x-rechnung&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1815,7 +1817,7 @@ coordinates:</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
     &lt;artifactId&gt;document-conversion-plugins-documentconverter&lt;/artifactId&gt;
-    &lt;version&gt;11.0.0&lt;/version&gt;
+    &lt;version&gt;11.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1827,7 +1829,9 @@ coordinates:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">documentconverter:
-  base-url: "http://127.0.0.1:8080" # The base URL of the DocumentConverter service</code></pre>
+  base-url: "http://127.0.0.1:8080" # The base URL of the DocumentConverter service
+  pdf:
+    conformance-level: "NONE" # The default PDF/A conformance level used when none is requested</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1849,8 +1853,143 @@ coordinates:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The base URL where the DocumentConverter service is reachable.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://127.0.0.1:8080" class="bare">http://127.0.0.1:8080</a></code></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentconverter.pdf.conformance-level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default PDF/A conformance level that is applied when a request does not specify a conformance level explicitly (see <a href="#_pdf_and_pdfa_output">PDF and PDF/A output</a>). Must be one of the values listed in <a href="#_pdfa_conformance_levels">PDF/A conformance levels</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NONE</code></p></td>
+</tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="_pdf_and_pdfa_output">PDF and PDF/A output</h4>
+<div class="paragraph">
+<p>The plugin supports two target MIME types:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Target MIME type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>application/pdf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Renders the source document to a regular PDF file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>application/vnd.eitco.pdf-a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Renders the source document to a PDF/A file for long-term archiving.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The desired PDF/A conformance level can be selected per request by adding the <code>conformance</code> parameter to the target
+MIME type. The value must be one of the levels listed in <a href="#_pdfa_conformance_levels">PDF/A conformance levels</a>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>application/vnd.eitco.pdf-a;conformance=PDFA_2B</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>conformance</code> parameter can be applied to both target MIME types. If it is omitted, the resulting conformance level
+depends on the target MIME type:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For <code>application/pdf</code> the plugin uses the default conformance level configured via
+<code>documentconverter.pdf.conformance-level</code>.</p>
+</li>
+<li>
+<p>For <code>application/vnd.eitco.pdf-a</code> the plugin always produces a PDF/A file. If the configured default is <code>NONE</code>, it
+falls back to the lowest PDF/A level <code>PDFA_1B</code> to ensure PDF/A output; otherwise the configured default is used.</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_pdfa_conformance_levels">PDF/A conformance levels</h5>
+<div class="paragraph">
+<p>The following conformance levels are supported by the <code>conformance</code> parameter and the
+<code>documentconverter.pdf.conformance-level</code> property:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Level</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NONE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No PDF/A conformance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_1A</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-1a - accessible compliance with the PDF/A-1 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_1B</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-1b - basic compliance with the PDF/A-1 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_2A</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-2a - accessible compliance with the PDF/A-2 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_2B</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-2b - basic compliance with the PDF/A-2 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_2U</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-2u - Unicode compliance with the PDF/A-2 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_3A</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-3a - accessible compliance with the PDF/A-3 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_3B</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-3b - basic compliance with the PDF/A-3 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_3U</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-3u - Unicode compliance with the PDF/A-3 standard.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-4 - compliance with the PDF/A-4 standard for archival purposes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PDFA_4F</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF/A-4f - compliance with the PDF/A-4 standard, including support for external references such as object streams or file attachments.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The level <code>PDFA_4E</code> (engineering documents) is defined but not supported by this plugin and results in an error.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_documentconverter">Plugins contained in document-conversion-plugins-documentconverter</h4>
@@ -1934,6 +2073,9 @@ coordinates:</p>
 <ul>
 <li>
 <p>application/pdf</p>
+</li>
+<li>
+<p>application/vnd.eitco.pdf-a</p>
 </li>
 </ul>
 </div></div></td>
@@ -2237,10 +2379,59 @@ request.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_release_notes"><strong>Release Notes</strong></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_release_notes_11_1_0_july_17_2026">Release notes 11.1.0 (July 17, 2026)</h2>
+<div class="sectionbody">
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1845: Added support for conversion to PDF/A with a custom mime type attribute and an alternative mime type for PDF/A (application/vnd.eitco.pdf-a).
+Currently, this is only supported by the documentconverter plugin.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1845: Fixed handling of multipart responses from /multiple endpoint of documentconverter service.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+</div>
+</details>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-08 12:11:38 UTC
+Last updated 2026-07-17 06:40:14 UTC
 </div>
 </div>
 </body>
