@@ -16,7 +16,7 @@
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">Document Conversion Service 11.1.1-SNAPSHOT</div>
+<div id="toctitle">Document Conversion Service 11.1.2-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_about_document_conversion_service"><strong>About Document Conversion Service</strong></a></li>
 <li><a href="#_configuration"><strong>Configuration</strong></a>
@@ -51,7 +51,8 @@
 </ul>
 </li>
 <li><a href="#_release_notes"><strong>Release Notes</strong></a></li>
-<li><a href="#_release_notes_11_1_1_snapshot_july_17_2026">Release notes 11.1.1-SNAPSHOT (July 17, 2026)</a></li>
+<li><a href="#_release_notes_11_1_2_snapshot_july_17_2026">Release notes 11.1.2-SNAPSHOT (July 17, 2026)</a></li>
+<li><a href="#_release_notes_11_1_1_july_17_2026">Release notes 11.1.1 (July 17, 2026)</a></li>
 <li><a href="#_release_notes_11_1_0_july_17_2026">Release notes 11.1.0 (July 17, 2026)</a></li>
 </ul>
 </div>
@@ -253,7 +254,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-oss&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -341,6 +342,78 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<div class="paragraph">
+<p>Merges pdf files.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders txt to pdf with openpdf.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
 <h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
 <div class="paragraph">
 <p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
@@ -386,9 +459,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openpdfrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenPdfRenderPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
 <div class="paragraph">
-<p>Renders txt to pdf with openpdf.</p>
+<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -406,7 +479,97 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
 <p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_imagestopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from JPG,PNG,GIF to PDF by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/bmp</p>
 </li>
 </ul>
 </div></div></td>
@@ -564,168 +727,6 @@ of the service. The plugins will be registered automatically.</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
-<div class="paragraph">
-<p>Merges pdf files.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_imagestopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from JPG,PNG,GIF to PDF by using apache pdfbox.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>image/jpeg</p>
-</li>
-<li>
-<p>image/png</p>
-</li>
-<li>
-<p>image/gif</p>
-</li>
-<li>
-<p>image/bmp</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
-<div class="paragraph">
-<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-<li>
-<p>application/xml</p>
-</li>
-<li>
-<p>text/html</p>
-</li>
-<li>
-<p>application/msword</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
-</li>
-<li>
-<p>application/vnd.ms-excel</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
-</li>
-<li>
-<p>application/vnd.ms-powerpoint</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
-</li>
-<li>
-<p>application/epub+zip</p>
-</li>
-<li>
-<p>application/vnd.ms-outlook</p>
-</li>
-<li>
-<p>application/rtf</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.presentation</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.spreadsheet</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.text</p>
-</li>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -848,7 +849,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-jadice&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -982,7 +983,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
     &lt;artifactId&gt;document-conversion-plugins-ms-graph&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1226,7 +1227,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-ms-azure&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1374,7 +1375,7 @@ If you want to use this plugin you need an Amazon AWS account (also named <stron
     &lt;artifactId&gt;document-conversion-plugins-amazon-aws&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1553,7 +1554,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-e-iceblue&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1642,7 +1643,7 @@ of the service. The plugins will be registered automatically.</p>
     &lt;artifactId&gt;document-conversion-plugins-itext&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1762,7 +1763,7 @@ XRechnung XML data. It is using the <code>x-rechnung-toolkit-service</code> to c
     &lt;artifactId&gt;document-conversion-plugins-x-rechnung&lt;/artifactId&gt;
     &lt;type&gt;zip&lt;/type&gt;
     &lt;classifier&gt;zip&lt;/classifier&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1818,7 +1819,7 @@ coordinates:</p>
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;de.eitco.commons&lt;/groupId&gt;
     &lt;artifactId&gt;document-conversion-plugins-documentconverter&lt;/artifactId&gt;
-    &lt;version&gt;11.1.1-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;11.1.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -2387,7 +2388,35 @@ request.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_release_notes_11_1_1_snapshot_july_17_2026">Release notes 11.1.1-SNAPSHOT (July 17, 2026)</h2>
+<h2 id="_release_notes_11_1_2_snapshot_july_17_2026">Release notes 11.1.2-SNAPSHOT (July 17, 2026)</h2>
+<div class="sectionbody">
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_release_notes_11_1_1_july_17_2026">Release notes 11.1.1 (July 17, 2026)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -2467,7 +2496,7 @@ Currently, this is only supported by the documentconverter plugin.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-17 14:11:57 UTC
+Last updated 2026-07-17 14:30:59 UTC
 </div>
 </div>
 </body>
