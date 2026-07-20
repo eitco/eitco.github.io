@@ -51,7 +51,7 @@
 </ul>
 </li>
 <li><a href="#_release_notes"><strong>Release Notes</strong></a></li>
-<li><a href="#_release_notes_11_1_2_snapshot_july_19_2026">Release notes 11.1.2-SNAPSHOT (July 19, 2026)</a></li>
+<li><a href="#_release_notes_11_1_2_snapshot_july_20_2026">Release notes 11.1.2-SNAPSHOT (July 20, 2026)</a></li>
 <li><a href="#_release_notes_11_1_1_july_17_2026">Release notes 11.1.1 (July 17, 2026)</a></li>
 <li><a href="#_release_notes_11_1_0_july_17_2026">Release notes 11.1.0 (July 17, 2026)</a></li>
 </ul>
@@ -261,6 +261,42 @@ of the service. The plugins will be registered automatically.</p>
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_oss">Plugins contained in document-conversion-plugins-oss</h4>
 <div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
+<div class="paragraph">
+<p>Merges pdf files.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
 <h5 id="_de_eitco_commons_conversion_plugins_oss_imagestopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</h5>
 <div class="paragraph">
 <p>Renders from JPG,PNG,GIF to PDF by using apache pdfbox.</p>
@@ -306,9 +342,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
 <div class="paragraph">
-<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
+<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -326,7 +362,7 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>application/xhtml+xml</p>
+<p>application/vnd.ms-outlook</p>
 </li>
 </ul>
 </div></div></td>
@@ -459,9 +495,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
 <div class="paragraph">
-<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
+<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -479,124 +515,7 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>application/pdf</p>
-</li>
-<li>
-<p>application/xml</p>
-</li>
-<li>
-<p>text/html</p>
-</li>
-<li>
-<p>application/msword</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
-</li>
-<li>
-<p>application/vnd.ms-excel</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
-</li>
-<li>
-<p>application/vnd.ms-powerpoint</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
-</li>
-<li>
-<p>application/epub+zip</p>
-</li>
-<li>
-<p>application/vnd.ms-outlook</p>
-</li>
-<li>
-<p>application/rtf</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.presentation</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.spreadsheet</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.text</p>
-</li>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
-<div class="paragraph">
-<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/vnd.ms-outlook</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
-<div class="paragraph">
-<p>Merges pdf files.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
+<p>application/xhtml+xml</p>
 </li>
 </ul>
 </div></div></td>
@@ -721,6 +640,87 @@ of the service. The plugins will be registered automatically.</p>
 <ul>
 <li>
 <p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextocrextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextOcrExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text by using Apache Tika and Tesseract OCR.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
 </li>
 </ul>
 </div></div></td>
@@ -1996,6 +1996,93 @@ The level <code>PDFA_4E</code> (engineering documents) is defined but not suppor
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_documentconverter">Plugins contained in document-conversion-plugins-documentconverter</h4>
 <div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_documentconverter_toimagedocumentconverterplugn">de.eitco.commons.conversion.plugins.documentconverter.ToImageDocumentConverterPlugn</h5>
+<div class="paragraph">
+<p>Renders Microsoft Office Documents and some other formats to JPEG using the EITCO DocumentConverter service, which wraps the SyncFusion library.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.template</p>
+</li>
+<li>
+<p>application/vnd.ms-word.document.macroEnabled.12</p>
+</li>
+<li>
+<p>application/vnd.ms-word.template.macroEnabled.12</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+<li>
+<p>text/markdown</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/svg+xml</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
 <h5 id="_de_eitco_commons_conversion_plugins_documentconverter_topdfdocumentconverterplugin">de.eitco.commons.conversion.plugins.documentconverter.ToPdfDocumentConverterPlugin</h5>
 <div class="paragraph">
 <p>Renders Microsoft Office Documents and some other formats to PDF using the EITCO DocumentConverter service, which wraps the SyncFusion library.</p>
@@ -2078,93 +2165,6 @@ The level <code>PDFA_4E</code> (engineering documents) is defined but not suppor
 </li>
 <li>
 <p>application/vnd.eitco.pdf-a</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_documentconverter_toimagedocumentconverterplugn">de.eitco.commons.conversion.plugins.documentconverter.ToImageDocumentConverterPlugn</h5>
-<div class="paragraph">
-<p>Renders Microsoft Office Documents and some other formats to JPEG using the EITCO DocumentConverter service, which wraps the SyncFusion library.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/msword</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.template</p>
-</li>
-<li>
-<p>application/vnd.ms-word.document.macroEnabled.12</p>
-</li>
-<li>
-<p>application/vnd.ms-word.template.macroEnabled.12</p>
-</li>
-<li>
-<p>application/rtf</p>
-</li>
-<li>
-<p>text/plain</p>
-</li>
-<li>
-<p>text/markdown</p>
-</li>
-<li>
-<p>text/html</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
-</li>
-<li>
-<p>application/vnd.ms-excel</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
-</li>
-<li>
-<p>image/jpeg</p>
-</li>
-<li>
-<p>image/png</p>
-</li>
-<li>
-<p>image/tiff</p>
-</li>
-<li>
-<p>image/bmp</p>
-</li>
-<li>
-<p>image/gif</p>
-</li>
-<li>
-<p>image/svg+xml</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>image/jpeg</p>
 </li>
 </ul>
 </div></div></td>
@@ -2388,7 +2388,7 @@ request.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_release_notes_11_1_2_snapshot_july_19_2026">Release notes 11.1.2-SNAPSHOT (July 19, 2026)</h2>
+<h2 id="_release_notes_11_1_2_snapshot_july_20_2026">Release notes 11.1.2-SNAPSHOT (July 20, 2026)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -2496,7 +2496,7 @@ Currently, this is only supported by the documentconverter plugin.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-19 00:27:20 UTC
+Last updated 2026-07-20 00:27:31 UTC
 </div>
 </div>
 </body>
