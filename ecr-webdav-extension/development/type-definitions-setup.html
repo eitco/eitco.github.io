@@ -475,35 +475,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @Register(MyDavContent1.class)
 @Register(MyDavContent2.class)
 @Register(MyDavProtoContent.class)
-public class MyDavTypeRegistration implements DavTypeRegistration {
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_details_of_davtyperegistration">Details of DavTypeRegistration</h4>
-<div class="paragraph">
-<p><code>DavTypeRegistration</code> provides several key features:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PreSchemaInitialization("classpath:liquibase/webdav-liquibase.xml") // <b class="conum">(1)</b>
-public interface DavTypeRegistration extends TypeDefinitionRegistration { // <b class="conum">(2)</b>
-
-    @Override
-    default Class&lt;?&gt;[] getRegisteredClasses() { // <b class="conum">(3)</b>
-        // ...
-    }
+@AutoConfigureBefore(DavTypeRegistration.DefaultDavTypeRegistrationAutoConfiguration.class) // <b class="conum">(2)</b>
+public class MyDavTypeRegistration implements DavTypeRegistration { // <b class="conum">(1)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <ol>
 <li>
-<p><strong>Schema Initialization</strong>: It triggers the execution of WebDAV-specific Liquibase scripts via the <code>@PreSchemaInitialization</code> annotation.</p>
+<p>Note that you need to implement <code>DavTypeRegistration</code> not <code>TypeDefinitionRegistration</code> or <code>DirTypeRegistration</code>.</p>
 </li>
 <li>
-<p><strong>Base Type Registration</strong>: It ensures that at least on of each <code>DavCollection</code> and <code>DavContent</code> are correctly registered in the system.</p>
+<p>Make sure your autoconfiguration is evaluated before <code>DavTypeRegistration</code> to override the defaults.</p>
 </li>
 </ol>
 </div>
@@ -511,7 +494,7 @@ public interface DavTypeRegistration extends TypeDefinitionRegistration { // <b 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-20 22:13:16 UTC
+Last updated 2026-07-21 16:28:25 UTC
 </div>
 </div>
 </body>

@@ -96,25 +96,8 @@
 @Register(MyDavContent1.class)
 @Register(MyDavContent2.class)
 @Register(MyDavProtoContent.class)
-public class MyDavTypeRegistration implements DavTypeRegistration {
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_details_of_davtyperegistration">Details of DavTypeRegistration</h4>
-<div class="paragraph">
-<p><code>DavTypeRegistration</code> provides several key features:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PreSchemaInitialization("classpath:liquibase/webdav-liquibase.xml") <i class="conum" data-value="1"></i><b>(1)</b>
-public interface DavTypeRegistration extends TypeDefinitionRegistration { <i class="conum" data-value="2"></i><b>(2)</b>
-
-    @Override
-    default Class&lt;?&gt;[] getRegisteredClasses() { <i class="conum" data-value="3"></i><b>(3)</b>
-        // ...
-    }
+@AutoConfigureBefore(DavTypeRegistration.DefaultDavTypeRegistrationAutoConfiguration.class) <i class="conum" data-value="2"></i><b>(2)</b>
+public class MyDavTypeRegistration implements DavTypeRegistration { <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -122,11 +105,11 @@ public interface DavTypeRegistration extends TypeDefinitionRegistration { <i cla
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><strong>Schema Initialization</strong>: It triggers the execution of WebDAV-specific Liquibase scripts via the <code>@PreSchemaInitialization</code> annotation.</td>
+<td>Note that you need to implement <code>DavTypeRegistration</code> not <code>TypeDefinitionRegistration</code> or <code>DirTypeRegistration</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><strong>Base Type Registration</strong>: It ensures that at least on of each <code>DavCollection</code> and <code>DavContent</code> are correctly registered in the system.</td>
+<td>Make sure your autoconfiguration is evaluated before <code>DavTypeRegistration</code> to override the defaults.</td>
 </tr>
 </table>
 </div>
@@ -179,7 +162,7 @@ public interface MyDavContent1 extends DavContent { <i class="conum" data-value=
             targetProperty = "id"
     )
     @Override
-    FolderId getContainer();
+    FolderId getParent();
 
     Integer getArbitraryInteger(); <i class="conum" data-value="3"></i><b>(3)</b>
     void setArbitraryInteger(Integer arbitraryInteger);
@@ -241,7 +224,7 @@ public interface MyDavProtoContent extends DavContent { <i class="conum" data-va
             targetProperty = "id"
     )
     @Override
-    FolderId getContainer();
+    FolderId getParent();
 
 }</code></pre>
 </div>
@@ -467,7 +450,7 @@ public interface MyDavProtoContent extends DavContent { <i class="conum" data-va
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-20 22:13:16 UTC
+Last updated 2026-07-21 16:28:25 UTC
 </div>
 </div>
 </body>
