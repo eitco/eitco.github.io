@@ -3,6 +3,7 @@
 
 Here you can find documentation for any version of the EITCO Archive Link Service deployed so far.
 
+ * [16.0.4](archive/16.0.4)
  * [16.0.3](archive/16.0.3)
  * [16.0.2](archive/16.0.2)
  * [16.0.1](archive/16.0.1)
