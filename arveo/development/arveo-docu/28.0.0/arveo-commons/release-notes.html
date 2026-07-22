@@ -414,7 +414,7 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_28_0_0_snapshot_july_21_2026"><a class="anchor" href="#release_notes_28_0_0_snapshot_july_21_2026"></a>Release notes 28.0.0-SNAPSHOT (July 21, 2026)</h2>
+<h2 id="release_notes_28_0_0_snapshot_july_22_2026"><a class="anchor" href="#release_notes_28_0_0_snapshot_july_22_2026"></a>Release notes 28.0.0-SNAPSHOT (July 22, 2026)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -519,6 +519,9 @@ Also, the Rendition annotation is now repeatable to make it possible to define m
 blob storage library allocates a 4 MiB sized buffer for each ongoing upload which can easily cause OutOfMemoryErrors
 during large batch uploads. Use the newly introduced new storage plugin settings <code>maxWriteConcurrency</code> (default 32)
 to fix this.</p>
+</li>
+<li>
+<p>ECR-1861: Internal rendition service now bypasses access checks to be able to create renditions on-the-fly for access protected document types.</p>
 </li>
 </ul>
 </div>
