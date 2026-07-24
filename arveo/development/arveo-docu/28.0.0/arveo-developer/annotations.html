@@ -485,7 +485,7 @@ of the document.
 <div class="sect2">
 <h3 id="size_and_position"><a class="anchor" href="#size_and_position"></a>Size and position</h3>
 <div class="paragraph">
-<p>Size and position of an annotation are stored in pixels (1px = 1/96th of 1in). The x- and y-coordinates are measured
+<p>Size and position of an annotation are stored in pixels (1px = 1/72nd of 1in). The x- and y-coordinates are measured
 from the top-left corner of the document. Each annotation has a position that consists of a rectangle enclosing the
 entire annotation. Some annotations can have additional position parameters like the points of a line or quads
 (four points) of a highlight annotation. The position contains the page of the document where the annotation is added, too.</p>
@@ -613,6 +613,126 @@ client.updateAnnotations(
 <td>Deletes the annotation with the ID "annotation1" in the content element "content".</td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="supplying_annotations_in_create_and_update_operations"><a class="anchor" href="#supplying_annotations_in_create_and_update_operations"></a>Supplying annotations in create and update operations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Besides the dedicated <code>updateAnnotations</code> method, annotations can be supplied directly as part of a
+<code>DocumentInput</code> (or <code>TypedDocumentInput</code>) when creating, updating, overwriting or batch-processing documents.
+The input carries an <code>annotations</code> field that maps a content element name to an <code>AnnotationsInput</code>. An
+<code>AnnotationsInput</code> bundles the annotations to add or update (identified by ID, existing ones are replaced) with
+the IDs of annotations to delete, using the same merge semantics as <code>updateAnnotations</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">building an AnnotationsInput</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private Map&lt;String, AnnotationsInput&gt; annotations(String annotationId, Position position) {
+
+    StickyNoteInput note = new StickyNoteInput(
+        annotationId,
+        position,
+        new Text("Note " + annotationId, "Arial", Color.BLACK, 10, Alignment.LEFT),
+        Color.YELLOW,
+        new Border(1, Color.BLACK),
+        null
+    );
+
+    return Map.of(CONTENT, new AnnotationsInput(Set.of(note), Set.of()));
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">putting the annotations into a document input</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private TypedDocumentInput&lt;EcrDocuments&gt; input(
+    Map&lt;String, ContentUpload&gt; content,
+    Map&lt;String, AnnotationsInput&gt; annotations
+) {
+
+    return new TypedDocumentInput&lt;&gt;(content, annotations, ecrDocumentServiceClient.createTypeInstance());
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Annotations are not versioned. A change that touches only annotations updates the current revision in place and
+does not create a new revision. When the content of the document changes as well, a new revision is created and
+the supplied annotations are stored on that new revision.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The annotations are applied when the document is created:</p>
+</div>
+<div class="listingblock">
+<div class="title">creating a document with annotations</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">TypedDocumentClient&lt;EcrDocuments&gt; client = ecrDocumentServiceClient.create(List.of(
+    input(attributes(), content("abc"), annotations("createNote"))
+)).getFirst();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An annotation-only update updates the current revision without creating a new one:</p>
+</div>
+<div class="listingblock">
+<div class="title">updating annotations only</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;EcrDocuments&gt;&gt; updated = ecrDocumentServiceClient.updateAndReturn(
+    byId(id), 1, input(Map.of(), annotations("updateOnly")));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When content is changed together with the annotations, a new revision is created and carries the annotations:</p>
+</div>
+<div class="listingblock">
+<div class="title">updating content and annotations</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;EcrDocuments&gt;&gt; updated = ecrDocumentServiceClient.updateAndReturn(
+    byId(id), 1, input(content("def"), annotations("updateWithContent")));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Annotations can also be supplied per document in a batch update - each document receives exactly its own
+annotations:</p>
+</div>
+<div class="listingblock">
+<div class="title">updating annotations for multiple documents in a batch</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;EcrDocuments&gt;&gt; updated = ecrDocumentServiceClient.updateAndReturn(LinkedOrderedMap.of(
+    id1, input(Map.of(), annotations("note1")),
+    id2, input(Map.of(), annotations("note2")),
+    id3, input(Map.of(), annotations("note3"))
+));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deleting annotations works the same way by supplying the IDs to delete in the <code>AnnotationsInput</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">building an AnnotationsInput that deletes annotations</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private Map&lt;String, AnnotationsInput&gt; deleteAnnotations(String... annotationIds) {
+
+    return Map.of(CONTENT, new AnnotationsInput(Set.of(), Set.of(annotationIds)));
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">deleting annotations through a batch update</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">List&lt;TypedDocumentClient&lt;EcrDocuments&gt;&gt; updated = ecrDocumentServiceClient.updateAndReturn(
+    LinkedOrderedMap.of(id, input(Map.of(), deleteAnnotations("toDelete"))));</code></pre>
+</div>
 </div>
 </div>
 </div>

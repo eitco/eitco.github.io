@@ -437,6 +437,9 @@
 <p>ECR-1779: Descriptions are now available via API to support AI applications.</p>
 </li>
 <li>
+<p>ECR-1791: The API now allows to add annotations in regular create- and update-operations (including batches).</p>
+</li>
+<li>
 <p>ECR-1804: Type definitions can now contain special rendition content elements for thumbnails.</p>
 </li>
 <li>
@@ -500,6 +503,9 @@ Also, the Rendition annotation is now repeatable to make it possible to define m
 <p>ECR-1783: Removed an invalid dependency to an outdated snapshot version of eitco-oss-commons-parent.</p>
 </li>
 <li>
+<p>ECR-1791: Fixed SQL generation for batch updates with mixed version handling.</p>
+</li>
+<li>
 <p>ECR-1801: Fixed a bug in the version history import that resulted in empty content information for a document-version without changed content.</p>
 </li>
 <li>
@@ -530,6 +536,13 @@ to fix this.</p>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1791: Annotations now use double instead of int for position and width values to avoid rounding errors.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
