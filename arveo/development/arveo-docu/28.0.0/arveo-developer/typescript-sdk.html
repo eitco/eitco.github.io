@@ -1004,12 +1004,12 @@ adds the type-specific fields:</p>
 <div class="listingblock">
 <div class="title">A typed document model interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">interface MyEitcoDocumentModelInterface extends EcrDocumentModelInterface {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">interface IMyEitcoDocumentModelInterface extends EcrDocumentModelInterface {
     custom_id?: string;
-    property1?: string;
-    property3?: string;
-    property4?: string;
-    property7?: string;
+    property1: string;
+    property3: string;
+    property4: string;
+    property7: string;
 }</code></pre>
 </div>
 </div>
@@ -1021,54 +1021,54 @@ type; the <code>definition</code> collects all attribute definitions (including 
 <div class="listingblock">
 <div class="title">A typed document data provider</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">class MyTypedDocumentProvider extends EcrDocumentDataProvider&lt;MyEitcoDocumentModelInterface&gt; {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">class MyTypedDocumentProvider extends EcrDocumentDataProvider&lt;IMyEitcoDocumentModelInterface&gt; {
     // define sourceDefinition
     public static sourceDefinition: DataProviderSourceDefinition = {
-        name: "document_a",
+        name: "document_t",
     };
 
     // define single attributes
-    public static custom_id: AdvancedDataProviderTypedAttributeDefinition = {
-        name: "id",
+    public static customId: IAdvancedDataProviderTypedAttributeDefinition = {
         dataType: new DataProviderAttributeLongDataType(),
-        sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
         interfaceMapKey: "custom_id",
-        mandatory: false,
-        readonly: true,
         isAttribute: false,
-    };
-    public static property1: AdvancedDataProviderTypedAttributeDefinition = {
-        name: "property1",
-        dataType: new DataProviderAttributeStringDataType(),
+        mandatory: false,
+        name: "id",
+        readonly: true,
         sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
+    };
+    public static property1: IAdvancedDataProviderTypedAttributeDefinition = {
+        dataType: new DataProviderAttributeStringDataType(),
         interfaceMapKey: "property1",
         isAttribute: true,
-    };
-    public static property3: AdvancedDataProviderTypedAttributeDefinition = {
-        name: "property3",
-        dataType: new DataProviderAttributeStringDataType(),
+        name: "property1",
         sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
+    };
+    public static property3: IAdvancedDataProviderTypedAttributeDefinition = {
+        dataType: new DataProviderAttributeStringDataType(),
         interfaceMapKey: "property3",
         isAttribute: true,
-    };
-    public static property4: AdvancedDataProviderTypedAttributeDefinition = {
-        name: "property4",
-        dataType: new DataProviderAttributeStringDataType(),
+        name: "property3",
         sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
+    };
+    public static property4: IAdvancedDataProviderTypedAttributeDefinition = {
+        dataType: new DataProviderAttributeStringDataType(),
         interfaceMapKey: "property4",
         isAttribute: true,
-    };
-    public static property7: AdvancedDataProviderTypedAttributeDefinition = {
-        name: "property7",
-        dataType: new DataProviderAttributeStringDataType(),
+        name: "property4",
         sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
+    };
+    public static property7: IAdvancedDataProviderTypedAttributeDefinition = {
+        dataType: new DataProviderAttributeStringDataType(),
         interfaceMapKey: "property7",
         isAttribute: true,
+        name: "property7",
+        sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
     };
 
     // collect attributes
     public static attributes = {
-        id: MyTypedDocumentProvider.custom_id,
+        id: MyTypedDocumentProvider.customId,
         property1: MyTypedDocumentProvider.property1,
         property3: MyTypedDocumentProvider.property3,
         property4: MyTypedDocumentProvider.property4,
@@ -1076,7 +1076,6 @@ type; the <code>definition</code> collects all attribute definitions (including 
     };
 
     public static definition: DataProviderTypedDefinition = {
-        sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
         allAttributeDefinitions: [
             ...Object.values(MyTypedDocumentProvider.attributes),
             ...Object.values(MyTypedDocumentProvider.systemFields),
@@ -1085,6 +1084,7 @@ type; the <code>definition</code> collects all attribute definitions (including 
             ...Object.values(MyTypedDocumentProvider.attributes),
             ...Object.values(MyTypedDocumentProvider.systemFields),
         ],
+        sourceDefinition: MyTypedDocumentProvider.sourceDefinition,
     };
 
     public constructor(http: AsdlHttpClient, serviceUrl: string) {
@@ -1094,7 +1094,7 @@ type; the <code>definition</code> collects all attribute definitions (including 
         );
     }
 
-    protected override mapToClientModel(serverModel: Document): MyEitcoDocumentModelInterface {
+    protected override mapToClientModel(serverModel: Document): IMyEitcoDocumentModelInterface {
         return super.mapToClientModel(serverModel);
     }
 }</code></pre>
@@ -1109,7 +1109,8 @@ system fields filled in):</p>
 <div class="listingblock">
 <div class="title">Creating a document through the data provider</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const item: MyEitcoDocumentModelInterface = {
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const contentString = "&lt;html&gt;&lt;head&gt;&lt;title&gt;THE TITLE&lt;/title&gt;&lt;/head&gt;&lt;body&gt;CUSTOM content&lt;/body&gt;&lt;/html&gt;";
+const item: IMyEitcoDocumentModelInterface = {
     property1: "prop1",
     property3: "prop3",
     property4: "prop4",
@@ -1117,14 +1118,13 @@ system fields filled in):</p>
     systemFields: {
         contentInformation: [
             {
+                data: new Blob([contentString]),
                 name: "test.pdf",
                 symbolicName: "content",
-                data: new Blob(["&lt;html&gt;&lt;head&gt;&lt;title&gt;THE TITLE&lt;/title&gt;&lt;/head&gt;&lt;body&gt;CUSTOM content&lt;/body&gt;&lt;/html&gt;"]),
             },
         ],
     },
 };
-
 dp.create(item)</code></pre>
 </div>
 </div>
@@ -1137,7 +1137,8 @@ optionally combined with paging (<code>DataProviderRequestPage</code>) and sorti
 <div class="listingblock">
 <div class="title">Searching through the data provider</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const expression = DataProviderPredicateBuilder.fromAttributeDefinition(MyTypedDocumentProvider.property1, DataProviderExpressionOperator.EQUALS, searchTargetValue);
+<pre class="highlightjs highlight"><code class="language-typescript hljs" data-lang="typescript">const expression = DataProviderPredicateBuilder.fromAttributeDefinition(
+    MyTypedDocumentProvider.property1, DataProviderExpressionOperator.EQUALS, searchTargetValue);
 return dp.search(
     null,
     expression,
