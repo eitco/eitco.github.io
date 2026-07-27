@@ -485,10 +485,47 @@ EQL query language.</p>
 <p>The low-level HTTP plumbing — the <code>HttpExecutor</code> type used throughout — comes from the <code>Eitco.Asdl.Runtime</code>
 package, which is referenced as a dependency of the SDK.</p>
 </div>
+<div class="sect2">
+<h3 id="reaching-the-low-level-layer"><a class="anchor" href="#reaching-the-low-level-layer"></a>Reaching the low-level layer</h3>
+<div class="paragraph">
+<p>The convenience layer does not wrap every operation the REST API offers. So that this never becomes a dead end,
+every service client and every entity client exposes the generated resource client it delegates to through its
+<code>LowLevelClient</code> property, and the <code>HttpExecutor</code> it was built from through its <code>Executor</code> property. Both are also
+available on the <code>EcrClient</code> itself.</p>
+</div>
+<div class="paragraph">
+<p><code>LowLevelClient</code> is typed to the resource that matches the client — <code>DocumentResource</code> for the document clients,
+<code>ContainerDataResource</code> for the container clients, and so on. It is the shortest route to an operation of that same
+resource that the convenience layer does not expose, such as a ranged content download:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentClient document = documents.Get(id);
+
+// partial download — ReadContentRanged is only available on the generated resource client
+Stream? firstKilobyte = document.LowLevelClient.ReadContentRanged(
+    document.TypeDefinition, document.Identifier, "content", "bytes=0-1023");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the low-level operations take the type definition and the identifier explicitly, because the resource
+client is not bound to an entity — both are available as properties on the client you started from.</p>
+</div>
+<div class="paragraph">
+<p><code>Executor</code> goes one step further and reaches resources that have no convenience-layer counterpart at all, for
+example the structure resources that manage relations, or <code>SearchResource</code> and <code>SystemManagementResource</code>. It
+carries the same base URL and bearer token, so no separate authentication is needed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentStructureResource structure = new DocumentStructureResource.Implementation(ecr.Executor);</code></pre>
+</div>
+</div>
 <div class="listingblock">
 <div class="title">NuGet package reference of the C# SDK</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;PackageReference Include="Eitco.Ecr.Sdk" Version="28.0.0-SNAPSHOT" /&gt;</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -969,9 +1006,45 @@ name:</p>
 </div>
 </div>
 <div class="paragraph">
+<p><code>ReadContent</code> returns a <code>Stream?</code> that should be disposed once it has been consumed — a <code>using</code> declaration, as in
+the example above, is the idiomatic way to do so.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rendition-aware-downloads"><a class="anchor" href="#rendition-aware-downloads"></a>Rendition-aware downloads</h3>
+<div class="paragraph">
+<p><code>ReadContentAs</code> requests a content element in a specific content type. The service first checks whether the stored
+content already matches the requested type; if it does, the original content is returned unchanged. If it does not,
+the service looks for a rendition of that content element with the requested type and returns it instead, creating
+it on the fly when necessary. If no such rendition is configured for the content element, the request fails with a
+<code>RenditionUnavailableException</code>.</p>
+</div>
+<div class="paragraph">
+<p>This is what makes it possible to request a PDF for a document whose content element holds a JPEG, provided the
+type definition declares a matching rendition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">using Stream? renditionOfDocument = current.ReadContentAs("original", "application/pdf"); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The content element <code>original</code> holds a JPEG; because the type definition declares a PDF rendition for it, the
+returned stream is a PDF.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The content type is passed as a plain <code>string</code> — the C# SDK has no <code>MediaType</code> abstraction, so the value is sent
+as-is in the <code>Accept</code> header.</p>
+</div>
+<div class="paragraph">
 <p>The <code>DocumentClient</code> and <code>DocumentServiceClient</code> build on the generated <code>DocumentResource</code>, which provides a rich
-set of further operations, including ranged and rendition-aware content downloads (<code>ReadContentRanged</code>,
-<code>ReadContentAs</code>, <code>ReadThumbnail</code>), version handling and folder placement.</p>
+set of further operations, including ranged content downloads (<code>ReadContentRanged</code>), thumbnails (<code>ReadThumbnail</code>),
+version handling and folder placement.</p>
 </div>
 </div>
 </div>
@@ -999,9 +1072,128 @@ ContainerVersionClient version = container.GetVersion(someVersionId);</code></pr
 </div>
 </div>
 <div class="paragraph">
+<p>A version client is read-only: it exposes the entity as it looked in that version through its <code>Entity</code> property and
+the version metadata through <code>VersionInformation</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="reading_the_content_of_a_document_version"><a class="anchor" href="#reading_the_content_of_a_document_version"></a>Reading the content of a document version</h3>
+<div class="paragraph">
+<p><code>DocumentVersionClient</code> additionally offers the same two content operations as the <code>DocumentClient</code>, but bound to
+one specific version instead of the current one. This is how the content of a superseded version is retrieved after
+the document has been updated.</p>
+</div>
+<div class="paragraph">
+<p>Updating a document with new content creates a new version, so the previous content stays retrievable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentClient current = created.Update(new DocumentInput
+{
+    Content = new Dictionary&lt;string, ContentUpload&gt;
+    {
+        ["original"] = new()
+        {
+            Filename = "bob.dalton.captured.jpg",
+            Data = new MemoryStream(secondContent)
+        }
+    }
+}); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>Update</code> creates a new version. <code>Overwrite</code> would replace the content in place without creating one — it is
+only permitted when the type definition allows overwriting.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The version history is listed with <code>GetVersions</code>, which returns a <code>Page</code> ordered by ascending version number, the
+current version last:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">Page&lt;DocumentVersionClient&gt; versions = current.GetVersions(); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The first page of versions; <code>GetVersions(pageSize, offset)</code> pages through longer histories.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentVersionClient firstVersion = versions.Result[0]!; <i class="conum" data-value="1"></i><b>(1)</b>
+DocumentVersionClient currentVersion = versions.Result[1]!;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The oldest version — the one created by the initial upload — followed by the current one.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>ReadContent</code> then streams the content that this particular version holds:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">using Stream? contentOfFirstVersion = firstVersion.ReadContent("original"); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Returns the content of the first version, that is the payload uploaded before the update above.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>ReadContentAs</code> works exactly like its counterpart on the <code>DocumentClient</code> (see
+<a href="#rendition-aware-downloads">Rendition-aware downloads</a>), but resolves the rendition for the bound version:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">using Stream? renditionOfVersion = currentVersion.ReadContentAs("original", "application/pdf"); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The PDF rendition of the content element of that specific version.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A version client can also be obtained directly from a <code>VersionId</code>, without listing the history first:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csharp hljs" data-lang="csharp">DocumentVersionClient byVersionId = current.GetVersion(firstVersion.VersionInformation.VersionId); <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>GetVersion</code> is available on both the <code>DocumentClient</code> and the <code>DocumentServiceClient</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
 <p>Meta entities (<code>MetaDataServiceClient</code> / <code>MetaEntityClient</code>) are the exception: they are identified by a composite
 primary key (<code>MetaDataId</code>), are not versioned and cannot be overwritten, so they implement only the non-versioned
 <code>IEntityServiceClient&lt;…&gt;</code> / <code>IEntityClient&lt;…&gt;</code> contracts.</p>
+</div>
 </div>
 </div>
 </div>
