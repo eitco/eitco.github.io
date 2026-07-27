@@ -2000,6 +2000,220 @@ element names.</p>
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_annotationpreprocessor">AnnotationPreprocessor</h5>
+<div class="paragraph">
+<p>Saperion content elements can carry annotations. All <code>SaperionRevisionMapper</code> implementations – both the configurable
+generic mappers and custom mappers extending <code>AbstractGenericSaperionRevisionMapper</code> or
+<code>AbstractTypedSaperionRevisionMapper</code> – automatically convert these Saperion annotations into the matching <em>arveo</em>
+<code>AnnotationInput</code> objects while importing the content. The following annotation types are converted:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Saperion annotation</th>
+<th class="tableblock halign-left valign-top"><em>arveo</em> input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ImageAnnotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>StampInput</code> (image)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TextAnnotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>StickyNoteInput</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HighLightAnnotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MarkupInput</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ArrowAnnotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ArrowInput</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LineAnnotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>LineInput</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>StampAnnotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>StampInput</code> (image or text)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BlackMarkerAnnotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">– (not imported by default)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>By default, the following annotations are skipped during conversion:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>`BlackMarkerAnnotation`s (redactions), because <em>arveo</em> does not support the required access control mechanisms.</p>
+</li>
+<li>
+<p>Any annotation whose position is not a physical position. Saperion positions that were not resolved to a
+<code>PhysicalPosition</code> during export cannot be mapped and are dropped (check the exporter configuration).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The conversion can be customized by providing an <code>AnnotationPreprocessor</code> Spring Bean. Like the other plugin interfaces,
+an <code>AnnotationPreprocessor</code> is selected by route ID through its <code>usedForRoute</code> method: the first registered bean whose
+<code>usedForRoute</code> returns <code>true</code> for the current route is used. If no bean matches the route, a <code>NoOpAnnotationPreprocessor</code>
+is used, which imports the converted annotations unchanged (black markers still being skipped).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> <span class="type">boolean</span> usedForRoute(<span class="annotation">@NotNull</span> <span class="predefined-type">String</span> routeId) {
+    <span class="keyword">return</span> <span class="predefined-constant">true</span>; <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use this preprocessor for every route</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Besides <code>usedForRoute</code>, the interface declares one overloaded <code>preprocess</code> method per Saperion annotation type. Each
+method receives the original Saperion annotation and, where a default conversion exists, the already-converted <em>arveo</em>
+annotation. An implementation can:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>return the (possibly modified) <em>arveo</em> annotation to import it,</p>
+</li>
+<li>
+<p>return a completely new <code>AnnotationInput</code> to replace the converted annotation, or</p>
+</li>
+<li>
+<p>return <code>null</code> to skip the annotation entirely.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following examples are taken from the <code>TestAnnotationPreprocessor</code> in the <code>universal-import-test-plugins</code> module.</p>
+</div>
+<div class="paragraph">
+<p>Keeping a converted annotation unchanged simply returns the provided <em>arveo</em> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> <span class="annotation">@Nullable</span> AnnotationInput preprocess(
+    <span class="annotation">@NotNull</span> ImageAnnotation saperionAnnotation,
+    <span class="annotation">@NotNull</span> StampInput arveoAnnotation
+) {
+    <span class="keyword">return</span> arveoAnnotation; <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Import the converted annotation as-is</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Replacing the converted annotation with a new <code>AnnotationInput</code> gives full control over the imported result:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> <span class="annotation">@Nullable</span> AnnotationInput preprocess(
+    <span class="annotation">@NotNull</span> TextAnnotation saperionAnnotation,
+    <span class="annotation">@NotNull</span> StickyNoteInput arveoAnnotation
+) {
+    <span class="keyword">return</span> <span class="keyword">new</span> StickyNoteInput( <i class="conum" data-value="1"></i><b>(1)</b>
+        arveoAnnotation.getId(),
+        arveoAnnotation.getPosition(),
+        <span class="keyword">new</span> Text(
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">Text changed by plugin</span><span class="delimiter">&quot;</span></span>,
+            arveoAnnotation.getText().font(),
+            arveoAnnotation.getText().color(),
+            arveoAnnotation.getText().sizePx(),
+            arveoAnnotation.getText().alignment(),
+            arveoAnnotation.getText().italic(),
+            arveoAnnotation.getText().bold()
+        ),
+        arveoAnnotation.getColor(),
+        arveoAnnotation.getBorder(),
+        arveoAnnotation.getCustomProperties()
+    );
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Create a new <code>StickyNoteInput</code> based on the converted annotation</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Returning <code>null</code> drops the annotation. <code>BlackMarkerAnnotation`s have no default conversion and are passed to the
+preprocessor without an <em>arveo</em> annotation; returning `null</code> keeps the default behavior of not importing them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> <span class="annotation">@Nullable</span> AnnotationInput preprocess(
+    <span class="annotation">@NotNull</span> BlackMarkerAnnotation saperionAnnotation
+) {
+    <span class="keyword">return</span> <span class="predefined-constant">null</span>; <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Do not import the black-marker annotation</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+BlackMarker-annotations represent redactions. Because <em>arveo</em> cannot enforce the corresponding access control, importing
+them (by returning a non-<code>null</code> <code>AnnotationInput</code>) may expose content that was intended to be hidden. Consider the
+security implications carefully before doing so.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The bean is registered like any other plugin, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Bean</span>
+<span class="directive">public</span> AnnotationPreprocessor annotationPreprocessor() {
+    <span class="keyword">return</span> <span class="keyword">new</span> TestAnnotationPreprocessor();
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_custom_mapper_implementations">Custom mapper implementations</h4>
@@ -3052,7 +3266,7 @@ UserId userId = userIdServiceClient.getIdByExternalId(externalUserId);</code></p
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-26 22:21:11 UTC
+Last updated 2026-07-27 09:06:17 UTC
 </div>
 </div>
 <style>
