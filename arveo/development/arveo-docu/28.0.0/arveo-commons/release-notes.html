@@ -414,7 +414,7 @@
 <article class="doc">
 <h1 class="page">Release Notes</h1>
 <div class="sect1">
-<h2 id="release_notes_28_0_0_snapshot_july_30_2026"><a class="anchor" href="#release_notes_28_0_0_snapshot_july_30_2026"></a>Release notes 28.0.0-SNAPSHOT (July 30, 2026)</h2>
+<h2 id="release_notes_28_0_0_snapshot_july_31_2026"><a class="anchor" href="#release_notes_28_0_0_snapshot_july_31_2026"></a>Release notes 28.0.0-SNAPSHOT (July 31, 2026)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
@@ -455,6 +455,9 @@ Also, the Rendition annotation is now repeatable to make it possible to define m
 <li>
 <p>ECR-1848: A new C# SDK was added that replicates the structure and features of the generic Java SDK.</p>
 </li>
+<li>
+<p>ECR-1881: A precision setting was added to the <code>TimeDataType</code> (seconds or milliseconds). The default is seconds. Use <code>@TimePrecision</code> annotation to select the precision.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -476,6 +479,9 @@ Also, the Rendition annotation is now repeatable to make it possible to define m
 </li>
 <li>
 <p>ECR-1777: The way services perform calls on behalf of a human user was changed. It now uses the OAuth2 standard token exchange mechanism.</p>
+</li>
+<li>
+<p>ECR-1827: Update to Spring Boot 4.1.0.</p>
 </li>
 <li>
 <p>ECR-1876: Content stored in temporary files is now encrypted by default</p>
@@ -544,6 +550,11 @@ to fix this.</p>
 <ul>
 <li>
 <p>ECR-1791: Annotations now use double instead of int for position and width values to avoid rounding errors.</p>
+</li>
+<li>
+<p>ECR-1855: Added nullability annotations to EQL classes in Java. This has interface-breaking consequences for the generated sources
+for C# and TypeScript, as non-null values for most members are now enforced. For example, the <code>queryExtensions</code> member of
+<code>SearchRequest</code> must not be null from now on.</p>
 </li>
 </ul>
 </div>
