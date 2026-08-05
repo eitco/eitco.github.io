@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>ecr ILM extension 2.0.0</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">ecr-ilm Service 2.0.0</div>
+<ul class="sectlevel1">
+<li><a href="#_ecr_ilm_extension_2_0_0"><strong>ecr ILM extension 2.0.0</strong></a></li>
+<li><a href="#_using_the_ilm_extension"><strong>Using the ILM Extension</strong></a></li>
+<li><a href="#_type_definitions"><strong>Type definitions</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_setup_and_registration">Setup and registration</a></li>
+<li><a href="#_defining_types">Defining Types</a></li>
+</ul>
+</li>
+<li><a href="#_defining_the_service"><strong>Defining the service</strong></a></li>
+<li><a href="#_adapting_your_ecr_package"><strong>Adapting your ecr package</strong></a></li>
+<li><a href="#_tl_dr"><em>TL; DR</em></a></li>
+<li><a href="#_project_structure"><strong>Project Structure</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_building_the_project">Building the project</a></li>
+<li><a href="#_running_the_example_environment">Running the example environment</a></li>
+<li><a href="#_debugging">Debugging</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_ecr_ilm_extension_2_0_0"><strong>ecr ILM extension 2.0.0</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>ecr-ilm</code> project provides an Information Lifecycle Management (ILM) extension for the <em>arveo</em> Content Repository. It allows managing the lifecycle of documents, specifically those linked via SAP ArchiveLink.</p>
+</div>
+<div class="paragraph">
+<p>Since ILM is specified on top of WebDAV, a lot of this documentation repeats the documentation of the <a href="https://eitco.github.io/ecr-webdav-extension/development/index.html"><em>arveo</em> WebDAV extension</a>.</p>
+</div>
+<div class="paragraph">
+<p>The project is structured into two main parts:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>The ILM extension</strong>: Located in the <code>extension</code> submodule, this contains the core logic and reusable components for ILM. Those modules can be used to add ILM functionality to your <em>arveo</em>-based project.</p>
+</li>
+<li>
+<p><strong>The example implementation</strong>: The rest of the project (backend, frontend, packaging) serves as an example of how to use and integrate the extension to your project.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_the_ilm_extension"><strong>Using the ILM Extension</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The ILM extension provides specialized annotations and base interfaces to manage document retention and legal holds.
+To use this extension, either adapt your existing <em>arveo</em>-based service or create a new <em>arveo</em>-based service with the archetype.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_type_definitions"><strong>Type definitions</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_setup_and_registration">Setup and registration</h3>
+<div class="paragraph">
+<p>The <code>extension/type-definitions</code> module contains the core components for defining ILM-enabled types.</p>
+</div>
+<div class="sect4">
+<h5 id="_adding_the_dependency">Adding the dependency</h5>
+<div class="paragraph">
+<p>To use the ILM type definitions and the annotation processor in your project, add the following dependency and annotation processor path to the <code>pom.xml</code> of your type definitions module:</p>
+</div>
+<div id="dependency-types" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;de.eitco.ecr.ilm&lt;/groupId&gt;
+            &lt;artifactId&gt;ecr-ilm-extension-type-definitions&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        ...
+    &lt;/dependencies&gt;
+
+    ...
+    &lt;build&gt;
+        &lt;plugins&gt;
+            ...
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;annotationProcessorPaths&gt;
+                        &lt;path&gt;
+                            &lt;groupId&gt;de.eitco.ecr&lt;/groupId&gt;
+                            &lt;artifactId&gt;ecr-type-definition-processor&lt;/artifactId&gt;
+                        &lt;/path&gt;
+                        &lt;path&gt;
+                            &lt;groupId&gt;de.eitco.ecr.ilm&lt;/groupId&gt;
+                            &lt;artifactId&gt;ecr-ilm-extension-type-definitions&lt;/artifactId&gt;
+                            &lt;version&gt;2.0.0&lt;/version&gt;
+                        &lt;/path&gt;
+                    &lt;/annotationProcessorPaths&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_type_registration">Type registration</h5>
+<div class="paragraph">
+<p>To make your type definitions available to the arveo Content Repository, you need to register them. The ILM extension provides the <code>de.eitco.ecr.ilm.IlmTypeRegistration</code> interface for this purpose.</p>
+</div>
+<div class="paragraph">
+<p>In your project, you should create an <code>@AutoConfiguration</code> class that implements <code>IlmTypeRegistration</code> and uses the <code>@Register</code> annotation to list your ILM-enabled types. If you already have a type registration class you may as wall adapt the existing class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@AutoConfiguration
+@Register(MyArchiveLinkDocument.class)
+@Register(MyArchiveLinkComponent.class)
+@Register(MyIlmContent.class)
+@Register(MyIlmProtoContent.class) <i class="conum" data-value="1"></i><b>(1)</b>
+@AutoConfigureBefore(IlmTypeRegistration.DefaultIlmTypeRegistrationAutoConfiguration.class)
+public class ArchiveLinkDocumentArchiveLinkComponentTypeRegistration implements IlmTypeRegistration { //⚠️  <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Register your types as before. In this example those are <code>MyArchiveLinkDocument</code>, <code>MyArchiveLinkComponent</code>, <code>MyIlmContent</code> and <code>MyIlmProtoContent</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Make your Registration implement <code>IlmTypeRegistration</code>, this enables ilm functionality.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_details_of_ilmtyperegistration">Details of IlmTypeRegistration</h5>
+<div class="paragraph">
+<p><code>IlmTypeRegistration</code> extends <code>DavTypeRegistration</code> and provides several key features:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@PreSchemaInitialization("classpath:liquibase/ilm-liquibase.xml") <i class="conum" data-value="1"></i><b>(1)</b>
+public interface IlmTypeRegistration extends DavTypeRegistration {
+
+    @Override
+    default Class&lt;?&gt;[] getRegisteredClasses() { <i class="conum" data-value="2"></i><b>(2)</b>
+
+        // ...
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><strong>Schema Initialization</strong>: It triggers the execution of ILM-specific Liquibase scripts via the <code>@PreSchemaInitialization</code> annotation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>It overwrites <code>getRegisteredClasses</code> for two porpoises
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Automatic Reference Discovery</strong>: It automatically discovers and registers all generated ArchiveLink reference types. The annotation processor generates a file named <code>archive-link-reference-types.txt</code> containing the names of all generated types, which is then read by the registration at runtime.</p>
+</li>
+<li>
+<p><strong>Base Type Registration</strong>: It ensures that at least one of each <code>IlmCollection</code> and <code>IlmContent</code> are correctly registered in the system.</p>
+</li>
+</ul>
+</div></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_types">Defining Types</h3>
+<div class="paragraph">
+<p>The ILM extension provides specialized annotations and base interfaces to manage document retention and legal holds.</p>
+</div>
+<div class="sect4">
+<h5 id="_base_interfaces">Base interfaces</h5>
+<div class="paragraph">
+<p>The extension provides several base interfaces that your type definitions should extend to gain ILM functionality:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>IlmResource</code>: The base interface for all ILM-enabled resources. It defines properties for retention dates, legal holds, and various SAP-specific fields (using the <code><a href="http://www.sap.com/ILM/" class="bare">http://www.sap.com/ILM/</a></code> namespace).</p>
+</li>
+<li>
+<p><code>IlmContent</code>: Extends <code>IlmResource</code> and <code>DavContent</code>, used for ILM-enabled document content.</p>
+</li>
+<li>
+<p><code>IlmCollection</code>: Extends <code>IlmResource</code> and <code>DavCollection</code>, used for ILM-enabled folders/collections.</p>
+</li>
+</ul>
+</div>
+<div class="sect5">
+<h6 id="_defining_a_simple_ilm_content">Defining a simple ILM Content</h6>
+<div class="paragraph">
+<p>Beside ArchiveLink, the extension can also be used for any other content that requires ILM functionality. To do so, your type definition should extend <code>IlmContent</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ShortName("ecr:ilm:example:content")
+public interface MyIlmContent extends IlmContent {
+
+
+    @Mandatory
+    @NotNull
+    @XmlName(namespace = "http://eitco.de/ecr/ilm/example")
+    String getSession();
+    void setSession(@NotNull String session);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example, <code>MyIlmContent</code> extends <code>IlmContent</code>, which provides it with all the necessary ILM properties (retention date, legal hold, etc.). It also adds a custom <code>session</code> property.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_adding_ilm_functionality_to_custom_arveo_types">Adding ILM functionality to custom <em>arveo</em> types</h5>
+<div class="paragraph">
+<p>To add ILM functionality to your custom arveo types, they must extend one of the base interfaces:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For document types (which have content), extend <code>IlmContent</code>.</p>
+</li>
+<li>
+<p>For collection/folder types, extend <code>IlmCollection</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By extending these interfaces, your types will automatically inherit the properties required for ILM, such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>retentionDate</code> (from <code>EntityWithIlmRetention</code>)</p>
+</li>
+<li>
+<p><code>deletionProtected</code> (from <code>EntityWithIlmRetention</code>)</p>
+</li>
+<li>
+<p><code>litigationHold</code> (from <code>EntityWithLitigationManagement</code>)</p>
+</li>
+<li>
+<p>SAP ILM specific properties like <code>startOfRetention</code>, <code>compulsoryDestructionDate</code>, <code>origin</code>, etc. (from <code>IlmResource</code>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_type_transition">Type transition</h5>
+<div class="paragraph">
+<p>Type transition is the automatic change of resource types during updates based on its properties. This is necessary since ilm is defined on top of webdav, where objects are created by <code>PUT</code> or <code>MKCOL</code> requests where no meta-data can be specified. If your project defines several arveo types to be accessible by ilm, you need to define how they can be recognized by their meta-data. To do so, implement one or more type transition rules.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="proto-resources">Object creation and proto resources</h5>
+<div class="paragraph">
+<p>When a new object is created by ilm, it is either a collection resource or content resource (depending on whether it is created by <code>PUT</code> or <code>MKCOL</code>). In that state it will be typed with the according proto resource type.</p>
+</div>
+<div class="paragraph">
+<p>If you have several ilm collection resource types or ilm content resource types in your project, you need to specify whose are your proto content and proto collection resource. Your proto resources may not have any mandatory fields that do not have default values, since those fields cannot be set in the creation calls. To specify an ilm resource type as proto resource, annotate it with <code>de.eitco.ecr.dav.extensions.type.definitions.ProtoDavResource</code> as the example class <code>de.eitco.ecr.ilm.types.MyIlmProtoContent</code> does:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ShortName("ecr:ilm:example:proto-content")
+@ProtoDavResource
+public interface MyIlmProtoContent extends IlmContent {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you only have one ilm collection resource or one ilm content resource you do not need to specify it explicitly as proto resource. Note that it will be assumed to be a proto resource automatically and thus may not have mandatory properties without default values.</p>
+</div>
+<div class="sect5">
+<h6 id="type-transition-rule">Implementing a Type transition rule</h6>
+<div class="paragraph">
+<p>If you have several ilm content or ilm collection resources you need to implement the interface <code>de.eitco.ecr.dav.extensions.type.definitions.TypeTransitionRule</code> to determine the correct type given an objects properties.</p>
+</div>
+<div class="paragraph">
+<p>To implement a type transition rule, create a class that implements the <code>TypeTransitionRule</code> interface and register it as a Spring <code>@Component</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TypeTransitionRule {
+    @NotNull Optional&lt;TypeTransitionDescription&lt;?&gt;&gt; needsTransition(
+            @NotNull Class&lt;? extends MandatoryDavProperties&gt; type,
+            @NotNull TypeTransitionCriterion transitionCriterion
+    );
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>needsTransition</code> method should:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Inspect the current properties and the type of the resource.</p>
+</li>
+<li>
+<p>Determine if a transition is necessary.</p>
+</li>
+<li>
+<p>If so, return a <code>TypeTransitionDescription</code> specifying the target type and any additional properties or operations (like creating child components) required for the transition.</p>
+</li>
+<li>
+<p>If the rule determines that the type should not change return a <code>TypeTransitionDescription</code> to the current type</p>
+</li>
+<li>
+<p>If the rule is indifferent on whether a change should occur, return <code>Optional.empty()</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Type transition rules are applied in their spring inversion of control container order.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_the_fallback_type_transition">The fallback type transition</h5>
+<div class="paragraph">
+<p>There is a fallback type transition rule. It will only be applied to the proto resources. However, if - on a proto resource - properties are updated so that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>exactly the properties of another type are given, or</p>
+</li>
+<li>
+<p>all properties of another type are given, or</p>
+</li>
+<li>
+<p>at least all mandatory properties of another type are given</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>and the other type is of the same resource type as the proto resource (i.e. collection or content), the entity will be transformed to the other type.</p>
+</div>
+<div class="paragraph">
+<p>The order of the fallback type transition rule is <code>Ordered.LOWEST_PRECEDENCE / 2</code> thus it should come last, however, you can still implement a fallback rule for this rule.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_archivelinkreferencetransitionrule">Example: ArchiveLinkReferenceTransitionRule</h6>
+<div class="paragraph">
+<p>The <code>ArchiveLinkReferenceTransitionRule</code> class in the <code>extension/backend</code> module is a prime example. It checks if a newly created or updated document:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Is an instance of <code>IlmContent</code>.</p>
+</li>
+<li>
+<p>Contains <code>al_crep_id</code> and <code>al_doc_id</code> in its properties.</p>
+</li>
+<li>
+<p>Has zero content length.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If these criteria are met, it transitions the document to the appropriate <code>ArchiveLinkReference</code> type and automatically creates the corresponding <code>ArchiveLinkComponentReference</code> objects.</p>
+</div>
+<div class="paragraph">
+<p>This is actually ilm specification conformant behavior.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_ilm_and_archive_link">ILM and Archive Link</h5>
+<div class="paragraph">
+<p>Ilm specifies archive link references. An ilm archive link reference is an ilm content resource with</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>zero content length</p>
+</li>
+<li>
+<p>that has the properties <code>al_crep_id</code> and <code>al_doc_id</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If this is the case, the <code>al_doc_id</code> holds the id of the referenced archive link document. Any <code>expiration_date</code> and <code>legal_hold</code> properties of the reference need to be applied to referenced archive link document and its components.</p>
+</div>
+<div class="paragraph">
+<p>This arveo ilm extension takes care of this. Still, you need to specify which of your types are archive link types. This is done with the <code>de.eitco.ecr.ilm.ArchiveLinkType</code> annotation. This annotation marks arveo type definitions as SAP ArchiveLink entities. Mark your archive link document types and archive link component types and the extension will apply the retention constraints.</p>
+</div>
+<div class="sect5">
+<h6 id="_defining_archive_link_types">Defining Archive Link Types</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Model
+@ShortName("ecr:ilm:example:al-document")
+@ArchiveLinkType <i class="conum" data-value="1"></i><b>(1)</b>
+public interface MyArchiveLinkDocument extends ArchiveLinkDocument { <i class="conum" data-value="2"></i><b>(2)</b>
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To specify an archive link document:</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>mark the class with <code>@ArchiveLinkType</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>extend from the interface <code>de.eitco.archive.link.ecrtypedef.ArchiveLinkDocument</code></td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Model
+@ShortName("ecr:ilm:example:al-component")
+@ArchiveLinkType <i class="conum" data-value="1"></i><b>(1)</b>
+public interface MyArchiveLinkComponent extends ArchiveLinkComponent { <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @TargetType(MyArchiveLinkDocument.class) <i class="conum" data-value="3"></i><b>(3)</b>
+    @Override
+    String getDocId();
+
+    @TargetType(MyArchiveLinkDocument.class) <i class="conum" data-value="3"></i><b>(3)</b>
+    @Override
+    String getRepositoryId();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To specify an archive link component:</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>mark the class with <code>@ArchiveLinkType</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>extend from the interface <code>de.eitco.archive.link.ecrtypedef.ArchiveLinkComponent</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>specify archive link document type this component belongs to.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_implementation_details">Implementation details</h6>
+<div class="paragraph">
+<p>Marking types with the <code>@ArchiveLinkType</code> annotation triggers the <code>ArchiveLinkReferenceTypeFactoryAnnotationProcessor</code>, which automatically generates corresponding reference types. It must be applied manually to each type as inheritance does not trigger the processor.</p>
+</div>
+<div class="paragraph">
+<p>When a type is annotated with <code>@ArchiveLinkType</code>, the annotation processor generates a reference type (by default with the suffix <code>ArchiveLinkReference</code>). These generated types are used to maintain the relationship between the ILM entities and the arveo Content Repository.</p>
+</div>
+<div class="paragraph">
+<p>For example, if you define <code>MyArchiveLinkDocument</code>, the processor will generate <code>MyArchiveLinkDocumentArchiveLinkReference</code>.</p>
+</div>
+<div class="paragraph">
+<p>Your type <code>TypeDefinitionRegistration</code> class - inheriting from <code>IlmTypeRegistration</code> - will register those generated classes automatically. There are two types of archive link reference types:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>document Archive Link references <code>de.eitco.ecr.ilm.IlmArchiveLinkReference</code></p>
+</li>
+<li>
+<p>component Archive Link references <code>de.eitco.ecr.ilm.IlmArchiveLinkComponentReference</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The document Archive Link reference is an ILM type and thus may have ilm managed retention properties (<code>expiration_date</code> and <code>legal_hold</code>) which is translated to arveo retention properties as for any other ilm resource. It also references its corresponding archive link document with a foreign key configured to cascade on delete. If a request tries to delete the Archive Link document, this would try to delete the Archive Link document reference, which will fail if this violates its retention constraints, thus failing the transaction with a retention violation exception.</p>
+</div>
+<div class="paragraph">
+<p>The component Archive Link reference builds on top of that: It holds a foreign key to the archive link reference that references the Archive Link document its referenced Archive Link component belongs to. This foreign key has two purposes:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>It is configured to cascade on delete, thus deleting the references as soon as the archive link document reference is deleted</p>
+</li>
+<li>
+<p>It is used to inherit the retention properties so that the reference is always in the same retention state as the archive link document reference</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Additionally, the Archive Link component reference has a foreign key to an Archive Link component. This foreign key is also configured as cascade delete, using the same technique as Archive Link document references to deny delete requests to the referenced Archive Link component, if the Archive Link component reference is under retention or litigation hold.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_defining_the_service"><strong>Defining the service</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To expose the ILM aAPI in your <em>arveo</em>-based service add the following dependency to your service module:</p>
+</div>
+<div id="dependency-service" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">        &lt;dependency&gt;
+            &lt;groupId&gt;de.eitco.ecr.ilm&lt;/groupId&gt;
+            &lt;artifactId&gt;ecr-ilm-extension-backend&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will register the <code>de.eitco.ecr.dav.extensions.backend.http.WebDavController</code> in your service. It provides a full WebDAV API, and
+with this extension this api will be fully ILM compatible.</p>
+</div>
+<div class="paragraph">
+<p>By default, the endpoint will be provided at <code>/dav/</code>, this can be changed with the <code>ecr-webdav-extension.base-path</code> property.</p>
+</div>
+<div class="paragraph">
+<p>Adapt your default security configuration accordingly:</p>
+</div>
+<div id="configuration-service" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">security:
+  general:
+    secured-ant-matchers: "/api/**,/dav/**" <i class="conum" data-value="1"></i><b>(1)</b>
+    open-ant-matchers: "/actuator/**,/api/info,/webjars/swagger-ui/**,/public/**,/*,/assets/**"
+    role-for-secured-access: ""
+    cors-configuration:
+      allowed-origins: "*"
+      allowed-headers: "*"
+      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE" <i class="conum" data-value="2"></i><b>(2)</b>
+      max-age: 3600</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>secure access to your webdav/ilm endpoint</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>allow the webdav custom http methods</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This will add basic auth authentication to your service, since this is a requirement for ILM.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_adapting_your_ecr_package"><strong>Adapting your ecr package</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For full ilm support, you also need to adapt your ecr packaging module. This assures the events needed for WebDAV and ILM conformance are registered.</p>
+</div>
+<div class="paragraph">
+<p>In the pom of your <code>packaging/content-repository-service</code> add the following dependency:</p>
+</div>
+<div id="dependency-ecr" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">        &lt;dependency&gt;
+            &lt;groupId&gt;de.eitco.ecr.ilm&lt;/groupId&gt;
+            &lt;artifactId&gt;ecr-ilm-extension-backend-ecr&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tl_dr"><em>TL; DR</em></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>add dependencies to your project</p>
+<div class="ulist">
+<ul>
+<li>
+<p>add <a href="#dependency-types"><code>de.eitco.ecr.ilm:ecr-ilm-extension-type-definitions:2.0.0</code></a> to your <code>backend/type-definitions</code> module</p>
+<div class="ulist">
+<ul>
+<li>
+<p>also activate the annotation processor in <a href="#dependency-types"><code>de.eitco.ecr.ilm:ecr-ilm-extension-type-definitions:2.0.0</code></a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>add <a href="#dependency-service"><code>de.eitco.ecr.ilm:ecr-ilm-extension-backend:2.0.0</code></a> to your <code>packaging/service</code> module</p>
+<div class="ulist">
+<ul>
+<li>
+<p>adapt its <a href="#configuration-service">security configuration</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>add <a href="#dependency-ecr"><code>de.eitco.ecr.ilm:ecr-ilm-extension-backend-ecr:2.0.0</code></a> to your <code>packaging/content-repository-service</code> module</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>adapt your type definitions</p>
+<div class="ulist">
+<ul>
+<li>
+<p>make your type definition registry implement <code>IlmTypeRegistration</code></p>
+</li>
+<li>
+<p>make the document types you want to be accessible by ilm extend <code>IlmContent</code></p>
+</li>
+<li>
+<p>if you have custom archive link types:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>annotate those with <code>@ArchiveLinkType</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>do this for archive link components as well as archive link documents</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>if you are using the default archive link types</p>
+<div class="ulist">
+<ul>
+<li>
+<p>register the default archive link reference types <code>IlmArchiveLinkReference</code> and <code>IlmArchiveLinkComponentReference</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>if you have several ilm accessible document types you need to</p>
+<div class="ulist">
+<ul>
+<li>
+<p>specify a <a href="#proto-resources">proto content type</a></p>
+</li>
+<li>
+<p>provide <a href="#type-transition-rule">transition rules</a> to recognize a type by its properties</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_project_structure"><strong>Project Structure</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project follows a modular structure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>extension/</code>: Contains the core ILM logic.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>extension/api/</code>: API definitions for the ILM extension.</p>
+</li>
+<li>
+<p><code>extension/backend/</code>: Backend implementation of the ILM logic, including retention and legal hold property handlers.</p>
+</li>
+<li>
+<p><code>extension/type-definitions/</code>: Annotations and processors for defining ILM-enabled types.</p>
+</li>
+<li>
+<p><code>extension/xml-types/</code>: XML type definitions for ILM communication.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>backend/</code>: Example implementation using the extension.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>backend/type-definitions/</code>: Example arveo type definitions (e.g., <code>MyArchiveLinkDocument</code>, <code>MyArchiveLinkComponent</code>) that use the extension&#8217;s annotations.</p>
+</li>
+<li>
+<p><code>backend/api/</code>: Example service API.</p>
+</li>
+<li>
+<p><code>backend/implementation/</code>: Implementation of the example service.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>packaging/</code>: Modules for packaging the application.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>packaging/service/</code>: Packages the example spring boot service.</p>
+</li>
+<li>
+<p><code>packaging/content-repository-service/</code>: Packages a customized arveo content repository image including the example type definitions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>frontend/</code>: Example web frontend (Angular).</p>
+</li>
+<li>
+<p><code>test/</code>: System tests for verifying the end-to-end functionality.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_building_the_project">Building the project</h3>
+<div class="paragraph">
+<p>To build the entire project, including the extension and the example implementation, run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">mvn clean install</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will generate:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An executable JAR in <code>packaging/service/target</code>.</p>
+</li>
+<li>
+<p>Docker images for the service and the customized content repository.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_the_example_environment">Running the example environment</h3>
+<div class="paragraph">
+<p>You can start a complete test environment (including dependencies like arveo) using the <code>test/system-test</code> module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">cd test/system-test
+mvn -Denv</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The environment will remain active until you press 'Enter' in the terminal.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_debugging">Debugging</h3>
+<div class="paragraph">
+<p>To debug the service in your IDE:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start the environment without the service: <code>mvn -Denv -Dservice.skip</code>.</p>
+</li>
+<li>
+<p>Run <code>de.eitco.ecr.ilm.service.IlmExampleServiceStandaloneApplication</code> in debug mode from your IDE.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Configuration templates for the test environment can be found in <code>test/system-test/src/test/resource-templates/config</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2026-08-05 15:19:39 UTC
+</div>
+</div>
+</body>
+</html>
