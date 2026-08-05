@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>ecr WebDAV extension 2.0.0</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">ecr-webdav Service 2.0.0</div>
+<ul class="sectlevel1">
+<li><a href="#_ecr_webdav_extension_2_0_0"><strong>ecr WebDAV extension 2.0.0</strong></a></li>
+<li><a href="#_type_definitions"><strong>Type Definitions</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_setup_and_registration">Setup and registration</a></li>
+<li><a href="#_defining_types">Defining types</a></li>
+</ul>
+</li>
+<li><a href="#_defining_the_service"><strong>Defining the service</strong></a></li>
+<li><a href="#_adapting_your_ecr_package"><strong>Adapting your ecr package</strong></a></li>
+<li><a href="#_tl_dr"><em>TL; DR</em></a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_ecr_webdav_extension_2_0_0"><strong>ecr WebDAV extension 2.0.0</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>ecr-webdav</code> project provides a WebDAV extension for the <em>arveo</em> Content Repository. It allows accessing document and folder types by a WebDAV API.</p>
+</div>
+<div class="paragraph">
+<p>The project is structured into two main parts:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>The WebDAV Extension</strong>: Located in the <code>extension</code> submodule, this contains the core logic and reusable components for WebDAV. Those modules can be used to add WebDAV functionality to your <em>arveo</em>-based project.</p>
+</li>
+<li>
+<p><strong>The Example Implementation</strong>: The rest of the project (backend, frontend, packaging) serves as an example of how to use and integrate the extension to your project.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The WebDAV extension provides specialized annotations and base interfaces to manage document and folder access by WebDAV API. To use this extension, either adapt your existing <em>arveo</em>-based service or create a new <em>arveo</em>-based service with the archetype.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_type_definitions"><strong>Type Definitions</strong></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_setup_and_registration">Setup and registration</h3>
+<div class="paragraph">
+<p>The <code>extension/type-definitions</code> module contains the core components for defining WebDAV-enabled types.</p>
+</div>
+<div class="sect3">
+<h4 id="_adding_the_dependency">Adding the dependency</h4>
+<div class="paragraph">
+<p>To use the webdav type definitions, add the following dependency to the <code>pom.xml</code> of your type definitions module:</p>
+</div>
+<div id="dependency-types" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;de.eitco.ecr.dav&lt;/groupId&gt;
+            &lt;artifactId&gt;ecr-webdav-extension-type-definitions&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_type_registration">Type registration</h4>
+<div class="paragraph">
+<p>To make your type definitions available to the arveo Content Repository, you need to register them. The WebDAV extension provides the <code>de.eitco.ecr.dav.extensions.type.definitions.DavTypeRegistration</code> interface for this purpose.</p>
+</div>
+<div class="paragraph">
+<p>In your project, you should create an <code>@AutoConfiguration</code> class that implements <code>DavTypeRegistration</code> and uses the <code>@Register</code> annotation to list your type definitions. If you already have a type registration class you may as wall adapt the existing class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@AutoConfiguration
+@Register(MyDavCollection.class)
+@Register(MyDavContent1.class)
+@Register(MyDavContent2.class)
+@Register(MyDavProtoContent.class)
+@AutoConfigureBefore(DavTypeRegistration.DefaultDavTypeRegistrationAutoConfiguration.class) <i class="conum" data-value="2"></i><b>(2)</b>
+public class MyDavTypeRegistration implements DavTypeRegistration { <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Note that you need to implement <code>DavTypeRegistration</code> not <code>TypeDefinitionRegistration</code> or <code>DirTypeRegistration</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Make sure your autoconfiguration is evaluated before <code>DavTypeRegistration</code> to override the defaults.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_types">Defining types</h3>
+<div class="paragraph">
+<p>The WebDAV extension provides specialized annotations and base interfaces to access documents and folders by WebDAV API.</p>
+</div>
+<div class="sect3">
+<h4 id="_base_interfaces">Base interfaces</h4>
+<div class="paragraph">
+<p>The extension provides several base interfaces that your type definitions should extend to gain WebDAV functionality:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>de.eitco.ecr.dav.extensions.type.definitions.MandatoryDavProperties</code>: The base interface for all WebDAV-enabled resources. It defines the properties an <em>arveo</em> type definition needs to implement a dav resource e.g. dav live properties.</p>
+</li>
+<li>
+<p><code>de.eitco.ecr.dav.extensions.type.definitions.DavContent</code>: Extends <code>MandatoryDavProperties</code> and works as base interface for all dav content resource type definitions.</p>
+</li>
+<li>
+<p><code>de.eitco.ecr.dav.extensions.type.definitions.DavCollection</code>: Extends <code>MandatoryDavProperties</code> and works as base interface for all dav collection resource type definitions</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_defining_a_simple_webdav_content">Defining a simple WebDAV content</h5>
+<div class="paragraph">
+<p>The extension can be used for any content that requires WebDAV functionality. To do so, your type definition should extend <code>DavContent</code>.</p>
+</div>
+<div class="paragraph">
+<p>This way it will have all relevant <a href="https://datatracker.ietf.org/doc/html/rfc4918#section-15">WebDAV live properties</a>. All other
+WebDAV properties ("dead" properties) will - by default - be stored as <em>arveo</em> variables. The variable name will be the properties xml namespace followed by a pipe (<code>|</code>) and its element name, the variable value will be a text representation of the properties xml value.</p>
+</div>
+<div class="paragraph">
+<p>This way any arbitrary property can be set at runtime. The downside of storing the properties as variables is that searches
+have fewer features and database indices will be more complex. If you have a specific set of properties you expect on every member of a given type, you can specify them as <em>arveo</em> properties in your type. The WebDAV extension will automatically expose them as
+WebDAV "dead" properties. You may specify the properties' <a href="https://datatracker.ietf.org/doc/html/rfc4918#section-4.4">webdav specific name</a> using the annotation <code>de.eitco.ecr.dav.extensions.type.definitions.XmlName</code>. If omitted the namespace of a property defaults to <code>http://dav.eitco.ecr.de/index-data/&lt;type-name&gt;</code> and the element name to its field name.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ShortName("my:dav-content-1")
+public interface MyDavContent1 extends DavContent { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    @ForeignKey(
+            target = MyDavCollection.class, <i class="conum" data-value="2"></i><b>(2)</b>
+            targetProperty = "id"
+    )
+    @Override
+    FolderId getParent();
+
+    Integer getArbitraryInteger(); <i class="conum" data-value="3"></i><b>(3)</b>
+    void setArbitraryInteger(Integer arbitraryInteger);
+
+    @XmlName(namespace = "https://content.example.com/example/name/space", elementName = "scale") <i class="conum" data-value="4"></i><b>(4)</b>
+    Double getArbitraryDouble();
+    void setArbitraryDouble(Double arbitraryDouble);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example,</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>MyDavContent1</code> extends <code>DavContent</code>, which provides it with all the necessary WebDAV properties (file name, content type etc.).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>It then specifies, that it can only be part of a collection of the type <code>MyDavCollection</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>It adds the custom property <code>arbitrary_integer</code>, which will be represented on the DAV API as <code>&lt;arbritrary_integer xmlns="\http://dav.eitco.ecr.de/index-data/my_dav_content1"&gt;[integer value]&lt;/arbritrary_integer&gt;</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>It also adds the custom property <code>arbitrary_double</code>, which will be represented as <code>&lt;scale xmlns="\https://content.example.com/example/name/space"&gt;[double value]&lt;/scale&gt;</code></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_type_transition">Type transition</h4>
+<div class="paragraph">
+<p>Type transition is the automatic change of resource types during updates based on its properties. This is necessary since in WebDAV objects are created by <code>PUT</code> or <code>MKCOL</code> requests where no meta-data can be specified. If your project defines several <em>arveo</em> types to be accessible by WebDAV, you need to define how they can be recognized by their meta-data. To do so, implement one or more type transition rules.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="proto-resources">Object creation and proto resources</h4>
+<div class="paragraph">
+<p>When a new object is created by WebDAV, it is either a collection resource or content resource (depending on whether it is created by <code>PUT</code> or <code>MKCOL</code>). In that state it will be typed with the according proto resource type.</p>
+</div>
+<div class="paragraph">
+<p>If you have several dav collection resource types or dav content resource types in your project, you need to specify whose are your proto content and proto collection resource. Your proto resources may not have any mandatory fields that do not have default values, since those fields cannot be set in the creation calls. To specify a dav resource type as proto resource, annotate it with <code>de.eitco.ecr.dav.extensions.type.definitions.ProtoDavResource</code> as the example class <code>de.eitco.ecr.dav.types.MyDavProtoContent</code> does:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ShortName("my:dav-proto-content")
+@ProtoDavResource <i class="conum" data-value="1"></i><b>(1)</b>
+public interface MyDavProtoContent extends DavContent { <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @ForeignKey(
+            target = MyDavCollection.class,
+            targetProperty = "id"
+    )
+    @Override
+    FolderId getParent();
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>adding the annotation marks the type definition as proto resource</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>since it extends <code>DavContent</code> it is the proto content resource</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you only have one dav collection resource or one dav content resource you do not need to specify it explicitly as proto resource. Note that it will be assumed to be a proto resource automatically and thus may not have mandatory properties without default values.</p>
+</div>
+<div class="sect4">
+<h5 id="type-transition-rule">Implementing a type transition rule</h5>
+<div class="paragraph">
+<p>If you have several DAV content or DAV collection resources you need to implement the interface <code>de.eitco.ecr.dav.extensions.type.definitions.TypeTransitionRule</code> to determine the correct type given an objects properties.</p>
+</div>
+<div class="paragraph">
+<p>To implement a type transition rule, create a class that implements the <code>TypeTransitionRule</code> interface and register it as a Spring <code>@Component</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface TypeTransitionRule {
+    @NotNull Optional&lt;TypeTransitionDescription&lt;?&gt;&gt; needsTransition(
+            @NotNull Class&lt;? extends MandatoryDavProperties&gt; type,
+            @NotNull TypeTransitionCriterion transitionCriterion
+    );
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>needsTransition</code> method should:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Inspect the current properties and the type of the resource.</p>
+</li>
+<li>
+<p>Determine if a transition is necessary.</p>
+</li>
+<li>
+<p>If so, return a <code>TypeTransitionDescription</code> specifying the target type and any additional properties or operations (like creating child components) required for the transition.</p>
+</li>
+<li>
+<p>If the rule determines that the type should not change return a <code>TypeTransitionDescription</code> to the current type</p>
+</li>
+<li>
+<p>If the rule is indifferent on whether a change should occur, return <code>Optional.empty()</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Type transition rules are applied in their spring inversion of control container order.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_the_fallback_type_transition">The fallback type transition</h5>
+<div class="paragraph">
+<p>There is a fallback type transition rule. It will only be applied to the proto resources. However, if - on a proto resource - properties are updated so that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>exactly the properties of another type are given, or</p>
+</li>
+<li>
+<p>all properties of another type are given, or</p>
+</li>
+<li>
+<p>at least all mandatory properties of another type are given</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>and the other type is of the same resource type as the proto resource (i.e. collection or content), the entity will be transformed to the other type.</p>
+</div>
+<div class="paragraph">
+<p>The order of the fallback type transition rule is <code>Ordered.LOWEST_PRECEDENCE / 2</code> thus it should come last, however, you can still implement a fallback rule for this rule.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_defining_the_service"><strong>Defining the service</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To expose the WebDAV API in your <em>arveo</em> based service, add the following dependency to your service module:</p>
+</div>
+<div id="dependency-service" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">        &lt;dependency&gt;
+            &lt;groupId&gt;de.eitco.ecr.dav&lt;/groupId&gt;
+            &lt;artifactId&gt;ecr-webdav-extension-backend&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will register the <code>de.eitco.ecr.dav.extensions.backend.http.WebDavController</code> in your service. It provides a full WebDAV API.</p>
+</div>
+<div class="paragraph">
+<p>By default, the endpoint will be provided at <code>/dav/</code>, this can be changed with the <code>ecr-webdav-extension.base-path</code> property.</p>
+</div>
+<div class="paragraph">
+<p>Adapt your default security configuration accordingly:</p>
+</div>
+<div id="configuration-service" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">security:
+  general:
+    secured-ant-matchers: "/api/**,/dav/**" <i class="conum" data-value="1"></i><b>(1)</b>
+    open-ant-matchers: "/actuator/**,/api/info,/webjars/swagger-ui/**,/public/**,/*,/assets/**"
+    role-for-secured-access: ""
+    cors-configuration:
+      allowed-origins: "*"
+      allowed-headers: "*"
+      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE" <i class="conum" data-value="2"></i><b>(2)</b>
+      max-age: 3600</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>secure access to your WebDAV endpoint</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>allow the WebDAV custom http methods</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_adapting_your_ecr_package"><strong>Adapting your ecr package</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For full WebDAV support, you also need to adapt your ecr packaging module. This assures the events needed for WebDAV conformance are registered.</p>
+</div>
+<div class="paragraph">
+<p>In the pom of your <code>packaging/content-repository-service</code> add the following dependency:</p>
+</div>
+<div id="dependency-ecr" class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">        &lt;dependency&gt;
+            &lt;groupId&gt;de.eitco.ecr.dav&lt;/groupId&gt;
+            &lt;artifactId&gt;ecr-webdav-extension-backend-ecr&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
+        &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tl_dr"><em>TL; DR</em></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>add dependencies to your project</p>
+<div class="ulist">
+<ul>
+<li>
+<p>add <a href="#dependency-types"><code>de.eitco.ecr.dav:ecr-webdav-extension-type-definitions:2.0.0</code></a> to your <code>backend/type-definitions</code> module</p>
+</li>
+<li>
+<p>add <a href="#dependency-service"><code>de.eitco.ecr.dav:ecr-webdav-extension-backend:2.0.0</code></a> to your <code>packaging/service</code> module</p>
+<div class="ulist">
+<ul>
+<li>
+<p>adapt its <a href="#configuration-service">security configuration</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>add <a href="#dependency-ecr"><code>de.eitco.ecr.dav:ecr-webdav-extension-backend-ecr:2.0.0</code></a> to your <code>packaging/content-repository-service</code> module</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>adapt your type definitions</p>
+<div class="ulist">
+<ul>
+<li>
+<p>make your type definition registry implement <code>DavTypeRegistration</code></p>
+</li>
+<li>
+<p>make the document types you want to be accessible by WebDAV extend <code>DavContent</code></p>
+</li>
+<li>
+<p>if you have several WebDAV accessible document types you need to</p>
+<div class="ulist">
+<ul>
+<li>
+<p>specify a <a href="#proto-resources">proto content type</a></p>
+</li>
+<li>
+<p>provide <a href="#type-transition-rule">transition rules</a> to recognize a type by its properties</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2026-08-05 12:37:58 UTC
+</div>
+</div>
+</body>
+</html>
