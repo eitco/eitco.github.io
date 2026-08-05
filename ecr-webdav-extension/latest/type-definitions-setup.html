@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Adding the Dependency</title>
+<title>Adding the dependency</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -441,10 +441,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The <code>extension/type-definitions</code> module contains the core components for defining webdav-enabled types.</p>
+<p>The <code>extension/type-definitions</code> module contains the core components for defining WebDAV-enabled types.</p>
 </div>
 <div class="sect3">
-<h4 id="_adding_the_dependency">Adding the Dependency</h4>
+<h4 id="_adding_the_dependency">Adding the dependency</h4>
 <div class="paragraph">
 <p>To use the webdav type definitions, add the following dependency to the <code>pom.xml</code> of your type definitions module:</p>
 </div>
@@ -454,16 +454,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
         &lt;dependency&gt;
             &lt;groupId&gt;de.eitco.ecr.dav&lt;/groupId&gt;
             &lt;artifactId&gt;ecr-webdav-extension-type-definitions&lt;/artifactId&gt;
-            &lt;version&gt;1.0.0&lt;/version&gt;
+            &lt;version&gt;2.0.0&lt;/version&gt;
         &lt;/dependency&gt;
     &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_type_registration">Type Registration</h4>
+<h4 id="_type_registration">Type registration</h4>
 <div class="paragraph">
-<p>To make your type definitions available to the arveo Content Repository, you need to register them. The webdav extension provides the <code>de.eitco.ecr.dav.extensions.type.definitions.DavTypeRegistration</code> interface for this purpose.</p>
+<p>To make your type definitions available to the arveo Content Repository, you need to register them. The WebDAV extension provides the <code>de.eitco.ecr.dav.extensions.type.definitions.DavTypeRegistration</code> interface for this purpose.</p>
 </div>
 <div class="paragraph">
 <p>In your project, you should create an <code>@AutoConfiguration</code> class that implements <code>DavTypeRegistration</code> and uses the <code>@Register</code> annotation to list your type definitions. If you already have a type registration class you may as wall adapt the existing class.</p>
@@ -475,35 +475,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @Register(MyDavContent1.class)
 @Register(MyDavContent2.class)
 @Register(MyDavProtoContent.class)
-public class MyDavTypeRegistration implements DavTypeRegistration {
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_details_of_davtyperegistration">Details of DavTypeRegistration</h4>
-<div class="paragraph">
-<p><code>DavTypeRegistration</code> provides several key features:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PreSchemaInitialization("classpath:liquibase/webdav-liquibase.xml") // <b class="conum">(1)</b>
-public interface DavTypeRegistration extends TypeDefinitionRegistration { // <b class="conum">(2)</b>
-
-    @Override
-    default Class&lt;?&gt;[] getRegisteredClasses() { // <b class="conum">(3)</b>
-        // ...
-    }
+@AutoConfigureBefore(DavTypeRegistration.DefaultDavTypeRegistrationAutoConfiguration.class) // <b class="conum">(2)</b>
+public class MyDavTypeRegistration implements DavTypeRegistration { // <b class="conum">(1)</b>
 }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <ol>
 <li>
-<p><strong>Schema Initialization</strong>: It triggers the execution of webdav-specific Liquibase scripts via the <code>@PreSchemaInitialization</code> annotation.</p>
+<p>Note that you need to implement <code>DavTypeRegistration</code> not <code>TypeDefinitionRegistration</code> or <code>DirTypeRegistration</code>.</p>
 </li>
 <li>
-<p><strong>Base Type Registration</strong>: It ensures that at least on of each <code>DavCollection</code> and <code>DavContent</code> are correctly registered in the system.</p>
+<p>Make sure your autoconfiguration is evaluated before <code>DavTypeRegistration</code> to override the defaults.</p>
 </li>
 </ol>
 </div>
@@ -511,7 +494,7 @@ public interface DavTypeRegistration extends TypeDefinitionRegistration { // <b 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-03-13 12:26:34 UTC
+Last updated 2026-08-05 12:37:58 UTC
 </div>
 </div>
 </body>
