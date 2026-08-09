@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>MCP Service 1.0.1-SNAPSHOT</title>
+<title>MCP Service 1.1.0-SNAPSHOT</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,11 +439,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>MCP Service 1.0.1-SNAPSHOT</h1>
+<h1>MCP Service 1.1.0-SNAPSHOT</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_security">1. Security</a></li>
+<li><a href="#_security">1. Security</a>
+<ul class="sectlevel2">
+<li><a href="#_oauth2_authentication">1.1. OAuth2 Authentication</a></li>
+<li><a href="#_api_key_authentication">1.2. API Key Authentication</a></li>
+<li><a href="#_client_configuration">1.3. Client Configuration</a></li>
+</ul>
+</li>
 <li><a href="#_tools">2. Tools</a>
 <ul class="sectlevel2">
 <li><a href="#_enabling_and_disabling_tool_groups">2.1. Enabling and Disabling Tool Groups</a></li>
@@ -489,8 +495,14 @@ its default endpoint is <code>/sse</code>.</p>
 <h2 id="_security">1. Security</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The MCP Service is secured with OAuth2 and is configured as a protected resource. Requests to the MCP endpoints must be
-authenticated with a valid OAuth2 access token.</p>
+<p>The MCP Service supports two alternative mechanisms to authenticate requests to its MCP endpoints: OAuth2 and API keys.
+The two mechanisms are mutually exclusive, exactly one of them can be active. OAuth2 is the default.</p>
+</div>
+<div class="sect2">
+<h3 id="_oauth2_authentication">1.1. OAuth2 Authentication</h3>
+<div class="paragraph">
+<p>By default, the MCP Service is secured with OAuth2 and is configured as a protected resource. Requests to the MCP
+endpoints must be authenticated with a valid OAuth2 access token.</p>
 </div>
 <div class="paragraph">
 <p>The service also provides the OAuth2 auto-discovery endpoint required by MCP clients. Clients can use this endpoint to
@@ -499,8 +511,160 @@ default protected resource advertised by the discovery information is the active
 endpoint when SSE is enabled, otherwise the configured streamable HTTP endpoint.</p>
 </div>
 <div class="paragraph">
-<p>The service uses OAuth2 impersonation when calling the Content Repository Service. Repository requests are therefore
+<p>The service uses OAuth2 token exchange when calling the Content Repository Service. Repository requests are therefore
 performed with the credentials of the currently authenticated user.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_api_key_authentication">1.2. API Key Authentication</h3>
+<div class="paragraph">
+<p>Instead of OAuth2, the MCP endpoints can be secured with static API keys. This is intended for clients that cannot
+perform an OAuth2 flow. Clients send their key in the <code>API-Key</code> request header. The key is compared against the keys
+configured for the service, so no request to the authorization server is involved in authenticating a caller. Requests
+without a valid key are rejected with status <code>401</code>. API key authentication protects the same endpoints as OAuth2
+authentication, and the CORS configuration is applied in both modes.</p>
+</div>
+<div class="paragraph">
+<p>API key authentication is enabled with <code>commons.security.api-key.server.enabled</code>. At the same time the OAuth2 resource
+server must be disabled by setting <code>spring.security.oauth2.resourceserver.enabled</code> to <code>false</code>. If both mechanisms are
+enabled, the service does not start, because both security configurations contribute conflicting security filter chains.
+If both mechanisms are disabled, the MCP endpoints are not protected at all.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commons.security.api-key.server.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables API key authentication for the MCP endpoints. Requires <code>spring.security.oauth2.resourceserver.enabled</code> to be
+  <code>false</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commons.security.api-key.server.keys.&lt;label&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not set</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A valid API key. Any number of keys can be configured. The label is freely chosen and is only used to identify the key
+  within the service; it is never sent by clients.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.security.oauth2.resourceserver.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the OAuth2 resource server. Must be set to <code>false</code> when API key authentication is used.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An example configuration for API key authentication:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">resourceserver</span>:
+        <span class="key">enabled</span>: <span class="string"><span class="content">false</span></span>
+      <span class="key">client</span>:
+        <span class="key">registration</span>:
+          <span class="key">keycloak-client-credentials</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">keycloak</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">techclient</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;client-secret&gt;</span><span class="delimiter">&quot;</span></span>
+            <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">client_credentials</span><span class="delimiter">&quot;</span></span>
+            <span class="key">scope</span>: <span class="string"><span class="content">openid</span></span>
+        <span class="key">provider</span>:
+          <span class="key">keycloak</span>:
+            <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://&lt;keycloak-host&gt;/realms/&lt;realm&gt;</span><span class="delimiter">&quot;</span></span>
+
+<span class="key">commons</span>:
+  <span class="key">security</span>:
+    <span class="key">api-key</span>:
+      <span class="key">server</span>:
+        <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
+        <span class="key">keys</span>:
+          <span class="key">key1</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;api-key&gt;</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>API keys are credentials and should be provided through the configuration server or through Vault instead of a local
+configuration file.</p>
+</div>
+<div class="paragraph">
+<p>Two restrictions apply when API key authentication is used. The OAuth2 auto-discovery endpoint is disabled together with
+the OAuth2 resource server, so MCP clients that determine their configuration from that endpoint cannot connect to the
+service in this mode.</p>
+</div>
+<div class="paragraph">
+<p>There is also no impersonation. The OAuth2 client configuration shown above is still required, because requests to the
+Content Repository Service continue to use OAuth2, but they are performed with the credentials of the technical user of
+the <code>keycloak-client-credentials</code> registration. All API keys therefore share the same repository identity and the same
+repository permissions, and the label of the key is not propagated to the Content Repository Service.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_configuration">1.3. Client Configuration</h3>
+<div class="paragraph">
+<p>The <code>ecr-mcp-service-client-spring</code> module provides an auto-configuration that authenticates the MCP requests of a
+Spring based MCP client. By default the OAuth2 access token of the current security context is sent as a bearer token.
+For MCP servers that are secured with an API key, the key is configured per server through
+<code>spring.ai.mcp.client.api-keys.servers</code>. The map key is the base URL of the MCP server, the map value is the API key.
+Servers that are not listed are authenticated with an OAuth2 bearer token.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.ai.mcp.client.api-keys.servers.&lt;server-url&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not set</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The API key sent in the <code>API-Key</code> header to the MCP server with the given base URL. The base URL consists of scheme,
+  host, and port (<code>&lt;scheme&gt;://&lt;host&gt;:&lt;port&gt;</code>) and must contain the port explicitly.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An example configuration for a client that connects to an OAuth2 secured and an API key secured MCP server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">ai</span>:
+    <span class="key">mcp</span>:
+      <span class="key">client</span>:
+        <span class="key">api-keys</span>:
+          <span class="key">servers</span>:
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[http://localhost:30771]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;api-key&gt;</span><span class="delimiter">&quot;</span></span>
+        <span class="key">streamable-http</span>:
+          <span class="key">connections</span>:
+            <span class="key">oauth2-server</span>:
+              <span class="key">url</span>: <span class="string"><span class="content">http://localhost:30770</span></span>
+            <span class="key">api-key-server</span>:
+              <span class="key">url</span>: <span class="string"><span class="content">http://localhost:30771</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The base URL must be enclosed in square brackets, because it contains characters that Spring interprets as separators
+within a property name. It must match the configured connection URL, including scheme and port.</p>
+</div>
 </div>
 </div>
 </div>
@@ -807,7 +971,7 @@ tool is named <code>add</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-08-08 23:14:08 UTC
+Last updated 2026-08-08 23:57:36 UTC
 </div>
 </div>
 <style>
