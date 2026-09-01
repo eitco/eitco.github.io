@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Einsatzbereich</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Inhaltsverzeichnis</div>
+<ul class="sectlevel1">
+<li><a href="#_einsatzbereich"><strong>Einsatzbereich</strong></a></li>
+<li><a href="#_ausgangssituation_in_arveo_architekturen"><strong>Ausgangssituation in <em>arveo</em>-Architekturen</strong></a></li>
+<li><a href="#_aufbau_des_uis"><strong>Aufbau des UIS</strong></a></li>
+<li><a href="#_anwendung_und_konfiguration"><strong>Anwendung und Konfiguration</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_grundprinzip">Grundprinzip</a></li>
+<li><a href="#_komplexere_importkonstellationen">Komplexere Importkonstellationen</a></li>
+<li><a href="#_welches_szenario_verwenden">Welches Szenario verwenden?</a></li>
+<li><a href="#_gemeinsame_mapper_einstellungen">Gemeinsame Mapper-Einstellungen</a></li>
+<li><a href="#_attribute_konfigurieren">Attribute konfigurieren</a></li>
+</ul>
+</li>
+<li><a href="#_csv_import"><strong>CSV-Import</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_csv_simple">CSV Simple</a></li>
+<li><a href="#_csv_counting">CSV Counting</a></li>
+<li><a href="#_csv_referencing">CSV Referencing</a></li>
+</ul>
+</li>
+<li><a href="#_csf_import"><strong>CSF-Import</strong></a></li>
+<li><a href="#_file_import"><strong>File-Import</strong></a></li>
+<li><a href="#_saperion_import"><strong>Saperion-Import</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_saperion_simple">Saperion Simple</a></li>
+<li><a href="#_saperion_referencing">Saperion Referencing</a></li>
+</ul>
+</li>
+<li><a href="#_validierung_vor_dem_start"><strong>Validierung vor dem Start</strong></a></li>
+<li><a href="#_ergebnis_kontrollieren"><strong>Ergebnis kontrollieren</strong></a></li>
+<li><a href="#_typische_fehlerbilder"><strong>Typische Fehlerbilder</strong></a></li>
+<li><a href="#_service_konfigurieren_und_starten"><strong>Service konfigurieren und starten</strong></a>
+<ul class="sectlevel2">
+<li><a href="#_service_discovery">Service-Discovery</a></li>
+<li><a href="#_oauth2">OAuth2</a></li>
+<li><a href="#_startvarianten">Startvarianten</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div style="page-break-after: always;"></div>
+<div class="sect1">
+<h2 id="_einsatzbereich"><strong>Einsatzbereich</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Der Universal Import Service (UIS) ermöglicht den Import verschiedener Eingangsdateien aus dem Dateisystem nach <em>arveo</em>.
+Dazu werden definierte Verzeichnisse auf den Eingang von Dateien überwacht. Anhand der konfigurierten Routen und Verarbeitungsschritte
+werden Metadaten aufbereitet und auf <em>arveo</em>-Attribute gemappt. Schließlich werden die Content-Dateien (Dokumente) mit den
+aufbereiteten Attributen in <em>arveo</em> abgelegt. Ein typisches Beispielszenario ist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Eingang von CSV-Dateien in ein Verzeichnis</p>
+</li>
+<li>
+<p>Der UIS erkennt die Datei und verarbeitet sie anhand der Definition</p>
+</li>
+<li>
+<p>Der UIS übergibt die Dateien und die aufbereiteten Metadaten an <em>arveo</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die vereinfachte Logik dahinter ist „Lese Datei → transformiere Metadaten → sende an UIS-Endpunkt“.</p>
+</div>
+<div class="paragraph">
+<p>Der Einsatzbereich erstreckt sich von im Tagesgeschäft anfallenden Dateiimporten bis hin zur Übernahme von
+Massendokumenten bei Datenmigrationen.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ausgangssituation_in_arveo_architekturen"><strong>Ausgangssituation in <em>arveo</em>-Architekturen</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Die <em>arveo</em>-Plattform ist typischerweise Teil einer verteilten, serviceorientierten Architektur, in der verschiedene Systeme
+zusammenspielen:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Fachanwendungen (z.B. SAP, HR-Systeme, CRM)</p>
+</li>
+<li>
+<p>Eingangskanäle (Filesystem)</p>
+</li>
+<li>
+<p>Verarbeitungsservices (hier: UIS)</p>
+</li>
+<li>
+<p>Zielsystem: <em>arveo</em> als führendes ECM/DMS-System</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Der Universal Import Service (UIS) übernimmt hierbei die Rolle als:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Import- und Verarbeitungsinstanz</p>
+</li>
+<li>
+<p>Integrationspunkt für unterschiedliche Eingangskanäle</p>
+</li>
+<li>
+<p>Orchestrator für Importprozesse</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die zentrale Aufgabe des UIS besteht darin, heterogene Eingangsdaten strukturiert, skalierbar und wartbar in <em>arveo</em> zu überführen.
+Eine typische Zielarchitektur lässt sich wie folgt darstellen:</p>
+</div>
+<div class="paragraph">
+<div class="title">Zielarchitektur Universal Import Service</div>
+<p><span class="image"><img src="UIS-Grafik.png" alt="Zielarchitektur"></span></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aufbau_des_uis"><strong>Aufbau des UIS</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Der UIS basiert auf Apache Camel, das im Kontext des UIS als standardisierte Integrations- und Orchestrierungsschicht
+innerhalb eines Microservices verstanden werden kann. Camel übernimmt die technische Umsetzung von Integrationsflüssen,
+während der UIS die fachliche Verarbeitung und <em>arveo</em> die Persistierung der Binär- und Metadaten übernehmen.</p>
+</div>
+<div class="paragraph">
+<p>Der Mehrwert bei der Verwendung von Camel besteht hauptsächlich in der Entkopplung von Eingangskanälen. Der UIS muss somit
+nicht selbst eine Vielzahl von Protokollen und Integrationen unterstützen, sondern kann auf die standardisierten Mittel von
+Camel zurückgreifen. Dadurch können projektspezifischer Individualcode reduziert und die Stabilität und Wartbarkeit erhöht
+werden.</p>
+</div>
+<div class="paragraph">
+<p>Der Dienst überwacht konfigurierbare Verzeichnisse auf zu importierende Dateien und stellt Plugin-Schnittstellen für
+CsvLineMapper und FileMapper bereit.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CsvLineMapper werden verwendet, um aus einer Zeile einer CSV-Datei eine oder mehrere <em>arveo</em>-Entitäten zu erstellen.</p>
+</li>
+<li>
+<p>FileMapper erfüllen dieselbe Aufgabe für beliebige Dateien.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Für beide Anwendungsfälle wird eine konfigurierbare Standard-Mapper-Implementierung mitgeliefert, die für die meisten Importszenarien ausreichen sollte. Sind
+darüberhinausgehende Implementierungen nötig, stehen dafür die Plugin-Schnittstellen zur Verfügung.</p>
+</div>
+<div class="paragraph">
+<p>Der Dienst bietet einige allgemeine Einstellungen, die für alle Mapping-Konfigurationen gelten.
+Verschiedene Konfigurationsoptionen finden für die Camel-Komponenten Anwendung. Die für den Dateiimport
+verwendeten Camel-Routen nutzen einen URI-Parameter zur Konfiguration des Routenstarts. Dies ermöglicht es,
+die Camel-Komponente für den Start der Route anhand des URI-Schemas auszuwählen und zu konfigurieren. Für
+jedes Verzeichnis, aus dem Dateien importiert werden sollen, muss eine URI konfiguriert werden. Die Schlüssel in
+den Konfigurations-Maps definieren die IDs der Camel-Routen.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_anwendung_und_konfiguration"><strong>Anwendung und Konfiguration</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dieser Leitfaden richtet sich an technische Consultants, die den Universal Import Service für konkrete Importvorhaben
+konfigurieren. Es wird keine Entwicklung vorausgesetzt. Die beschriebenen Szenarien basieren auf der bestehenden
+Produktdokumentation und den Systemtests.</p>
+</div>
+<div class="paragraph">
+<p>Der Service liest Dateien aus konfigurierten Eingangsverzeichnissen, wandelt Metadaten in <em>arveo</em>-Attribute um und legt
+Dokumente oder Container in <em>arveo</em> an. Die Konfiguration erfolgt in YAML-Dateien.</p>
+</div>
+<div class="paragraph">
+<p>Der Service kann verschiedene Arten von Quellen (csv, csf, filesytem, ..) verarbeiten, die als Szenarien bezeichnet werden.
+Bei der folgenden Konfiguration sind entsprechende Schlüsselwörter zu beachten.</p>
+</div>
+<div class="sect2">
+<h3 id="_grundprinzip">Grundprinzip</h3>
+<div class="paragraph">
+<p>Jeder Import besteht aus zwei Teilen:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Eine Route legt fest, wo der Service Quelldateien findet.</p>
+</li>
+<li>
+<p>Eine Mapper-Konfiguration legt fest, wie die gelesenen Daten nach <em>arveo</em> übertragen werden.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Die Route-ID verbindet beide Teile. Im folgenden Beispiel ist <code>csv-kundenakten</code> die Route-ID. Derselbe Name muss unter
+<code>csv</code> und unter <code>generic-csv-mapper.settings</code> verwendet werden.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  csv:
+    csv-kundenakten:
+      uri: "file:///data/import/csv?antInclude=**/*.csv&amp;moveFailed=.error"
+      statistics: "file:///data/import/csv/statistics"
+  generic-csv-mapper:
+    settings:
+      csv-kundenakten:
+        type-definition-name: kundenakte</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die wichtigsten URI-Parameter für dateibasierte Routen sind:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 17%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verzeichnis, aus dem importiert werden soll.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antInclude</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filter für Unterverzeichnisse, die verarbeitet werden sollen, zum Beispiel <code><strong>/import/verarbeitet/</strong>/<strong>.</strong></code>.  Dieser Parameter ist case-sensitive!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antExclude</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filter für Unterverzeichnisse, die ausgeschlossen werden sollen, zum Beispiel <code><strong>/mock/</strong>/<strong>.</strong></code>. Dieser Parameter hat Vorrang vor dem antInclude und ist case-sensitive!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>exclude</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filter für Dateinamen, die ausgeschlossen werden sollen, zum Beispiel <code>.*fertig.txt</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>move</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zielordner für Dateien, die erfolgreich verarbeitet wurden, zum Beispiel <code>.done</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>moveFailed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zielordner für Dateien, die nicht erfolgreich verarbeitet wurden, zum Beispiel <code>.error</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recursive=true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Es werden auch Unterverzeichnisse durchsucht.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delete=false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dateien werden nach dem Import nicht gelöscht.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>noop=true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Die Quelldatei bleibt im Eingangsordner liegen. Das ist vor allem für Test- oder Kontrollszenarien hilfreich.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Die URI folgt dem Apache-Camel-Format für File-Endpunkte. Weitere Parameter wie Include-/Exclude-Filter,
+Verschiebeverhalten, Polling-Intervalle oder Locking sind in der
+<a href="https://camel.apache.org/components/next/file-component.html">Apache Camel File Component Dokumentation</a> beschrieben.
+Für Importkonfigurationen sollten nur Parameter verwendet werden, die im Zielbetrieb fachlich abgestimmt sind. Besonders
+<code>delete</code>, <code>move</code>, <code>moveFailed</code>, <code>noop</code>, <code>readLock</code> und Filterparameter beeinflussen, ob Quelldateien nach dem Import
+erhalten bleiben, verschoben oder gelöscht werden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_komplexere_importkonstellationen">Komplexere Importkonstellationen</h3>
+<div class="paragraph">
+<p>Oft sollen verschiedene Importkonstellationen implementiert werden. z.B. unterschiedliche Quellen in dasselbe / oder unterschiedliche Archive.</p>
+</div>
+<div class="paragraph">
+<p>In einer YAML- Datei können beliebig viele Routen konfiguriert werden. Somit kann eine Instanz des Universal Import Service mehrere Routen parallel abarbeiten.</p>
+</div>
+<div class="paragraph">
+<p>In der Route kann mit thread-pool-size: xx angegeben werden, mit wie vielen Thraeds maximal eine Route abgearbeitet werden soll,</p>
+</div>
+<div class="paragraph">
+<p>Im folgenden Beispiel werden bis zu 10 Threads parallel genutzt.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  csv:
+    csv-kundenakten:
+      uri: "file:///data/import/csv?antInclude=**/*.csv&amp;moveFailed=.error"
+      statistics: "file:///data/import/csv/statistics"
+      thread-pool-size: 10
+  generic-csv-mapper:
+    settings:
+      csv-kundenakten:
+        type-definition-name: kundenakte</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der Universal Import Service ist PlugIn fähig. Somit kann sein Verhalten auf kundenspezifische Anforderungen angepasst werden. Ein Plugin wird in Java implementiert und als jar verpackt. Dieses muss beim Start des Universal Import Service im loader.path liegen,
+welcher zum Start des Universal Import Service angegeben wurde.</p>
+</div>
+<div class="paragraph">
+<p>Ein PlugIn implementiert das entsprechende Interface z.B. AttributesPreprocessor und implementiert die erforderlichen Methoden um das gewünschte Verhalten zu erzielen.</p>
+</div>
+<div class="paragraph">
+<p>Erprobte Szenarien für PlugIns sind:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Anpassungen der Metadaten</p>
+</li>
+<li>
+<p>Mergen / transformieren von Content vor dem Import</p>
+</li>
+<li>
+<p>nachbearbeitende Schritte nach dem Import</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Für die Implementierung von Universal Import Service PlugIns sei auf die entsprechende Entwickler Dokumentation verwiesen
+(<a href="https://eitco.github.io/universal-import-service/latest/index.html" class="bare">https://eitco.github.io/universal-import-service/latest/index.html</a>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_welches_szenario_verwenden">Welches Szenario verwenden?</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 15%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Importfall</th>
+<th class="tableblock halign-left valign-top">Empfohlenes Szenario</th>
+<th class="tableblock halign-left valign-top">Typisches Ergebnis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile beschreibt genau ein Dokument.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Simple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ein <em>arveo</em>-Dokument je CSV-Zeile, optional mit einem oder mehreren Content-Elementen.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile enthält mehrere Dateinamen, die als getrennte Dokumente entstehen sollen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Counting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mehrere <em>arveo</em>-Dokumente je CSV-Zeile. Der Platzhalter <code>${ contentElementNumber}</code> unterscheidet die Dokumente.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eine CSV-Zeile beschreibt einen fachlichen Datensatz und mehrere Dateien sollen daran hängen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Referencing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ein Container mit Metadaten und separate Dokumente für die Dateien. Die Dokumente verweisen per Fremdschlüssel auf den Container.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Saperion-CSF-Dateien sollen importiert werden.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV-ähnlicher Import mit zusätzlicher Auswertung des CSF-Headers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dateien liegen direkt in Ordnern und Metadaten stecken im Pfad oder Dateinamen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ein <em>arveo</em>-Dokument je Datei. Attribute werden aus Dateiname, Pfad oder Dateieigenschaften gebildet.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Saperion-STK-JSON-Export mit Historie soll migriert werden.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Saperion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dokument- oder Containerhistorien mit Versionen und Content aus dem Saperion-Export.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_gemeinsame_mapper_einstellungen">Gemeinsame Mapper-Einstellungen</h3>
+<div class="paragraph">
+<p>Diese Einstellungen kommen in CSV-, CSF- und File-Szenarien regelmässig vor:</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Einstellung</th>
+<th class="tableblock halign-left valign-top">Bedeutung</th>
+<th class="tableblock halign-left valign-top">Typische Werte</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-definition-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ziel-Type-Definition in <em>arveo</em>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>invoice</code>, <code>customer_file</code>, <code>document</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entity-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legt fest, ob Dokumente oder Container erstellt werden.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DOCUMENT</code>, <code>CONTAINER</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skip-empty-documents</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn <code>true</code>, werden Datensätze ohne binären Inhalt übersprungen.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> für reine Dokumentimporte, <code>false</code> wenn Metadaten ohne Datei erlaubt sind.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>conflict-resolution-strategy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verhalten, wenn ein Datensatz bereits existiert.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SKIP</code>, <code>UPDATE</code>, <code>UPDATE_ATTRIBUTES</code>, <code>OVERWRITE</code>, <code>OVERWRITE_ATTRIBUTES</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Für Updates, Overwrite und Skip-Erkennung sollte mindestens ein Attribut mit <code>unique-identifier: true</code> konfiguriert
+werden. Ohne eindeutige Kennung kann der Service bestehende Objekte nicht verlässlich finden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attribute_konfigurieren">Attribute konfigurieren</h3>
+<div class="paragraph">
+<p>Attribute werden als Mapping von einem Quellfeld auf ein <em>arveo</em>-Attribut beschrieben.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">attributes:
+  invoice_number:
+    attribute-name: invoice_number
+    type: STRING
+    unique-identifier: true
+  invoice_date:
+    attribute-name: invoice_date
+    type: DATE
+    date-pattern: "d.M.u"
+  amount:
+    attribute-name: amount
+    type: DOUBLE
+    number-format:
+      decimal-separator: ","
+      grouping-separator: "."
+  archive:
+    attribute-name: archive
+    type: STRING
+    default-value: records</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der konkrete Ort des <code>attributes</code>-Blocks hängt vom Importszenario ab:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 21%;">
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Szenario</th>
+<th class="tableblock halign-left valign-top">Pfad in der YAML</th>
+<th class="tableblock halign-left valign-top">Quelle der linken Schlüssel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Simple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>universal-import-service.generic-csv-mapper.settings.&lt;route-id&gt;.simple.attributes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spaltennamen der CSV-Datei.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Counting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>universal-import-service.generic-csv-mapper.settings.&lt;route-id&gt;.counting.attributes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spaltennamen der CSV-Datei.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Referencing, Containerattribute</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>universal-import-service.generic-csv-mapper.settings.&lt;route-id&gt;.referencing.attributes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spaltennamen der CSV-Datei. Diese Attribute werden auf den Container geschrieben.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSV Referencing, Dokumentattribute</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>universal-import-service.generic-csv-mapper.settings.&lt;route-id&gt;.referencing.document-attributes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spaltennamen der CSV-Datei. Diese Attribute werden auf die einzelnen Dokumente geschrieben.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wie CSV, aber mit der CSF-Route-ID unter <code>settings</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feldnamen aus dem CSF-Datenbereich.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>universal-import-service.generic-file-mapper.settings.&lt;route-id&gt;.attributes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vordefinierte Datei-Eigenschaften wie <code>_name</code> oder selbst konfigurierte Properties.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>&lt;route-id&gt;</code> steht für den Namen der Route, zum Beispiel <code>csv-kundenakten</code>, <code>csf-incident</code> oder <code>file-dokumente</code>.
+Der Name muss exakt mit dem Schlüssel unter <code>universal-import-service.csv</code>, <code>csf</code> oder <code>file</code> uebereinstimmen.</p>
+</div>
+<div class="paragraph">
+<p>Der linke Schlüssel, hier zum Beispiel <code>invoice_number</code>, ist das Feld aus der Quelle. Bei CSV und CSF ist das der
+Spaltenname. Beim File-Import ist es eine gesammelte Datei-Eigenschaft wie <code>_name</code> oder eine selbst definierte
+Eigenschaft.</p>
+</div>
+<div class="paragraph">
+<p>Unterstützte Typen sind <code>SHORT</code>, <code>INTEGER</code>, <code>LONG</code>, <code>DOUBLE</code>, <code>STRING</code>, <code>BOOLEAN</code>, <code>DATE_TIME</code>, <code>DATE</code> und <code>TIME</code>.
+Mehrfachwerte werden mit <code>array: true</code> und einem <code>delimiter</code> konfiguriert.</p>
+</div>
+<div class="paragraph">
+<p>Leere Werte werden als <code>null</code> übertragen. Soll ein vorhandener Wert bei einem Update aktiv gelöscht werden, kann der
+Null-Platzhalter verwendet werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">attributes:
+  Formular:
+    attribute-name: formular
+    type: STRING
+    default-value: "$null"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Außerdem kann der <code>default-value</code> verwendet werden, um in Felder in <em>arveo</em> mit einem Standardwert zu füllen, die in der CSV.Datei nicht als Spalte enthalten sind.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_csv_import"><strong>CSV-Import</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CSV-Routen stehen unter <code>universal-import-service.csv</code>. Das CSV-Trennzeichen gilt für alle CSV-Routen und wird über
+<code>camel.dataformat.csv.delimiter</code> gesetzt.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  csv:
+    csv-kundenakten:
+      uri: "file:///data/import/csv?antInclude=**/*.csv&amp;moveFailed=.error"
+      statistics: "file:///data/import/csv/statistics"
+
+camel:
+  dataformat:
+    csv:
+      delimiter: ";"</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_csv_simple">CSV Simple</h3>
+<div class="paragraph">
+<p>Simple ist der Standardmodus. Er eignet sich, wenn eine CSV-Zeile ein <em>arveo</em>-Dokument beschreibt.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-csv-mapper:
+    settings:
+      csv-kundenakten:
+        type-definition-name: kundenakte
+        conflict-resolution-strategy: UPDATE_ATTRIBUTES
+        skip-empty-documents: true
+        simple:
+          content:
+            csv-field-name: filename
+            content-path: "/data/import/content"
+            position-mappings:
+              0: content
+          attributes:
+            customer_id:
+              attribute-name: customer_id
+              type: STRING
+              unique-identifier: true
+            created_at:
+              attribute-name: created_at
+              type: DATE_TIME
+              date-time-pattern: "u-M-d H:m:s"
+              zone-id: UTC</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>csv-field-name</code> nennt die CSV-Spalte mit Dateinamen. <code>content-path</code> ist der Ordner, in dem diese Dateien liegen, wenn
+die CSV nur Dateinamen und keine vollständigen Pfade enthält. <code>position-mappings</code> ordnet die Dateiliste Content-
+Elementen zu. Die erste Datei hat Position <code>0</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_csv_counting">CSV Counting</h3>
+<div class="paragraph">
+<p>Counting eignet sich, wenn eine CSV-Zeile mehrere Dateien enthält und jede Datei ein eigenes Dokument werden soll.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-csv-mapper:
+    settings:
+      csv-anlagen:
+        type-definition-name: attachment
+        mode: COUNTING
+        skip-empty-documents: true
+        counting:
+          content:
+            csv-field-name: filename
+            delimiter: ","
+            content-path: "/data/import/content"
+          attributes:
+            source_id:
+              attribute-name: source_id
+              type: STRING
+              suffix: "_${contentElementNumber}"
+              unique-identifier: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>delimiter</code> trennt mehrere Dateinamen innerhalb derselben CSV-Zelle. <code>$+{contentElementNumber}+</code> beginnt bei <code>1</code> und kann
+in <code>prefix</code>, <code>suffix</code> oder <code>default-value</code> genutzt werden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_csv_referencing">CSV Referencing</h3>
+<div class="paragraph">
+<p>Referencing eignet sich, wenn ein fachlicher Datensatz als Container importiert wird und jede Datei als eigenes
+Dokument an diesen Container angehängt wird.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-csv-mapper:
+    settings:
+      csv-vorgang:
+        type-definition-name: vorgang_dokument
+        mode: REFERENCING
+        conflict-resolution-strategy: UPDATE_ATTRIBUTES
+        skip-empty-documents: true
+        referencing:
+          container-type-definition-name: vorgang
+          reference-field-name: vorgang_id
+          content:
+            csv-field-name: filename
+            delimiter: ","
+            content-path: "/data/import/content"
+          attributes:
+            case_id:
+              attribute-name: case_id
+              type: STRING
+              unique-identifier: true
+          document-attributes:
+            case_id:
+              attribute-name: case_id
+              type: STRING</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>container-type-definition-name</code> ist die Type-Definition für den Container. <code>type-definition-name</code> ist die
+Type-Definition für die Dokumente. <code>reference-field-name</code> muss in der Dokument-Type-Definition existieren und den
+Container referenzieren können.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_csf_import"><strong>CSF-Import</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CSF-Dateien sind CSV-ähnliche Saperion-Importdateien mit Header. Der Service liest aus dem Header unter anderem
+Trennzeichen, Datumsformate, DDC-Namen und Schlüsselfelder. Die Datenzeilen werden anschliessend mit dem generischen
+CSV-Mapper konfiguriert.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  csf:
+    csf-incident:
+      uri: "file:///data/import/csf?antInclude=**/*.csf&amp;moveFailed=.error"
+      statistics: "file:///data/import/csf/statistics"
+  type-name-mappings:
+    AMV_TBL: incident</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>type-name-mappings</code> ordnet Saperion-DDC-Namen aus dem CSF-Header einer <em>arveo</em>-Type-Definition zu. Wenn diese Zuordnung
+nicht verwendet wird, muss die Ziel-Type-Definition in der Mapper-Konfiguration angegeben werden.</p>
+</div>
+<div class="paragraph">
+<p>Die Mapper-Konfiguration liegt wie beim CSV-Import unter <code>generic-csv-mapper.settings</code>, verwendet aber die CSF-Route-ID.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-csv-mapper:
+    settings:
+      csf-incident:
+        conflict-resolution-strategy: UPDATE_ATTRIBUTES
+        skip-empty-documents: false
+        simple:
+          content:
+            csv-field-name: "$DOCFILE,$APPFILE"
+            content-path: "/data/import/csf-content"
+            position-mappings:
+              0: docfile
+              1: appfile
+          attributes:
+            SEITEN:
+              attribute-name: pages
+              type: INTEGER
+            ANNR:
+              attribute-name: arbeitnehmer_nummer
+              type: STRING</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>CSF-Schlüsselfelder aus dem Header werden für die Konflikterkennung verwendet. Für fachlich kontrollierte Updates ist
+es trotzdem empfehlenswert, die relevanten Felder auch in der Konfiguration eindeutig zu dokumentieren.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_file_import"><strong>File-Import</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Der File-Import liest einzelne Dateien direkt aus einem Ordner. Metadaten können aus Dateiname, Pfad und
+Dateieigenschaften gewonnen werden.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  file:
+    file-dokumente:
+      uri: "file:///data/import/files?antInclude=**/*.*&amp;moveFailed=.error"
+      statistics-export-cron-schedule: "0 */5 * * * ?"
+      statistics-export-path: "/data/import/files/statistics"
+      statistics-export-file-name: "$routeId$@$timestamp$.statistics"
+  generic-file-mapper:
+    settings:
+      file-dokumente:
+        type-definition-name: files
+        conflict-resolution-strategy: UPDATE_ATTRIBUTES
+        skip-empty-documents: true
+        properties:
+          parent-name:
+            position-in-path: -2
+          language:
+            file-name-regex:
+              expression: "[-,_]([A-Z]{2})$"
+              group: 1
+        attributes:
+          _name:
+            attribute-name: file_name
+            type: STRING
+            unique-identifier: true
+          parent-name:
+            attribute-name: parent_name
+            type: STRING
+          language:
+            attribute-name: language
+            type: STRING</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vordefinierte Datei-Eigenschaften:</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Eigenschaft</th>
+<th class="tableblock halign-left valign-top">Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vollständiger Pfad der Datei.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dateiname inklusive Erweiterung.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_parent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pfad des übergeordneten Ordners.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_length</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dateigrösse in Byte.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_extension</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dateierweiterung.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_last_modified</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zeitpunkt der letzten Änderung im ISO-Format.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Eigene Properties können über Positionen im Pfad, Positionen im Dateinamen oder reguläre Ausdrücke gebildet werden.
+Negative Positionen zählen von rechts. <code>position-in-path: -2</code> steht für den vorletzten Pfadbestandteil.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_saperion_import"><strong>Saperion-Import</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Der Saperion-Import verarbeitet JSON-Dateien aus einem Saperion-STK-Export. Jede JSON-Datei enthält die Revisionen
+eines Saperion-Dokuments. Der Service kann diese Revisionen als <em>arveo</em>-Historie importieren.</p>
+</div>
+<div class="paragraph">
+<p>Zuerst wird die Route konfiguriert:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  saperion:
+    saperion-simple:
+      uri: "file:///data/import/saperion?antInclude=**/*.json&amp;moveFailed=.error"
+      statistics: "file:///data/import/saperion/statistics"</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_saperion_simple">Saperion Simple</h3>
+<div class="paragraph">
+<p>Simple legt pro Saperion-Dokument ein <em>arveo</em>-Dokument mit Historie an.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-saperion-mapper:
+    simple:
+      saperion-simple:
+        type-definition: example_v81
+        document-id-attribute: saperion_id
+        revision-id-attribute: saperion_revision_id
+        attribute-field-mappings:
+          EX8_DOCNR: document_number
+          EX8_DOCNAME: document_name
+          EX8_ARCDATE: document_date
+          EX8_COMMENT: comment
+          EX8_LANGUAGE: language
+        variable-mappings:
+          SYSCLIENTNAME: sys_client_name
+          SVPARTID: sv_part_id
+        content-element-position-mappings:
+          1: content</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>attribute-field-mappings</code> ordnet Saperion-DDC-Felder <em>arveo</em>-Attributen zu. <code>variable-mappings</code> ordnet Saperion-Variablen
+<em>arveo</em>-Variablen zu. <code>content-element-position-mappings</code> ordnet Content aus der Saperion-Struktur Content-Elementen in
+<em>arveo</em> zu. Die Positionen beginnen hier bei <code>1</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_saperion_referencing">Saperion Referencing</h3>
+<div class="paragraph">
+<p>Referencing legt einen Container mit Historie und separate Dokumente für die Content-Elemente an.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">universal-import-service:
+  generic-saperion-mapper:
+    referencing:
+      saperion-referencing:
+        type-definition: example_v8_containers
+        document-type-definition: example_v8_documents
+        document-id-attribute: saperion_id
+        revision-id-attribute: saperion_revision_id
+        reference-field-name: container_id
+        version-number-array-field-name: version_numbers
+        attribute-field-mappings:
+          EX8_DOCNR: document_number
+          EX8_DOCNAME: document_name
+          EX8_ARCDATE: document_date
+          EX8_COMMENT: comment
+          EX8_LANGUAGE: language
+        variable-mappings:
+          SYSCLIENTNAME: sys_client_name
+          SVPARTID: sv_part_id</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>type-definition</code> ist die Container-Type-Definition. <code>document-type-definition</code> ist die Type-Definition für die
+Content-Dokumente. <code>reference-field-name</code> muss als Fremdschlüssel im Dokumenttyp vorhanden sein.
+<code>version-number-array-field-name</code> muss ein Integer-Array-Feld im Dokumenttyp sein. Darin wird gespeichert, in welchen
+Containerversionen das jeweilige Dokument verwendet wird.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_validierung_vor_dem_start"><strong>Validierung vor dem Start</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vor dem Start eines Imports sollte diese Checkliste abgearbeitet werden:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><input type="checkbox" data-item-complete="0"> Jede Route-ID ist eindeutig und stimmt exakt mit der passenden Mapper-Konfiguration überein.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Eingangsordner, Content-Ordner, Statistikordner und <code>.error</code>-Ordner sind vorhanden oder können vom Service angelegt werden.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Die Ziel-Type-Definitions existieren in <em>arveo</em>.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Alle konfigurierten <code>attribute-name</code>-Werte existieren in der jeweiligen Type-Definition.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Content-Elementnamen wie <code>content</code>, <code>docfile</code> oder <code>appfile</code> existieren in der Dokument-Type-Definition.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Datums-, Zeit- und Zahlenformate passen zu den Quelldaten.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Für Updates oder Overwrites ist mindestens ein eindeutiges Attribut mit <code>unique-identifier: true</code> konfiguriert.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Die Konfliktstrategie ist fachlich freigegeben.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Bei Saperion Referencing existieren Fremdschlüssel- und Versionsnummernfelder mit passenden Typen.</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> Ein Probelauf mit wenigen Dateien wurde durchgeführt und die Statistikdateien wurden geprüft.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ergebnis_kontrollieren"><strong>Ergebnis kontrollieren</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CSV- und CSF-Importe schreiben pro verarbeiteter Datei eine <code>.statistics</code>-Datei in den konfigurierten Statistikordner.
+Sie enthält Verarbeitungszeit, Gesamtanzahl, erfolgreiche, fehlgeschlagene und uebersprungene Zeilen.</p>
+</div>
+<div class="paragraph">
+<p>File-Importe können Statistikdateien periodisch exportieren. Dafür müssen
+<code>statistics-export-cron-schedule</code> und <code>statistics-export-path</code> gesetzt sein.</p>
+</div>
+<div class="paragraph">
+<p>Fehlgeschlagene Eingangsdateien werden in den mit <code>moveFailed</code> konfigurierten Ordner verschoben. Dieser Ordner ist der
+erste Anlaufpunkt für fachliche Datenfehler, fehlende Content-Dateien oder nicht passende Formate.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_typische_fehlerbilder"><strong>Typische Fehlerbilder</strong></h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Symptom</th>
+<th class="tableblock halign-left valign-top">Wahrscheinliche Ursache</th>
+<th class="tableblock halign-left valign-top">Prüfung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Es wird nichts importiert.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Route findet keine Dateien oder Route-ID passt nicht zur Mapper-Konfiguration.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uri</code>, <code>antInclude</code> und Route-ID prüfen.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datei landet in <code>.error</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quelle passt nicht zur Konfiguration oder ein Zielattribut fehlt.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log und Statistikdatei pruefen, danach Attributnamen und Typen vergleichen.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datumswerte sind leer oder fehlerhaft.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>date-pattern</code>, <code>time-pattern</code>, <code>date-time-pattern</code> oder <code>zone-id</code> passen nicht.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format anhand einer echten Quellzeile prüfen.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Updates erzeugen neue Objekte.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eindeutige Kennung fehlt oder Quellwert stimmt nicht mit bestehenden Daten überein.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>unique-identifier</code> und Konfliktstrategie prüfen.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content fehlt.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>csv-field-name</code>, <code>content-path</code>, Positionsmapping oder Content-Elementname ist falsch.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dateinamen in Quelle und Zielordner vergleichen.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Saperion-Content wird falsch zugeordnet.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content-Position oder Referencing-Feld passt nicht zum Zielmodell.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content-element-position-mappings</code>, <code>reference-field-name</code> und Ziel-Type-Definition prüfen.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_service_konfigurieren_und_starten"><strong>Service konfigurieren und starten</strong></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Neben den Import-Routen braucht der Universal Import Service eine Basis-Konfiguration für den Betrieb. Diese
+Konfiguration liegt üblicherweise in einer <code>application.yaml</code>, entweder lokal im Arbeitsverzeichnis, im Unterordner
+<code>config</code>, über Spring Cloud Config oder über die Deployment-Plattform.</p>
+</div>
+<div class="paragraph">
+<p>Eine minimale lokale Konfiguration besteht aus:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">server:
+  port: 8080
+
+logging:
+  file:
+    name: "logs/universal-import-service.log"
+  level:
+    root: INFO
+    de.eitco: INFO</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der Service bietet eine Monitoring-Schnittstelle über HTTP(s) an. Der Port, auf dem die Schnittstelle erreichbar ist,
+kann mit dem Parameter <code>server.port</code> konfiguriert werden. Mit den Parametern unter <code>logging</code> kann man den Ort der
+Logdatei und die Art der protokollierten Meldungen konfigurieren.</p>
+</div>
+<div class="sect2">
+<h3 id="_service_discovery">Service-Discovery</h3>
+<div class="paragraph">
+<p>Der Service muss andere <em>arveo</em>-Services (insbesondere den Content Repository Service) finden, um Dokumente und Container
+ablegen zu können.</p>
+</div>
+<div class="paragraph">
+<p>Es gibt zwei unterstützte Betriebsarten:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Kubernetes Service-Discovery</strong> – wenn der Service in Kubernetes betrieben wird, kann er die Plattform-Service-Discovery
+verwenden. Die Ziel-Services werden dabei über die Kubernetes-Mechanismen (Services/Endpoints) aufgelöst. Die
+Kubernetes-Konfiguration der Zielplattform muss mit der Betriebsdokumentation abgeglichen werden.</p>
+</li>
+<li>
+<p><strong>Simple LoadBalancer</strong> – in allen anderen Umgebungen (z.B. klassische Installationen auf VMs oder lokale Setups) muss die
+statische Discovery über den Simple LoadBalancer von Spring Cloud verwendet werden. Dabei wird jede zu verwendende
+Instanz eines Ziel-Service einzeln eingetragen.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_beispiel_simple_loadbalancer">Beispiel: Simple LoadBalancer</h4>
+<div class="paragraph">
+<p>Beim Simple LoadBalancer werden die Ziel-Services unter <code>spring.cloud.discovery.client.simple.instances</code> konfiguriert.
+Der Schlüssel unter <code>instances</code> ist der logische Service-Name, unter dem der Service angesprochen wird. Für den
+Dokumentenimport ist das der <code>content-repository-service</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            content-repository-service:
+              - uri: "http://127.0.0.1:39001"
+                metadata:
+                  api-version: 1.0.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>uri</code> zeigt auf die Adresse der Ziel-Instanz. Über <code>metadata.api-version</code> wird die passende API-Version des Ziel-Service
+angegeben.</p>
+</div>
+<div class="paragraph">
+<p>Sollen mehrere Instanzen desselben Service für die Lastverteilung genutzt werden, können unter dem Service-Namen mehrere
+Einträge angegeben werden. Der LoadBalancer verteilt die Aufrufe dann auf die gelisteten Instanzen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            content-repository-service:
+              - uri: "http://10.0.0.11:39001"
+                metadata:
+                  api-version: 1.0.0
+              - uri: "http://10.0.0.12:39001"
+                metadata:
+                  api-version: 1.0.0</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_oauth2">OAuth2</h3>
+<div class="paragraph">
+<p>Der Universal Import Service verwendet OAuth2 für gesicherte API-Zugriffe und für technische Aufrufe anderer <em>arveo</em>-
+Services. Für Consultants sind zwei Blöcke wichtig:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 46%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Block</th>
+<th class="tableblock halign-left valign-top">Zweck</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.security.oauth2.resourceserver.jwt.issuer-uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validiert eingehende Tokens, wenn geschützte Endpunkte des Import Service aufgerufen werden.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.security.oauth2.client.registration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Konfiguriert den technischen Client, mit dem der Service andere <em>arveo</em>-Services aufruft.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Beispiel mit Client-Credentials:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "https://keycloak.example.local/realms/arveo"
+      client:
+        registration:
+          keycloak-client-credentials:
+            provider: keycloak
+            client-id: "universal-import-service"
+            client-secret: "${UIS_CLIENT_SECRET}"
+            authorization-grant-type: "client_credentials"
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: "https://keycloak.example.local/realms/arveo"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>issuer-uri</code> muss zum Realm der Zielumgebung passen. <code>client-id</code> und <code>client-secret</code> kommen aus dem Identity Provider.
+Der technische Client braucht die Berechtigungen, um Dokumente, Container, Content und bei Saperion-Importen auch
+Versionen in <em>arveo</em> anzulegen oder zu aktualisieren. Secrets sollten nicht fest in die YAML-Datei geschrieben werden,
+sondern über Umgebungsvariablen, Vault oder die Secret-Verwaltung der Plattform bereitgestellt werden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_startvarianten">Startvarianten</h3>
+<div class="paragraph">
+<p>Als ZIP-Artefakt enthält der Service eine ausführbare JAR-Datei und einen Windows-Service-Wrapper. Für einen
+manuellen Start im Installationsverzeichnis reicht:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">java -jar universal-import-service.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Spring Boot liest dabei unter anderem <code>application.yaml</code> im Arbeitsverzeichnis und im Unterordner <code>config</code>. Für eine
+explizite externe Konfiguration kann beim Start ein zusätzlicher Konfigurationspfad angegeben werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">java -jar universal-import-service.jar --spring.config.additional-location=file:./config/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unter Windows kann der mitgelieferte Service-Wrapper verwendet werden. Die Datei <code>universal-import-service.xml</code>
+beschreibt den Windows-Dienst und startet die JAR im Installationsverzeichnis. Anpassungen wie Java-Optionen,
+Arbeitsverzeichnis oder Logpfad werden dort vorgenommen.</p>
+</div>
+<div class="paragraph">
+<p>In Container-Deployments werden dieselben YAML-Einstellungen meist über ConfigMaps, Secrets und Umgebungsvariablen
+bereitgestellt. Wichtig ist, dass Import-Eingangsordner, Content-Ordner, Statistikordner und <code>.error</code>-Ordner als
+persistente Volumes eingebunden sind, wenn Dateien nach einem Neustart erhalten bleiben müssen.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2026-09-01 12:53:40 UTC
+</div>
+</div>
+</body>
+</html>
