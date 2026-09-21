@@ -350,6 +350,7 @@ a, a:hover, a:focus {
 <li><a href="#jobs">System jobs</a>
 <ul class="sectlevel3">
 <li><a href="#_using_external_job_service_instances">Using external Job Service instances</a></li>
+<li><a href="#_asynchronous_trigger_creation_with_retry">Asynchronous trigger creation with retry</a></li>
 <li><a href="#_archive_consistency_check_job">Archive consistency check job</a></li>
 <li><a href="#_delete_abandoned_content_elements_job">Delete abandoned content elements job</a></li>
 <li><a href="#_retry_renditions_job">Retry renditions job</a></li>
@@ -505,7 +506,7 @@ a, a:hover, a:focus {
 <li><a href="#compatibility-list">Compatibility List</a></li>
 <li><a href="#release-notes">Release Notes</a>
 <ul class="sectlevel3">
-<li><a href="#_release_notes_28_1_1_snapshot_september_17_2026">Release notes 28.1.1-SNAPSHOT (September 17, 2026)</a></li>
+<li><a href="#_release_notes_28_1_1_snapshot_september_21_2026">Release notes 28.1.1-SNAPSHOT (September 21, 2026)</a></li>
 <li><a href="#_release_notes_28_1_0_september_01_2026">Release notes 28.1.0 (September 01, 2026)</a></li>
 <li><a href="#_release_notes_28_0_0_august_05_2026">Release notes 28.0.0 (August 05, 2026)</a></li>
 <li><a href="#_release_notes_27_0_0_march_11_2026">Release notes 27.0.0 (March 11, 2026)</a></li>
@@ -8084,6 +8085,29 @@ configuration file for the Job Service.
 </div>
 </div>
 <div class="sect3">
+<h4 id="_asynchronous_trigger_creation_with_retry"><a class="anchor" href="#_asynchronous_trigger_creation_with_retry"></a><a class="link" href="#_asynchronous_trigger_creation_with_retry">Asynchronous trigger creation with retry</a></h4>
+<div class="paragraph">
+<p>When using an external Job Service, the triggers for the system jobs are created asynchronously when the service starts. This allows the application to start immediately without waiting for the Content Repository Service to respond. If the Content Repository Service is not yet available when trigger creation is attempted, the service will automatically retry at a configurable interval until the maximum number of attempts is reached.</p>
+</div>
+<div class="paragraph">
+<p>The retry behaviour for trigger creation is configured under <code>ecr.server.jobs.trigger-creation</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Trigger creation retry configuration (defaults shown)</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">ecr</span><span class="pi">:</span>
+  <span class="na">server</span><span class="pi">:</span>
+    <span class="na">jobs</span><span class="pi">:</span>
+      <span class="na">trigger-creation</span><span class="pi">:</span>
+        <span class="na">retry-interval</span><span class="pi">:</span> <span class="s">10s</span>
+        <span class="na">max-attempts</span><span class="pi">:</span> <span class="s">30</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default configuration retries every 10 seconds for up to 30 attempts, resulting in a total retry window of approximately 5 minutes. This behaviour can be adjusted by modifying the <code>retry-interval</code> and <code>max-attempts</code> parameters to match your deployment topology and startup timing requirements.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_archive_consistency_check_job"><a class="anchor" href="#_archive_consistency_check_job"></a><a class="link" href="#_archive_consistency_check_job">Archive consistency check job</a></h4>
 <div class="paragraph">
 <p>arveo provides a system job that can be used to scan a storage profile for content elements that are either missing or no longer referenced by an entity in the database (abandoned content). This job is intended to be triggered manually to check the consistency of an archive. Found missing and abandoned content IDs are written to database tables.</p>
@@ -11464,6 +11488,18 @@ in detail in the Open Telemetry documentation.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If set to false, the job will not be scheduled.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger-creation.max-attempts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of attempts to create the triggers for the system jobs before giving up.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger-creation.retry-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interval to wait between retry attempts when creating triggers for the system jobs fails.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10s</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
@@ -22598,7 +22634,7 @@ content repository service instance:</p>
 <pre class="rouge highlight"><code data-lang="java"><span class="kd">private</span> <span class="kd">final</span> <span class="nc">ContentRepositoryResources</span><span class="o">.</span><span class="na">Factory</span> <span class="n">factory</span> <span class="o">=</span>
     <span class="nc">ContentRepositoryResources</span><span class="o">.</span><span class="na">Factory</span><span class="o">.</span><span class="na">load</span><span class="o">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="kd">private</span> <span class="kd">final</span> <span class="nc">ContentRepositoryResources</span> <span class="n">client</span> <span class="o">=</span>
-    <span class="n">factory</span><span class="o">.</span><span class="na">getClient</span><span class="o">(</span><span class="s">"http://127.0.0.1:"</span> <span class="o">+</span> <span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"ecr.service.port"</span><span class="o">));</span> <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+    <span class="n">factory</span><span class="o">.</span><span class="na">getClient</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"ecr.service.port"</span><span class="o">));</span> <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -23681,7 +23717,15 @@ via the <em>resource-owner-password</em> flow:</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="csharp"><span class="n">HttpClient</span> <span class="n">tokenClient</span> <span class="p">=</span> <span class="k">new</span><span class="p">();</span>
 <span class="n">Task</span><span class="p">&lt;</span><span class="n">DiscoveryDocumentResponse</span><span class="p">&gt;</span> <span class="n">discoveryDocumentTask</span> <span class="p">=</span>
-    <span class="n">tokenClient</span><span class="p">.</span><span class="nf">GetDiscoveryDocumentAsync</span><span class="p">(</span><span class="n">issuerUri</span><span class="p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="n">tokenClient</span><span class="p">.</span><span class="nf">GetDiscoveryDocumentAsync</span><span class="p">(</span><span class="k">new</span> <span class="n">DiscoveryDocumentRequest</span>
+    <span class="p">{</span>
+        <span class="n">Address</span> <span class="p">=</span> <span class="n">issuerUri</span><span class="p">,</span>
+        <span class="n">Policy</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DiscoveryPolicy</span>
+        <span class="p">{</span>
+            <span class="c1">// the test IDP is served via plain HTTP on a non-loopback host name</span>
+            <span class="n">RequireHttps</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">Uri</span><span class="p">(</span><span class="n">issuerUri</span><span class="p">).</span><span class="n">Scheme</span> <span class="p">==</span> <span class="n">Uri</span><span class="p">.</span><span class="n">UriSchemeHttps</span>
+        <span class="p">}</span>
+    <span class="p">});</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
 <span class="n">discoveryDocumentTask</span><span class="p">.</span><span class="nf">Wait</span><span class="p">();</span>
 
@@ -23728,6 +23772,20 @@ via the <em>resource-owner-password</em> flow:</p>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The resulting access token is returned (and cached for subsequent calls).</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>IdentityModel</code> rejects discovery over plain HTTP unless the IDP is addressed via <code>localhost</code>. Since the test
+environment reaches Keycloak under <code>host.docker.internal</code>, <code>RequireHttps</code> is derived from the scheme of the issuer
+URI. In a productive environment the IDP is addressed via HTTPS and the default policy applies.
+</td>
 </tr>
 </table>
 </div>
@@ -25620,24 +25678,7 @@ about the type definition from the event and forwards the original event to a we
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kn">package</span> <span class="nn">scripts.routes</span>
-
-<span class="kn">import</span> <span class="nn">org.apache.camel.builder.RouteBuilder</span>
-
-<span class="k">return</span> <span class="k">new</span> <span class="nf">RouteBuilder</span><span class="o">()</span> <span class="o">{</span>
-
-    <span class="nd">@Override</span>
-    <span class="kt">void</span> <span class="nf">configure</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
-
-        <span class="n">from</span><span class="o">(</span><span class="s">"activemq6:queue:after-create-document-to-webhook"</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">unmarshal</span><span class="o">(</span><span class="s">"ecrEvent"</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"typeDefinition"</span><span class="o">,</span> <span class="n">simple</span><span class="o">(</span><span class="s">"\${body.typeDefinition.alias.id}"</span><span class="o">))</span> <i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"CamelHttpMethod"</span><span class="o">,</span> <span class="n">constant</span><span class="o">(</span><span class="s">"POST"</span><span class="o">))</span>
-                <span class="o">.</span><span class="na">marshal</span><span class="o">(</span><span class="s">"ecrEvent"</span><span class="o">)</span> <i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="o">.</span><span class="na">toD</span><span class="o">(</span><span class="s">"http://localhost:10101/document-webhook?typeDefinition=\${header.typeDefinition}"</span><span class="o">)</span> <i class="conum" data-value="4"></i><b>(4)</b>
-                <span class="o">.</span><span class="na">routeId</span><span class="o">(</span><span class="s">"document-webhook-route"</span><span class="o">)</span>
-    <span class="o">}</span>
-<span class="o">}</span></code></pre>
+<pre class="rouge highlight"><code data-lang="java"><span class="nc">Unresolved</span> <span class="n">directive</span> <span class="n">in</span> <span class="n">developer</span><span class="o">/</span><span class="n">integration</span><span class="o">-</span><span class="n">service</span><span class="o">.</span><span class="na">adoc</span> <span class="o">-</span> <span class="nl">include:</span><span class="o">:../../../../../../</span><span class="n">test</span><span class="o">/</span><span class="n">system</span><span class="o">-</span><span class="n">test</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="nc">DocumentWebhookRoute</span><span class="o">.</span><span class="na">groovy</span><span class="o">[]</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -25670,40 +25711,7 @@ Each request is authenticated using a Bearer token retrieved from the configured
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kn">package</span> <span class="nn">scripts.routes</span>
-
-<span class="kn">import</span> <span class="nn">de.eitco.ecr.common.container.Container</span>
-<span class="kn">import</span> <span class="nn">org.apache.camel.builder.RouteBuilder</span>
-
-<span class="kn">import</span> <span class="nn">java.time.LocalDate</span>
-<span class="kn">import</span> <span class="nn">java.time.format.DateTimeFormatter</span>
-
-<span class="k">return</span> <span class="k">new</span> <span class="nf">RouteBuilder</span><span class="o">()</span> <span class="o">{</span>
-
-    <span class="nd">@Override</span>
-    <span class="kt">void</span> <span class="nf">configure</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
-
-        <span class="n">from</span><span class="o">(</span><span class="s">"activemq6:queue:after-create-container-to-webhook"</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">unmarshal</span><span class="o">(</span><span class="s">"ecrEvent"</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"typeDefinition"</span><span class="o">,</span> <span class="n">simple</span><span class="o">(</span><span class="s">"\${body.typeDefinition.alias.id}"</span><span class="o">))</span> <i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="n">simple</span><span class="o">(</span><span class="s">"\${body.containers}"</span><span class="o">))</span> <i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="o">.</span><span class="na">process</span> <span class="o">{</span> <i class="conum" data-value="4"></i><b>(4)</b>
-                    <span class="nc">Container</span> <span class="n">src</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">in</span><span class="o">.</span><span class="na">body</span> <span class="n">as</span> <span class="nc">Container</span>
-                    <span class="n">def</span> <span class="n">target</span> <span class="o">=</span> <span class="o">[</span>
-                            <span class="n">id</span> <span class="o">:</span> <span class="n">src</span><span class="o">?.</span><span class="na">identifier</span><span class="o">?.</span><span class="na">value</span><span class="o">()?.</span><span class="na">toString</span><span class="o">(),</span>
-                            <span class="n">name</span> <span class="o">:</span> <span class="n">src</span><span class="o">?.</span><span class="na">attributes</span><span class="o">?.</span><span class="na">get</span><span class="o">(</span><span class="s">"name"</span><span class="o">),</span>
-                            <span class="n">birthday</span> <span class="o">:</span> <span class="nc">DateTimeFormatter</span><span class="o">.</span><span class="na">ISO_DATE</span><span class="o">.</span><span class="na">format</span><span class="o">((</span><span class="nc">LocalDate</span><span class="o">)</span> <span class="n">src</span><span class="o">?.</span><span class="na">attributes</span><span class="o">?.</span><span class="na">get</span><span class="o">(</span><span class="s">"birthday"</span><span class="o">))</span>
-                    <span class="o">]</span>
-                    <span class="n">it</span><span class="o">.</span><span class="na">in</span><span class="o">.</span><span class="na">body</span> <span class="o">=</span> <span class="n">target</span>
-                <span class="o">}</span>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"CamelHttpMethod"</span><span class="o">,</span> <span class="n">constant</span><span class="o">(</span><span class="s">"POST"</span><span class="o">))</span>
-                <span class="o">.</span><span class="na">marshal</span><span class="o">().</span><span class="na">json</span><span class="o">()</span> <i class="conum" data-value="5"></i><b>(5)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"Authorization"</span><span class="o">).</span><span class="na">simple</span><span class="o">(</span><span class="s">"Bearer \${bean:oAuth2TokenManager.getAccessToken}"</span><span class="o">)</span> <i class="conum" data-value="6"></i><b>(6)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"Content-Type"</span><span class="o">,</span> <span class="n">constant</span><span class="o">(</span><span class="s">"application/json"</span><span class="o">))</span>
-                <span class="o">.</span><span class="na">toD</span><span class="o">(</span><span class="s">"http://localhost:10102/container-webhook?typeDefinition=\${header.typeDefinition}"</span><span class="o">)</span> <i class="conum" data-value="7"></i><b>(7)</b>
-                <span class="o">.</span><span class="na">routeId</span><span class="o">(</span><span class="s">"container-webhook-route"</span><span class="o">)</span>
-    <span class="o">}</span>
-<span class="o">}</span></code></pre>
+<pre class="rouge highlight"><code data-lang="java"><span class="nc">Unresolved</span> <span class="n">directive</span> <span class="n">in</span> <span class="n">developer</span><span class="o">/</span><span class="n">integration</span><span class="o">-</span><span class="n">service</span><span class="o">.</span><span class="na">adoc</span> <span class="o">-</span> <span class="nl">include:</span><span class="o">:../../../../../../</span><span class="n">test</span><span class="o">/</span><span class="n">system</span><span class="o">-</span><span class="n">test</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="nc">ContainerWebhookRoute</span><span class="o">.</span><span class="na">groovy</span><span class="o">[]</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -26543,7 +26551,7 @@ AWS S3</p></td>
 <div class="sect2">
 <h3 id="release-notes"><a class="anchor" href="#release-notes"></a><a class="link" href="#release-notes">Release Notes</a></h3>
 <div class="sect3">
-<h4 id="_release_notes_28_1_1_snapshot_september_17_2026"><a class="anchor" href="#_release_notes_28_1_1_snapshot_september_17_2026"></a><a class="link" href="#_release_notes_28_1_1_snapshot_september_17_2026">Release notes 28.1.1-SNAPSHOT (September 17, 2026)</a></h4>
+<h4 id="_release_notes_28_1_1_snapshot_september_21_2026"><a class="anchor" href="#_release_notes_28_1_1_snapshot_september_21_2026"></a><a class="link" href="#_release_notes_28_1_1_snapshot_september_21_2026">Release notes 28.1.1-SNAPSHOT (September 21, 2026)</a></h4>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -28762,7 +28770,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-09-17 06:33:16 UTC
+Last updated 2026-09-21 07:57:37 UTC
 </div>
 </div>
 <style>
