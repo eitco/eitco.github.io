@@ -460,26 +460,7 @@ synchronization mechanism. Hence all JobService instances must have access to ve
 <div class="listingblock">
 <div class="title">Default JobService Configuration</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  quartz:
-    job-store-type: "jdbc"
-    jdbc:
-      initialize-schema: "NEVER"
-    properties:
-      org:
-        quartz:
-          jobStore:
-            driverDelegateClass: "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate"
-            isClustered: true
-            tablePrefix: "ECQZ_"
-          scheduler:
-            instanceId: "AUTO"
-            instanceName: "job-service-scheduler"
-            jmx:
-              export: false
-          threadPool:
-            threadCount: 50
-            makeThreadsDaemons: true</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">Unresolved directive in clustering.adoc - include::../../../../packaging/configuration/src/main/resource-templates/application.yaml[tag=cluster-config]</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -625,7 +606,7 @@ This can be achieved by setting the configuration option <code>spring.quartz.sta
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-09-12 02:51:08 UTC
+Last updated 2026-09-22 02:51:03 UTC
 </div>
 </div>
 </body>
