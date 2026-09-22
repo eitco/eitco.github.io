@@ -5,6 +5,7 @@ Here you can find documentation for any version of the EITCO Job Service deploye
 
  * [13.0.1](archive/13.0.1)
  * [13.0.0](archive/13.0.0)
+ * [12.2.2](archive/12.2.2)
  * [12.2.1](archive/12.2.1)
  * [12.2.0](archive/12.2.0)
  * [12.1.2](archive/12.1.2)
