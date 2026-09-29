@@ -506,7 +506,7 @@ a, a:hover, a:focus {
 <li><a href="#compatibility-list">Compatibility List</a></li>
 <li><a href="#release-notes">Release Notes</a>
 <ul class="sectlevel3">
-<li><a href="#_release_notes_28_1_1_snapshot_september_23_2026">Release notes 28.1.1-SNAPSHOT (September 23, 2026)</a></li>
+<li><a href="#_release_notes_28_1_1_snapshot_september_29_2026">Release notes 28.1.1-SNAPSHOT (September 29, 2026)</a></li>
 <li><a href="#_release_notes_28_1_0_september_01_2026">Release notes 28.1.0 (September 01, 2026)</a></li>
 <li><a href="#_release_notes_28_0_0_august_05_2026">Release notes 28.0.0 (August 05, 2026)</a></li>
 <li><a href="#_release_notes_27_0_0_march_11_2026">Release notes 27.0.0 (March 11, 2026)</a></li>
@@ -12396,6 +12396,12 @@ in detail in the Open Telemetry documentation.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">connection-request-timeout-seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum time to wait for a connection to be leased from the pool (relevant when the pool is exhausted). The default of 180 seconds matches the Apache HttpClient library default.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>180</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">connection-timeout-seconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the timeout after which a connection attempt will fail.</p></td>
@@ -12428,14 +12434,20 @@ in detail in the Open Telemetry documentation.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">request-timeout-seconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum time to wait for a response.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">response-timeout-seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum time to wait for a response after the request has been sent. A negative value (the default) leaves it unset, matching the Apache HttpClient library default - the response wait is then bounded only by the socket read timeout.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket-timeout-seconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the time to wait for a socket connection.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket.backlog-size</p></td>
@@ -12476,8 +12488,8 @@ in detail in the Open Telemetry documentation.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket.so-timeout</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Socket timeout (SO_TIMEOUT) - the maximum period of inactivity between two consecutive data packets. The default value is 3 minutes.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Socket timeout (SO_TIMEOUT) - the maximum period of inactivity between two consecutive data packets. The default value is 10 minutes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10m</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket.socks-proxy-address</p></td>
@@ -26452,7 +26464,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.2-SNAPSHOT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">TUS Upload Service</p></td>
@@ -26551,7 +26563,7 @@ AWS S3</p></td>
 <div class="sect2">
 <h3 id="release-notes"><a class="anchor" href="#release-notes"></a><a class="link" href="#release-notes">Release Notes</a></h3>
 <div class="sect3">
-<h4 id="_release_notes_28_1_1_snapshot_september_23_2026"><a class="anchor" href="#_release_notes_28_1_1_snapshot_september_23_2026"></a><a class="link" href="#_release_notes_28_1_1_snapshot_september_23_2026">Release notes 28.1.1-SNAPSHOT (September 23, 2026)</a></h4>
+<h4 id="_release_notes_28_1_1_snapshot_september_29_2026"><a class="anchor" href="#_release_notes_28_1_1_snapshot_september_29_2026"></a><a class="link" href="#_release_notes_28_1_1_snapshot_september_29_2026">Release notes 28.1.1-SNAPSHOT (September 29, 2026)</a></h4>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -26587,6 +26599,12 @@ AWS S3</p></td>
 </li>
 <li>
 <p>ECR-1909: ECR-1909 case-insensitive search does not find umlauts::</p>
+</li>
+<li>
+<p>ECR-1919: The server now re-creates reset renditions when the server loads the rendition directly using readContent.</p>
+</li>
+<li>
+<p>ECR-1920: The server now marks obsolete content elements of re-created renditions for asynchronous deletion.</p>
 </li>
 </ul>
 </div>
@@ -28773,7 +28791,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-09-23 10:28:03 UTC
+Last updated 2026-09-29 06:59:43 UTC
 </div>
 </div>
 <style>
