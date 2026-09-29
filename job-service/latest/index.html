@@ -9,9 +9,11 @@
 <style>
 @import "https://eitco.github.io/eitco.css";
 
+
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
+
 .hidden {
 	display: none;
 }
@@ -42,8 +44,11 @@
 	color: #ffffff;
 }
 
+
 </style>
+
 <script type="text/javascript">
+
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -158,7 +163,9 @@ window.onload = function() {
 	globalSwitch();
 };
 
+
 </script>
+
 
 </head>
 <body class="article toc2 toc-left">
@@ -186,6 +193,11 @@ window.onload = function() {
 </ul>
 </li>
 <li><a href="#_references"><strong>References</strong></a></li>
+<li><a href="#_release_notes">Release Notes</a>
+<ul class="sectlevel1">
+<li><a href="#_release_notes_14_0_0_september_29_2026">Release notes 14.0.0 (September 29, 2026)</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -603,10 +615,175 @@ This can be achieved by setting the configuration option <code>spring.quartz.sta
 </div>
 </div>
 </div>
+<h1 id="_release_notes" class="sect0">Release Notes</h1>
+<div class="sect1">
+<h2 id="_release_notes_14_0_0_september_29_2026">Release notes 14.0.0 (September 29, 2026)</h2>
+<div class="sectionbody">
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>UPG-102: <strong>Restructured the module layout</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>All backend modules now live below <code>backend</code>, the delivery artifacts below <code>packaging</code>.
+This changes Maven coordinates and Java packages (see migration guide below). The groupId <code>de.eitco.commons</code> is unchanged.</p>
+</div>
+<div class="paragraph">
+<p><strong>Migration guide: delivery artifacts (<code>packaging</code>)</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Artifact up to 13.0.1</th>
+<th class="tableblock halign-left valign-top">Artifact from 14.0.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service-http-client-spring-boot-starter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service-sdk-http-spring</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service-http-client-apache</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service-sdk-http-apache</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service-embedded-spring-boot-starter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service-sdk-embedded</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service-standalone</code> (and <code>cmn-job-service-configuration</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cmn-job-service</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The sdk artifacts bring in all required client modules transitively; do not depend on the modules below directly.
+If you did, note the renames: <code>cmn-job-service-common</code> &#8594; <code>cmn-job-service-api</code>, <code>cmn-job-service-http-client</code> &#8594; <code>cmn-job-service-client-http</code>, <code>cmn-job-service-core</code> and <code>cmn-job-service-http</code> &#8594; <code>cmn-job-service-implementation</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Migration guide: model classes (<code>cmn-job-service-model</code>)</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The artifactId of the model module is unchanged, its classes (<code>CronTriggerModel</code>, <code>JobDetailModel</code>, <code>JobKeyModel</code>, <code>KeyModel</code>, <code>RunningJobModel</code>, <code>SchedulerState</code>, <code>SimpleTriggerModel</code>, <code>TriggerKeyModel</code>, <code>TriggerModel</code>) keep the package <code>de.eitco.commons.job.service.common</code>. No import changes are required for them.</p>
+</li>
+<li>
+<p><code>JobServiceModel</code> has been removed.</p>
+</li>
+<li>
+<p>The module no longer depends on <code>cmn-commons-lang</code>. If your code relied on it transitively, declare it explicitly.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Migration guide: Java packages</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Up to 13.0.1</th>
+<th class="tableblock halign-left valign-top">From 14.0.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.common.SchedulerResource</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.api.SchedulerResource</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.common.InfoResource</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.api.InfoResource</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.common.JobServiceConstants</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.api.JobServiceConstants</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generated clients in <code>de.eitco.commons.job.service.common</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generated clients in <code>de.eitco.commons.job.service.api</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.HttpClientConfiguration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.api.HttpClientConfiguration</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.client.starter.JobServiceClientAutoConfiguration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.http.spring.JobServiceClientAutoConfiguration</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.client.starter.JobServiceEmbeddedClientAutoConfiguration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.embedded.JobServiceEmbeddedClientAutoConfiguration</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.core.<strong></code>, <code>de.eitco.commons.job.service.http.</strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>de.eitco.commons.job.service.implementation.*</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Checklist</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Replace the artifactIds in your <code>pom.xml</code> according to the first table.</p>
+</li>
+<li>
+<p>Adjust imports of the moved classes; the model classes need no change.</p>
+</li>
+<li>
+<p>Update <code>@Import</code>, <code>spring.autoconfigure.exclude</code> or similar references to the renamed auto-configuration classes.</p>
+</li>
+<li>
+<p>If you deploy the service, use the artifact <code>cmn-job-service</code> instead of <code>cmn-job-service-standalone</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-09-29 13:25:04 UTC
+Last updated 2026-09-29 16:09:21 +0200
 </div>
 </div>
 </body>
