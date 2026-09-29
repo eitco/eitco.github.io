@@ -164,7 +164,7 @@ window.onload = function() {
 <body class="article toc2 toc-left">
 <div id="header">
 <div id="toc" class="toc2">
-<div id="toctitle">EITCO Job Service 13.0.1</div>
+<div id="toctitle">EITCO Job Service 14.0.0</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction"><strong>Introduction</strong></a></li>
 <li><a href="#_writing_jobs"><strong>Writing jobs</strong></a>
@@ -460,26 +460,7 @@ synchronization mechanism. Hence all JobService instances must have access to ve
 <div class="listingblock">
 <div class="title">Default JobService Configuration</div>
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  quartz:
-    job-store-type: "jdbc"
-    jdbc:
-      initialize-schema: "NEVER"
-    properties:
-      org:
-        quartz:
-          jobStore:
-            driverDelegateClass: "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate"
-            isClustered: true
-            tablePrefix: "ECQZ_"
-          scheduler:
-            instanceId: "AUTO"
-            instanceName: "job-service-scheduler"
-            jmx:
-              export: false
-          threadPool:
-            threadCount: 50
-            makeThreadsDaemons: true</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">Unresolved directive in clustering.adoc - include::../../../../packaging/configuration/src/main/resource-templates/application.yaml[tag=cluster-config]</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -625,7 +606,7 @@ This can be achieved by setting the configuration option <code>spring.quartz.sta
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-07-29 12:07:33 UTC
+Last updated 2026-09-29 13:25:04 UTC
 </div>
 </div>
 </body>
