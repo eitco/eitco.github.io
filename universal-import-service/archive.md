@@ -5,6 +5,7 @@ Here you can find documentation for any version of the EITCO Universal Import Se
 
  * [10.0.1](archive/10.0.1)
  * [10.0.0](archive/10.0.0)
+ * [8.1.0](archive/8.1.0)
  * [8.0.4](archive/8.0.4)
  * [8.0.3](archive/8.0.3)
  * [8.0.2](archive/8.0.2)
