@@ -4,6 +4,7 @@
 This archive contains all published documentation versions for the EITCO Document Conversion Service. 
 
 
+ * [12.0.0](archive/12.0.0)
  * [11.1.2](archive/11.1.2)
  * [11.1.1](archive/11.1.1)
  * [11.1.0](archive/11.1.0)
