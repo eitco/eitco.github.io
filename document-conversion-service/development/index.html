@@ -29,12 +29,11 @@
 <li><a href="#_plugins_overview">3. <strong>Plugins Overview</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_open_source_plugins">3.1. Open source plugins</a></li>
-<li><a href="#_microsoft_graph_plugins">3.2. Microsoft Graph plugins</a></li>
-<li><a href="#_microsoft_azure_plugins">3.3. Microsoft Azure Plugins</a></li>
-<li><a href="#_e_iceblue_plugins">3.4. e-iceblue plugins</a></li>
-<li><a href="#_itext_plugins">3.5. iText Plugins</a></li>
-<li><a href="#_xrechnung_plugin">3.6. XRechnung plugin</a></li>
-<li><a href="#_document_converter_plugin">3.7. Document Converter Plugin</a></li>
+<li><a href="#_microsoft_azure_plugins">3.2. Microsoft Azure Plugins</a></li>
+<li><a href="#_e_iceblue_plugins">3.3. e-iceblue plugins</a></li>
+<li><a href="#_itext_plugins">3.4. iText Plugins</a></li>
+<li><a href="#_xrechnung_plugin">3.5. XRechnung plugin</a></li>
+<li><a href="#_document_converter_plugin">3.6. Document Converter Plugin</a></li>
 </ul>
 </li>
 <li><a href="#_usage">4. <strong>Usage</strong></a>
@@ -372,52 +371,9 @@ sudo apt install tesseract-ocr</p>
 <div class="sect3">
 <h4 id="_levigo_jadice_plugins">3.1.2. Levigo Jadice plugins</h4>
 <div class="paragraph">
-<p>The <code>document-conversion-plugins-jadice</code> library provides several
-plugins based on Levigo Jadice libraries. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
-of the service. The plugins will be registered automatically.</p>
+<p>The <code>document-conversion-plugins-jadice</code> library was discontinued.
+=== Microsoft Graph plugins</p>
 </div>
-<div class="paragraph">
-<p>A ZIP containing the library and additional dependencies can be downloaded from Nexus using the following maven coordinates:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-jadice<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
-    <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.0.1-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
-<span class="tag">&lt;/dependency&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in plugins/levigo-jadice.adoc - include::../../../../../plugins/jadice/target/generated-sources/main/adoc/plugins.adoc[]</p>
-</div>
-<div class="paragraph">
-<p>Please note that Microsoft Office documents (Powerpoint and Word) are here not confronted with any formatting related issues.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_configuration_considerations_of_levigo_jadice_usage">3.1.3. Configuration considerations of Levigo Jadice usage</h4>
-<div class="paragraph">
-<p>A RenditionUseCase describes the source- and target-mimetype of a conversion supported by a specific plugin. The configuration file below shows how the source-mimetype 'application/msword' to the target-mimetype 'application/pdf' is configured using the JadiceToPdfPlugin.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">rendering</span>:
-  <span class="key">useCases</span>:
-    - <span class="string"><span class="content">plugin: de.eitco.commons.conversion.plugins.jadice.JadiceToPdfPlugin</span></span>
-      <span class="key">sourceType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/msword</span><span class="delimiter">&quot;</span></span>
-      <span class="key">targetType</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf</span><span class="delimiter">&quot;</span></span>
-  <span class="key">containerUseCases</span>:
-    - <span class="string"><span class="content">targetType: &quot;application/pdf&quot;</span></span>
-    - <span class="string"><span class="content">plugin: de.eitco.commons.conversion.plugins.jadice.JadiceToPdfPlugin</span></span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_microsoft_graph_plugins">3.2. Microsoft Graph plugins</h3>
 <div class="paragraph">
 <p>The <code>document-conversion-plugins-msgraph</code> library provides several
 plugins based on Microsoft graph libraries. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
@@ -452,8 +408,9 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
 <div class="paragraph">
 <p>Unresolved directive in plugins/microsoft-graph.adoc - include::../../../../../plugins/ms-graph/target/generated-sources/main/adoc/plugins.adoc[]</p>
 </div>
+</div>
 <div class="sect3">
-<h4 id="_setup_microsoft_graph_render_plugins">3.2.1. Setup microsoft graph render plugins</h4>
+<h4 id="_setup_microsoft_graph_render_plugins">3.1.3. Setup microsoft graph render plugins</h4>
 <div class="paragraph">
 <p>If you want to use the graph render plugins you will need a technical user and a sharepoint drive. A technical user in azure is named "app registration". In the following we will explain how to get an azure app registration and the sharepoint drive id.</p>
 </div>
@@ -595,7 +552,7 @@ Example <a href="https://graph.microsoft.com/v1.0/sites/xxxxxxxx.sharepoint.com,
 </div>
 </div>
 <div class="sect2">
-<h3 id="_microsoft_azure_plugins">3.3. Microsoft Azure Plugins</h3>
+<h3 id="_microsoft_azure_plugins">3.2. Microsoft Azure Plugins</h3>
 <div class="paragraph">
 <p>The <code>document-conversion-plugins-ms-azure</code> library provides several
 plugins based on microsoft azure libraries. To use the plugins, the <em>jar</em> file of the library must be added to the classpath
@@ -619,7 +576,7 @@ of the service. The plugins will be registered automatically.</p>
 <p>Unresolved directive in plugins/microsoft-azure.adoc - include::../../../../../plugins/ms-azure/target/generated-sources/main/adoc/plugins.adoc[]</p>
 </div>
 <div class="sect3">
-<h4 id="_setup_microsoft_azure_fulltext_plugin">3.3.1. Setup Microsoft Azure fulltext plugin</h4>
+<h4 id="_setup_microsoft_azure_fulltext_plugin">3.2.1. Setup Microsoft Azure fulltext plugin</h4>
 <div class="paragraph">
 <p>If you want to use the azure fulltext plugins you will need a cognitive service in your azure portal.</p>
 </div>
@@ -733,7 +690,7 @@ The AwsTextractPdfToSearchablePdfPlugin has a dependency on the PdfToImagesRende
 </div>
 </div>
 <div class="sect3">
-<h4 id="_setup_iam_account_and_credentials">3.3.2. Setup IAM account and credentials</h4>
+<h4 id="_setup_iam_account_and_credentials">3.2.2. Setup IAM account and credentials</h4>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -826,7 +783,7 @@ If you don&#8217;t want to use a technical user for this plugin you can continue
 </div>
 </div>
 <div class="sect2">
-<h3 id="_e_iceblue_plugins">3.4. e-iceblue plugins</h3>
+<h3 id="_e_iceblue_plugins">3.3. e-iceblue plugins</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -862,7 +819,7 @@ of the service. The plugins will be registered automatically.</p>
 <p>Unresolved directive in plugins/e-iceblue.adoc - include::../../../../../plugins/e-iceblue/target/generated-sources/main/adoc/plugins.adoc[]</p>
 </div>
 <div class="sect3">
-<h4 id="_yaml_configuration_4">3.4.1. YAML configuration</h4>
+<h4 id="_yaml_configuration_4">3.3.1. YAML configuration</h4>
 <div class="paragraph">
 <p>In the <em>yaml</em> of the document conversion service you must set the following to use the aws textract render plugin:</p>
 </div>
@@ -879,7 +836,7 @@ of the service. The plugins will be registered automatically.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_itext_plugins">3.5. iText Plugins</h3>
+<h3 id="_itext_plugins">3.4. iText Plugins</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -927,7 +884,7 @@ The ITextPdfToSearchablePdfaPlugin has a dependency to the PdfToImagesRenderPlug
 </table>
 </div>
 <div class="sect3">
-<h4 id="_installing_tesseract">3.5.1. Installing Tesseract</h4>
+<h4 id="_installing_tesseract">3.4.1. Installing Tesseract</h4>
 <div class="paragraph">
 <p>If you want to use the <em>ITextPdfToSearchablePdfaPlugin</em> you need to install tesseract on you operating system.</p>
 </div>
@@ -958,7 +915,7 @@ sudo apt install tesseract-ocr</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_yaml_configuration_5">3.5.2. YAML configuration</h4>
+<h4 id="_yaml_configuration_5">3.4.2. YAML configuration</h4>
 <div class="paragraph">
 <p>In the <em>yaml</em> of the document conversion service you must set the following:</p>
 </div>
@@ -976,7 +933,7 @@ sudo apt install tesseract-ocr</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_xrechnung_plugin">3.6. XRechnung plugin</h3>
+<h3 id="_xrechnung_plugin">3.5. XRechnung plugin</h3>
 <div class="paragraph">
 <p>The <code>document-conversion-plugins-x-rechnung</code> library provides a plugin that can create PDF and HTML renditions of
 XRechnung XML data. It is using the <code>x-rechnung-toolkit-service</code> to create the actual renditions.</p>
@@ -1033,7 +990,7 @@ XRechnung XML data. It is using the <code>x-rechnung-toolkit-service</code> to c
 </table>
 </div>
 <div class="sect2">
-<h3 id="_document_converter_plugin">3.7. Document Converter Plugin</h3>
+<h3 id="_document_converter_plugin">3.6. Document Converter Plugin</h3>
 <div class="paragraph">
 <p>The <code>ToPdfDocumentConverterPlugin</code> provides a way to render various document formats to PDF using the EITCO DocumentConverter service.
 This service wraps the SyncFusion library and must be deployed as a separate Docker container.</p>
@@ -1052,7 +1009,7 @@ coordinates:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_configuration_2">3.7.1. Configuration</h4>
+<h4 id="_configuration_2">3.6.1. Configuration</h4>
 <div class="paragraph">
 <p>The plugin can be configured using the following properties in your <code>application.yaml</code>:</p>
 </div>
@@ -1092,7 +1049,7 @@ coordinates:</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_pdf_and_pdfa_output">3.7.2. PDF and PDF/A output</h4>
+<h4 id="_pdf_and_pdfa_output">3.6.2. PDF and PDF/A output</h4>
 <div class="paragraph">
 <p>The plugin supports two target MIME types:</p>
 </div>
@@ -1781,7 +1738,7 @@ Currently, this is only supported by the documentconverter plugin.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-01 11:21:19 UTC
+Last updated 2026-10-01 11:57:49 UTC
 </div>
 </div>
 <style>
