@@ -2,6 +2,7 @@
 
 Here you can find documentation for any version of the ecr-webdav deployed so far.
 
+ * [2.0.1](archive/2.0.1)
  * [2.0.0](archive/2.0.0)
  * [1.1.0](archive/1.1.0)
  * [1.0.3](archive/1.0.3)
