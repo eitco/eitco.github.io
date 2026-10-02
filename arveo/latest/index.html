@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <link rel="icon" type="image/png" href="./images/arveo_logo_800px.png">
-<title>arveo Documentation 28.1.0</title>
+<title>arveo Documentation 28.1.1</title>
 <style>
 @import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
 @import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
@@ -156,9 +156,9 @@ a, a:hover, a:focus {
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>arveo Documentation 28.1.0</h1>
+<h1>arveo Documentation 28.1.1</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 28.1.0</div>
+<div id="toctitle">arveo 28.1.1</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a>
 <ul class="sectlevel2">
@@ -350,6 +350,7 @@ a, a:hover, a:focus {
 <li><a href="#jobs">System jobs</a>
 <ul class="sectlevel3">
 <li><a href="#_using_external_job_service_instances">Using external Job Service instances</a></li>
+<li><a href="#_asynchronous_trigger_creation_with_retry">Asynchronous trigger creation with retry</a></li>
 <li><a href="#_archive_consistency_check_job">Archive consistency check job</a></li>
 <li><a href="#_delete_abandoned_content_elements_job">Delete abandoned content elements job</a></li>
 <li><a href="#_retry_renditions_job">Retry renditions job</a></li>
@@ -505,6 +506,7 @@ a, a:hover, a:focus {
 <li><a href="#compatibility-list">Compatibility List</a></li>
 <li><a href="#release-notes">Release Notes</a>
 <ul class="sectlevel3">
+<li><a href="#_release_notes_28_1_1_october_02_2026">Release notes 28.1.1 (October 02, 2026)</a></li>
 <li><a href="#_release_notes_28_1_0_september_01_2026">Release notes 28.1.0 (September 01, 2026)</a></li>
 <li><a href="#_release_notes_28_0_0_august_05_2026">Release notes 28.0.0 (August 05, 2026)</a></li>
 <li><a href="#_release_notes_27_0_0_march_11_2026">Release notes 27.0.0 (March 11, 2026)</a></li>
@@ -1015,11 +1017,11 @@ directory and perform the following operation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=28.1.0</code></pre>
+<pre class="rouge highlight"><code data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=28.1.1</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 28.1.0.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 28.1.1.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -1463,7 +1465,7 @@ use the Spring Initializer to generate a maven project with the required depende
 <p>Under "Language", select "Java"</p>
 </li>
 <li>
-<p>Select Spring Boot version 4.1.0. If your required version is not available, select the most
+<p>Select Spring Boot version 4.1.1. If your required version is not available, select the most
 compatible one in terms of major.minor.patch.</p>
 </li>
 <li>
@@ -1504,7 +1506,7 @@ and open the project in your IDE. Delete the <code>src/test</code> directory.</p
             <span class="nt">&lt;dependency&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
                 <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
                 <span class="nt">&lt;artifactId&gt;</span>ecr-bom<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span>
                 <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
                 <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
             <span class="nt">&lt;/dependency&gt;</span>
@@ -2305,7 +2307,7 @@ Easily integrate all your applications and IT systems e.g. scheduled data import
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Active MQ 6.2.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Active MQ 6.3.2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Message Queue Service to process JMS and AMQP message</p></td>
 </tr>
 <tr>
@@ -6010,7 +6012,7 @@ describes how to write a new storage plugin.</p>
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-server<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span>
     <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -7966,7 +7968,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/11.0.1/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/11.0.2/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit"><a class="anchor" href="#_access_audit"></a><a class="link" href="#_access_audit">Access audit</a></h4>
@@ -8003,7 +8005,7 @@ repository service will create the jobs (if required), but it will not execute t
 <div class="paragraph">
 <p>It is possible to use one or more external Job Service instances to execute the scheduled system jobs. To be able to
 execute the system jobs, the job implementations must be present in each of the Job Service&#8217;s class paths.
-The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external-28.1.0.zip</em>) that contains all required libraries.
+The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external-28.1.1.zip</em>) that contains all required libraries.
 Simply extract the contents of the ZIP file to a directory (e.g. <em>libs</em>) and start the Job Service with the following parameter:
 <code>-Dloader.path=libs</code>.</p>
 </div>
@@ -8080,6 +8082,29 @@ configuration file for the Job Service.
       <span class="na">retry-full-text-extraction</span><span class="pi">:</span>
         <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span></code></pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_asynchronous_trigger_creation_with_retry"><a class="anchor" href="#_asynchronous_trigger_creation_with_retry"></a><a class="link" href="#_asynchronous_trigger_creation_with_retry">Asynchronous trigger creation with retry</a></h4>
+<div class="paragraph">
+<p>When using an external Job Service, the triggers for the system jobs are created asynchronously when the service starts. This allows the application to start immediately without waiting for the Content Repository Service to respond. If the Content Repository Service is not yet available when trigger creation is attempted, the service will automatically retry at a configurable interval until the maximum number of attempts is reached.</p>
+</div>
+<div class="paragraph">
+<p>The retry behaviour for trigger creation is configured under <code>ecr.server.jobs.trigger-creation</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Trigger creation retry configuration (defaults shown)</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">ecr</span><span class="pi">:</span>
+  <span class="na">server</span><span class="pi">:</span>
+    <span class="na">jobs</span><span class="pi">:</span>
+      <span class="na">trigger-creation</span><span class="pi">:</span>
+        <span class="na">retry-interval</span><span class="pi">:</span> <span class="s">10s</span>
+        <span class="na">max-attempts</span><span class="pi">:</span> <span class="s">30</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default configuration retries every 10 seconds for up to 30 attempts, resulting in a total retry window of approximately 5 minutes. This behaviour can be adjusted by modifying the <code>retry-interval</code> and <code>max-attempts</code> parameters to match your deployment topology and startup timing requirements.</p>
 </div>
 </div>
 <div class="sect3">
@@ -8675,7 +8700,7 @@ java 21 is required for the shell.
   `-----------'</span>   <span class="sb">`</span><span class="nt">---------</span><span class="s1">'  '</span><span class="nt">---</span><span class="s1">'               '</span><span class="nt">------------</span>´  <span class="sb">`</span><span class="nt">---</span>´    <span class="sb">`</span><span class="nt">---</span>´   <span class="sb">`</span><span class="nt">-----------</span><span class="s1">'  `------'</span>  <span class="sb">`</span><span class="nt">------</span><span class="s1">'
 
 
-version: 28.1.0                                                                      de.eitco.ecr:ecr-shell
+version: 28.1.1                                                                      de.eitco.ecr:ecr-shell
 
 ecr:&gt;</span></code></pre>
 </div>
@@ -10298,7 +10323,7 @@ this is already configured in the eitco config service.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-28.1.0.jar</code>
+<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-28.1.1.jar</code>
 </td>
 </tr>
 </table>
@@ -10709,7 +10734,7 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <h4 id="_other_monitoring_systems"><a class="anchor" href="#_other_monitoring_systems"></a><a class="link" href="#_other_monitoring_systems">Other monitoring systems</a></h4>
 <div class="paragraph">
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
-The <a href="https://docs.spring.io/spring-boot/docs/4.1.0/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
+The <a href="https://docs.spring.io/spring-boot/docs/4.1.1/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
@@ -11463,6 +11488,18 @@ in detail in the Open Telemetry documentation.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If set to false, the job will not be scheduled.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger-creation.max-attempts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of attempts to create the triggers for the system jobs before giving up.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trigger-creation.retry-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interval to wait between retry attempts when creating triggers for the system jobs fails.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10s</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
@@ -12359,6 +12396,12 @@ in detail in the Open Telemetry documentation.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">connection-request-timeout-seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum time to wait for a connection to be leased from the pool (relevant when the pool is exhausted). The default of 180 seconds matches the Apache HttpClient library default.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>180</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">connection-timeout-seconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the timeout after which a connection attempt will fail.</p></td>
@@ -12391,14 +12434,20 @@ in detail in the Open Telemetry documentation.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">request-timeout-seconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum time to wait for a response.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">response-timeout-seconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the maximum time to wait for a response after the request has been sent. A negative value (the default) leaves it unset, matching the Apache HttpClient library default - the response wait is then bounded only by the socket read timeout.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket-timeout-seconds</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the time to wait for a socket connection.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket.backlog-size</p></td>
@@ -12439,8 +12488,8 @@ in detail in the Open Telemetry documentation.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket.so-timeout</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Socket timeout (SO_TIMEOUT) - the maximum period of inactivity between two consecutive data packets. The default value is 3 minutes.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Socket timeout (SO_TIMEOUT) - the maximum period of inactivity between two consecutive data packets. The default value is 10 minutes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10m</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">socket.socks-proxy-address</p></td>
@@ -21222,7 +21271,7 @@ All examples are taken from the integration test suite to ensure they stay up to
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
    <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
    <span class="nt">&lt;artifactId&gt;</span>ecr-sdk-http<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span>
+   <span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -22581,7 +22630,7 @@ condition.</p>
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
    <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
    <span class="nt">&lt;artifactId&gt;</span>ecr-sdk-http-apache<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span>
+   <span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -22597,7 +22646,7 @@ content repository service instance:</p>
 <pre class="rouge highlight"><code data-lang="java"><span class="kd">private</span> <span class="kd">final</span> <span class="nc">ContentRepositoryResources</span><span class="o">.</span><span class="na">Factory</span> <span class="n">factory</span> <span class="o">=</span>
     <span class="nc">ContentRepositoryResources</span><span class="o">.</span><span class="na">Factory</span><span class="o">.</span><span class="na">load</span><span class="o">();</span> <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="kd">private</span> <span class="kd">final</span> <span class="nc">ContentRepositoryResources</span> <span class="n">client</span> <span class="o">=</span>
-    <span class="n">factory</span><span class="o">.</span><span class="na">getClient</span><span class="o">(</span><span class="s">"http://127.0.0.1:"</span> <span class="o">+</span> <span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"ecr.service.port"</span><span class="o">));</span> <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+    <span class="n">factory</span><span class="o">.</span><span class="na">getClient</span><span class="o">(</span><span class="s">"http://localhost:"</span> <span class="o">+</span> <span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"ecr.service.port"</span><span class="o">));</span> <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -22866,8 +22915,8 @@ the EQL query language <code>@eitco/eql</code> and <code>@eitco/commons-lang</co
 <div class="title">Adding the SDK to a project (<code>package.json</code>)</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="json"><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-  </span><span class="nl">"@eitco/ecr-client"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.1.0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"@eitco/ecr-data-provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.1.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@eitco/ecr-client"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.1.1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@eitco/ecr-data-provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.1.1"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"@eitco/asdl-library-http"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
   </span><span class="nl">"@eitco/asdl-library-angular-http"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
 </span><span class="p">}</span></code></pre>
@@ -23658,7 +23707,7 @@ carries the same base URL and bearer token, so no separate authentication is nee
 <div class="listingblock">
 <div class="title">NuGet package reference of the C# SDK</div>
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Eitco.Ecr.Sdk"</span> <span class="na">Version=</span><span class="s">"28.1.0"</span> <span class="nt">/&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Eitco.Ecr.Sdk"</span> <span class="na">Version=</span><span class="s">"28.1.1"</span> <span class="nt">/&gt;</span></code></pre>
 </div>
 </div>
 </div>
@@ -23680,7 +23729,15 @@ via the <em>resource-owner-password</em> flow:</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="csharp"><span class="n">HttpClient</span> <span class="n">tokenClient</span> <span class="p">=</span> <span class="k">new</span><span class="p">();</span>
 <span class="n">Task</span><span class="p">&lt;</span><span class="n">DiscoveryDocumentResponse</span><span class="p">&gt;</span> <span class="n">discoveryDocumentTask</span> <span class="p">=</span>
-    <span class="n">tokenClient</span><span class="p">.</span><span class="nf">GetDiscoveryDocumentAsync</span><span class="p">(</span><span class="n">issuerUri</span><span class="p">);</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="n">tokenClient</span><span class="p">.</span><span class="nf">GetDiscoveryDocumentAsync</span><span class="p">(</span><span class="k">new</span> <span class="n">DiscoveryDocumentRequest</span>
+    <span class="p">{</span>
+        <span class="n">Address</span> <span class="p">=</span> <span class="n">issuerUri</span><span class="p">,</span>
+        <span class="n">Policy</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DiscoveryPolicy</span>
+        <span class="p">{</span>
+            <span class="c1">// the test IDP is served via plain HTTP on a non-loopback host name</span>
+            <span class="n">RequireHttps</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">Uri</span><span class="p">(</span><span class="n">issuerUri</span><span class="p">).</span><span class="n">Scheme</span> <span class="p">==</span> <span class="n">Uri</span><span class="p">.</span><span class="n">UriSchemeHttps</span>
+        <span class="p">}</span>
+    <span class="p">});</span> <i class="conum" data-value="1"></i><b>(1)</b>
 
 <span class="n">discoveryDocumentTask</span><span class="p">.</span><span class="nf">Wait</span><span class="p">();</span>
 
@@ -23727,6 +23784,20 @@ via the <em>resource-owner-password</em> flow:</p>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The resulting access token is returned (and cached for subsequent calls).</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>IdentityModel</code> rejects discovery over plain HTTP unless the IDP is addressed via <code>localhost</code>. Since the test
+environment reaches Keycloak under <code>host.docker.internal</code>, <code>RequireHttps</code> is derived from the scheme of the issuer
+URI. In a productive environment the IDP is addressed via HTTPS and the default policy applies.
+</td>
 </tr>
 </table>
 </div>
@@ -24902,7 +24973,7 @@ Thus, it is considered good practice to define listeners for after events as asy
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-events<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25071,7 +25142,7 @@ deserialize the events. The following dependency is required to access the preco
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-jms<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25251,7 +25322,7 @@ The <code>ECRTypeDefinition</code> and <code>ECRTypeDefinitionId</code> headers 
     <span class="nt">&lt;artifactId&gt;</span>ecr-integration-service-endpoint<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;type&gt;</span>zip<span class="nt">&lt;/type&gt;</span>
     <span class="nt">&lt;classifier&gt;</span>zip<span class="nt">&lt;/classifier&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25619,24 +25690,7 @@ about the type definition from the event and forwards the original event to a we
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kn">package</span> <span class="nn">scripts.routes</span>
-
-<span class="kn">import</span> <span class="nn">org.apache.camel.builder.RouteBuilder</span>
-
-<span class="k">return</span> <span class="k">new</span> <span class="nf">RouteBuilder</span><span class="o">()</span> <span class="o">{</span>
-
-    <span class="nd">@Override</span>
-    <span class="kt">void</span> <span class="nf">configure</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
-
-        <span class="n">from</span><span class="o">(</span><span class="s">"activemq6:queue:after-create-document-to-webhook"</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">unmarshal</span><span class="o">(</span><span class="s">"ecrEvent"</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"typeDefinition"</span><span class="o">,</span> <span class="n">simple</span><span class="o">(</span><span class="s">"\${body.typeDefinition.alias.id}"</span><span class="o">))</span> <i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"CamelHttpMethod"</span><span class="o">,</span> <span class="n">constant</span><span class="o">(</span><span class="s">"POST"</span><span class="o">))</span>
-                <span class="o">.</span><span class="na">marshal</span><span class="o">(</span><span class="s">"ecrEvent"</span><span class="o">)</span> <i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="o">.</span><span class="na">toD</span><span class="o">(</span><span class="s">"http://localhost:10101/document-webhook?typeDefinition=\${header.typeDefinition}"</span><span class="o">)</span> <i class="conum" data-value="4"></i><b>(4)</b>
-                <span class="o">.</span><span class="na">routeId</span><span class="o">(</span><span class="s">"document-webhook-route"</span><span class="o">)</span>
-    <span class="o">}</span>
-<span class="o">}</span></code></pre>
+<pre class="rouge highlight"><code data-lang="java"><span class="nc">Unresolved</span> <span class="n">directive</span> <span class="n">in</span> <span class="n">developer</span><span class="o">/</span><span class="n">integration</span><span class="o">-</span><span class="n">service</span><span class="o">.</span><span class="na">adoc</span> <span class="o">-</span> <span class="nl">include:</span><span class="o">:../../../../../../</span><span class="n">test</span><span class="o">/</span><span class="n">system</span><span class="o">-</span><span class="n">test</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="nc">DocumentWebhookRoute</span><span class="o">.</span><span class="na">groovy</span><span class="o">[]</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -25669,40 +25723,7 @@ Each request is authenticated using a Bearer token retrieved from the configured
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kn">package</span> <span class="nn">scripts.routes</span>
-
-<span class="kn">import</span> <span class="nn">de.eitco.ecr.common.container.Container</span>
-<span class="kn">import</span> <span class="nn">org.apache.camel.builder.RouteBuilder</span>
-
-<span class="kn">import</span> <span class="nn">java.time.LocalDate</span>
-<span class="kn">import</span> <span class="nn">java.time.format.DateTimeFormatter</span>
-
-<span class="k">return</span> <span class="k">new</span> <span class="nf">RouteBuilder</span><span class="o">()</span> <span class="o">{</span>
-
-    <span class="nd">@Override</span>
-    <span class="kt">void</span> <span class="nf">configure</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
-
-        <span class="n">from</span><span class="o">(</span><span class="s">"activemq6:queue:after-create-container-to-webhook"</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">unmarshal</span><span class="o">(</span><span class="s">"ecrEvent"</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"typeDefinition"</span><span class="o">,</span> <span class="n">simple</span><span class="o">(</span><span class="s">"\${body.typeDefinition.alias.id}"</span><span class="o">))</span> <i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="n">simple</span><span class="o">(</span><span class="s">"\${body.containers}"</span><span class="o">))</span> <i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="o">.</span><span class="na">process</span> <span class="o">{</span> <i class="conum" data-value="4"></i><b>(4)</b>
-                    <span class="nc">Container</span> <span class="n">src</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">in</span><span class="o">.</span><span class="na">body</span> <span class="n">as</span> <span class="nc">Container</span>
-                    <span class="n">def</span> <span class="n">target</span> <span class="o">=</span> <span class="o">[</span>
-                            <span class="n">id</span> <span class="o">:</span> <span class="n">src</span><span class="o">?.</span><span class="na">identifier</span><span class="o">?.</span><span class="na">value</span><span class="o">()?.</span><span class="na">toString</span><span class="o">(),</span>
-                            <span class="n">name</span> <span class="o">:</span> <span class="n">src</span><span class="o">?.</span><span class="na">attributes</span><span class="o">?.</span><span class="na">get</span><span class="o">(</span><span class="s">"name"</span><span class="o">),</span>
-                            <span class="n">birthday</span> <span class="o">:</span> <span class="nc">DateTimeFormatter</span><span class="o">.</span><span class="na">ISO_DATE</span><span class="o">.</span><span class="na">format</span><span class="o">((</span><span class="nc">LocalDate</span><span class="o">)</span> <span class="n">src</span><span class="o">?.</span><span class="na">attributes</span><span class="o">?.</span><span class="na">get</span><span class="o">(</span><span class="s">"birthday"</span><span class="o">))</span>
-                    <span class="o">]</span>
-                    <span class="n">it</span><span class="o">.</span><span class="na">in</span><span class="o">.</span><span class="na">body</span> <span class="o">=</span> <span class="n">target</span>
-                <span class="o">}</span>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"CamelHttpMethod"</span><span class="o">,</span> <span class="n">constant</span><span class="o">(</span><span class="s">"POST"</span><span class="o">))</span>
-                <span class="o">.</span><span class="na">marshal</span><span class="o">().</span><span class="na">json</span><span class="o">()</span> <i class="conum" data-value="5"></i><b>(5)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"Authorization"</span><span class="o">).</span><span class="na">simple</span><span class="o">(</span><span class="s">"Bearer \${bean:oAuth2TokenManager.getAccessToken}"</span><span class="o">)</span> <i class="conum" data-value="6"></i><b>(6)</b>
-                <span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">"Content-Type"</span><span class="o">,</span> <span class="n">constant</span><span class="o">(</span><span class="s">"application/json"</span><span class="o">))</span>
-                <span class="o">.</span><span class="na">toD</span><span class="o">(</span><span class="s">"http://localhost:10102/container-webhook?typeDefinition=\${header.typeDefinition}"</span><span class="o">)</span> <i class="conum" data-value="7"></i><b>(7)</b>
-                <span class="o">.</span><span class="na">routeId</span><span class="o">(</span><span class="s">"container-webhook-route"</span><span class="o">)</span>
-    <span class="o">}</span>
-<span class="o">}</span></code></pre>
+<pre class="rouge highlight"><code data-lang="java"><span class="nc">Unresolved</span> <span class="n">directive</span> <span class="n">in</span> <span class="n">developer</span><span class="o">/</span><span class="n">integration</span><span class="o">-</span><span class="n">service</span><span class="o">.</span><span class="na">adoc</span> <span class="o">-</span> <span class="nl">include:</span><span class="o">:../../../../../../</span><span class="n">test</span><span class="o">/</span><span class="n">system</span><span class="o">-</span><span class="n">test</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="nc">ContainerWebhookRoute</span><span class="o">.</span><span class="na">groovy</span><span class="o">[]</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -25756,7 +25777,7 @@ Each request is authenticated using a Bearer token retrieved from the configured
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
 <span class="nt">&lt;artifactId&gt;</span>ecr-types-archetype<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span></code></pre>
+<span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -25855,7 +25876,7 @@ The maven coordinate of this archetype are:</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
 <span class="nt">&lt;artifactId&gt;</span>ecr-service-archetype<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;version&gt;</span>28.1.0<span class="nt">&lt;/version&gt;</span></code></pre>
+<span class="nt">&lt;version&gt;</span>28.1.1<span class="nt">&lt;/version&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -26415,7 +26436,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Content Repository Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">28.1.0 (API-version: 1.2.1)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">28.1.1 (API-version: 1.2.1)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration Service</p></td>
@@ -26431,51 +26452,51 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Job Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14.0.0</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">11.0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">11.0.2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">11.1.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12.0.0</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">TUS Upload Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.2.0</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Download Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.1</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MS365 Import Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">18.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18.0.1</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ArchiveLink Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">17.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17.0.2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Universal Import Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.0.2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Litigation Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.1</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ILM Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.1</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">WebDav Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.1</p></td>
 </tr>
 </tbody>
 </table>
@@ -26504,7 +26525,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ 6.2.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ActiveMQ 6.3.2</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -26541,6 +26562,64 @@ AWS S3</p></td>
 </div>
 <div class="sect2">
 <h3 id="release-notes"><a class="anchor" href="#release-notes"></a><a class="link" href="#release-notes">Release Notes</a></h3>
+<div class="sect3">
+<h4 id="_release_notes_28_1_1_october_02_2026"><a class="anchor" href="#_release_notes_28_1_1_october_02_2026"></a><a class="link" href="#_release_notes_28_1_1_october_02_2026">Release notes 28.1.1 (October 02, 2026)</a></h4>
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1539: enhanced openapi description of ecr api</p>
+</li>
+<li>
+<p>ECR-1902: Improved startup performance by parallelizing type class introspection.</p>
+</li>
+<li>
+<p>ECR-1908: Update to Spring Boot 4.1.1 and Tomcat 11.0.25.</p>
+</li>
+<li>
+<p>ECR-1912: The Java client SDK will no longer determine the size of uploaded content elements when it is not specified by the client application. The server will still determine the size of every uploaded content element.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1906: ECR-shell: Exception when repeating "import"-commands for the same import-file</p>
+</li>
+<li>
+<p>ECR-1909: Case-insensitive search does not find umlauts</p>
+</li>
+<li>
+<p>ECR-1919: The server now re-creates reset renditions when the server loads the rendition directly using readContent.</p>
+</li>
+<li>
+<p>ECR-1920: The server now marks obsolete content elements of re-created renditions for asynchronous deletion.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+</div>
+</details>
+</div>
 <div class="sect3">
 <h4 id="_release_notes_28_1_0_september_01_2026"><a class="anchor" href="#_release_notes_28_1_0_september_01_2026"></a><a class="link" href="#_release_notes_28_1_0_september_01_2026">Release notes 28.1.0 (September 01, 2026)</a></h4>
 <details>
@@ -28712,7 +28791,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-09-01 07:26:27 UTC
+Last updated 2026-10-02 11:47:27 UTC
 </div>
 </div>
 <style>
