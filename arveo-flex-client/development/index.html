@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<title>Arveo Flex Client Documentation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+/* Uncomment the following line when using as a custom stylesheet */
+/* @import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700"; */
+html{font-family:sans-serif;-webkit-text-size-adjust:100%}
+a{background:none}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+b,strong{font-weight:bold}
+abbr{font-size:.9em}
+abbr[title]{cursor:help;border-bottom:1px dotted #dddddf;text-decoration:none}
+dfn{font-style:italic}
+hr{height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+audio,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type=checkbox],input[type=radio]{padding:0}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,::before,::after{box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;line-height:1;position:relative;cursor:auto;-moz-tab-size:4;-o-tab-size:4;tab-size:4;word-wrap:anywhere;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:0}
+p{line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #dddddf;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.square{list-style-type:square}
+ul.circle ul:not([class]),ul.disc ul:not([class]),ul.square ul:not([class]){list-style:inherit}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:1px solid #dedede;word-wrap:normal}
+table thead,table tfoot{background:#f7f8f7}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt{background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.center{margin-left:auto;margin-right:auto}
+.stretch{width:100%}
+.clearfix::before,.clearfix::after,.float-group::before,.float-group::after{content:" ";display:table}
+.clearfix::after,.float-group::after{clear:both}
+:not(pre).nobreak{word-wrap:normal}
+:not(pre).nowrap{white-space:nowrap}
+:not(pre).pre-wrap{white-space:pre-wrap}
+:not(pre):not([class^=L])>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background:#f7f7f8;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+pre{color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;line-height:1.45;text-rendering:optimizeSpeed}
+pre code,pre pre{color:inherit;font-size:inherit;line-height:inherit}
+pre>code{display:block}
+pre.nowrap,pre.nowrap pre{white-space:pre;word-wrap:normal}
+em em{font-style:normal}
+strong strong{font-weight:400}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background:#f7f7f7;border:1px solid #ccc;border-radius:3px;box-shadow:0 1px 0 rgba(0,0,0,.2),inset 0 0 0 .1em #fff;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menuref{color:#000}
+.menuseq b:not(.caret),.menuref{font-weight:inherit}
+.menuseq{word-spacing:-.02em}
+.menuseq b.caret{font-size:1.25em;line-height:.8}
+.menuseq i.caret{font-weight:bold;text-align:center;width:.45em}
+b.button::before,b.button::after{position:relative;top:-1px;font-weight:400}
+b.button::before{content:"[";padding:0 3px 0 2px}
+b.button::after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin:0 auto;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header::before,#header::after,#content::before,#content::after,#footnotes::before,#footnotes::after,#footer::before,#footer::after{content:" ";display:table}
+#header::after,#content::after,#footnotes::after,#footer::after{clear:both}
+#content{margin-top:1.25em}
+#content::before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #dddddf}
+#header>h1:only-child{border-bottom:1px solid #dddddf;padding-bottom:8px}
+#header .details{border-bottom:1px solid #dddddf;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:flex;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span::before{content:"\00a0\2013\00a0"}
+#header .details br+span.author::before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark::before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber::after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #dddddf;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #e7e7e9;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #dddddf;padding-bottom:8px}
+#toc.toc2{margin-top:0!important;background:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #e7e7e9;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #e7e7e9;left:auto;right:0}}
+@media screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border:1px solid #e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:none;background:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:hsla(0,0%,100%,.8);line-height:1.44}
+#content{margin-bottom:.625em}
+.sect1{padding-bottom:.625em}
+@media screen and (min-width:768px){#content{margin-bottom:1.25em}
+.sect1{padding-bottom:1.25em}}
+.sect1:last-child{padding-bottom:0}
+.sect1+.sect1{border-top:1px solid #e7e7e9}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor::before,h2>a.anchor::before,h3>a.anchor::before,#toctitle>a.anchor::before,.sidebarblock>.content>.title>a.anchor::before,h4>a.anchor::before,h5>a.anchor::before,h6>a.anchor::before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+details,.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+details{margin-left:1.25rem}
+details>summary{cursor:pointer;display:block;position:relative;line-height:1.6;margin-bottom:.625rem;outline:none;-webkit-tap-highlight-color:transparent}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"";border:solid transparent;border-left:solid;border-width:.3em 0 .3em .5em;position:absolute;top:.5em;left:-1.25rem;transform:translateX(15%)}
+details[open]>summary::before{border:solid transparent;border-top:solid;border-width:.5em .3em 0;transform:translateY(15%)}
+details>summary::after{content:"";width:1.25rem;height:1em;position:absolute;top:.3em;left:-1.25rem}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
+.paragraph.lead>p,#preamble>.sectionbody>[class=paragraph]:first-of-type p{font-size:1.21875em;line-height:1.6;color:rgba(0,0,0,.85)}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6);word-wrap:anywhere}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border:1px solid #e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;border-radius:4px}
+.sidebarblock{border:1px solid #dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;border-radius:4px}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:first-child,.sidebarblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child,.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock>.content>pre{border-radius:4px;overflow-x:auto;padding:1em;font-size:.8125em}
+@media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
+@media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
+.literalblock pre,.listingblock>.content>pre:not(.highlight),.listingblock>.content>pre[class=highlight],.listingblock>.content>pre[class^="highlight "]{background:#f7f7f8}
+.literalblock.output pre{color:#f7f7f8;background:rgba(0,0,0,.9)}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]::before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:inherit;opacity:.5}
+.listingblock:hover code[data-lang]::before{display:block}
+.listingblock.terminal pre .command::before{content:attr(data-prompt);padding-right:.5em;color:inherit;opacity:.5}
+.listingblock.terminal pre .command:not([data-prompt])::before{content:"$"}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.prettyprint{background:#f7f7f8}
+pre.prettyprint .linenums{line-height:1.45;margin-left:2em}
+pre.prettyprint li{background:none;list-style-type:inherit;padding-left:0}
+pre.prettyprint li code[data-lang]::before{opacity:1}
+pre.prettyprint li:not(:first-child) code[data-lang]::before{display:none}
+table.linenotable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.linenotable td[class]{color:inherit;vertical-align:top;padding:0;line-height:inherit;white-space:normal}
+table.linenotable td.code{padding-left:.75em}
+table.linenotable td.linenos,pre.pygments .linenos{border-right:1px solid;opacity:.35;padding-right:.5em;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+pre.pygments span.linenos{display:inline-block;margin-right:.75em}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock:not(.excerpt)>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.75em;margin-right:.5ex;text-align:right}
+.verseblock{margin:0 1em 1.25em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans-serif;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract blockquote::before,.quoteblock.excerpt blockquote::before,.quoteblock .quoteblock blockquote::before{display:none}
+.quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
+.quoteblock.abstract{margin:0 1em 1.25em;display:block}
+.quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
+.quoteblock.excerpt>blockquote,.quoteblock .quoteblock{padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
+.quoteblock.excerpt,.quoteblock .quoteblock{margin-left:0}
+.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
+.quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;font-size:.85rem;text-align:left;margin-right:0}
+p.tableblock:last-child{margin-bottom:0}
+td.tableblock>.content{margin-bottom:1.25em;word-wrap:anywhere}
+td.tableblock>.content>:last-child{margin-bottom:-1.25em}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all>*>tr>*{border-width:1px}
+table.grid-cols>*>tr>*{border-width:0 1px}
+table.grid-rows>*>tr>*{border-width:1px 0}
+table.frame-all{border-width:1px}
+table.frame-ends{border-width:1px 0}
+table.frame-sides{border-width:0 1px}
+table.frame-none>colgroup+*>:first-child>*,table.frame-sides>colgroup+*>:first-child>*{border-top-width:0}
+table.frame-none>:last-child>:last-child>*,table.frame-sides>:last-child>:last-child>*{border-bottom-width:0}
+table.frame-none>*>tr>:first-child,table.frame-ends>*>tr>:first-child{border-left-width:0}
+table.frame-none>*>tr>:last-child,table.frame-ends>*>tr>:last-child{border-right-width:0}
+table.stripes-all>*>tr,table.stripes-odd>*>tr:nth-of-type(odd),table.stripes-even>*>tr:nth-of-type(even),table.stripes-hover>*>tr:hover{background:#f8f8f7}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.checklist,ul.none,ol.none,ul.no-bullet,ol.no-bullet,ol.unnumbered,ul.unstyled,ol.unstyled{list-style-type:none}
+ul.no-bullet,ol.no-bullet,ol.unnumbered{margin-left:.625em}
+ul.unstyled,ol.unstyled{margin-left:0}
+li>p:empty:only-child::before{content:"";display:inline-block}
+ul.checklist>li>p:first-child{margin-left:-1em}
+ul.checklist>li>p:first-child>.fa-square-o:first-child,ul.checklist>li>p:first-child>.fa-check-square-o:first-child{width:1.25em;font-size:.8em;position:relative;bottom:.125em}
+ul.checklist>li>p:first-child>input[type=checkbox]:first-child{margin-right:.25em}
+ul.inline{display:flex;flex-flow:row wrap;list-style:none;margin:0 0 .625em -1.25em}
+ul.inline>li{margin-left:1.25em}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+td.hdlist2{word-wrap:anywhere}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist td:not([class]):first-child{padding:.4em .75em 0;line-height:1;vertical-align:top}
+.colist td:not([class]):first-child img{max-width:none}
+.colist td:not([class]):last-child{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:4px solid #fff;box-shadow:0 0 0 1px #ddd}
+.imageblock.left{margin:.25em .625em 1.25em 0}
+.imageblock.right{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active,#footnotes .footnote a:first-of-type:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em;border-width:1px 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none;margin-left:-1.05em}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background:#00fafa}
+.black{color:#000}
+.black-background{background:#000}
+.blue{color:#0000bf}
+.blue-background{background:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background:#fa00fa}
+.gray{color:#606060}
+.gray-background{background:#7d7d7d}
+.green{color:#006000}
+.green-background{background:#007d00}
+.lime{color:#00bf00}
+.lime-background{background:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background:#7d0000}
+.navy{color:#000060}
+.navy-background{background:#00007d}
+.olive{color:#606000}
+.olive-background{background:#7d7d00}
+.purple{color:#600060}
+.purple-background{background:#7d007d}
+.red{color:#bf0000}
+.red-background{background:#fa0000}
+.silver{color:#909090}
+.silver-background{background:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background:#fafa00}
+span.icon>.fa{cursor:default}
+a span.icon>.fa{cursor:inherit}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note::before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip::before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background:rgba(0,0,0,.8);border-radius:50%;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]::after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt,summary{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,td.hdlist1,span.alt,summary{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background:#fffef7;border-color:#e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@page{margin:1.25cm .75cm}
+@media print{*{box-shadow:none!important;text-shadow:none!important}
+html{font-size:80%}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare)::after,a[href^="https:"]:not(.bare)::after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]{border-bottom:1px dotted}
+abbr[title]::after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#header,#content,#footnotes,#footer{max-width:none}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #dddddf!important;padding-bottom:0!important}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span::before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]::before{display:block}
+#footer{padding:0 .9375em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+@media amzn-kf8,print{#header>h1:first-child{margin-top:1.25rem}
+.sect1{padding:0!important}
+.sect1+.sect1{border:0}
+#footer{background:none}
+#footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
+@media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
+</style>
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Arveo Flex Client Documentation</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a></li>
+<li><a href="#_user_workflows">2. User workflows</a>
+<ul class="sectlevel2">
+<li><a href="#access">2.1. Access and permissions</a></li>
+<li><a href="#navigation">2.2. Choose a scenario and language</a></li>
+<li><a href="#user-simple">2.3. Work in a Simple Document scenario</a></li>
+<li><a href="#user-record">2.4. Work in a Record scenario</a></li>
+<li><a href="#search">2.5. Find and inspect documents</a></li>
+<li><a href="#mutations">2.6. Create, edit and delete</a></li>
+<li><a href="#content">2.7. Choose content and a viewer</a>
+<ul class="sectlevel3">
+<li><a href="#viewer-pdf">2.7.1. Read a PDF</a></li>
+<li><a href="#viewer-annotations">2.7.2. View, edit and save PDF annotations</a></li>
+<li><a href="#viewer-image">2.7.3. Inspect an image</a></li>
+<li><a href="#viewer-tiff">2.7.4. Read a TIFF</a></li>
+<li><a href="#viewer-text">2.7.5. Read text content</a></li>
+<li><a href="#viewer-download">2.7.6. Downloads, unavailable content and historical viewing</a></li>
+</ul>
+</li>
+<li><a href="#history">2.8. Versions and comments</a></li>
+<li><a href="#recovery">2.9. Recover from errors and unfinished work</a></li>
+</ul>
+</li>
+<li><a href="#_administration">3. Administration</a>
+<ul class="sectlevel2">
+<li><a href="#admin-access">3.1. Enter administration</a></li>
+<li><a href="#create-scenario">3.2. Choose a scenario structure</a>
+<ul class="sectlevel3">
+<li><a href="#wizard-simple">3.2.1. Create a Simple Document scenario</a></li>
+<li><a href="#wizard-record">3.2.2. Create a Record scenario</a></li>
+</ul>
+</li>
+<li><a href="#config-simple">3.3. Configure a Simple Document scenario</a></li>
+<li><a href="#config-record">3.4. Configure a Record scenario</a></li>
+<li><a href="#general">3.5. General settings and attributes</a></li>
+<li><a href="#content-settings">3.6. Content, versions and record deletion</a></li>
+<li><a href="#views">3.7. Configure views</a>
+<ul class="sectlevel3">
+<li><a href="#_understand_the_view_matrices">3.7.1. Understand the view matrices</a></li>
+</ul>
+</li>
+<li><a href="#categories">3.8. Organize scenarios into categories</a>
+<ul class="sectlevel3">
+<li><a href="#presentation">3.8.1. Choose shared dashboard presentation</a></li>
+<li><a href="#category-transfer">3.8.2. Import and export categories only</a></li>
+</ul>
+</li>
+<li><a href="#lifecycle">3.9. Save, duplicate, order, import and export</a>
+<ul class="sectlevel3">
+<li><a href="#_save_and_discard_scopes">3.9.1. Save and discard scopes</a></li>
+<li><a href="#_configuration_transfer_and_legacy_files">3.9.2. Configuration transfer and legacy files</a></li>
+</ul>
+</li>
+<li><a href="#localization">3.10. Manage languages and translations</a></li>
+<li><a href="#admin-recovery">3.11. Validation and concurrent editing</a></li>
+<li><a href="#reference">3.12. Import reference</a>
+<ul class="sectlevel3">
+<li><a href="#_configuration_import_fields">3.12.1. Configuration import fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Version 0.1.3-SNAPSHOT; source b2ea58f3e5ed11196fcf08cbe38a29ce44df1c67.</p>
+</div>
+<div class="paragraph">
+<p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction"><a class="anchor" href="#_introduction"></a><a class="link" href="#_introduction">1. Introduction</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide explains how to use Arveo Flex Client and administer its scenarios, categories, dashboard presentation and translations. Start with User workflows for everyday tasks; Administration covers configuration and import/export for administrators.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_user_workflows"><a class="anchor" href="#_user_workflows"></a><a class="link" href="#_user_workflows">2. User workflows</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="access"><a class="anchor" href="#access"></a><a class="link" href="#access">2.1. Access and permissions</a></h3>
+<div class="paragraph">
+<p>Open Arveo Shell using the address supplied by your administrator and sign in with your own account. Open <strong>Flex Client</strong> from the Shell dashboard. The application runs inside Shell; a bookmark must use the Shell entry point. If authentication expires, sign in again through Shell. Before repeating a failed save, reload and check whether the change was already persisted.</p>
+</div>
+<div class="paragraph">
+<p>A normal user works with scenarios made visible by configuration. Administrators additionally manage configuration and languages. Repository permissions still control access to data: a visible button or an enabled configuration switch does not grant permission. Ask your administrator when access is denied; do not repeatedly submit a destructive action.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="navigation"><a class="anchor" href="#navigation"></a><a class="link" href="#navigation">2.2. Choose a scenario and language</a></h3>
+<div class="paragraph">
+<p>Select English or Deutsch with the dashboard language selector. Scenario names, descriptions, category labels and field labels use the configured translations, falling back to the default text when a translation is missing. Open a scenario from a card or list row. Use the breadcrumb to return to the dashboard or to the parent record. Hidden scenarios are not available through ordinary navigation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/dashboard.png" alt="Scenario dashboard" width="680">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Categories:</strong> when category navigation is shown, choose a category to include its scenarios and those in all its child categories. <strong>All categories</strong> also includes unassigned scenarios; there is no separate Unassigned category in the dashboard. Your administrator can choose a flat catalog instead, hiding category navigation without removing scenarios or their assignments.</p>
+</li>
+<li>
+<p><strong>Search:</strong> search by scenario name or description in the current language. Search narrows the main catalog within the selected category, not repository documents. Clear the search and choose All categories when a scenario is unexpectedly missing. Results retain configured scenario order; use pagination to see more matches.</p>
+</li>
+<li>
+<p><strong>Favorites:</strong> use the favorite control to add or remove a personal shortcut. The favorites area shows your visible favorite scenarios independently of the main catalog&#8217;s search and category selection. A favorite does not grant repository access or make a hidden scenario visible.</p>
+</li>
+<li>
+<p><strong>Cards view / List view:</strong> choose how to display the catalog. This choice and your favorites are saved privately for your account. Search, selected category and page are temporary; they are not saved dashboard preferences. The administrator&#8217;s tree/flat choice is shared and is separate from your cards/list choice.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Scenario icons are chosen by the administrator. When no supported icon is configured, the dashboard shows the scenario&#8217;s initial instead.</p>
+</div>
+<div class="paragraph">
+<p>If dashboard preferences cannot be restored, use <strong>Retry loading preferences</strong>. Changes remain pending until restoration succeeds, so they do not replace preferences that could not be loaded. If saving fails, use <strong>Retry saving dashboard preferences</strong>. A warning means the latest choices are not confirmed as saved; it does not prevent opening a scenario.</p>
+</div>
+<div class="paragraph">
+<p>A one-stage scenario opens a document list. A two-stage scenario first opens a record list; selecting a record opens its documents. The selected record scopes child searches and creation. Confirm the parent before modifying documents.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="user-simple"><a class="anchor" href="#user-simple"></a><a class="link" href="#user-simple">2.3. Work in a Simple Document scenario</a></h3>
+<div class="paragraph">
+<p>A Simple Document scenario opens one list directly. There is no parent-selection step. The list contains the permitted items of the configured type; its displayed title and fields are chosen by your administrator.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the scenario card from the dashboard.</p>
+</li>
+<li>
+<p>Enter search values to narrow the list. Clear a filter to broaden the results again; use the offered sorting and column settings to arrange the list. More results load as you move through the list.</p>
+</li>
+<li>
+<p>Select an item to open its workspace alongside the list. Details shows metadata; Viewer is offered for document content; History appears when configured.</p>
+</li>
+<li>
+<p>Use the create action to add an item if it is available. Complete required writable fields and select/upload content as requested. Save and verify the new item in the list.</p>
+</li>
+<li>
+<p>Use an item&#8217;s edit or delete action where offered. Check the confirmation and persisted result. Closing the workspace returns attention to the list and does not delete the item.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/table.png" alt="Simple Document list" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Example: to inspect an invoice, search for its number, select the matching row, check Details, then open Viewer. If a filter hides the saved item, clear that filter before assuming the save failed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="user-record"><a class="anchor" href="#user-record"></a><a class="link" href="#user-record">2.4. Work in a Record scenario</a></h3>
+<div class="paragraph">
+<p>A Record scenario first opens the record list. Selecting a record then opens a different list containing its related documents. Search and sorting apply to the stage currently on screen.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/record-list.png" alt="Record scenario parent list" width="680">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Search for the parent record, for example a case number or folder name. Check identifying values before selecting it.</p>
+</li>
+<li>
+<p>Select the record to open its documents. Check the breadcrumb and configured parent summary to confirm the current context. An empty child list can mean that the record has no matching documents or that your search/access excludes them.</p>
+</li>
+<li>
+<p>Search within the selected record&#8217;s documents. Clearing the child search broadens results within that record; it does not turn the list into a search across all records.</p>
+</li>
+<li>
+<p>Select a document to open Details, Viewer and configured History, just as in a Simple Document scenario.</p>
+</li>
+<li>
+<p>To create a child document, first choose the correct parent and use the child list&#8217;s create action. The relationship to the current parent is controlled by the scenario; it is not an arbitrary editable grouping field.</p>
+</li>
+<li>
+<p>Close the document workspace when finished. Use the breadcrumb to return to the record list, then select a different record. Closing a document workspace alone does not change its parent context.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/record-documents.png" alt="Selected record summary and related documents" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Parent record actions and child document actions are separate. Use the record list&#8217;s actions to create, edit, inspect history or delete a parent where offered. Use child actions for an individual document. Creating a record does not automatically create its documents. Changing parent metadata does not edit all children.</p>
+</div>
+<div class="paragraph">
+<p>Before the deletion confirmation opens, the client counts the related documents. Check the count and whether those documents will be deleted or unlinked. If the count cannot be determined, the client reports an error and does not open the confirmation; retry after resolving the loading or access problem.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Deleting a parent can delete all related documents when cascade deletion is enabled. Otherwise children are unlinked: their parent relationship is cleared, while their metadata and stored content are retained. They no longer appear under the deleted record. A mandatory relationship requires cascade deletion. Read the confirmation and ask your administrator when the affected scope is unclear.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="search"><a class="anchor" href="#search"></a><a class="link" href="#search">2.5. Find and inspect documents</a></h3>
+<div class="paragraph">
+<p>Use the search fields offered by the scenario, choose a supported operator and enter a value of the displayed type. For example, search for a known document name, then clear the search to return to the complete permitted list. Sort using the available table headings; use paging to move through results. Configuration determines available columns, order and searchable fields.</p>
+</div>
+<div class="paragraph">
+<p>Select a row to open the document workspace. Choose <strong>Details</strong> to inspect metadata. Read-only fields cannot be changed. Dates, enumerations and references use their corresponding controls rather than arbitrary text. Not every configured field has a control in every view. There are no column-header filter controls or table CSV/ZIP export actions in this version.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/details.png" alt="Document details" width="680">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mutations"><a class="anchor" href="#mutations"></a><a class="link" href="#mutations">2.6. Create, edit and delete</a></h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Choose the create action when enabled. In a two-stage scenario, first choose the parent record.</p>
+</li>
+<li>
+<p>Complete all required writable fields. Select valid enumeration/reference values. Supply content when required by the chosen document type.</p>
+</li>
+<li>
+<p>Submit the form. Resolve validation errors next to their fields; preserve the draft until the outcome is clear.</p>
+</li>
+<li>
+<p>Confirm that the saved document appears in the correct list and reopen its details to check persisted values.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To edit, open the existing item and use its edit action. Change writable fields and save. Metadata-only edits leave unchanged content intact. When replacing original content, check filename and MIME information before saving. A failed save is not proof that nothing was stored: reload the item before retrying.</p>
+</div>
+<div class="paragraph">
+<p>Deletion is permanent unless your repository provides a separate recovery mechanism. Read the confirmation carefully. Deleting a record can delete its children when cascade deletion is enabled; otherwise children are unlinked. Mandatory relationships require cascade behavior. Cancel if the affected scope is unclear.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="content"><a class="anchor" href="#content"></a><a class="link" href="#content">2.7. Choose content and a viewer</a></h3>
+<div class="paragraph">
+<p>Open Viewer in the document workspace. The client chooses the viewer from the selected content&#8217;s format, not from the scenario name. The same scenario can contain PDFs, images and text documents.</p>
+</div>
+<div class="paragraph">
+<p>An <strong>original</strong> is a stored content element of the document. A <strong>rendition</strong> is another representation associated with an original, for example a PDF generated from another format. Renditions may be unavailable until repository processing finishes. They are not additional documents or historical versions.</p>
+</div>
+<div class="paragraph">
+<p>When several configured elements are available, use the content selector above the viewer. Entries are grouped under their originals. The default element is chosen by the administrator and can be an original or a rendition. If only one element is available, there may be no selector. Check the selected entry before viewing or downloading.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Viewer</th>
+<th class="tableblock halign-left valign-top">Content</th>
+<th class="tableblock halign-left valign-top">Main features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDF documents</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Page navigation, magnification, pan, selection/search, print, download and configured annotations</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PNG, JPEG, GIF, BMP, SVG, WebP, AVIF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zoom, fit/original-size display, rotation, fullscreen and download</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TIFF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TIFF content, including multipage files</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Page navigation/thumbnails, zoom, rotation and download</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content identified as <code>text/*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Line numbers, wrapping, text zoom, copy and download</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fallback</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Other formats</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Download when enabled; no dedicated inline viewer</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>There is no dedicated native Office, audio or video viewer in this client. A supported rendition may make such content viewable, for example a PDF rendition. HTML identified as text is shown as text rather than as an interactive webpage. Viewer display controls do not change stored content.</p>
+</div>
+<div class="sect3">
+<h4 id="viewer-pdf"><a class="anchor" href="#viewer-pdf"></a><a class="link" href="#viewer-pdf">2.7.1. Read a PDF</a></h4>
+<div class="imageblock">
+<div class="content">
+<img src="images/viewer.png" alt="PDF viewer and content selector" width="680">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Page navigation:</strong> use previous/next and the page-number control to move through the document. Check the displayed page count; document pages are distinct from pages of search results.</p>
+</li>
+<li>
+<p><strong>Magnification:</strong> use zoom controls or the offered fit modes to make text readable. A narrow workspace may hide toolbar items in an overflow menu; widen the workspace when needed.</p>
+</li>
+<li>
+<p><strong>Pan and selection:</strong> choose Pan to move around an enlarged page, or Selection to select text. These modes affect mouse interaction, not repository metadata.</p>
+</li>
+<li>
+<p><strong>Search:</strong> use the viewer&#8217;s search tool to find text inside this PDF. This is separate from scenario search. Image-only scans may contain no searchable/selectable text; the client does not perform OCR on demand.</p>
+</li>
+<li>
+<p><strong>Print:</strong> use the PDF print action when available. Browser printing and device selection occur outside the scenario configuration workflow.</p>
+</li>
+<li>
+<p><strong>Download:</strong> use the download action when enabled for the selected content. Check the filename and browser download destination.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="viewer-annotations"><a class="anchor" href="#viewer-annotations"></a><a class="link" href="#viewer-annotations">2.7.2. View, edit and save PDF annotations</a></h4>
+<div class="paragraph">
+<p>Annotations require enabled configuration and repository permissions. The viewer can show saved annotations without allowing you to edit them. Historical versions are read-only. Annotation settings belong to an original and also apply to its renditions.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/viewer-annotations.png" alt="PDF annotation toolbar" width="680">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use Show/Hide annotations to control their visibility. Hiding them is a display choice, not deletion. Editing tools are available only when annotations are visible and editable.</p>
+</li>
+<li>
+<p>Enter annotation editing through the toolbar. Text-markup tools include highlight, underline, strikethrough and squiggly underline. They require selectable text. Free-text and shape tools can be used for visible notes and markings.</p>
+</li>
+<li>
+<p>Select an annotation to change the offered fill/stroke color, thickness or opacity, move/resize it where supported, or delete it. Undo/redo operates on editing changes; it is not repository version restoration.</p>
+</li>
+<li>
+<p>Choose Save annotations to persist changes. Until saving succeeds, the draft is not proof of a stored annotation. Reopen the content to check the result when necessary.</p>
+</li>
+<li>
+<p>When changing content or leaving the document with unsaved annotation changes, use the offered Save and continue, Discard and continue, or Cancel choice. Cancel keeps the current document and draft open.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If annotations cannot load, use Retry and wait for a successful load before editing. A save failure requires resolving the error and retrying; do not discard a needed draft just to dismiss the message. Permission restrictions or loading errors can disable editing even while the PDF itself is visible.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="viewer-image"><a class="anchor" href="#viewer-image"></a><a class="link" href="#viewer-image">2.7.3. Inspect an image</a></h4>
+<div class="imageblock">
+<div class="content">
+<img src="images/viewer-image.png" alt="Image viewer controls" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Use zoom in/out to change magnification and reset to return to the base zoom. Fit adapts the image to the available space; original-size display uses its natural dimensions. Rotate clockwise or counterclockwise to read sideways scans; these rotations affect the display only. Use fullscreen for more space and exit fullscreen to return to the workspace. Download obtains the selected stored content when enabled, rather than a screenshot of your rotated view.</p>
+</div>
+<div class="paragraph">
+<p>The viewer component can navigate multiple supplied images, but this client supplies the selected content as one image. Use the document content selector to switch between stored originals/renditions; do not expect an image gallery of all documents. Image formats do not expose the PDF annotation toolbar.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="viewer-tiff"><a class="anchor" href="#viewer-tiff"></a><a class="link" href="#viewer-tiff">2.7.4. Read a TIFF</a></h4>
+<div class="imageblock">
+<div class="content">
+<img src="images/viewer-tiff.png" alt="TIFF viewer and page controls" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>TIFF files can contain several pages. Use previous/next or the page-number control to change the active page; toggle the thumbnail sidebar to identify pages visually. A single-page TIFF has no additional page to navigate to. Zoom in/out and reset adjust the active page&#8217;s display; rotation helps read sideways pages. Download, when enabled, retrieves the TIFF content, not merely the rendered page. PDF text search and annotation editing are not TIFF controls.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="viewer-text"><a class="anchor" href="#viewer-text"></a><a class="link" href="#viewer-text">2.7.5. Read text content</a></h4>
+<div class="imageblock">
+<div class="content">
+<img src="images/viewer-text.png" alt="Text viewer with wrapping and line numbers" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Toggle line numbers when referring to a particular line. Enable wrapping to keep long lines within the viewer; disable it to preserve long-line layout and scroll horizontally. Text zoom changes displayed font size, and reset restores the base size. Copy text copies the content to the clipboard when the browser permits it; download saves the selected content when enabled. These actions do not edit the stored text. This viewer is a reader, not a source editor or a rendered HTML preview.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="viewer-download"><a class="anchor" href="#viewer-download"></a><a class="link" href="#viewer-download">2.7.6. Downloads, unavailable content and historical viewing</a></h4>
+<div class="paragraph">
+<p>Viewing and downloading are separate capabilities. Each original and rendition has its own availability and download settings; repository permissions still apply. A hidden download control does not mean the document has no content. An unsupported format offers a download fallback only when download is enabled.</p>
+</div>
+<div class="paragraph">
+<p>Loading errors can result from inaccessible content, invalid format metadata, missing renditions or viewer initialization failures. Check the content selector, try an available original, and reload through Shell if needed. An empty preview alone does not establish an authorization failure. Report the scenario, document and selected element to your administrator without including credentials.</p>
+</div>
+<div class="paragraph">
+<p>From History, open a historical version to inspect its content and version fields in a separate drawer. Historical content uses its own content selector. Close that drawer to return to the current version. Viewing an old version does not restore it; annotations of historical content cannot be edited.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="history"><a class="anchor" href="#history"></a><a class="link" href="#history">2.8. Versions and comments</a></h3>
+<div class="paragraph">
+<p>When history is enabled, open <strong>History</strong>. Select a historical version to inspect that version rather than the current document. Return to the current version before editing. Comments appear only where enabled and permitted; cancel an unfinished comment to discard it, or submit it and reopen history to check the saved result.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/history.png" alt="Version history" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Historical selection is an inspection action; it does not restore or overwrite the current version. Record and document history are independently configured.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="recovery"><a class="anchor" href="#recovery"></a><a class="link" href="#recovery">2.9. Recover from errors and unfinished work</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Validation failure: correct the indicated fields and submit again.</p>
+</li>
+<li>
+<p>List/loading failure: retry or reload through Shell; verify the selected scenario and parent record.</p>
+</li>
+<li>
+<p>Permission denial: contact the administrator with the action and item involved, without sending credentials.</p>
+</li>
+<li>
+<p>Session expiry: authenticate through Shell again, then check persisted state before repeating a write.</p>
+</li>
+<li>
+<p>Navigation with unsaved work: save explicitly or intentionally discard your draft. Configuration and PDF annotation editing provide their documented save/discard/cancel choices. Do not assume that every other form draft has the same protection.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Recent records and saved views depend on scenario context and repository access. For removed or inaccessible records, return to the scenario and search again.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_administration"><a class="anchor" href="#_administration"></a><a class="link" href="#_administration">3. Administration</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="admin-access"><a class="anchor" href="#admin-access"></a><a class="link" href="#admin-access">3.1. Enter administration</a></h3>
+<div class="paragraph">
+<p>Sign in through Arveo Shell with a configuration-administrator account. Open Flex Client, then <strong>Open settings</strong>. Normal users cannot manage configuration. Repository access and configuration-administrator permissions are distinct; enabled scenario capabilities never override repository authorization.</p>
+</div>
+<div class="paragraph">
+<p>Use the administration navigation to switch between <strong>Scenario configuration</strong>, <strong>Categories</strong> and <strong>Localization</strong>. Scenario settings, category hierarchy/assignments and dashboard presentation share one configuration draft. Moving between these workspaces retains unsaved changes; it does not save them. Enter through the Shell client and use this navigation rather than bookmarking a nested administration URL.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/configuration.png" alt="Scenario configuration" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Select a scenario in the sidebar. The editor contains General, Content &amp; Versions, and Views, with additional record sections for two-stage scenarios. Expand the relevant section. The JSON preview is read-only; edit using structured controls or validated import. Export a backup before significant changes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="create-scenario"><a class="anchor" href="#create-scenario"></a><a class="link" href="#create-scenario">3.2. Choose a scenario structure</a></h3>
+<div class="paragraph">
+<p>A scenario is a configured entry point into repository data. Choose its structure before configuring its labels and views. The document and record types must already exist in the repository; this wizard does not create types or relationships.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Choice</th>
+<th class="tableblock halign-left valign-top">Simple Document (one-stage)</th>
+<th class="tableblock halign-left valign-top">Record (two-stage)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Opening the scenario</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One list of items of the selected document type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A parent record list, followed by documents belonging to the selected record</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type selection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One document type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Child document type plus a relationship that determines the parent record type</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Document attributes, views, content and history</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Separate record and document attributes, views and history; document content; record management</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Example</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A searchable collection of invoices</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Case records, each containing its own correspondence</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The wizard identifies these choices as <strong>One-stage</strong> and <strong>Two-stage</strong>. This guide calls them Simple Document and Record scenarios. A record is the parent organizing the documents, not another content rendition.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/wizard.png" alt="Choose a scenario structure" width="680">
+</div>
+</div>
+<div class="sect3">
+<h4 id="wizard-simple"><a class="anchor" href="#wizard-simple"></a><a class="link" href="#wizard-simple">3.2.1. Create a Simple Document scenario</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Step 1 - identity:</strong> choose One-stage and enter a unique scenario name. Use a stable descriptive identifier, for example <code>invoice_documents</code>. Leading and trailing whitespace is removed. The name must contain 1 to 200 characters; a duplicate name is rejected when creating the scenario. The name is its identity, while the displayed title can be configured later.</p>
+</li>
+<li>
+<p><strong>Step 2 - document type:</strong> select the repository type containing the items you want to expose. For example, the demo uses <code>flex_document</code>. A type choice controls which attributes and content elements are available later. It does not convert existing objects to that type.</p>
+</li>
+<li>
+<p><strong>Step 3 - defaults explanation:</strong> read the explanation of the proposed document configuration. This step is informational, not the attribute editor. The editor becomes available after creation.</p>
+</li>
+<li>
+<p><strong>Step 4 - review:</strong> check the name, kind and document type. Choose Create only when these structural choices are correct. Successful creation immediately stores the scenario and opens its configuration; later changes require Save.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/wizard-simple-review.png" alt="Simple Document wizard final review" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Next is disabled while a required choice is missing. Back returns to an earlier step; after changing a type, check the downstream choices again. Cancel closes the wizard without creating a scenario. A failed Create requires resolving the reported error; check the sidebar before repeating a request after a connection failure.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="wizard-record"><a class="anchor" href="#wizard-record"></a><a class="link" href="#wizard-record">3.2.2. Create a Record scenario</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Step 1 - identity:</strong> choose Two-stage and enter a unique stable name, for example <code>case_documents</code>.</p>
+</li>
+<li>
+<p><strong>Step 2 - architecture:</strong> select <strong>1:n with foreign key</strong> (Strict one-to-many). This is the supported architecture: documents reference a parent record through a repository relationship.</p>
+</li>
+<li>
+<p><strong>Step 3 - child document type:</strong> select an eligible document type. The choices are filtered to types with a supported child-to-parent relationship. In the demo, <code>flex_rec_document</code> is the child type. An empty list means that an eligible repository relationship is needed; choosing an unrelated type is not a workaround.</p>
+</li>
+<li>
+<p><strong>Step 4 - relationship:</strong> choose the foreign key linking the child to its parent. Each option shows the relationship name, child attribute and target type/attribute. The target determines the record type; there is no separate arbitrary parent-type choice. A single eligible relationship is selected automatically. When there are several, choose the one that represents the intended grouping.</p>
+</li>
+<li>
+<p><strong>Step 5 - review:</strong> verify name, kind, architecture, child type and relationship. For example, <code>fk_flex_rec_document_container</code> links the demo documents to <code>flex_container</code>. Create persists the initial scenario; configure its two stages next.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/wizard-record-relation.png" alt="Record wizard relationship selection" width="680">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/wizard-record-review.png" alt="Record wizard final review" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Going Back can clear dependent architecture, type or relationship selections. Recheck them before advancing. The wizard does not move documents, create parent records or repair repository relationships.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Name, kind, types and relationship structure are immutable after creation. To change the structure, create a new scenario. Duplicating also requires a new unique name.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="config-simple"><a class="anchor" href="#config-simple"></a><a class="link" href="#config-simple">3.3. Configure a Simple Document scenario</a></h3>
+<div class="paragraph">
+<p>Select the new scenario in the sidebar and work through its document settings. Start with a small set of useful fields, save, then test it as a normal user before making it visible to the wider audience.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set the displayed title, description and dashboard visibility. A useful title such as Invoice documents is easier to recognize than a technical type name. Hiding a scenario removes ordinary navigation; it does not revoke repository access.</p>
+</li>
+<li>
+<p>Expand the document&#8217;s General settings. Enable globally available attributes and give them clear labels. Review mandatory, primary-key, read-only and unique badges before enabling creation or editing.</p>
+</li>
+<li>
+<p>Configure table/search persistence and the exposed create/edit capabilities. Persistence controls remembered view state; it does not store repository documents. Repository permissions still decide whether an action is allowed.</p>
+</li>
+<li>
+<p>Configure Content and document Versions as described below. Choose a default available content element and decide which originals and renditions users can view or download.</p>
+</li>
+<li>
+<p>Configure Document views: the table for finding items, search fields for narrowing results, detail/form fields for inspecting and editing them, and version fields where history is enabled.</p>
+</li>
+<li>
+<p>Save and reload. Open the scenario as a user, search for a known item, inspect its metadata and content, and check that the enabled actions and required fields are usable.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/configuration.png" alt="Simple Document configuration overview" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Example: for invoices, expose invoice number and date in the list, add corresponding search fields, and organize writable metadata in a meaningful form section. Keep repository-maintained fields read-only. Enable download only for the content elements users need.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="config-record"><a class="anchor" href="#config-record"></a><a class="link" href="#config-record">3.4. Configure a Record scenario</a></h3>
+<div class="paragraph">
+<p>A Record scenario has two independently configured stages. <strong>Record</strong> is stage 1, the parent list; <strong>Document</strong> is stage 2, the documents of the selected record. The configuration editor may display Document settings before Record settings; these labels determine the target, not their screen order.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/configuration-record.png" alt="Record scenario configuration with both stages" width="680">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Review the immutable child type and relationship. Confirm that the derived parent type represents the intended record, such as a case or folder.</p>
+</li>
+<li>
+<p>Configure Record General attributes and actions. Include fields that help identify the parent, such as its name or reference number. Parent create/edit settings do not enable child creation or editing.</p>
+</li>
+<li>
+<p>Configure Record views separately: record table columns and search fields identify the parent, detail fields describe it, and summary fields display context after selection. Set summary order, labels and highlighting where offered. Include enough information to distinguish similarly named records.</p>
+</li>
+<li>
+<p>Configure Document General and Document views for the child type. Use child attributes, not parent attributes, in these matrices. Child searches are scoped by the selected relationship and record.</p>
+</li>
+<li>
+<p>Configure document originals, renditions and annotation behavior. Parent records without content do not gain a document viewer merely because document content is enabled.</p>
+</li>
+<li>
+<p>Enable Record versions/comments and Document versions/comments independently. Choose version fields appropriate to each type.</p>
+</li>
+<li>
+<p>Review Record management before exposing deletion. With cascade enabled, deleting a record deletes its child documents first. With cascade disabled, the client unlinks children before deleting the parent. A mandatory parent relationship cannot be cleared and forces cascade behavior; do not attempt to disable that safeguard.</p>
+</li>
+<li>
+<p>Save and test both stages: find a record, open its child list, check the summary, inspect a child and return to the parent list. Repeat with another record to verify that documents are scoped correctly.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/configuration-record-views.png" alt="Record and document view configuration" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Example: put case number and case title in the Record table and summary, and document name and document date in Document views. A case title label does not rename a child document field. Explain deletion policy to users before allowing parent deletion.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="general"><a class="anchor" href="#general"></a><a class="link" href="#general">3.5. General settings and attributes</a></h3>
+<div class="paragraph">
+<p>Set the localized title, description and dashboard visibility. Visibility controls navigation, not security. Each document or record stage has its own creation and editing switches. Disable these actions when they should not be exposed; repository authorization still applies. Deletion availability also depends on permissions, and Record management determines the treatment of children.</p>
+</div>
+<div class="paragraph">
+<p>Choose a scenario icon from the icon picker in General settings. The icon is used in dashboard cards, favorites and list rows. Choose the default option to restore the scenario initial. Imported icon identifiers that are valid but unavailable in this client are retained and also display the initial; do not supply SVG markup or an image URL as an icon identifier.</p>
+</div>
+<div class="paragraph">
+<p>The attribute matrix displays type information and mandatory, primary-key, read-only and unique metadata. These badges describe the repository contract. Enable available fields and preserve required writable fields when creation or editing is enabled. Do not try to make a repository read-only attribute editable.</p>
+</div>
+<div class="paragraph">
+<p>Localized text includes a default value and optional values per language. Use the localization drawer to supply translations. A field/view label override applies only where enabled; otherwise the normal configured label applies. Preview each supported language after saving.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="content-settings"><a class="anchor" href="#content-settings"></a><a class="link" href="#content-settings">3.6. Content, versions and record deletion</a></h3>
+<div class="paragraph">
+<p>Expand <strong>Content &amp; Versions</strong>. Configure original and rendition labels, availability and independent download switches. Choose an available default content element or rendition. Annotation settings belong to the original and are shared by its renditions; default visibility must be disabled when annotations are disabled.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/content-settings.png" alt="Content and version configuration" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Optional filename and MIME attributes must reference writable string fields. If omitted, repository content metadata supplies the values. The primary upload populates configured filename/MIME fields; other content elements retain their own metadata. Editing the filename before submission also changes the primary content&#8217;s system name.</p>
+</div>
+<div class="paragraph">
+<p>Enable version history and comments separately for document and record stages. These options control the client surfaces, not underlying permission grants.</p>
+</div>
+<div class="paragraph">
+<p>For two-stage scenarios, review record-management cascade deletion. With cascade enabled, deleting a parent deletes its documents first. Without it, the parent relationship is cleared on the children; their metadata and stored content are retained. A mandatory parent relationship forces cascade deletion. The deletion confirmation shows the related-document count and the configured delete or unlink consequence. If the count cannot be loaded, confirmation is blocked. Test the configured policy with a disposable record and explain this consequence to users before exposing record deletion.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="views"><a class="anchor" href="#views"></a><a class="link" href="#views">3.7. Configure views</a></h3>
+<div class="paragraph">
+<p>Expand <strong>Views</strong> and select the document or record view. Configure globally available attributes first, then their supported use in search, table, detail and create/edit views. Adjust order and labels with the provided controls. Only actual runtime consumers are customer features: a configuration field alone does not establish an available UI action.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/views.png" alt="View configuration" width="680">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Search: enable fields and arrange their order. Runtime controls and operators follow each field type; the matrix does not offer an arbitrary operator editor.</p>
+</li>
+<li>
+<p>Table: configure available columns, ordering and visibility and sorting. Verify the result in the runtime list.</p>
+</li>
+<li>
+<p>Detail/forms: configure field ordering, sections and read-only behavior where supported; required writable fields must remain accessible for enabled mutations.</p>
+</li>
+<li>
+<p>Two-stage summary: configure parent summary fields and localized labels, then verify the selected-record context.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_understand_the_view_matrices"><a class="anchor" href="#_understand_the_view_matrices"></a><a class="link" href="#_understand_the_view_matrices">3.7.1. Understand the view matrices</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Setting</th>
+<th class="tableblock halign-left valign-top">Meaning and practical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Global attribute Available</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Makes an attribute eligible for configured views. Enable it here before using it in a view. Turning it off can remove dependent uses; inspect the editor&#8217;s confirmation and validation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">View Available</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Includes the field in this particular table, search, detail, version or summary view. It does not grant repository permission.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Moves a field to the requested position in that view. Orders in another stage or matrix remain independent.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Label override</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uses a view-specific label when enabled. Otherwise the stage attribute label is used. Supply translations through the provided translation action.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Table Visible</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Controls initial visibility among available columns. Users may have remembered column choices when persistence is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Table Sortable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows sorting by the column where supported by the repository/runtime. Enable it for useful sortable fields, not every displayed value automatically.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Detail Section</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Groups fields under a localized section heading, for example General or Classification.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Detail Read-only</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prevents editing that field through the configured form. It cannot make a repository read-only attribute writable.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version fields</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Determines which configured metadata fields are shown for history. Enabling history and selecting its fields are separate choices.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Summary fields</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Displays parent context for Record scenarios, with order, labels and highlighting where offered. It does not change child attributes.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Do not hide required writable inputs from enabled creation/editing workflows. Primary keys, system-maintained fields and the relationship managed by a Record scenario may be locked. A field can be visible in a table and absent from search, or searchable and absent from the table; these are independent choices.</p>
+</div>
+<div class="paragraph">
+<p>Column-header filtering and CSV/ZIP table export are not available in this version. Do not configure a workflow around those actions.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="categories"><a class="anchor" href="#categories"></a><a class="link" href="#categories">3.8. Organize scenarios into categories</a></h3>
+<div class="paragraph">
+<p>Open <strong>Categories</strong>. Categories organize dashboard navigation; they do not create repository folders, move documents or grant permissions. Each category has a stable ID and a required default label, with optional translations. Renaming or translating a label does not change the ID or its assignments.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Enter a nonblank label and choose <strong>Add root category</strong>. To create a nested category, select its parent and choose <strong>Add child category</strong>.</p>
+</li>
+<li>
+<p>Select a category to edit its default label or translations. Do not leave the required default label empty or whitespace-only.</p>
+</li>
+<li>
+<p>Use the parent selector to move a category and its children under another category, or back to the root. A category cannot become its own ancestor. Moving to another parent appends it to that parent&#8217;s children.</p>
+</li>
+<li>
+<p>Use <strong>Move up</strong> and <strong>Move down</strong> to order categories among siblings. Category order controls navigation order, not the order of scenarios in the catalog.</p>
+</li>
+<li>
+<p>Under <strong>Scenario assignments</strong>, choose one category for each scenario or leave it <strong>Unassigned</strong>. Hidden scenarios can also be assigned. A parent dashboard filter includes scenarios assigned to its descendants; unassigned scenarios appear under All categories only.</p>
+</li>
+<li>
+<p>Choose <strong>Save all</strong> to persist the shared configuration draft, including any retained scenario or dashboard-presentation edits. Verify the saved dashboard as a normal user.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Deleting a category requires confirmation and removes its entire subtree from the draft. Scenarios assigned anywhere in that subtree become unassigned; the scenarios and repository data are not deleted. Save all to persist the removal. Back up the full configuration when assignments must be recoverable; a category-only export does not contain them.</p>
+</div>
+<div class="sect3">
+<h4 id="presentation"><a class="anchor" href="#presentation"></a><a class="link" href="#presentation">3.8.1. Choose shared dashboard presentation</a></h4>
+<div class="paragraph">
+<p>In Categories, choose the tree/category presentation or the flat catalog and then <strong>Save all</strong>. Tree presentation shows category navigation. Flat presentation shows all visible scenarios in configured order without a category filter. Both retain search, favorites, cards/list selection and pagination.</p>
+</div>
+<div class="paragraph">
+<p>This is an administrator-owned setting for everyone, not a private user preference. Switching to flat retains the category tree, translations and scenario assignments; switching back to tree restores their navigation structure. It also preserves users' favorites and cards/list preferences.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="category-transfer"><a class="anchor" href="#category-transfer"></a><a class="link" href="#category-transfer">3.8.2. Import and export categories only</a></h4>
+<div class="paragraph">
+<p><strong>Export categories</strong> downloads <code>categories.json</code>: a JSON array containing the current draft&#8217;s complete category tree, including unsaved edits, stable IDs, translated labels and child order. It contains no scenarios, category assignments, scenario icons or dashboard presentation. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">[
+  {
+    "id": "finance",
+    "label": { "default": "Finance", "values": { "de": "Finanzen" } },
+    "children": [
+      { "id": "invoices", "label": { "default": "Invoices" } }
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Choose <strong>Import categories</strong> in Categories and select a category-array file, not a full configuration envelope.</p>
+</li>
+<li>
+<p>Review validation errors before retrying. IDs must be globally unique and labels valid. New roots and children are appended in imported order. An existing ID must retain the same label/translations, parent and sibling position; a conflicting definition aborts the whole import. Use the editor, not import, to rename or move an existing category.</p>
+</li>
+<li>
+<p>After successful validation, review the merged draft and choose <strong>Save all</strong>. Import does not immediately persist anything and does not change scenario assignments or dashboard presentation.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>An empty or identical category import makes no changes; it does not delete existing categories. Invalid files, conflicting definitions or failed validation leave the draft unchanged. If the draft changes while validation is running, repeat the import against the current draft rather than assuming the earlier result was applied.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="lifecycle"><a class="anchor" href="#lifecycle"></a><a class="link" href="#lifecycle">3.9. Save, duplicate, order, import and export</a></h3>
+<div class="sect3">
+<h4 id="_save_and_discard_scopes"><a class="anchor" href="#_save_and_discard_scopes"></a><a class="link" href="#_save_and_discard_scopes">3.9.1. Save and discard scopes</a></h4>
+<div class="paragraph">
+<p>Save editor changes and verify the result after reloading. The scenario editor&#8217;s <strong>Save current</strong> saves the selected scenario. When category or dashboard-presentation changes are pending, the action becomes <strong>Save all</strong> and saves the complete shared configuration draft, even when the selected scenario itself is unchanged. <strong>Revert current</strong> discards only the selected scenario&#8217;s edits; it does not undo category, presentation or other scenario edits.</p>
+</div>
+<div class="paragraph">
+<p><strong>Save all</strong> in Categories also persists retained scenario edits. Confirmed configuration reload discards the whole shared configuration draft and restores saved data, rather than only the visible workspace. Export needed drafts before discarding them.</p>
+</div>
+<div class="paragraph">
+<p>Leaving administration with unsaved configuration or localization changes opens <strong>Unsaved administration changes</strong>. Choose Save, Discard or Cancel deliberately. A failed save retains the unfinished draft. While a save is in progress, wait for it to finish before navigating or starting another write. The browser&#8217;s close/reload warning is not a save action.</p>
+</div>
+<div class="paragraph">
+<p>Duplicate a scenario when you need a similar configuration with a new identity. Change order using the sidebar ordering controls and save where requested. Export one scenario or the full configuration through the provided action. Store the export securely; it may contain business-specific labels and configuration.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_transfer_and_legacy_files"><a class="anchor" href="#_configuration_transfer_and_legacy_files"></a><a class="link" href="#_configuration_transfer_and_legacy_files">3.9.2. Configuration transfer and legacy files</a></h4>
+<div class="paragraph">
+<p>Configuration exports use a version-2 envelope with <code>schemaVersion</code>, <code>categories</code>, <code>scenarios</code> and <code>scenarioPresentation</code>. A single-scenario export uses the same envelope, including the full category tree and presentation but only the selected scenario. It is not a bare scenario object or a category-only array. Full configuration export is the appropriate backup for scenarios, their assignments and the shared dashboard layout; neither export includes private dashboard preferences.</p>
+</div>
+<div class="paragraph">
+<p>To import configuration, use the JSON import action in Scenario configuration. Imports merge by scenario name, keeping unrelated scenarios and categories. Matching names update compatible scenario settings; they do not permit changing immutable structure or conflicting category assignments. Category conflicts abort the import. The complete merged draft must pass schema and live repository validation before it is applied. Review it and save explicitly; import success is not a successful save.</p>
+</div>
+<div class="paragraph">
+<p>An explicit <code>scenarioPresentation</code> in a v2 import selects tree or flat. If it is omitted from a v2 import, the current draft choice is retained. This merge behavior differs from a new v2 configuration, where omission defaults to tree.</p>
+</div>
+<div class="paragraph">
+<p>Legacy files containing only <code>{ "scenarios": [&#8230;&#8203;] }</code> or <code>{ "schemaVersion": 1, "scenarios": [&#8230;&#8203;] }</code> are also accepted by this import action. They are converted to v2 with flat presentation before validation, without repairing scenario fields. Existing unrelated scenarios and categories remain; an existing scenario&#8217;s conflicting category assignment still prevents import. Unknown fields/versions and mixed legacy/v2 envelopes are rejected. An empty scenario array does not clear the existing configuration. Subsequent exports always use v2.</p>
+</div>
+<div class="paragraph">
+<p>Delete only the intended scenario after reviewing confirmation. Configuration removal does not itself describe a repository data-deletion workflow. Reset replaces configuration with seeded defaults; back up first and use reset only in an explicitly disposable or otherwise authorized environment.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="localization"><a class="anchor" href="#localization"></a><a class="link" href="#localization">3.10. Manage languages and translations</a></h3>
+<div class="paragraph">
+<p>Open localization administration from the settings navigation. Choose a catalog language, search by translation key or text, edit the translation and save. Enable a language for users only when it is suitable for your audience. Select the language on the dashboard and check both static UI text and scenario labels.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/localization.png" alt="Language administration" width="680">
+</div>
+</div>
+<div class="paragraph">
+<p>Missing text uses the default language. Scenario-owned labels and global UI translations are separate. An unsaved translated draft is not persisted by changing the runtime language. Translation generation, when offered, needs a configured available provider; review generated text before accepting overrides. This guide does not assume that a generation provider is installed.</p>
+</div>
+<div class="paragraph">
+<p>Category labels belong to the shared configuration, not the global UI catalog. In Localization, edit the required raw default label separately from explicit translations for each language. Changing the catalog&#8217;s default language does not move or overwrite a category&#8217;s stored translation. Empty or whitespace-only category defaults block saving and must be corrected at the field. Label edits do not change IDs, hierarchy or scenario assignments.</p>
+</div>
+<div class="paragraph">
+<p>Localization saves only resources with pending edits. If the shared configuration and catalog both have changes, configuration is saved first, followed by the catalog. A partial-success message means configuration was saved but catalog changes remain unsaved; correct the error and retry the remaining work. Saving configuration may include scenario, category or presentation edits retained from the other administration workspaces.</p>
+</div>
+<div class="paragraph">
+<p>Reload is unavailable during a save. When shared configuration edits exist, its confirmation covers both localization and configuration: confirming discards retained scenario, category and presentation edits as well as localization changes. Cancel to keep those drafts.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="admin-recovery"><a class="anchor" href="#admin-recovery"></a><a class="link" href="#admin-recovery">3.11. Validation and concurrent editing</a></h3>
+<div class="paragraph">
+<p>Invalid references, duplicate scenario names or category IDs, blank category defaults, dangling category assignments, unavailable default content, inconsistent annotation switches, missing required fields and unsupported relationships prevent a save. Correct the indicated setting rather than removing validation.</p>
+</div>
+<div class="paragraph">
+<p>A stale save is rejected when another administrator has changed the scenario or shared configuration being saved. Your draft is retained. Preserve a copy of the intended edits, explicitly reload the saved configuration and reapply necessary changes. Remember that a shared reload can discard edits from other administration workspaces. This version does not provide a conflict-specific merge interface. For authorization or session errors, sign in again through Shell and check current state before repeating writes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="reference"><a class="anchor" href="#reference"></a><a class="link" href="#reference">3.12. Import reference</a></h3>
+<div class="paragraph">
+<p>The following field inventory is generated from the current version-2 configuration schema, including categories, scenario assignments, icons and dashboard presentation. Use an exported configuration as your working example; schema shape does not replace live semantic validation or guarantee a runtime control for every field. Category-only arrays and legacy file conversion follow the separate import rules described above.</p>
+</div>
+<div class="sect3">
+<h4 id="_configuration_import_fields"><a class="anchor" href="#_configuration_import_fields"></a><a class="link" href="#_configuration_import_fields">3.12.1. Configuration import fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 50%;">
+<col style="width: 16.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type / values</th>
+<th class="tableblock halign-left valign-top">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.schemaVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.scenarioPresentation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tree, flat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.categories</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.scenarios</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>localizedText.default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>localizedText.values</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>category.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>category.label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>category.children</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>labelOverride.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>labelOverride.value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attribute.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attribute.label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attribute.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.initiallyVisible</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.order</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.initialWidth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.sortable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.headerFilterEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.labelOverride</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelOverride</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchFilter.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchFilter.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchFilter.order</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchFilter.labelOverride</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelOverride</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.order</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.readOnly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.section</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.labelOverride</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelOverride</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>versionField.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>versionField.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>versionField.order</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>versionField.labelOverride</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelOverride</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summaryField.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summaryField.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summaryField.order</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summaryField.highlight</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>summaryField.labelOverride</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelOverride</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>table.persistenceEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>table.columns</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>table.csvDownloadEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>table.zipDownloadEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>search.persistenceEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>search.filters</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detail.fields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detail.editEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detail.createEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>versions.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>versions.commentsEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>versions.fields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.attributes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.table</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.search</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">search</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.detail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">detail</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.versions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">versions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.summaryCard</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rendition.element</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rendition.label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rendition.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rendition.downloadEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>original.element</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>original.label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>original.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>original.downloadEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>original.annotations</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>original.renditions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content.defaultElement</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content.originals</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content.mimeTypeAttribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content.fileNameAttribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.cascadeDeleteEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.categoryId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.icon</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">localizedText</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.visible</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.kind</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ONE_STAGE, TWO_STAGE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.twoStageType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">STRICT_ONE_TO_MANY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.documentType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.recordType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.relation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.document</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.record</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.recordManagement</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recordManagement</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Conditional requirements and live repository validation also apply. Export an existing scenario as a starting point; this inventory does not describe every semantic constraint.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2026-10-06 12:34:04 UTC
+</div>
+</div>
+</body>
+</html>
