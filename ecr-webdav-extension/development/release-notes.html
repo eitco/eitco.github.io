@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Untitled</title>
+<title>Release Notes</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,57 +438,41 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
+<h1>Release Notes</h1>
 </div>
 <div id="content">
-<div class="paragraph">
-<p>To expose the WebDAV API in your <em>arveo</em> based service, add the following dependency to your service module:</p>
-</div>
-<div id="dependency-service" class="listingblock">
+<div class="sect1">
+<h2 id="_release_notes_2_0_2_snapshot_october_07_2026">Release notes 2.0.2-SNAPSHOT (October 07, 2026)</h2>
+<div class="sectionbody">
+<details>
+<summary class="title">Details</summary>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">        &lt;dependency&gt;
-            &lt;groupId&gt;de.eitco.ecr.dav&lt;/groupId&gt;
-            &lt;artifactId&gt;ecr-webdav-extension-backend&lt;/artifactId&gt;
-            &lt;version&gt;2.0.2-SNAPSHOT&lt;/version&gt;
-        &lt;/dependency&gt;</code></pre>
-</div>
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
 </div>
 <div class="paragraph">
-<p>This will register the <code>de.eitco.ecr.dav.extensions.backend.http.WebDavController</code> in your service. It provides a full WebDAV API.</p>
+<p><strong class="big">Changes</strong></p>
 </div>
 <div class="paragraph">
-<p>By default, the endpoint will be provided at <code>/dav/</code>, this can be changed with the <code>ecr-webdav-extension.base-path</code> property.</p>
+<p><strong class="big">Bug Fixes</strong></p>
 </div>
 <div class="paragraph">
-<p>Adapt your default security configuration accordingly:</p>
+<p><strong class="big">Interface breaking changes</strong></p>
 </div>
-<div id="configuration-service" class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">security:
-  general:
-    secured-ant-matchers: "/api/**,/dav/**" # <b class="conum">(1)</b>
-    open-ant-matchers: "/actuator/**,/api/info,/webjars/swagger-ui/**,/public/**,/*,/assets/**"
-    role-for-secured-access: ""
-    cors-configuration:
-      allowed-origins: "*"
-      allowed-headers: "*"
-      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE" # <b class="conum">(2)</b>
-      max-age: 3600</code></pre>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
 </div>
 </div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>secure access to your WebDAV endpoint</p>
-</li>
-<li>
-<p>allow the WebDAV custom http methods</p>
-</li>
-</ol>
+</details>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-07 13:30:14 UTC
+Last updated 2026-10-07 13:30:29 UTC
 </div>
 </div>
 </body>
