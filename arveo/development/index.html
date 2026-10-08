@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <link rel="icon" type="image/png" href="./images/arveo_logo_800px.png">
-<title>arveo Documentation 28.1.2-SNAPSHOT</title>
+<title>arveo Documentation 28.2.0-SNAPSHOT</title>
 <style>
 @import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
 @import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
@@ -156,9 +156,9 @@ a, a:hover, a:focus {
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>arveo Documentation 28.1.2-SNAPSHOT</h1>
+<h1>arveo Documentation 28.2.0-SNAPSHOT</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 28.1.2-SNAPSHOT</div>
+<div id="toctitle">arveo 28.2.0-SNAPSHOT</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a>
 <ul class="sectlevel2">
@@ -368,7 +368,7 @@ a, a:hover, a:focus {
 <ul class="sectlevel3">
 <li><a href="#_running">Running</a></li>
 <li><a href="#_executing_commands">Executing Commands</a></li>
-<li><a href="#_authentication">Authentication</a></li>
+<li><a href="#_authentication_2">Authentication</a></li>
 <li><a href="#_commands">Commands</a></li>
 <li><a href="#_troubleshooting_3">Troubleshooting</a></li>
 <li><a href="#_configuration">Configuration</a></li>
@@ -506,7 +506,7 @@ a, a:hover, a:focus {
 <li><a href="#compatibility-list">Compatibility List</a></li>
 <li><a href="#release-notes">Release Notes</a>
 <ul class="sectlevel3">
-<li><a href="#_release_notes_28_1_2_snapshot_october_05_2026">Release notes 28.1.2-SNAPSHOT (October 05, 2026)</a></li>
+<li><a href="#_release_notes_28_2_0_snapshot_october_08_2026">Release notes 28.2.0-SNAPSHOT (October 08, 2026)</a></li>
 <li><a href="#_release_notes_28_1_1_october_02_2026">Release notes 28.1.1 (October 02, 2026)</a></li>
 <li><a href="#_release_notes_28_1_0_september_01_2026">Release notes 28.1.0 (September 01, 2026)</a></li>
 <li><a href="#_release_notes_28_0_0_august_05_2026">Release notes 28.0.0 (August 05, 2026)</a></li>
@@ -1018,11 +1018,11 @@ directory and perform the following operation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=28.1.2-SNAPSHOT</code></pre>
+<pre class="rouge highlight"><code data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=28.2.0-SNAPSHOT</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 28.1.2-SNAPSHOT.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 28.2.0-SNAPSHOT.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -1507,7 +1507,7 @@ and open the project in your IDE. Delete the <code>src/test</code> directory.</p
             <span class="nt">&lt;dependency&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
                 <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
                 <span class="nt">&lt;artifactId&gt;</span>ecr-bom<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
                 <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
                 <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
             <span class="nt">&lt;/dependency&gt;</span>
@@ -5726,8 +5726,36 @@ the end of the retention interval is reached.
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">authMethod</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The mechanism used to authenticate against the storage account. Can be <code>CONNECTION_STRING</code>,
+  <code>MANAGED_IDENTITY</code>, <code>SHARED_KEY</code> or <code>SAS</code> (see below).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CONNECTION_STRING</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">connectionString</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The connection string used to connect to the storage account. The access string can be obtained from the azure portal.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The connection string used to connect to the storage account. The access string can be obtained
+  from the azure portal. Required for the auth method <code>CONNECTION_STRING</code>.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The blob service endpoint URL of the storage account, e.g. <code><a href="https://&lt;account&gt;.blob.core.windows.net" class="bare">https://&lt;account&gt;.blob.core.windows.net</a></code>.
+  Required for all auth methods except <code>CONNECTION_STRING</code>.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">accountName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the storage account. Required for the auth method <code>SHARED_KEY</code>.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">accountKey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The access key of the storage account. Required for the auth method <code>SHARED_KEY</code>.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sasToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The shared access signature token. Required for the auth method <code>SAS</code>.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -5741,7 +5769,7 @@ the end of the retention interval is reached.
 <td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">retentionSupport</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retentionEnabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enables usage of the immutability policy feature of Azure.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
@@ -5757,6 +5785,41 @@ the end of the retention interval is reached.
 Azure SDK.</p>
 </div>
 <div class="sect5">
+<h6 id="_authentication"><a class="anchor" href="#_authentication"></a><a class="link" href="#_authentication">Authentication</a></h6>
+<div class="paragraph">
+<p>The parameter <code>authMethod</code> selects how the plugin authenticates against the storage account:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>CONNECTION_STRING</code></dt>
+<dd>
+<p>Uses the full connection string configured in <code>connectionString</code>. The connection string contains
+the account name and key or a SAS. This is the default.</p>
+</dd>
+<dt class="hdlist1"><code>MANAGED_IDENTITY</code></dt>
+<dd>
+<p>Uses the <code>DefaultAzureCredential</code> of the Azure identity library to connect to the configured
+<code>endpoint</code>. It supports managed identities, workload identities, environment credentials and further mechanisms
+described in the <a href="https://learn.microsoft.com/en-us/java/api/overview/azure/identity-readme">Azure documentation</a>.
+Settings like <code>AZURE_CLIENT_ID</code> or <code>AZURE_TENANT_ID</code> can be passed as additional parameters of the plugin
+configuration or as environment variables.</p>
+</dd>
+<dt class="hdlist1"><code>SHARED_KEY</code></dt>
+<dd>
+<p>Uses the account name and account key configured in <code>accountName</code> and <code>accountKey</code> to connect to the
+configured <code>endpoint</code>.</p>
+</dd>
+<dt class="hdlist1"><code>SAS</code></dt>
+<dd>
+<p>Uses the shared access signature token configured in <code>sasToken</code> to connect to the configured <code>endpoint</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The value of <code>authMethod</code> is case-insensitive and dashes may be used instead of underscores (e.g. <code>shared-key</code>).</p>
+</div>
+</div>
+<div class="sect5">
 <h6 id="_retention_2"><a class="anchor" href="#_retention_2"></a><a class="link" href="#_retention_2">Retention</a></h6>
 <div class="paragraph">
 <p>The Azure blob storage plugin supports the immutability policy feature of Azure blob storage. Using this feature
@@ -5765,7 +5828,7 @@ protected or in a litigation hold, it will not be possible to delete it using th
 Azure SDK.</p>
 </div>
 <div class="paragraph">
-<p>To enable the retention support, the parameter <code>retentionSupport</code> must be set to true.</p>
+<p>To enable the retention support, the parameter <code>retentionEnabled</code> must be set to true.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -6013,7 +6076,7 @@ describes how to write a new storage plugin.</p>
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-server<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
     <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -8006,7 +8069,7 @@ repository service will create the jobs (if required), but it will not execute t
 <div class="paragraph">
 <p>It is possible to use one or more external Job Service instances to execute the scheduled system jobs. To be able to
 execute the system jobs, the job implementations must be present in each of the Job Service&#8217;s class paths.
-The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external-28.1.2-SNAPSHOT.zip</em>) that contains all required libraries.
+The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external-28.2.0-SNAPSHOT.zip</em>) that contains all required libraries.
 Simply extract the contents of the ZIP file to a directory (e.g. <em>libs</em>) and start the Job Service with the following parameter:
 <code>-Dloader.path=libs</code>.</p>
 </div>
@@ -8701,7 +8764,7 @@ java 21 is required for the shell.
   `-----------'</span>   <span class="sb">`</span><span class="nt">---------</span><span class="s1">'  '</span><span class="nt">---</span><span class="s1">'               '</span><span class="nt">------------</span>´  <span class="sb">`</span><span class="nt">---</span>´    <span class="sb">`</span><span class="nt">---</span>´   <span class="sb">`</span><span class="nt">-----------</span><span class="s1">'  `------'</span>  <span class="sb">`</span><span class="nt">------</span><span class="s1">'
 
 
-version: 28.1.2-SNAPSHOT                                                                      de.eitco.ecr:ecr-shell
+version: 28.2.0-SNAPSHOT                                                                      de.eitco.ecr:ecr-shell
 
 ecr:&gt;</span></code></pre>
 </div>
@@ -8798,7 +8861,7 @@ In order to do anything in an arveo system you need to be authenticated. To do t
 </div>
 </div>
 <div class="sect3">
-<h4 id="_authentication"><a class="anchor" href="#_authentication"></a><a class="link" href="#_authentication">Authentication</a></h4>
+<h4 id="_authentication_2"><a class="anchor" href="#_authentication_2"></a><a class="link" href="#_authentication_2">Authentication</a></h4>
 <div class="paragraph">
 <p>To authenticate, use the <code>login</code> command.</p>
 </div>
@@ -10324,7 +10387,7 @@ this is already configured in the eitco config service.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-28.1.2-SNAPSHOT.jar</code>
+<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-28.2.0-SNAPSHOT.jar</code>
 </td>
 </tr>
 </table>
@@ -21272,7 +21335,7 @@ All examples are taken from the integration test suite to ensure they stay up to
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
    <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
    <span class="nt">&lt;artifactId&gt;</span>ecr-sdk-http<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+   <span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -21768,7 +21831,7 @@ Kubernetes Discovery Client.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_authentication_2"><a class="anchor" href="#_authentication_2"></a><a class="link" href="#_authentication_2">Authentication</a></h5>
+<h5 id="_authentication_3"><a class="anchor" href="#_authentication_3"></a><a class="link" href="#_authentication_3">Authentication</a></h5>
 <div class="paragraph">
 <p>The service uses OAuth2 to authenticate requests. A client application must retrieve a token from the IDP and send it
 as a bearer token in the Authentication header of each request. The client SDK automatically retrieves tokens from
@@ -22631,7 +22694,7 @@ condition.</p>
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
    <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
    <span class="nt">&lt;artifactId&gt;</span>ecr-sdk-http-apache<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+   <span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -22916,8 +22979,8 @@ the EQL query language <code>@eitco/eql</code> and <code>@eitco/commons-lang</co
 <div class="title">Adding the SDK to a project (<code>package.json</code>)</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="json"><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-  </span><span class="nl">"@eitco/ecr-client"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.1.2-SNAPSHOT"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"@eitco/ecr-data-provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.1.2-SNAPSHOT"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@eitco/ecr-client"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.2.0-SNAPSHOT"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@eitco/ecr-data-provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.2.0-SNAPSHOT"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"@eitco/asdl-library-http"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
   </span><span class="nl">"@eitco/asdl-library-angular-http"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
 </span><span class="p">}</span></code></pre>
@@ -22925,7 +22988,7 @@ the EQL query language <code>@eitco/eql</code> and <code>@eitco/commons-lang</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="_authentication_3"><a class="anchor" href="#_authentication_3"></a><a class="link" href="#_authentication_3">Authentication</a></h5>
+<h5 id="_authentication_4"><a class="anchor" href="#_authentication_4"></a><a class="link" href="#_authentication_4">Authentication</a></h5>
 <div class="paragraph">
 <p>To authenticate against <em>arveo</em>, an OAuth2 access token is obtained from the identity provider
 (Keycloak in the test environment) and sent as a bearer token with every request. In an Angular application this
@@ -23708,7 +23771,7 @@ carries the same base URL and bearer token, so no separate authentication is nee
 <div class="listingblock">
 <div class="title">NuGet package reference of the C# SDK</div>
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Eitco.Ecr.Sdk"</span> <span class="na">Version=</span><span class="s">"28.1.2-SNAPSHOT"</span> <span class="nt">/&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Eitco.Ecr.Sdk"</span> <span class="na">Version=</span><span class="s">"28.2.0-SNAPSHOT"</span> <span class="nt">/&gt;</span></code></pre>
 </div>
 </div>
 </div>
@@ -24974,7 +25037,7 @@ Thus, it is considered good practice to define listeners for after events as asy
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-events<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25143,7 +25206,7 @@ deserialize the events. The following dependency is required to access the preco
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-jms<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25323,7 +25386,7 @@ The <code>ECRTypeDefinition</code> and <code>ECRTypeDefinitionId</code> headers 
     <span class="nt">&lt;artifactId&gt;</span>ecr-integration-service-endpoint<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;type&gt;</span>zip<span class="nt">&lt;/type&gt;</span>
     <span class="nt">&lt;classifier&gt;</span>zip<span class="nt">&lt;/classifier&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25591,7 +25654,7 @@ run Groovy scripts that use the <em>arveo</em> API. Each script is passed the fo
 </div>
 </div>
 <div class="sect5">
-<h6 id="_authentication_4"><a class="anchor" href="#_authentication_4"></a><a class="link" href="#_authentication_4">Authentication</a></h6>
+<h6 id="_authentication_5"><a class="anchor" href="#_authentication_5"></a><a class="link" href="#_authentication_5">Authentication</a></h6>
 <div class="paragraph">
 <p>The arveo endpoint can log into the ECR using either OAuth2 or x509.</p>
 </div>
@@ -25778,7 +25841,7 @@ Each request is authenticated using a Bearer token retrieved from the configured
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
 <span class="nt">&lt;artifactId&gt;</span>ecr-types-archetype<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span></code></pre>
+<span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -25877,7 +25940,7 @@ The maven coordinate of this archetype are:</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
 <span class="nt">&lt;artifactId&gt;</span>ecr-service-archetype<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;version&gt;</span>28.1.2-SNAPSHOT<span class="nt">&lt;/version&gt;</span></code></pre>
+<span class="nt">&lt;version&gt;</span>28.2.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -26437,7 +26500,7 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Content Repository Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">28.1.2-SNAPSHOT (API-version: 1.2.1)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">28.2.0-SNAPSHOT (API-version: 1.2.1)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration Service</p></td>
@@ -26564,12 +26627,19 @@ AWS S3</p></td>
 <div class="sect2">
 <h3 id="release-notes"><a class="anchor" href="#release-notes"></a><a class="link" href="#release-notes">Release Notes</a></h3>
 <div class="sect3">
-<h4 id="_release_notes_28_1_2_snapshot_october_05_2026"><a class="anchor" href="#_release_notes_28_1_2_snapshot_october_05_2026"></a><a class="link" href="#_release_notes_28_1_2_snapshot_october_05_2026">Release notes 28.1.2-SNAPSHOT (October 05, 2026)</a></h4>
+<h4 id="_release_notes_28_2_0_snapshot_october_08_2026"><a class="anchor" href="#_release_notes_28_2_0_snapshot_october_08_2026"></a><a class="link" href="#_release_notes_28_2_0_snapshot_october_08_2026">Release notes 28.2.0-SNAPSHOT (October 08, 2026)</a></h4>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">New Features</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1904: The Azure blob storage plugin now supports authentication via managed identity (<code>DefaultAzureCredential</code>), shared key and SAS token in addition to the connection string. The method is selected with the new plugin setting <code>authMethod</code>.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Changes</strong></p>
@@ -28818,7 +28888,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-05 13:40:33 UTC
+Last updated 2026-10-08 09:31:44 UTC
 </div>
 </div>
 <style>
