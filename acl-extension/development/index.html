@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>ecr-acl extension 1.0.0-SNAPSHOT</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>ecr-acl extension 1.0.0-SNAPSHOT</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a></li>
+<li><a href="#_concepts">2. Concepts</a>
+<ul class="sectlevel2">
+<li><a href="#_acls_and_acl_entries">2.1. Acls and acl entries</a></li>
+<li><a href="#_protected_entities">2.2. Protected entities</a></li>
+<li><a href="#_evaluation">2.3. Evaluation</a></li>
+<li><a href="#_administration_of_acls">2.4. Administration of acls</a></li>
+<li><a href="#_changing_the_acl_of_an_entity">2.5. Changing the acl of an entity</a></li>
+<li><a href="#_access_rights_of_the_current_user">2.6. Access rights of the current user</a></li>
+</ul>
+</li>
+<li><a href="#configuration">3. Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#_content_repository_service">3.1. Content repository service</a></li>
+<li><a href="#_ecr_acl_service">3.2. ecr-acl-service</a></li>
+</ul>
+</li>
+<li><a href="#_rest_api">4. REST API</a></li>
+<li><a href="#_developer_guide">5. Developer guide</a>
+<ul class="sectlevel2">
+<li><a href="#_protecting_a_type">5.1. Protecting a type</a></li>
+<li><a href="#_using_the_java_sdk">5.2. Using the Java SDK</a></li>
+<li><a href="#_using_the_typescript_sdk">5.3. Using the TypeScript SDK</a></li>
+<li><a href="#_using_the_c_sdk">5.4. Using the C# SDK</a></li>
+</ul>
+</li>
+<li><a href="#_release_notes">6. Release Notes</a>
+<ul class="sectlevel2">
+<li><a href="#_release_notes_1_0_0_snapshot_october_09_2026">6.1. Release notes 1.0.0-SNAPSHOT (October 09, 2026)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The ecr-acl extension adds access control lists (acls) to the arveo content repository service. An acl lists users
+and groups together with the access right each of them is granted. Entities reference at most one acl. Whenever an
+entity is accessed, the content repository evaluates the acl of the entity for the current user using its attribute
+based access control (abac).</p>
+</div>
+<div class="paragraph">
+<p>The extension consists of three parts:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Type definitions</strong> (<code>ecr-acl-type-definitions</code>): the types <code>acl</code> and <code>acl_entry</code>, the mixin interface
+<code>AclProtected</code> for protected types and the abac function evaluating acls. This jar is deployed into the content
+repository service.</p>
+</li>
+<li>
+<p><strong>Events</strong> (<code>ecr-acl-events</code>): an event listener restricting the creation of acls to acl administrators. This jar is
+deployed into the content repository service as well.</p>
+</li>
+<li>
+<p><strong>ecr-acl-service</strong>: a REST service to manage acls and to query the access rights of the current user on an entity,
+together with generated clients (Java, TypeScript, C#).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_concepts">2. Concepts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_acls_and_acl_entries">2.1. Acls and acl entries</h3>
+<div class="paragraph">
+<p>An <strong>acl</strong> (type <code>acl</code>) has a unique <code>name</code> and an optional <code>description</code>. The grants are stored as <strong>acl entries</strong>
+(type <code>acl_entry</code>) referencing the acl:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>acl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the acl the entry belongs to. Deleting an acl deletes its entries.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>principal_type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>USER</code> or <code>GROUP</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>principal_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user id for users, the group id provided by the identity provider for groups.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>access_right</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the granted access right, see below.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>There is at most one entry per acl and principal. Invalid principal types and access rights are rejected.</p>
+</div>
+<div class="paragraph">
+<p>The access rights are those of <code>de.eitco.ecr.common.AccessRight</code>. They are <strong>hierarchical</strong>: an entry granting a right
+also grants every weaker right.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Access right</th>
+<th class="tableblock halign-left valign-top">Allows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BROWSE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">finding the entity and reading its metadata</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>READ_ENTITY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">reading the entity</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>READ</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">reading metadata, content and annotations</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>COMMENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">adding annotations and comments</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WRITE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">changing metadata and content</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OVERWRITE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">overwriting the current version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deleting the entity</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CHANGE_ACCESS_RIGHTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">changing the acl of the entity</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_protected_entities">2.2. Protected entities</h3>
+<div class="paragraph">
+<p>Types whose entities shall be protected extend the interface <code>AclProtected</code>. This adds the optional attribute <code>acl_id</code>
+referencing an acl and the abac function evaluating it. Hence an entity has at most one acl.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Entities <strong>without an acl</strong> are accessible for everyone.</p>
+</li>
+<li>
+<p>Entities <strong>with an acl</strong> are accessible for a user if the acl contains an entry granting the required right (or a
+stronger one) to the user or to one of the groups of the user.</p>
+</li>
+<li>
+<p>An acl that is still referenced by an entity cannot be deleted.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_evaluation">2.3. Evaluation</h3>
+<div class="paragraph">
+<p>Acls are evaluated by the content repository service for the user calling it:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>user id</strong> is the unique identifier of the user provided by the identity provider (for Keycloak the <code>sub</code> claim
+of the token).</p>
+</li>
+<li>
+<p>The <strong>groups</strong> of the user are read from a configurable user attribute (see <a href="#configuration">Configuration</a>). The attributes
+contain the claims of the token, so the identity provider has to put the group ids into a token claim, e.g. using
+the Keycloak group membership mapper (claim <code>group-memberships</code>, group ids are the full group paths like
+<code>/acl-group-a</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The content repository adds the acl condition to every query. Thus entities a user is not allowed to browse are
+neither found by searches nor returned by reads (<code>404</code>). Operations requiring a stronger right fail with an
+<code>InsufficientAccessRightException</code> (<code>400</code>) if the entity is visible but the right is not granted.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Acl administrators are no super users. They can only access entities whose acl grants them access.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_administration_of_acls">2.4. Administration of acls</h3>
+<div class="paragraph">
+<p>Every authenticated user may read acls and acl entries. Creating, changing and deleting them requires the configured
+administration authority (default <code>ACL_ADMIN</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_changing_the_acl_of_an_entity">2.5. Changing the acl of an entity</h3>
+<div class="paragraph">
+<p>The attribute <code>acl_id</code> is a security property. Changing it requires the right <code>CHANGE_ACCESS_RIGHTS</code> on the entity.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The content repository requires <code>CHANGE_ACCESS_RIGHTS</code> as soon as <code>acl_id</code> is part of an update, even if the
+value is unchanged. Updates that shall keep the acl must omit <code>acl_id</code>. The generated update operations omit
+attributes without a value, so it is sufficient to leave <code>acl_id</code> empty.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_access_rights_of_the_current_user">2.6. Access rights of the current user</h3>
+<div class="paragraph">
+<p>Frontends usually need to know which actions to offer for an entity. Two endpoints return the access rights the
+current user holds on an entity. Both derive the type definition from the id, so documents, containers, folders and
+relations are supported. Meta entities have no typed id and are rejected (<code>400</code>). Entities that do not exist or are
+not visible for the current user result in <code>404</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>GET api/access-rights/{id}</code> returns the rights granted by the acl of the entity only:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The entity is loaded to determine its <code>acl_id</code>, then the entries of the acl matching the current user or one of the
+groups of the user are loaded. The strongest matching entry determines the rights, since access rights are
+hierarchical.</p>
+</li>
+<li>
+<p>Other <code>@Security</code> rules of the type and the access rights on the type definition are not considered.</p>
+</li>
+<li>
+<p>Entities without an acl have no rights granted by an acl, so the result contains no rights and no <code>aclId</code>.</p>
+</li>
+<li>
+<p>The groups are read from the token of the user using the property <code>ecr-acl.acl.group-attribute</code>. It has to match the
+configuration of the content repository service.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>GET api/access-rights/{id}/evaluate</code> returns the exact rights, which is considerably more expensive:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A right is contained if both the abac function of the type (i.e. the acl or any other <code>@Security</code> rule) and the
+access rights on the type definition grant it.</p>
+</li>
+<li>
+<p>Every right is evaluated separately by the content repository, so non-hierarchical <code>@Security</code> rules are reported
+correctly as well.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See <a href="#querying-access-rights">Querying the access rights of the current user</a> for when to use which variant and how to interpret a <code>404</code> compared to an empty list
+of rights.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration">3. Configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_content_repository_service">3.1. Content repository service</h3>
+<div class="paragraph">
+<p>The acls are evaluated in the content repository service, so the following properties belong to its configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">ecr-acl</span>:
+  <span class="key">acl</span>:
+    <span class="comment"># user attribute (token claim) containing the group ids of the user</span>
+    <span class="key">group-attribute</span>: <span class="string"><span class="content">group-memberships</span></span>
+    <span class="comment"># authority required to create, change or delete acls</span>
+    <span class="key">admin-authority</span>: <span class="string"><span class="content">ACL_ADMIN</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both properties are optional, the values shown are the defaults.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ecr_acl_service">3.2. ecr-acl-service</h3>
+<div class="paragraph">
+<p>The ecr-acl-service calls the content repository on behalf of the current user. Otherwise the content repository
+would evaluate the acls for the technical user of the service. The user is impersonated using an OAuth2 token
+exchange:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">commons</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">client</span>:
+        <span class="key">auto-impersonate</span>: <span class="string"><span class="content">true</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>auto-impersonate</code> is enabled by default. The token exchange requires an additional client registration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="comment"># used for auto-impersonation: the service exchanges the token of the user to call the content repository</span>
+<span class="comment"># service on behalf of the user, so that acls are evaluated for this user</span>
+<span class="key">keycloak-token-exchange</span>:
+  <span class="key">provider</span>: <span class="string"><span class="content">keycloak</span></span>
+  <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">obo-client</span><span class="delimiter">&quot;</span></span>
+  <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">PoK5dW33w9TdBt5lUGxhgnsaIoFtj0zF</span><span class="delimiter">&quot;</span></span>
+  <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">urn:ietf:params:oauth:grant-type:token-exchange</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In Keycloak the client used for the token exchange (here <code>obo-client</code>) needs</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>standard token exchange enabled (client attribute <code>standard.token.exchange.enabled</code>),</p>
+</li>
+<li>
+<p>the mappers for the claims the content repository needs: the authorities, the audience
+<code>content-repository-service</code> and the group claim,</p>
+</li>
+<li>
+<p>to be contained in the audience of the user tokens sent to the ecr-acl-service (audience mapper on the client
+used by the frontend).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See the client <code>obo-client</code> in the Keycloak realm of the system test (<code>test/system-test/src/test/resources/keycloak</code>)
+for an example.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rest_api">4. REST API</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 16.6666%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Methods</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api/acl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CRUD, search</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Acls.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api/acl-entry</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CRUD, search</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Acl entries.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api/acl-with-entries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CRUD, search</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An acl together with its entries in a single operation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api/access-rights/{id}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The access rights granted to the current user by the acl of an entity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api/access-rights/{id}/evaluate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The exact access rights of the current user on an entity.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The OpenAPI description is available at <code>/openapi.json</code> of the service, the Swagger UI at <code>/swagger</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_developer_guide">5. Developer guide</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_protecting_a_type">5.1. Protecting a type</h3>
+<div class="paragraph">
+<p>To protect the entities of a type by acls, let its type definition extend <code>AclProtected</code>. The examples in this
+guide use the following container type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.CONTAINER)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">Record</span> <span class="directive">extends</span> AclProtected {
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.ID)
+    <span class="type">long</span> getEcrId();
+
+    <span class="annotation">@Mandatory</span>
+    <span class="annotation">@Unique</span>
+    <span class="predefined-type">String</span> getExternalId();
+
+    <span class="type">void</span> setExternalId(<span class="predefined-type">String</span> externalId);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>AclProtected</code> contributes the attribute and the abac function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">AclProtected</span> {
+
+    <span class="comment">/**
+     * The id of the acl protecting this entity or {@code null} if the entity is not protected.
+     */</span>
+    <span class="annotation">@Optional</span>
+    <span class="annotation">@SecurityProperty</span>
+    <span class="annotation">@ForeignKey</span>(target = <span class="predefined-type">Acl</span>.class, targetProperty = <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>)
+    <span class="predefined-type">Long</span> getAclId();
+
+    <span class="type">void</span> setAclId(<span class="predefined-type">Long</span> aclId);
+
+    <span class="annotation">@Security</span>
+    <span class="directive">static</span> <span class="predefined-type">Expression</span>&lt;<span class="predefined-type">Boolean</span>&gt; checkAcl(Alias alias, AuthenticationContext authenticationContext, AccessRight right) {
+
+        <span class="keyword">return</span> AclConditions.accessCondition(alias, authenticationContext, right);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The required maven dependency is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr.acl<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>ecr-acl-type-definitions<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The types <code>Acl</code> and <code>AclEntry</code> are registered by <code>ecr-acl-type-definitions</code> itself. Register your own types as
+usual:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@AutoConfiguration</span>
+<span class="annotation">@Register</span>(Record.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">AclTestTypeRegistration</span> <span class="directive">implements</span> TypeDefinitionRegistration {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploy <code>ecr-acl-type-definitions</code>, <code>ecr-acl-events</code> and the jar containing your types into the content repository
+service (directory <code>/app/extensions</code> of the arveo image).</p>
+</div>
+<div class="paragraph">
+<p>Types that need additional rules can define their own <code>@Security</code> method instead of inheriting the one of
+<code>AclProtected</code>. Use <code>AclConditions.accessCondition</code> to combine the acl with further conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Security</span>
+<span class="directive">static</span> <span class="predefined-type">Expression</span>&lt;<span class="predefined-type">Boolean</span>&gt; checkAccess(Alias alias, AuthenticationContext authenticationContext, AccessRight right) {
+
+    <span class="predefined-type">Expression</span>&lt;<span class="predefined-type">Boolean</span>&gt; aclCondition = AclConditions.accessCondition(alias, authenticationContext, right);
+    <span class="predefined-type">Expression</span>&lt;<span class="predefined-type">Boolean</span>&gt; notArchived = EcrQueryLanguage.condition().alias(alias).field(<span class="string"><span class="delimiter">&quot;</span><span class="content">archived</span><span class="delimiter">&quot;</span></span>).equalTo().value(<span class="predefined-constant">false</span>).holds();
+
+    <span class="keyword">return</span> right.getValue() &gt; AccessRight.READ.getValue() ? Eql.and(aclCondition, notArchived) : aclCondition;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_java_sdk">5.2. Using the Java SDK</h3>
+<div class="sect3">
+<h4 id="_dependency_and_configuration">5.2.1. Dependency and configuration</h4>
+<div class="paragraph">
+<p>Acls are managed using the SDK of the ecr-acl-service. The protected entities themselves are accessed using the SDK
+of the content repository as usual, the acls are evaluated there for the calling user.</p>
+</div>
+<div class="paragraph">
+<p>The Spring based SDK of the ecr-acl-service connects to the service using a Spring <code>RestTemplate</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.ecr.acl<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>ecr-acl-sdk-http-spring<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>1.0.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service is located by Spring Cloud discovery using the service id <code>ecr-acl-service</code>. The SDK authenticates using
+the OAuth2 client registrations of the application, e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">client</span>:
+        <span class="key">registration</span>:
+          <span class="key">keycloak-password</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">keycloak</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">my-client</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">...</span><span class="delimiter">&quot;</span></span>
+            <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>
+            <span class="key">scope</span>: <span class="string"><span class="content">openid</span></span>
+        <span class="key">provider</span>:
+          <span class="key">keycloak</span>:
+            <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://keycloak.example.com/realms/my-realm</span><span class="delimiter">&quot;</span></span>
+  <span class="key">cloud</span>:
+    <span class="key">discovery</span>:
+      <span class="key">client</span>:
+        <span class="key">simple</span>:
+          <span class="key">instances</span>:
+            <span class="key">ecr-acl-service</span>:
+              - <span class="string"><span class="content">uri: http://localhost:31420</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For every resource the SDK provides a client factory bean:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<span class="directive">private</span> AclResourceClientFactory aclClientFactory;
+
+<span class="annotation">@Autowired</span>
+<span class="directive">private</span> AclEntryResourceClientFactory aclEntryClientFactory;
+
+<span class="annotation">@Autowired</span>
+<span class="directive">private</span> AclEntryWithAclResourceClientFactory aclWithEntriesClientFactory;
+
+<span class="annotation">@Autowired</span>
+<span class="directive">private</span> AccessRightsResourceClientFactory accessRightsClientFactory;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The protected entities are accessed using the content repository SDK (<code>de.eitco.ecr:ecr-sdk-http</code>, service id
+<code>content-repository-service</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Autowired</span>
+<span class="directive">private</span> TypeDefinitionServiceClient typeDefinitionServiceClient;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_creating_an_acl">5.2.2. Creating an acl</h4>
+<div class="paragraph">
+<p>Create the acl first, then add one entry per user or group:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">AclResourceClient aclClient = aclClientFactory.newClient();
+AclEntryResourceClient aclEntryClient = aclEntryClientFactory.newClient();
+
+<span class="predefined-type">Acl</span> newAcl = <span class="keyword">new</span> AclImplementation();
+newAcl.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">project-</span><span class="delimiter">&quot;</span></span> + <span class="predefined-type">UUID</span>.randomUUID());
+newAcl.setDescription(<span class="string"><span class="delimiter">&quot;</span><span class="content">Members of group a may read, user b may write</span><span class="delimiter">&quot;</span></span>);
+<span class="predefined-type">Acl</span> acl = aclClient.create(newAcl);
+
+<span class="comment">// a group, identified by the group id provided by the identity provider</span>
+<span class="predefined-type">AclEntry</span> groupEntry = <span class="keyword">new</span> AclEntryImplementation();
+groupEntry.setAcl(acl.getEcrId());
+groupEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_GROUP);
+groupEntry.setPrincipalId(<span class="string"><span class="delimiter">&quot;</span><span class="content">/acl-group-a</span><span class="delimiter">&quot;</span></span>);
+groupEntry.setAccessRight(AccessRight.READ.name());
+aclEntryClient.create(groupEntry);
+
+<span class="comment">// a single user, identified by the user id</span>
+<span class="predefined-type">AclEntry</span> userEntry = <span class="keyword">new</span> AclEntryImplementation();
+userEntry.setAcl(acl.getEcrId());
+userEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_USER);
+userEntry.setPrincipalId(USER_B_ID);
+userEntry.setAccessRight(AccessRight.WRITE.name());
+aclEntryClient.create(userEntry);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively the acl and all of its entries can be created in a single request using the resource
+<code>api/acl-with-entries</code>. The acl is passed as <code>properties</code> of an <code>AclEntryWithAclBatchInput</code>, the entries as its
+<code>elements</code>. The service creates them in one batch operation of the content repository, so either all of them are
+created or none:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">AclEntryWithAclResourceClient aclWithEntriesClient = aclWithEntriesClientFactory.newClient();
+
+<span class="predefined-type">Acl</span> newAcl = <span class="keyword">new</span> AclImplementation();
+newAcl.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">project-</span><span class="delimiter">&quot;</span></span> + <span class="predefined-type">UUID</span>.randomUUID());
+newAcl.setDescription(<span class="string"><span class="delimiter">&quot;</span><span class="content">Members of group a may read, user b may write</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// the attribute acl of the entries is set by the service</span>
+<span class="predefined-type">AclEntry</span> groupEntry = <span class="keyword">new</span> AclEntryImplementation();
+groupEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_GROUP);
+groupEntry.setPrincipalId(<span class="string"><span class="delimiter">&quot;</span><span class="content">/acl-group-a</span><span class="delimiter">&quot;</span></span>);
+groupEntry.setAccessRight(AccessRight.READ.name());
+
+<span class="predefined-type">AclEntry</span> userEntry = <span class="keyword">new</span> AclEntryImplementation();
+userEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_USER);
+userEntry.setPrincipalId(USER_B_ID);
+userEntry.setAccessRight(AccessRight.WRITE.name());
+
+AclEntryWithAclBatchInput input = <span class="keyword">new</span> AclEntryWithAclBatchInput();
+input.setProperties(newAcl);
+input.setElements(<span class="predefined-type">List</span>.of(groupEntry, userEntry));
+
+<span class="comment">// the acl and all of its entries are created in a single batch operation</span>
+AclEntryWithAclBatchInput created = aclWithEntriesClient.create(input);
+
+<span class="predefined-type">Acl</span> acl = created.getProperties();
+<span class="predefined-type">List</span>&lt;<span class="predefined-type">AclEntry</span>&gt; entries = created.getElements();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The entries of an acl can be searched like any other entity:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">SearchService&lt;<span class="predefined-type">AclEntry</span>&gt; entries = aclEntryClient::search;
+
+<span class="predefined-type">List</span>&lt;<span class="predefined-type">AclEntry</span>&gt; entriesOfAcl = entries.where()
+    .contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">acl</span><span class="delimiter">&quot;</span></span>).equalTo().value(acl.getEcrId())
+    .holds().unpaged();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_protecting_an_entity">5.2.3. Protecting an entity</h4>
+<div class="paragraph">
+<p>To protect an entity, set the id of the acl when creating it in the content repository:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">TypedContainerServiceClient&lt;Record&gt; records = typeDefinitionServiceClient.getContainerServiceClient()
+    .byClass(Record.class);
+
+Record record = records.createTypeInstance();
+record.setExternalId(<span class="string"><span class="delimiter">&quot;</span><span class="content">record-</span><span class="delimiter">&quot;</span></span> + <span class="predefined-type">UUID</span>.randomUUID());
+record.setAclId(acl.getEcrId());
+
+ContainerId recordId = records.createEntity(record).getIdentifier();</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the creating user is not granted access by the acl, the content repository returns the created entity
+without attributes. Use its identifier in this case.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_updating_a_protected_entity">5.2.4. Updating a protected entity</h4>
+<div class="paragraph">
+<p>Updates that keep the acl must not contain <code>acl_id</code>. Only the attributes set on a new type instance are part of an
+update:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// only attributes set on a new type instance are updated, acl_id is kept and WRITE is sufficient</span>
+Record update = records.createTypeInstance();
+update.setExternalId(externalId + <span class="string"><span class="delimiter">&quot;</span><span class="content">-changed</span><span class="delimiter">&quot;</span></span>);
+
+Record updated = records.newClient(recordId).updateAttributes(update).getEntity();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Setting <code>acl_id</code> changes the acl and requires <code>CHANGE_ACCESS_RIGHTS</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// changing the acl requires CHANGE_ACCESS_RIGHTS on the entity</span>
+Record aclChange = records.createTypeInstance();
+aclChange.setAclId(otherAcl.getEcrId());
+
+Record changed = records.newClient(recordId).updateAttributes(aclChange).getEntity();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="querying-access-rights">5.2.5. Querying the access rights of the current user</h4>
+<div class="paragraph">
+<p>The resource <code>api/access-rights</code> offers two variants to determine the rights of the current user on an entity. Both
+take the id of a document, container, folder or relation and return an <code>EntityAccessRights</code> with the id, the type
+name, the <code>aclId</code> of the entity and the granted <code>rights</code>. The rights are returned as names of <code>AccessRight</code>
+constants, ordered from the weakest to the strongest right.</p>
+</div>
+<div class="sect4">
+<h5 id="_rights_granted_by_the_acl_get">Rights granted by the acl: <code>get</code></h5>
+<div class="paragraph">
+<p><code>get</code> determines the rights granted to the current user by the acl assigned to the entity:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">AccessRightsResourceClient accessRightsClient = accessRightsClientFactory.newClient();
+
+EntityAccessRights accessRights = accessRightsClient.get(recordId);
+
+<span class="type">boolean</span> mayEdit = accessRights.getRights().contains(AccessRight.WRITE.name());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service executes two queries on the content repository:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>It searches the entity by its id on behalf of the current user. This checks the visibility and reads the
+attribute <code>acl_id</code>.</p>
+</li>
+<li>
+<p>It searches the entries of this acl matching the user id or one of the groups of the user. Since access rights are
+hierarchical, the strongest matching entry determines the result: an entry granting <code>WRITE</code> results in <code>BROWSE</code>,
+<code>READ_ENTITY</code>, <code>READ</code>, <code>COMMENT</code> and <code>WRITE</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Everything except the acl is ignored: neither further <code>@Security</code> rules of the type nor the access rights on the type
+definition are considered. The groups are read from the token of the user using the property
+<code>ecr-acl.acl.group-attribute</code>, which has to match the configuration of the content repository service.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>get</code> if the entity is protected by an acl and the acl alone decides about the access, which is the case for all
+types simply extending <code>AclProtected</code>. It is cheap enough to be called for every entity a frontend displays.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_exact_rights_evaluate">Exact rights: <code>evaluate</code></h5>
+<div class="paragraph">
+<p><code>evaluate</code> determines the rights exactly as the content repository checks them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">AccessRightsResourceClient accessRightsClient = accessRightsClientFactory.newClient();
+
+<span class="comment">// evaluates every right separately, considering all @Security rules and the rights on the type definition</span>
+EntityAccessRights accessRights = accessRightsClient.evaluate(recordId);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the visibility check, the service executes one query per <code>AccessRight</code> except <code>BROWSE</code> (granted by the
+visibility itself), letting the content repository evaluate
+the abac function of the type for this right. A right is contained if both the abac function (the acl and every other
+<code>@Security</code> rule) and the access rights on the type definition grant it. Rights are evaluated separately, so
+non-hierarchical <code>@Security</code> rules are reported correctly as well, e.g. a rule denying <code>WRITE</code> for archived entities
+while the acl grants it.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>evaluate</code> if a type defines its own <code>@Security</code> rules, if the access rights on type definitions are restricted,
+or for entities that are not protected by an acl. Since it executes up to eight queries, avoid calling it for long
+lists of entities.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top"><code>get</code></th>
+<th class="tableblock halign-left valign-top"><code>evaluate</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET api/access-rights/{id}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET api/access-rights/{id}/evaluate</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Queries on the content repository</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">up to 8 (1 + one per access right except <code>BROWSE</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Acl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Other <code>@Security</code> rules</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access rights on the type definition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Entity without acl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no rights</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the rights granted by the remaining rules, usually all</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_not_found_versus_an_empty_list_of_rights">Not found versus an empty list of rights</h5>
+<div class="paragraph">
+<p>Both variants check the visibility of the entity the same way, using the complete access control of the content
+repository. The result therefore distinguishes two different situations:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>404</code> (<code>ResourceNotFoundException</code>)</dt>
+<dd>
+<p>The entity does not exist or the current user may not browse it. The service
+deliberately does not tell these cases apart, otherwise users could detect the existence of entities they are not
+allowed to see. A frontend should handle the entity as if it did not exist, e.g. remove it from a list. This applies
+to both variants.</p>
+</dd>
+<dt class="hdlist1">An empty list of rights</dt>
+<dd>
+<p>The entity exists and is visible for the current user, but no right is granted by the
+evaluated source. In practice this occurs for <code>get</code> only: an entity found by <code>evaluate</code> is visible, so the result
+contains at least <code>BROWSE</code> unless the access rights on the type definition deny reading. For <code>get</code> an empty list does <strong>not</strong> mean that the user has no access, only that no acl grants a right:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>aclId</code> is <code>null</code>: the entity is not protected by an acl, e.g. because <code>acl_id</code> is not set or the type does not
+extend <code>AclProtected</code>. For <code>AclProtected</code> types this means everyone may access the entity, provided the access
+rights on the type definition allow it. Use <code>evaluate</code> to determine the actual rights.</p>
+</li>
+<li>
+<p><code>aclId</code> is set: the acl contains no entry for the user or the groups of the user. The entity is nevertheless
+visible, so another <code>@Security</code> rule of the type grants the access. Use <code>evaluate</code> to determine the actual rights.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The following example combines both variants. It uses the cheap <code>get</code> and falls back to <code>evaluate</code> for entities
+without an acl:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="directive">static</span> Optional&lt;<span class="predefined-type">List</span>&lt;<span class="predefined-type">String</span>&gt;&gt; rightsToOffer(AccessRightsResourceClient accessRightsClient, <span class="type">long</span> entityId) {
+
+    <span class="keyword">try</span> {
+
+        EntityAccessRights accessRights = accessRightsClient.get(entityId);
+
+        <span class="keyword">if</span> (accessRights.getAclId() == <span class="predefined-constant">null</span>) {
+            <span class="comment">// the entity is visible but not protected by an acl, so no acl grants any right: evaluate the exact rights</span>
+            <span class="keyword">return</span> Optional.of(accessRightsClient.evaluate(entityId).getRights());
+        }
+
+        <span class="comment">// the rights the acl grants to the current user</span>
+        <span class="keyword">return</span> Optional.of(accessRights.getRights());
+
+    } <span class="keyword">catch</span> (ResourceNotFoundException e) {
+
+        <span class="comment">// the entity does not exist or the current user may not even browse it, so there is nothing to offer</span>
+        <span class="keyword">return</span> Optional.empty();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_errors">5.2.6. Errors</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 16.6666%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Exception</th>
+<th class="tableblock halign-left valign-top">HTTP status</th>
+<th class="tableblock halign-left valign-top">Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ResourceNotFoundException</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The entity does not exist or the current user may not browse it.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>InsufficientAccessRightException</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The entity is visible, but the required right is not granted, e.g.
+  <code>WRITE</code> for updates, <code>DELETE</code> for deletes, <code>CHANGE_ACCESS_RIGHTS</code> for changing the acl, or the acl administration
+  authority for changing acls.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UniqueConstraintViolationException</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duplicate acl name or duplicate entry for a principal.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ValidationException</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Invalid principal type or access right.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TypedIdMismatchException</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The access rights of a meta entity were requested.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_typescript_sdk">5.3. Using the TypeScript SDK</h3>
+<div class="paragraph">
+<p>The TypeScript SDK of the ecr-acl-service is published as npm package <code>@eitco/ecr-acl-service</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.3</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For applications based on ecc an additional data provider built on top of the SDK is available as npm package
+<code>@eitco/ecr-acl-data-provider</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.3</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_c_sdk">5.4. Using the C# SDK</h3>
+<div class="paragraph">
+<p>The C# SDK of the ecr-acl-service is published as nuget package <code>Eitco.Eitco-Content-Repository.EcrAcl</code> (target
+framework <code>net8.0</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;ItemGroup&gt;</span>
+    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.3</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/ItemGroup&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_release_notes">6. Release Notes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_release_notes_1_0_0_snapshot_october_09_2026">6.1. Release notes 1.0.0-SNAPSHOT (October 09, 2026)</h3>
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2026-10-09 15:56:24 UTC
+</div>
+</div>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+pre.CodeRay{background:#f7f7f8}
+.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
+.CodeRay .line-numbers strong{color:#000}
+table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.CodeRay td{vertical-align:top;line-height:inherit}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.code{padding:0 0 0 .75em}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+</body>
+</html>
