@@ -446,7 +446,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#access">2.1. Access and permissions</a></li>
 <li><a href="#navigation">2.2. Choose a scenario and language</a></li>
 <li><a href="#user-simple">2.3. Work in a Simple Document scenario</a></li>
-<li><a href="#user-record">2.4. Work in a Record scenario</a></li>
+<li><a href="#user-record">2.4. Work in a Record scenario</a>
+<ul class="sectlevel3">
+<li><a href="#user-record-memberships">2.4.1. Share documents between records (m:n)</a></li>
+</ul>
+</li>
 <li><a href="#search">2.5. Find and inspect documents</a></li>
 <li><a href="#mutations">2.6. Create, edit and delete</a></li>
 <li><a href="#content">2.7. Choose content and a viewer</a>
@@ -469,7 +473,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#create-scenario">3.2. Choose a scenario structure</a>
 <ul class="sectlevel3">
 <li><a href="#wizard-simple">3.2.1. Create a Simple Document scenario</a></li>
-<li><a href="#wizard-record">3.2.2. Create a Record scenario</a></li>
+<li><a href="#wizard-record">3.2.2. Create a one-to-many Record scenario</a></li>
+<li><a href="#config-record-selection">3.2.3. Create and configure an m:n Record scenario in V2</a></li>
 </ul>
 </li>
 <li><a href="#config-simple">3.3. Configure a Simple Document scenario</a></li>
@@ -493,11 +498,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_configuration_transfer_and_legacy_files">3.9.2. Configuration transfer and legacy files</a></li>
 </ul>
 </li>
-<li><a href="#localization">3.10. Manage languages and translations</a></li>
-<li><a href="#admin-recovery">3.11. Validation and concurrent editing</a></li>
-<li><a href="#reference">3.12. Import reference</a>
+<li><a href="#admin-categories">3.10. Categories and dashboard presentation</a></li>
+<li><a href="#localization">3.11. Manage languages and translations</a></li>
+<li><a href="#admin-recovery">3.12. Validation and concurrent editing</a></li>
+<li><a href="#reference">3.13. Import reference</a>
 <ul class="sectlevel3">
-<li><a href="#_configuration_import_fields">3.12.1. Configuration import fields</a></li>
+<li><a href="#_configuration_import_fields">3.13.1. Configuration import fields</a></li>
 </ul>
 </li>
 </ul>
@@ -509,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 0.1.3-SNAPSHOT; source f04c9add7b4743bc67140c18446c1456ac13778e.</p>
+<p>Version 0.1.3-SNAPSHOT; source e854337664ad14be0254cfc7071794a60500c266.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -540,6 +546,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="navigation"><a class="anchor" href="#navigation"></a><a class="link" href="#navigation">2.2. Choose a scenario and language</a></h3>
 <div class="paragraph">
 <p>Select English or Deutsch with the dashboard language selector. Scenario names, descriptions, category labels and field labels use the configured translations, falling back to the default text when a translation is missing. Open a scenario from a card or list row. Use the breadcrumb to return to the dashboard or to the parent record. Hidden scenarios are not available through ordinary navigation.</p>
+</div>
+<div class="paragraph">
+<p>Use the dashboard search and card/list view controls to find scenarios, and mark favorites for quick access. When your administrator uses tree presentation, choose a category in the sidebar to narrow navigation. Flat presentation does not use that category hierarchy. Optional scenario icons and categories help navigation; neither changes document membership or grants repository access.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -610,6 +619,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>A Record scenario first opens the record list. Selecting a record then opens a different list containing its related documents. Search and sorting apply to the stage currently on screen.</p>
 </div>
+<div class="paragraph">
+<p>In an m:n scenario, the same document can appear under several records with the same identity.
+The selected record&#8217;s document filters, counts and pages are evaluated within its membership;
+the separate flat document view is not evidence that a document belongs to a particular record.
+Records without links display an empty list. See <a href="#user-record-memberships">Share documents between records (m:n)</a> for sharing,
+creation and removal instructions. Sharing does not copy the document.</p>
+</div>
 <div class="imageblock">
 <div class="content">
 <img src="images/record-list.png" alt="Record scenario parent list" width="680">
@@ -646,7 +662,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Parent record actions and child document actions are separate. Use the record list&#8217;s actions to create, edit, inspect history or delete a parent where offered. Use child actions for an individual document. Creating a record does not automatically create its documents. Changing parent metadata does not edit all children.</p>
 </div>
 <div class="paragraph">
-<p>Before the deletion confirmation opens, the client counts the related documents. Check the count and whether those documents will be deleted or unlinked. If the count cannot be determined, the client reports an error and does not open the confirmation; retry after resolving the loading or access problem.</p>
+<p>For a <strong>1:n with foreign key</strong> scenario, before the record deletion confirmation opens, the client counts the related documents. Check the count and whether those documents will be deleted or unlinked. If the count cannot be determined, the client reports an error and does not open the confirmation; retry after resolving the loading or access problem. Record deletion is blocked for m:n scenarios, regardless of the cascade setting.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -655,10 +671,92 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Warning</div>
 </td>
 <td class="content">
-Deleting a parent can delete all related documents when cascade deletion is enabled. Otherwise children are unlinked: their parent relationship is cleared, while their metadata and stored content are retained. They no longer appear under the deleted record. A mandatory relationship requires cascade deletion. Read the confirmation and ask your administrator when the affected scope is unclear.
+In a one-to-many scenario, deleting a parent can delete all related documents when cascade deletion is enabled. Otherwise children are unlinked: their parent relationship is cleared, while their metadata and stored content are retained. They no longer appear under the deleted record. A mandatory foreign-key relationship requires cascade deletion. Read the confirmation and ask your administrator when the affected scope is unclear.
 </td>
 </tr>
 </table>
+</div>
+<div class="sect3">
+<h4 id="user-record-memberships"><a class="anchor" href="#user-record-memberships"></a><a class="link" href="#user-record-memberships">2.4.1. Share documents between records (m:n)</a></h4>
+<div class="paragraph">
+<p>An m:n membership associates an existing document with a record. It is not a copy or a move.
+Editing shared metadata or content changes the same document wherever it is linked.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the document from a selected record&#8217;s document list or the scenario&#8217;s flat document view.</p>
+</li>
+<li>
+<p>Open <strong>Details</strong>, then <strong>Edit document</strong>. The picker requires enabled document editing and the existing document-edit permission.</p>
+</li>
+<li>
+<p>Search in <strong>Add document to record</strong> and check the identifying values of the target record. The picker searches authorized records using administrator-configured fields, independently of table columns and personal column preferences. An empty result is not proof that a record does not exist or is accessible to you.</p>
+</li>
+<li>
+<p>Choose one record. Already-linked records are marked and cannot be selected again. Selection is staged: searching, choosing, clearing an unsaved choice or closing the drawer does not add or remove a membership.</p>
+</li>
+<li>
+<p>Choose <strong>Save</strong>. Verify the document in the target record&#8217;s list and in its previous record&#8217;s list. Existing memberships are preserved; repeating a confirmed addition does not create another membership. A membership-only save does not create a document version.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Example: a document under case A can also be added to case B without copying its content.
+An edit from either case is visible from the other. Adding it to B does not remove it from A.</p>
+</div>
+<div class="paragraph">
+<p>To create a document, first open the intended record&#8217;s document list and use its create action.
+The new document is initially linked to that record. Creation requires the configured creation
+setting and both document-create and document-edit permissions, but can remain enabled when editing
+existing documents is disabled. Retrying a failed initial link without further metadata changes
+also works in this create-only configuration. Adding an additional record requires enabled document
+editing. Creation is disabled in the m:n flat document view because no current record is selected.
+Repository authorization still controls every write.</p>
+</div>
+<div class="paragraph">
+<p>To remove a membership:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the record whose membership you intend to remove and confirm the breadcrumb.</p>
+</li>
+<li>
+<p>Use the document row&#8217;s <strong>Remove from this record</strong> action, which requires document-edit permission independently of the document editing switch.</p>
+</li>
+<li>
+<p>Check the confirmation. Cancel changes nothing; confirm removes only this record-document membership.</p>
+</li>
+<li>
+<p>Check the refreshed list. The document and its other record memberships are preserved. Removing its final membership leaves it unassigned rather than deleting it.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<strong>Delete document everywhere</strong> is a separate disabled action. Record deletion is also
+blocked in m:n scenarios with cascade both ON and OFF. A verified repository-wide relationship
+cleanup contract is required before these workflows can be enabled. Do not reset data or apply
+one-to-many deletion instructions to bypass this safeguard.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If a membership read fails, use the editor&#8217;s <strong>Retry</strong> action and wait for a successful load before
+adding a record; the pending choice is preserved. A failed search also preserves your choice.
+A partial-save error keeps the drawer open: completed document changes and the confirmed identity
+remain saved, while the pending addition is retained for retry. If creation succeeded but its
+initial link failed, retry completes the link using the same identity. If creation could not be
+confirmed, check the repository before creating again. A failed or uncertain removal is not
+reported as success; check the refreshed membership before retrying.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -697,7 +795,7 @@ Deleting a parent can delete all related documents when cascade deletion is enab
 <p>To edit, open the existing item and use its edit action. Change writable fields and save. Metadata-only edits leave unchanged content intact. When replacing original content, check filename and MIME information before saving. A failed save is not proof that nothing was stored: reload the item before retrying.</p>
 </div>
 <div class="paragraph">
-<p>Deletion is permanent unless your repository provides a separate recovery mechanism. Read the confirmation carefully. Deleting a record can delete its children when cascade deletion is enabled; otherwise children are unlinked. Mandatory relationships require cascade behavior. Cancel if the affected scope is unclear.</p>
+<p>Deletion is permanent unless your repository provides a separate recovery mechanism. Read the confirmation carefully. In a one-to-many scenario, deleting a record can delete its children when cascade deletion is enabled; otherwise children are unlinked. Mandatory foreign-key relationships require cascade behavior. In m:n scenarios, use <strong>Remove from this record</strong> for membership removal; global document deletion and record deletion are unavailable. Cancel if the affected scope is unclear.</p>
 </div>
 </div>
 <div class="sect2">
@@ -927,11 +1025,29 @@ Deleting a parent can delete all related documents when cascade deletion is enab
 <div class="paragraph">
 <p>Select a scenario in the sidebar. The editor contains General, Content &amp; Versions, and Views, with additional record sections for two-stage scenarios. Expand the relevant section. The JSON preview is read-only; edit using structured controls or validated import. Export a backup before significant changes.</p>
 </div>
+<div class="paragraph">
+<p>The separate <strong>Categories</strong> workspace manages the category tree, scenario assignments and dashboard presentation. In scenario General settings, choose an optional semantic icon; it changes presentation only, not repository data or permissions.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="create-scenario"><a class="anchor" href="#create-scenario"></a><a class="link" href="#create-scenario">3.2. Choose a scenario structure</a></h3>
 <div class="paragraph">
 <p>A scenario is a configured entry point into repository data. Choose its structure before configuring its labels and views. The document and record types must already exist in the repository; this wizard does not create types or relationships.</p>
+</div>
+<div class="paragraph">
+<p>For a Record scenario, the wizard offers <strong>1:n with foreign key</strong> or <strong>m:n with shared documents</strong>. The latter uses a dedicated container-to-document relation, not a copied document or a document foreign key. Only compatible current-version-only relations with a unique endpoint-pair index and no required writable custom relationship attributes are selectable. If no compatible type is offered, ask the repository administrator to check those definitions.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+m:n authoring, record-scoped browsing, document-edit linking, creation from a selected record and current-record removal are available in configuration version 2. Enable document editing to expose the picker; additions/removal use the existing document-edit grant. Global document deletion and record cascade workflows remain unavailable pending a verified complete repository-wide cleanup contract. Do not treat authoring as a completed destructive lifecycle workflow.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1005,14 +1121,14 @@ Deleting a parent can delete all related documents when cascade deletion is enab
 </div>
 </div>
 <div class="sect3">
-<h4 id="wizard-record"><a class="anchor" href="#wizard-record"></a><a class="link" href="#wizard-record">3.2.2. Create a Record scenario</a></h4>
+<h4 id="wizard-record"><a class="anchor" href="#wizard-record"></a><a class="link" href="#wizard-record">3.2.2. Create a one-to-many Record scenario</a></h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p><strong>Step 1 - identity:</strong> choose Two-stage and enter a unique stable name, for example <code>case_documents</code>.</p>
 </li>
 <li>
-<p><strong>Step 2 - architecture:</strong> select <strong>1:n with foreign key</strong> (Strict one-to-many). This is the supported architecture: documents reference a parent record through a repository relationship.</p>
+<p><strong>Step 2 - architecture:</strong> select <strong>1:n with foreign key</strong> (Strict one-to-many) when each document belongs to one parent through a repository foreign key. For shared documents, follow <a href="#config-record-selection">Create and configure an m:n Record scenario in V2</a> instead.</p>
 </li>
 <li>
 <p><strong>Step 3 - child document type:</strong> select an eligible document type. The choices are filtered to types with a supported child-to-parent relationship. In the demo, <code>flex_rec_document</code> is the child type. An empty list means that an eligible repository relationship is needed; choosing an unrelated type is not a workaround.</p>
@@ -1049,6 +1165,56 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="config-record-selection"><a class="anchor" href="#config-record-selection"></a><a class="link" href="#config-record-selection">3.2.3. Create and configure an m:n Record scenario in V2</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Choose Two-stage and enter a unique scenario name.</p>
+</li>
+<li>
+<p>Choose <strong>m:n with shared documents</strong> rather than the foreign-key architecture.</p>
+</li>
+<li>
+<p>Select an eligible child document type and its compatible container-to-document relation. The relation determines the record type; the wizard does not create repository types or memberships.</p>
+</li>
+<li>
+<p>Review the immutable structure and choose Create. A safe discovered text attribute supplies initial picker defaults; if none exists, creation leaves an unsaved draft requiring administrator selection rather than inventing an entity field.</p>
+</li>
+<li>
+<p>Configure the record and document stages, including the independent <strong>Record selection</strong> settings below, then save and reload.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Expand <strong>Record selection</strong>. Enable the record attributes shown in options and order them with the shared ordering control. Configure searchable record attributes separately, with <strong>equals</strong>, <strong>contains</strong> or <strong>starts with</strong> where compatible with the live type. Text predicates are intended to match case-insensitively and be combined with OR. Numeric/scalar attributes support equality only; unsupported types are rejected.</p>
+</div>
+<div class="paragraph">
+<p>At least one display column and one compatible search column are required. The picker settings are independent of record-table visibility, sorting and personal column preferences. Removed or disabled references remain visible as invalid settings for explicit repair; they are not silently dropped. Save, export and reload to verify the authored order and search rules. Use V2 files for these fields: legacy V1/unversioned imports cannot contain them.</p>
+</div>
+<div class="paragraph">
+<p>Enable document editing for membership additions, and document creation for creation from a selected
+record. Additions require the existing document-edit grant; creation requires both document-create
+and document-edit grants, independently of the switch for editing existing documents. A create-only
+configuration permits initial-link retry without further metadata changes. Current-record removal
+checks document-edit permission independently of the editing switch. Repository authorization still applies. Browsing, linking, selected-record
+creation and unlinking are available; enabling a setting does not grant access or enable global deletion.</p>
+</div>
+<div class="paragraph">
+<p>The m:n cascade toggle records a policy: ON would delete associated documents globally, including
+their memberships under other records; OFF would preserve documents and remove memberships before
+deleting the record. Neither setting enables record deletion in the current runtime. Global document
+deletion and record deletion remain blocked until complete repository-wide relationship cleanup is
+verified; a scenario&#8217;s configured relation alone cannot establish that guarantee.</p>
+</div>
+<div class="paragraph">
+<p>Verify with authorized test data: open records A and B, add an existing document from A to B through
+the document editor and check both lists. A membership-only save must not create a document version.
+Remove it from A using <strong>Remove from this record</strong> and confirm that the document remains under B.
+Do not test the recorded cascade policy as an available m:n deletion workflow. See
+<a href="#user-record-memberships">Share documents between records (m:n)</a> for user steps and partial-save recovery.</p>
 </div>
 </div>
 </div>
@@ -1119,7 +1285,7 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 <p>Enable Record versions/comments and Document versions/comments independently. Choose version fields appropriate to each type.</p>
 </li>
 <li>
-<p>Review Record management before exposing deletion. With cascade enabled, deleting a record deletes its child documents first. With cascade disabled, the client unlinks children before deleting the parent. A mandatory parent relationship cannot be cleared and forces cascade behavior; do not attempt to disable that safeguard.</p>
+<p>Review Record management before exposing deletion. In a one-to-many scenario, cascade deletes child documents first; without cascade, the client clears their foreign-key relationship before deleting the parent. A mandatory foreign key forces cascade behavior. In m:n scenarios, configure the separate record selector; record deletion remains blocked with either cascade setting.</p>
 </li>
 <li>
 <p>Save and test both stages: find a record, open its child list, check the summary, inspect a child and return to the parent list. Repeat with another record to verify that documents are scoped correctly.</p>
@@ -1138,7 +1304,7 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 <div class="sect2">
 <h3 id="general"><a class="anchor" href="#general"></a><a class="link" href="#general">3.5. General settings and attributes</a></h3>
 <div class="paragraph">
-<p>Set the localized title, description and dashboard visibility. Visibility controls navigation, not security. Each document or record stage has its own creation and editing switches. Disable these actions when they should not be exposed; repository authorization still applies. Deletion availability also depends on permissions, and Record management determines the treatment of children.</p>
+<p>Set the localized title, description and dashboard visibility. Visibility controls navigation, not security. Each document or record stage has its own creation and editing switches. Disable these actions when they should not be exposed; repository authorization still applies. Deletion availability also depends on permissions and the relationship architecture. Record management determines the treatment of children where record deletion is supported; it does not override the m:n deletion safeguard.</p>
 </div>
 <div class="paragraph">
 <p>Choose a scenario icon from the icon picker in General settings. The icon is used in dashboard cards, favorites and list rows. Choose the default option to restore the scenario initial. Imported icon identifiers that are valid but unavailable in this client are retained and also display the initial; do not supply SVG markup or an image URL as an icon identifier.</p>
@@ -1167,7 +1333,12 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 <p>Enable version history and comments separately for document and record stages. These options control the client surfaces, not underlying permission grants.</p>
 </div>
 <div class="paragraph">
-<p>For two-stage scenarios, review record-management cascade deletion. With cascade enabled, deleting a parent deletes its documents first. Without it, the parent relationship is cleared on the children; their metadata and stored content are retained. A mandatory parent relationship forces cascade deletion. The deletion confirmation shows the related-document count and the configured delete or unlink consequence. If the count cannot be loaded, confirmation is blocked. Test the configured policy with a disposable record and explain this consequence to users before exposing record deletion.</p>
+<p>For <strong>1:n with foreign key</strong> scenarios, review record-management cascade deletion. With cascade enabled, deleting a parent deletes its documents first. Without it, the foreign key is cleared on the children; their metadata and stored content are retained. A mandatory foreign key forces cascade deletion. The deletion confirmation shows the related-document count and the configured delete or unlink consequence. If the count cannot be loaded, confirmation is blocked. Test the configured policy with a disposable record and explain this consequence to users before exposing record deletion.</p>
+</div>
+<div class="paragraph">
+<p>For <strong>m:n with shared documents</strong>, the cascade setting is stored policy only: record deletion and
+global document deletion are unavailable. Membership removal preserves the document, even when its
+final membership is removed. This behavior is independent of the cascade toggle.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1192,7 +1363,7 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 <p>Detail/forms: configure field ordering, sections and read-only behavior where supported; required writable fields must remain accessible for enabled mutations.</p>
 </li>
 <li>
-<p>Two-stage summary: configure parent summary fields and localized labels, then verify the selected-record context.</p>
+<p>Two-stage summary: configure parent summary fields and localized labels, then verify the selected-record context. New defaults contain up to four fields; an authored summary may include more. Existing available fields and their settings are preserved when the administration draft is initialized or saved.</p>
 </li>
 </ul>
 </div>
@@ -1367,12 +1538,29 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 <p>Legacy files containing only <code>{ "scenarios": [&#8230;&#8203;] }</code> or <code>{ "schemaVersion": 1, "scenarios": [&#8230;&#8203;] }</code> are also accepted by this import action. They are converted to v2 with flat presentation before validation, without repairing scenario fields. Existing unrelated scenarios and categories remain; an existing scenario&#8217;s conflicting category assignment still prevents import. Unknown fields/versions and mixed legacy/v2 envelopes are rejected. An empty scenario array does not clear the existing configuration. Subsequent exports always use v2.</p>
 </div>
 <div class="paragraph">
+<p>Normal saves and new exports use configuration version 2. Full exports preserve categories, scenario category assignments, optional icons and dashboard presentation. Supported legacy V1/unversioned payloads are normalized to flat V2 with an empty category list before merging; this does not clear the draft&#8217;s existing categories or change existing relationship models. The backend upgrades valid stored V1 configuration on startup rather than requiring a reset. A merge retains the current dashboard presentation when the imported V2 file omits that setting.</p>
+</div>
+<div class="paragraph">
 <p>Delete only the intended scenario after reviewing confirmation. Configuration removal does not itself describe a repository data-deletion workflow. Reset replaces configuration with seeded defaults; back up first and use reset only in an explicitly disposable or otherwise authorized environment.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="localization"><a class="anchor" href="#localization"></a><a class="link" href="#localization">3.10. Manage languages and translations</a></h3>
+<h3 id="admin-categories"><a class="anchor" href="#admin-categories"></a><a class="link" href="#admin-categories">3.10. Categories and dashboard presentation</a></h3>
+<div class="paragraph">
+<p>Open <strong>Categories</strong> from the settings sidebar. Create root or child categories, configure their localized labels, and arrange their navigation order. Stable category identities are distinct from repository record identities; moving or assigning a scenario does not link documents to records.</p>
+</div>
+<div class="paragraph">
+<p>Category translation keys currently accept a two- or three-letter lowercase language code, optionally
+followed by a hyphen and a two-letter uppercase region, for example <code>de</code> or <code>de-DE</code>.
+Script subtags and numeric regions such as <code>zh-Hans</code> and <code>en-001</code> are rejected by configuration import validation.</p>
+</div>
+<div class="paragraph">
+<p>Assign scenarios to categories and choose <strong>Tree</strong> or <strong>Flat</strong> presentation. Tree presentation uses the authored category hierarchy; flat presentation keeps scenario navigation without that hierarchy. Save changes explicitly and check the dashboard as a normal user. Category and scenario changes share the configuration draft: preserve unsaved edits when switching workspaces, and resolve stale-save errors before retrying.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="localization"><a class="anchor" href="#localization"></a><a class="link" href="#localization">3.11. Manage languages and translations</a></h3>
 <div class="paragraph">
 <p>Open localization administration from the settings navigation. Choose a catalog language, search by translation key or text, edit the translation and save. Enable a language for users only when it is suitable for your audience. Select the language on the dashboard and check both static UI text and scenario labels.</p>
 </div>
@@ -1395,7 +1583,7 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 </div>
 </div>
 <div class="sect2">
-<h3 id="admin-recovery"><a class="anchor" href="#admin-recovery"></a><a class="link" href="#admin-recovery">3.11. Validation and concurrent editing</a></h3>
+<h3 id="admin-recovery"><a class="anchor" href="#admin-recovery"></a><a class="link" href="#admin-recovery">3.12. Validation and concurrent editing</a></h3>
 <div class="paragraph">
 <p>Invalid references, duplicate scenario names or category IDs, blank category defaults, dangling category assignments, unavailable default content, inconsistent annotation switches, missing required fields and unsupported relationships prevent a save. Correct the indicated setting rather than removing validation.</p>
 </div>
@@ -1404,12 +1592,9 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 </div>
 </div>
 <div class="sect2">
-<h3 id="reference"><a class="anchor" href="#reference"></a><a class="link" href="#reference">3.12. Import reference</a></h3>
-<div class="paragraph">
-<p>The following field inventory is generated from the current version-2 configuration schema, including categories, scenario assignments, icons and dashboard presentation. Use an exported configuration as your working example; schema shape does not replace live semantic validation or guarantee a runtime control for every field. Category-only arrays and legacy file conversion follow the separate import rules described above.</p>
-</div>
+<h3 id="reference"><a class="anchor" href="#reference"></a><a class="link" href="#reference">3.13. Import reference</a></h3>
 <div class="sect3">
-<h4 id="_configuration_import_fields"><a class="anchor" href="#_configuration_import_fields"></a><a class="link" href="#_configuration_import_fields">3.12.1. Configuration import fields</a></h4>
+<h4 id="_configuration_import_fields"><a class="anchor" href="#_configuration_import_fields"></a><a class="link" href="#_configuration_import_fields">3.13.1. Configuration import fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1790,9 +1975,24 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSelection.displayColumns</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSelection.search</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.cascadeDeleteEnabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.recordSelection</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recordSelection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.name</code></p></td>
@@ -1831,7 +2031,7 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.twoStageType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">STRICT_ONE_TO_MANY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">STRICT_ONE_TO_MANY, MANY_TO_MANY</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
@@ -1890,7 +2090,7 @@ Conditional requirements and live repository validation also apply. Export an ex
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-12 04:00:50 UTC
+Last updated 2026-10-12 15:30:28 UTC
 </div>
 </div>
 </body>
