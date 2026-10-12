@@ -36,18 +36,26 @@
 <li><a href="#_ecr_acl_service">3.2. ecr-acl-service</a></li>
 </ul>
 </li>
-<li><a href="#_rest_api">4. REST API</a></li>
-<li><a href="#_developer_guide">5. Developer guide</a>
+<li><a href="#performance">4. Performance</a>
 <ul class="sectlevel2">
-<li><a href="#_protecting_a_type">5.1. Protecting a type</a></li>
-<li><a href="#_using_the_java_sdk">5.2. Using the Java SDK</a></li>
-<li><a href="#_using_the_typescript_sdk">5.3. Using the TypeScript SDK</a></li>
-<li><a href="#_using_the_c_sdk">5.4. Using the C# SDK</a></li>
+<li><a href="#_the_acl_condition">4.1. The acl condition</a></li>
+<li><a href="#_indexes">4.2. Indexes</a></li>
+<li><a href="#_analyzing_slow_queries">4.3. Analyzing slow queries</a></li>
+<li><a href="#_influencing_factors">4.4. Influencing factors</a></li>
 </ul>
 </li>
-<li><a href="#_release_notes">6. Release Notes</a>
+<li><a href="#_rest_api">5. REST API</a></li>
+<li><a href="#_developer_guide">6. Developer guide</a>
 <ul class="sectlevel2">
-<li><a href="#_release_notes_1_0_0_snapshot_october_11_2026">6.1. Release notes 1.0.0-SNAPSHOT (October 11, 2026)</a></li>
+<li><a href="#_protecting_a_type">6.1. Protecting a type</a></li>
+<li><a href="#_using_the_java_sdk">6.2. Using the Java SDK</a></li>
+<li><a href="#_using_the_typescript_sdk">6.3. Using the TypeScript SDK</a></li>
+<li><a href="#_using_the_c_sdk">6.4. Using the C# SDK</a></li>
+</ul>
+</li>
+<li><a href="#_release_notes">7. Release Notes</a>
+<ul class="sectlevel2">
+<li><a href="#_release_notes_1_0_0_snapshot_october_12_2026">7.1. Release notes 1.0.0-SNAPSHOT (October 12, 2026)</a></li>
 </ul>
 </li>
 </ul>
@@ -399,7 +407,160 @@ for an example.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_rest_api">4. REST API</h2>
+<h2 id="performance">4. Performance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter is meant for administrators analyzing the performance of a system using acls. It describes the queries
+caused by the acl evaluation and the database indexes supporting them.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_acl_condition">4.1. The acl condition</h3>
+<div class="paragraph">
+<p>The content repository adds the acl condition to every query on a protected type, i.e. to searches, reads, updates
+and deletes. For a table <code>&lt;table&gt;</code> of a type extending <code>AclProtected</code> the condition is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql">&lt;<span class="type">table</span>&gt;.acl_id <span class="keyword">IS</span> <span class="predefined-constant">NULL</span>
+<span class="keyword">OR</span> &lt;<span class="type">table</span>&gt;.acl_id <span class="keyword">IN</span> (
+    <span class="class">SELECT</span> acl <span class="keyword">FROM</span> acl_entry
+    <span class="keyword">WHERE</span> access_right <span class="keyword">IN</span> (&lt;the requested <span class="keyword">right</span> <span class="keyword">and</span> <span class="keyword">all</span> stronger rights&gt;)
+      <span class="keyword">AND</span> ((principal_type = <span class="string"><span class="delimiter">'</span><span class="content">USER</span><span class="delimiter">'</span></span>  <span class="keyword">AND</span> principal_id = &lt;user id&gt;)
+        <span class="keyword">OR</span> (principal_type = <span class="string"><span class="delimiter">'</span><span class="content">GROUP</span><span class="delimiter">'</span></span> <span class="keyword">AND</span> principal_id <span class="keyword">IN</span> (&lt;<span class="keyword">group</span> ids <span class="keyword">of</span> the user&gt;))))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The group condition is omitted for users without groups. The performance of the condition therefore depends on two
+lookups: finding the acls granting access to the current user in <code>acl_entry</code>, and finding the protected entities
+referencing these acls (or no acl at all) in <code>&lt;table&gt;</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_indexes">4.2. Indexes</h3>
+<div class="paragraph">
+<p>The type definitions declare the following indexes. The content repository creates them when it updates the database
+schema on startup.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 28.5714%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Index</th>
+<th class="tableblock halign-left valign-top">Columns</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>acl_entry_access_check</code> on <code>acl_entry</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>principal_id</code>, <code>principal_type</code>, <code>access_right</code>, <code>acl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finds the acls granting a right to a user or a group. The index contains every column of the subquery, so the
+  database can answer the subquery from the index alone without reading the table (index only scan). The database
+  can look up users and groups separately and combine the results (bitmap or).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;table&gt;_acl_id_ci</code> on every protected table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>acl_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finds the entities referencing one of the acls found by the subquery, and the entities without an acl
+  (<code>acl_id IS NULL</code>). It also serves the foreign key check when an acl is deleted, which would otherwise read the
+  whole table. The name is derived from the table, so every protected type gets its own index.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique constraint <code>acl_entry_principal</code> on <code>acl_entry</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>acl</code>, <code>principal_type</code>, <code>principal_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ensures one entry per acl and principal. It also serves loading the entries of an acl and deleting them together
+  with the acl. It does not help the acl condition, since its first column is the acl.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Creating the index on <code>acl_id</code> for an existing type with many entities takes a while and may block writes to
+the table during the schema update. Plan the first start of a content repository with this version accordingly.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_analyzing_slow_queries">4.3. Analyzing slow queries</h3>
+<div class="paragraph">
+<p>To check whether the indexes are present, list the indexes of the tables in PostgreSQL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">SELECT</span> tablename, indexname, indexdef <span class="keyword">FROM</span> pg_indexes
+<span class="keyword">WHERE</span> tablename = <span class="string"><span class="delimiter">'</span><span class="content">acl_entry</span><span class="delimiter">'</span></span> <span class="keyword">OR</span> indexdef <span class="keyword">LIKE</span> <span class="string"><span class="delimiter">'</span><span class="content">%(acl_id)%</span><span class="delimiter">'</span></span>;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To check whether a query uses them, take the query from the log of the content repository or from
+<code>pg_stat_statements</code> and run it with <code>EXPLAIN (ANALYZE, BUFFERS)</code>. The expected plan contains</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>an <code>Index Only Scan</code> (or a <code>Bitmap Index Scan</code>) on <code>acl_entry_access_check</code> for the subquery and</p>
+</li>
+<li>
+<p>an <code>Index Scan</code> or <code>Bitmap Index Scan</code> on <code>&lt;table&gt;_acl_id_ci</code> for the protected table, provided the query is not
+restricted more selectively by other conditions.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A <code>Seq Scan</code> on <code>acl_entry</code> or on a large protected table indicates a missing index or outdated statistics. Run
+<code>ANALYZE acl_entry;</code> and <code>ANALYZE &lt;table&gt;;</code> after importing large amounts of data, then check the plan again.</p>
+</div>
+<div class="paragraph">
+<p>A sequential scan of a protected table is correct if most of its entities are visible for the user anyway, e.g.
+because most of them have no acl or reference an acl granting access to everyone. Reading the table is cheaper than
+using the index in this case.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_influencing_factors">4.4. Influencing factors</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Number of groups per user</dt>
+<dd>
+<p>The group ids of the user are part of every query. Hundreds of groups per user enlarge
+every query and the work of the subquery. Only put the groups relevant for acls into the group claim of the token
+(see <a href="#configuration">Configuration</a>).</p>
+</dd>
+<dt class="hdlist1">Number of acls</dt>
+<dd>
+<p>The subquery returns every acl granting access to the user. Many small acls, e.g. one acl per
+entity, result in large subquery results. Prefer a moderate number of acls shared by many entities, e.g. one acl per
+department or project.</p>
+</dd>
+<dt class="hdlist1">Access rights of the current user</dt>
+<dd>
+<p>The endpoint <code>api/access-rights/{id}</code> executes two queries, while
+<code>api/access-rights/{id}/evaluate</code> executes up to eight (see <a href="#querying-access-rights">Querying the access rights of the current user</a>). Avoid calling <code>evaluate</code>
+for long lists of entities.</p>
+</dd>
+<dt class="hdlist1">Acl administrators</dt>
+<dd>
+<p>Acl administrators are no super users, the acl condition is applied to their queries as well.
+Their queries are as expensive as those of any other user.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rest_api">5. REST API</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -448,10 +609,10 @@ for an example.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_developer_guide">5. Developer guide</h2>
+<h2 id="_developer_guide">6. Developer guide</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_protecting_a_type">5.1. Protecting a type</h3>
+<h3 id="_protecting_a_type">6.1. Protecting a type</h3>
 <div class="paragraph">
 <p>To protect the entities of a type by acls, let its type definition extend <code>AclProtected</code>. The examples in this
 guide use the following container type:</p>
@@ -480,9 +641,12 @@ guide use the following container type:</p>
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">AclProtected</span> {
 
     <span class="comment">/**
-     * The id of the acl protecting this entity or {@code null} if the entity is not protected.
+     * The id of the acl protecting this entity or {@code null} if the entity is not protected. The index serves the acl
+     * check ({@code acl_id is null or acl_id in (...)}) and the foreign key check when an acl is deleted. It is left
+     * unnamed, so every protected type gets its own index name derived from its table.
      */</span>
     <span class="annotation">@Optional</span>
+    <span class="annotation">@Indexed</span>
     <span class="annotation">@SecurityProperty</span>
     <span class="annotation">@ForeignKey</span>(target = <span class="predefined-type">Acl</span>.class, targetProperty = <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>)
     <span class="predefined-type">Long</span> getAclId();
@@ -543,9 +707,9 @@ service (directory <code>/app/extensions</code> of the arveo image).</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_the_java_sdk">5.2. Using the Java SDK</h3>
+<h3 id="_using_the_java_sdk">6.2. Using the Java SDK</h3>
 <div class="sect3">
-<h4 id="_dependency_and_configuration">5.2.1. Dependency and configuration</h4>
+<h4 id="_dependency_and_configuration">6.2.1. Dependency and configuration</h4>
 <div class="paragraph">
 <p>Acls are managed using the SDK of the ecr-acl-service. The protected entities themselves are accessed using the SDK
 of the content repository as usual, the acls are evaluated there for the calling user.</p>
@@ -621,7 +785,7 @@ the OAuth2 client registrations of the application, e.g.:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_creating_an_acl">5.2.2. Creating an acl</h4>
+<h4 id="_creating_an_acl">6.2.2. Creating an acl</h4>
 <div class="paragraph">
 <p>Create the acl first, then add one entry per user or group:</p>
 </div>
@@ -702,7 +866,7 @@ AclEntryWithAclBatchInput created = aclWithEntriesClient.create(input);
 </div>
 </div>
 <div class="sect3">
-<h4 id="_protecting_an_entity">5.2.3. Protecting an entity</h4>
+<h4 id="_protecting_an_entity">6.2.3. Protecting an entity</h4>
 <div class="paragraph">
 <p>To protect an entity, set the id of the acl when creating it in the content repository:</p>
 </div>
@@ -733,7 +897,7 @@ without attributes. Use its identifier in this case.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_updating_a_protected_entity">5.2.4. Updating a protected entity</h4>
+<h4 id="_updating_a_protected_entity">6.2.4. Updating a protected entity</h4>
 <div class="paragraph">
 <p>Updates that keep the acl must not contain <code>acl_id</code>. Only the attributes set on a new type instance are part of an
 update:</p>
@@ -761,7 +925,7 @@ Record changed = records.newClient(recordId).updateAttributes(aclChange).getEnti
 </div>
 </div>
 <div class="sect3">
-<h4 id="querying-access-rights">5.2.5. Querying the access rights of the current user</h4>
+<h4 id="querying-access-rights">6.2.5. Querying the access rights of the current user</h4>
 <div class="paragraph">
 <p>The resource <code>api/access-rights</code> offers two variants to determine the rights of the current user on an entity. Both
 take the id of a document, container, folder or relation and return an <code>EntityAccessRights</code> with the id, the type
@@ -948,7 +1112,7 @@ without an acl:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_errors">5.2.6. Errors</h4>
+<h4 id="_errors">6.2.6. Errors</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -995,14 +1159,14 @@ without an acl:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_the_typescript_sdk">5.3. Using the TypeScript SDK</h3>
+<h3 id="_using_the_typescript_sdk">6.3. Using the TypeScript SDK</h3>
 <div class="paragraph">
 <p>The TypeScript SDK of the ecr-acl-service is published as npm package <code>@eitco/ecr-acl-service</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.5</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.7</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -1013,13 +1177,13 @@ without an acl:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.5</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.7</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_the_c_sdk">5.4. Using the C# SDK</h3>
+<h3 id="_using_the_c_sdk">6.4. Using the C# SDK</h3>
 <div class="paragraph">
 <p>The C# SDK of the ecr-acl-service is published as nuget package <code>Eitco.Eitco-Content-Repository.EcrAcl</code> (target
 framework <code>net8.0</code>):</p>
@@ -1027,7 +1191,7 @@ framework <code>net8.0</code>):</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;ItemGroup&gt;</span>
-    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.5</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.7</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;/ItemGroup&gt;</span></code></pre>
 </div>
 </div>
@@ -1035,10 +1199,10 @@ framework <code>net8.0</code>):</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_release_notes">6. Release Notes</h2>
+<h2 id="_release_notes">7. Release Notes</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_release_notes_1_0_0_snapshot_october_11_2026">6.1. Release notes 1.0.0-SNAPSHOT (October 11, 2026)</h3>
+<h3 id="_release_notes_1_0_0_snapshot_october_12_2026">7.1. Release notes 1.0.0-SNAPSHOT (October 12, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -1068,7 +1232,7 @@ framework <code>net8.0</code>):</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-11 00:15:09 UTC
+Last updated 2026-10-12 10:23:14 UTC
 </div>
 </div>
 <style>
