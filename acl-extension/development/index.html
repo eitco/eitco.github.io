@@ -77,9 +77,9 @@ based access control (abac).</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Type definitions</strong> (<code>ecr-acl-type-definitions</code>): the types <code>acl</code> and <code>acl_entry</code>, the mixin interface
-<code>AclProtected</code> for protected types and the abac function evaluating acls. This jar is deployed into the content
-repository service.</p>
+<p><strong>Type definitions</strong> (<code>ecr-acl-type-definitions</code>): the types <code>acl</code> and <code>acl_entry</code>, the enumeration <code>PrincipalType</code>,
+the mixin interface <code>AclProtected</code> for protected types and the abac function evaluating acls. This jar is deployed
+into the content repository service.</p>
 </li>
 <li>
 <p><strong>Events</strong> (<code>ecr-acl-events</code>): an event listener restricting the creation of acls to acl administrators. This jar is
@@ -123,8 +123,8 @@ together with generated clients (Java, TypeScript, C#).</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>principal_type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>USER</code> or <code>GROUP</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PrincipalType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>USER</code> or <code>GROUP</code>, see below.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>principal_id</code></p></td>
@@ -133,8 +133,8 @@ together with generated clients (Java, TypeScript, C#).</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>access_right</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the granted access right, see below.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>short</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The numeric value of the granted access right, see below.</p></td>
 </tr>
 </tbody>
 </table>
@@ -142,51 +142,68 @@ together with generated clients (Java, TypeScript, C#).</p>
 <p>There is at most one entry per acl and principal. Invalid principal types and access rights are rejected.</p>
 </div>
 <div class="paragraph">
+<p>The principal type is the enumeration <code>de.eitco.ecr.acl.types.PrincipalType</code>. It is registered as enumeration type,
+so the database stores the column using the custom type <code>acl_principal_type</code> and the generated TypeScript and C#
+clients contain a corresponding enumeration.</p>
+</div>
+<div class="paragraph">
 <p>The access rights are those of <code>de.eitco.ecr.common.AccessRight</code>. They are <strong>hierarchical</strong>: an entry granting a right
-also grants every weaker right.</p>
+also grants every weaker right. An entry stores the right as its numeric value (<code>AccessRight.getValue()</code>), which
+reflects this hierarchy: a right includes every right with a lower value. Only the values listed below are valid.
+In Java, use <code>AccessRight.getValue()</code> to set an entry and <code>AccessRight.fromValue(short)</code> to read it.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Access right</th>
+<th class="tableblock halign-left valign-top">Value</th>
 <th class="tableblock halign-left valign-top">Allows</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>BROWSE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">finding the entity and reading its metadata</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>READ_ENTITY</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">reading the entity</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>READ</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">reading metadata, content and annotations</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>COMMENT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">adding annotations and comments</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>WRITE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">changing metadata and content</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>OVERWRITE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">overwriting the current version</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">24000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">deleting the entity</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>CHANGE_ACCESS_RIGHTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32766</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">changing the acl of the entity</p></td>
 </tr>
 </tbody>
@@ -424,15 +441,16 @@ and deletes. For a table <code>&lt;table&gt;</code> of a type extending <code>Ac
 <pre class="CodeRay highlight"><code data-lang="sql">&lt;<span class="type">table</span>&gt;.acl_id <span class="keyword">IS</span> <span class="predefined-constant">NULL</span>
 <span class="keyword">OR</span> &lt;<span class="type">table</span>&gt;.acl_id <span class="keyword">IN</span> (
     <span class="class">SELECT</span> acl <span class="keyword">FROM</span> acl_entry
-    <span class="keyword">WHERE</span> access_right <span class="keyword">IN</span> (&lt;the requested <span class="keyword">right</span> <span class="keyword">and</span> <span class="keyword">all</span> stronger rights&gt;)
+    <span class="keyword">WHERE</span> access_right &gt;= &lt;the value <span class="keyword">of</span> the requested <span class="keyword">right</span>&gt;
       <span class="keyword">AND</span> ((principal_type = <span class="string"><span class="delimiter">'</span><span class="content">USER</span><span class="delimiter">'</span></span>  <span class="keyword">AND</span> principal_id = &lt;user id&gt;)
         <span class="keyword">OR</span> (principal_type = <span class="string"><span class="delimiter">'</span><span class="content">GROUP</span><span class="delimiter">'</span></span> <span class="keyword">AND</span> principal_id <span class="keyword">IN</span> (&lt;<span class="keyword">group</span> ids <span class="keyword">of</span> the user&gt;))))</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The group condition is omitted for users without groups. The performance of the condition therefore depends on two
-lookups: finding the acls granting access to the current user in <code>acl_entry</code>, and finding the protected entities
-referencing these acls (or no acl at all) in <code>&lt;table&gt;</code>.</p>
+<p>Since access rights are hierarchical and stored by value, a single comparison finds the entries granting the
+requested right or a stronger one. The group condition is omitted for users without groups. The performance of the
+condition therefore depends on two lookups: finding the acls granting access to the current user in <code>acl_entry</code>, and
+finding the protected entities referencing these acls (or no acl at all) in <code>&lt;table&gt;</code>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -458,9 +476,11 @@ schema on startup.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>acl_entry_access_check</code> on <code>acl_entry</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>principal_id</code>, <code>principal_type</code>, <code>access_right</code>, <code>acl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Finds the acls granting a right to a user or a group. The index contains every column of the subquery, so the
-  database can answer the subquery from the index alone without reading the table (index only scan). The database
-  can look up users and groups separately and combine the results (bitmap or).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finds the acls granting a right to a user or a group. The principal columns are compared for equality and come
+  first, the access right is compared by range and follows them. Hence the entries of a principal granting at least
+  the requested right are adjacent in the index and found by a single range scan. The index contains every column of
+  the subquery, so the database can answer the subquery from the index alone without reading the table (index only
+  scan). The database can look up users and groups separately and combine the results (bitmap or).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;table&gt;_acl_id_ci</code> on every protected table</p></td>
@@ -509,7 +529,8 @@ the table during the schema update. Plan the first start of a content repository
 <div class="ulist">
 <ul>
 <li>
-<p>an <code>Index Only Scan</code> (or a <code>Bitmap Index Scan</code>) on <code>acl_entry_access_check</code> for the subquery and</p>
+<p>an <code>Index Only Scan</code> (or a <code>Bitmap Index Scan</code>) on <code>acl_entry_access_check</code> for the subquery, whose <code>Index Cond</code>
+contains the principal and the access right, and</p>
 </li>
 <li>
 <p>an <code>Index Scan</code> or <code>Bitmap Index Scan</code> on <code>&lt;table&gt;_acl_id_ci</code> for the protected table, provided the query is not
@@ -802,17 +823,17 @@ newAcl.setDescription(<span class="string"><span class="delimiter">&quot;</span>
 <span class="comment">// a group, identified by the group id provided by the identity provider</span>
 <span class="predefined-type">AclEntry</span> groupEntry = <span class="keyword">new</span> AclEntryImplementation();
 groupEntry.setAcl(acl.getEcrId());
-groupEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_GROUP);
+groupEntry.setPrincipalType(PrincipalType.GROUP);
 groupEntry.setPrincipalId(<span class="string"><span class="delimiter">&quot;</span><span class="content">/acl-group-a</span><span class="delimiter">&quot;</span></span>);
-groupEntry.setAccessRight(AccessRight.READ.name());
+groupEntry.setAccessRight(AccessRight.READ.getValue());
 aclEntryClient.create(groupEntry);
 
 <span class="comment">// a single user, identified by the user id</span>
 <span class="predefined-type">AclEntry</span> userEntry = <span class="keyword">new</span> AclEntryImplementation();
 userEntry.setAcl(acl.getEcrId());
-userEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_USER);
+userEntry.setPrincipalType(PrincipalType.USER);
 userEntry.setPrincipalId(USER_B_ID);
-userEntry.setAccessRight(AccessRight.WRITE.name());
+userEntry.setAccessRight(AccessRight.WRITE.getValue());
 aclEntryClient.create(userEntry);</code></pre>
 </div>
 </div>
@@ -832,14 +853,14 @@ newAcl.setDescription(<span class="string"><span class="delimiter">&quot;</span>
 
 <span class="comment">// the attribute acl of the entries is set by the service</span>
 <span class="predefined-type">AclEntry</span> groupEntry = <span class="keyword">new</span> AclEntryImplementation();
-groupEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_GROUP);
+groupEntry.setPrincipalType(PrincipalType.GROUP);
 groupEntry.setPrincipalId(<span class="string"><span class="delimiter">&quot;</span><span class="content">/acl-group-a</span><span class="delimiter">&quot;</span></span>);
-groupEntry.setAccessRight(AccessRight.READ.name());
+groupEntry.setAccessRight(AccessRight.READ.getValue());
 
 <span class="predefined-type">AclEntry</span> userEntry = <span class="keyword">new</span> AclEntryImplementation();
-userEntry.setPrincipalType(<span class="predefined-type">AclEntry</span>.PRINCIPAL_TYPE_USER);
+userEntry.setPrincipalType(PrincipalType.USER);
 userEntry.setPrincipalId(USER_B_ID);
-userEntry.setAccessRight(AccessRight.WRITE.name());
+userEntry.setAccessRight(AccessRight.WRITE.getValue());
 
 AclEntryWithAclBatchInput input = <span class="keyword">new</span> AclEntryWithAclBatchInput();
 input.setProperties(newAcl);
@@ -1166,7 +1187,7 @@ without an acl:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.8</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.9</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -1177,7 +1198,7 @@ without an acl:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.8</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.9</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -1191,7 +1212,7 @@ framework <code>net8.0</code>):</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;ItemGroup&gt;</span>
-    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.8</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.9</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;/ItemGroup&gt;</span></code></pre>
 </div>
 </div>
@@ -1232,7 +1253,7 @@ framework <code>net8.0</code>):</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-12 12:32:44 UTC
+Last updated 2026-10-12 14:17:34 UTC
 </div>
 </div>
 <style>
