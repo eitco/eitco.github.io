@@ -28,6 +28,7 @@
 <li><a href="#_administration_of_acls">2.4. Administration of acls</a></li>
 <li><a href="#_changing_the_acl_of_an_entity">2.5. Changing the acl of an entity</a></li>
 <li><a href="#_access_rights_of_the_current_user">2.6. Access rights of the current user</a></li>
+<li><a href="#_trying_out_an_acl_for_a_user">2.7. Trying out an acl for a user</a></li>
 </ul>
 </li>
 <li><a href="#configuration">3. Configuration</a>
@@ -344,6 +345,33 @@ correctly as well.</p>
 of rights.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_trying_out_an_acl_for_a_user">2.7. Trying out an acl for a user</h3>
+<div class="paragraph">
+<p><code>GET api/access-rights/acl/{aclId}/user/{userId}?group={groupId}&amp;group=&#8230;&#8203;</code> lets acl administrators check which access
+right an acl assigns to a specific user:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The entry of the user and the entries of the groups passed by the optional query parameter <code>group</code> (repeatable) are
+considered. The groups of another user are not known to the service, so they have to be passed by the caller in the
+same form the identity provider puts them into the token, e.g. <code>/acl-group-a</code>. Without groups only the entry of the
+user itself is considered.</p>
+</li>
+<li>
+<p>The strongest matching entry determines the result, since access rights are hierarchical.</p>
+</li>
+<li>
+<p>The result contains the <code>aclId</code>, the <code>userId</code>, the considered <code>groups</code> and the name of the access right as <code>right</code>.
+<code>right</code> is <code>null</code> if the acl contains no entry for the user or one of the groups.</p>
+</li>
+<li>
+<p>The operation requires the configured administration authority (<code>403</code> otherwise). Unknown acls result in <code>404</code>.</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -621,6 +649,12 @@ Their queries are as expensive as those of any other user.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>api/access-rights/{id}/evaluate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The exact access rights of the current user on an entity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api/access-rights/acl/{aclId}/user/{userId}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The access right an acl assigns to a user (acl administrators
+only).</p></td>
 </tr>
 </tbody>
 </table>
@@ -1187,7 +1221,7 @@ without an acl:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.9</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.10</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -1198,7 +1232,7 @@ without an acl:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.9</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.10</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -1212,7 +1246,7 @@ framework <code>net8.0</code>):</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;ItemGroup&gt;</span>
-    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.9</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.10</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;/ItemGroup&gt;</span></code></pre>
 </div>
 </div>
@@ -1253,7 +1287,7 @@ framework <code>net8.0</code>):</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-12 14:17:34 UTC
+Last updated 2026-10-12 15:10:44 UTC
 </div>
 </div>
 <style>
