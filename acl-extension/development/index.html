@@ -278,7 +278,10 @@ administration authority (default <code>ACL_ADMIN</code>).</p>
 <div class="sect2">
 <h3 id="_changing_the_acl_of_an_entity">2.5. Changing the acl of an entity</h3>
 <div class="paragraph">
-<p>The attribute <code>acl_id</code> is a security property. Changing it requires the right <code>CHANGE_ACCESS_RIGHTS</code> on the entity.</p>
+<p>The attribute <code>acl_id</code> is a security property. Changing it requires the right <code>CHANGE_ACCESS_RIGHTS</code> on the entity.
+The right is granted either by an entry of the acl or by the configured authority for changing access rights (default
+<code>ACL_CHANGE_ACCESS_RIGHTS</code>). The authority ensures that an acl not granting <code>CHANGE_ACCESS_RIGHTS</code> to anyone can still
+be replaced. It grants <code>CHANGE_ACCESS_RIGHTS</code> only, every other right still has to be granted by the acl.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -389,11 +392,13 @@ user itself is considered.</p>
     <span class="comment"># user attribute (token claim) containing the group ids of the user</span>
     <span class="key">group-attribute</span>: <span class="string"><span class="content">group-memberships</span></span>
     <span class="comment"># authority required to create, change or delete acls</span>
-    <span class="key">admin-authority</span>: <span class="string"><span class="content">ACL_ADMIN</span></span></code></pre>
+    <span class="key">admin-authority</span>: <span class="string"><span class="content">ACL_ADMIN</span></span>
+    <span class="comment"># authority granting the right to change the acl of every accessible entity</span>
+    <span class="key">change-access-rights-authority</span>: <span class="string"><span class="content">ACL_CHANGE_ACCESS_RIGHTS</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Both properties are optional, the values shown are the defaults.</p>
+<p>All properties are optional, the values shown are the defaults.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1221,7 +1226,7 @@ without an acl:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.11</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-service</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.12</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -1232,7 +1237,7 @@ without an acl:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">dependencies</span><span class="delimiter">&quot;</span></span>: {
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.11</span><span class="delimiter">&quot;</span></span>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@eitco/ecr-acl-data-provider</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.12</span><span class="delimiter">&quot;</span></span>
 }</code></pre>
 </div>
 </div>
@@ -1246,7 +1251,7 @@ framework <code>net8.0</code>):</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;ItemGroup&gt;</span>
-    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.11</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;PackageReference</span> <span class="attribute-name">Include</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Eitco.Eitco-Content-Repository.EcrAcl</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">Version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0-SNAPSHOT-build.12</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
 <span class="tag">&lt;/ItemGroup&gt;</span></code></pre>
 </div>
 </div>
@@ -1287,7 +1292,7 @@ framework <code>net8.0</code>):</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-13 00:15:11 UTC
+Last updated 2026-10-13 11:42:50 UTC
 </div>
 </div>
 <style>
