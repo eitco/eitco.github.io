@@ -2537,8 +2537,8 @@ attributes or access lists and thus grant or deny the corresponding access to th
 and that we deliver security patches and hotfixes as early as possible to our customers.</p>
 </div>
 <div class="paragraph">
-<p>To achieve this goal we integrated all kind of state-of-the-art tools like OWASP dependency check in our build process
-that perform automated static code analysis.
+<p>To achieve this goal we integrated all kind of state-of-the-art tools like OWASP Dependency-Track in our build process
+that perform automated analysis of our code and its dependencies.
 We also perform PEN Tests on a regular basis.</p>
 </div>
 <div class="admonitionblock note">
@@ -2579,7 +2579,7 @@ All of our projects, tools, documents, forums, and chapters are free and open to
 <p>Software architecture review by the Eitco software architects</p>
 </li>
 <li>
-<p>security check using OWASP dependency check</p>
+<p>security check using OWASP Dependency-Track</p>
 </li>
 <li>
 <p>legal licence check to ensure that it is a real open source project on the long term.</p>
@@ -2591,8 +2591,9 @@ All of our projects, tools, documents, forums, and chapters are free and open to
 </div>
 </li>
 <li>
-<p>to ensure that all known vulnerabilities of 3rd party open source projects are eliminated we integrated the OWASP dependency-check tool in our nightly build.
-Dependency check checks our dependencies against a database with all known vulnerabilities.</p>
+<p>to ensure that all known vulnerabilities of 3rd party open source projects are eliminated we integrated OWASP Dependency-Track in our build process.
+Every build creates a Software Bill of Materials (SBOM) listing all our dependencies and publishes it to Dependency-Track.
+Dependency-Track continuously checks these dependencies against databases with all known vulnerabilities.</p>
 </li>
 <li>
 <p>in case a severe vulnerability is found we take the appropriate countermeasures.</p>
@@ -2616,13 +2617,15 @@ Dependency check checks our dependencies against a database with all known vulne
 </ul>
 </div>
 <div class="sect4">
-<h5 id="_owasp_dependency_check_tool"><a class="anchor" href="#_owasp_dependency_check_tool"></a><a class="link" href="#_owasp_dependency_check_tool">OWASP dependency-check tool</a></h5>
+<h5 id="_owasp_dependency_track"><a class="anchor" href="#_owasp_dependency_track"></a><a class="link" href="#_owasp_dependency_track">OWASP Dependency-Track</a></h5>
 <div class="paragraph">
-<p>it is a Software Composition Analysis tool trying to find vulnerabilities made public within the project dependencies.<br>
-The tool checks if there is an issue tracked in the "Common Platform Enumeration (CPE)" for the dependency.<br>
-If a vulnerability is found it creates report with a link to the CVE entry.<br>
-It is command line interface that can be easily integrated in any nightly build process.<br>
-For further information, consult National Vulnerability Database (NVD)– (<a href="https://nvd.nist.gov" class="bare">https://nvd.nist.gov</a>). <br>
+<p>It is a Software Composition Analysis platform that identifies publicly known vulnerabilities within the project dependencies.<br>
+It consumes a Software Bill of Materials (SBOM) in the CycloneDX format, which is generated automatically during our build.<br>
+The components listed in the SBOM are matched against several vulnerability sources, such as the National Vulnerability Database (NVD),
+GitHub Advisories, Sonatype OSS Index and OSV.<br>
+Because the analysis is repeated continuously, newly published vulnerabilities are also detected for versions that have already been released.<br>
+Each finding links to the corresponding CVE or advisory entry and can be tracked and assessed in a central dashboard.<br>
+For further information, consult the Dependency-Track project (<a href="https://dependencytrack.org" class="bare">https://dependencytrack.org</a>) and the National Vulnerability Database (NVD) (<a href="https://nvd.nist.gov" class="bare">https://nvd.nist.gov</a>).<br>
 The following source is worth having a look at: Jeff Williams und Arshan Dabirsiaghi “Unfortunate Reality of Insecure Libraries”<br>
  (<a href="https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf" class="bare">https://owasp.org/www-pdf-archive/ASDC12-The_Unfortunate_Reality_of_Insecure_Libraries.pdf</a>).<br></p>
 </div>
@@ -28922,7 +28925,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-14 01:42:29 UTC
+Last updated 2026-10-14 12:34:48 UTC
 </div>
 </div>
 <style>
