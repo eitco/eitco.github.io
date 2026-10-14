@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>MCP Service 1.1.1</title>
+<style>
+@import "https://eitco.github.io/eitco.css";
+
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>MCP Service 1.1.1</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_security">1. Security</a>
+<ul class="sectlevel2">
+<li><a href="#_oauth2_authentication">1.1. OAuth2 Authentication</a></li>
+<li><a href="#_api_key_authentication">1.2. API Key Authentication</a></li>
+<li><a href="#_client_configuration">1.3. Client Configuration</a></li>
+</ul>
+</li>
+<li><a href="#_tools">2. Tools</a>
+<ul class="sectlevel2">
+<li><a href="#_enabling_and_disabling_tool_groups">2.1. Enabling and Disabling Tool Groups</a></li>
+<li><a href="#_general_information">2.2. General Information</a></li>
+<li><a href="#_type_definitions">2.3. Type Definitions</a></li>
+<li><a href="#_search">2.4. Search</a></li>
+<li><a href="#_dynamic_type_tools">2.5. Dynamic Type Tools</a></li>
+</ul>
+</li>
+<li><a href="#_resources">3. Resources</a>
+<ul class="sectlevel2">
+<li><a href="#_static_resources">3.1. Static Resources</a></li>
+<li><a href="#_dynamic_document_resources">3.2. Dynamic Document Resources</a></li>
+</ul>
+</li>
+<li><a href="#_custom_plugins">4. Custom Plugins</a>
+<ul class="sectlevel2">
+<li><a href="#_add_dependencies">4.1. Add Dependencies</a></li>
+<li><a href="#_implement_a_tool">4.2. Implement a Tool</a></li>
+<li><a href="#_register_the_tool_bean">4.3. Register the Tool Bean</a></li>
+<li><a href="#_deploy_the_plugin">4.4. Deploy the Plugin</a></li>
+</ul>
+</li>
+<li><a href="#_release_notes">5. Release Notes</a>
+<ul class="sectlevel2">
+<li><a href="#_release_notes_1_1_1_october_14_2026">5.1. Release notes 1.1.1 (October 14, 2026)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The ecr-mcp-service is a Spring AI based Model Context Protocol (MCP) server for the arveo Content Repository Service.
+It exposes selected repository capabilities as MCP tools and resources so that MCP clients and AI assistants can inspect
+repository metadata, search entities, and retrieve document content.</p>
+</div>
+<div class="paragraph">
+<p>The service supports the streamable HTTP and SSE MCP transports. The default transport is streamable HTTP and the
+default MCP endpoint is <code>/mcp</code>. The deprecated SSE transport can be enabled through <code>spring.ai.mcp.server.protocol=SSE</code>;
+its default endpoint is <code>/sse</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_security">1. Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MCP Service supports two alternative mechanisms to authenticate requests to its MCP endpoints: OAuth2 and API keys.
+The two mechanisms are mutually exclusive, exactly one of them can be active. OAuth2 is the default.</p>
+</div>
+<div class="sect2">
+<h3 id="_oauth2_authentication">1.1. OAuth2 Authentication</h3>
+<div class="paragraph">
+<p>By default, the MCP Service is secured with OAuth2 and is configured as a protected resource. Requests to the MCP
+endpoints must be authenticated with a valid OAuth2 access token.</p>
+</div>
+<div class="paragraph">
+<p>The service also provides the OAuth2 auto-discovery endpoint required by MCP clients. Clients can use this endpoint to
+discover the OAuth2 configuration, including the protected resource information and authorization server metadata. The
+default protected resource advertised by the discovery information is the active MCP endpoint: the configured SSE
+endpoint when SSE is enabled, otherwise the configured streamable HTTP endpoint.</p>
+</div>
+<div class="paragraph">
+<p>The service uses OAuth2 token exchange when calling the Content Repository Service. Repository requests are therefore
+performed with the credentials of the currently authenticated user.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_api_key_authentication">1.2. API Key Authentication</h3>
+<div class="paragraph">
+<p>Instead of OAuth2, the MCP endpoints can be secured with static API keys. This is intended for clients that cannot
+perform an OAuth2 flow. Clients send their key in the <code>API-Key</code> request header. The key is compared against the keys
+configured for the service, so no request to the authorization server is involved in authenticating a caller. Requests
+without a valid key are rejected with status <code>401</code>. API key authentication protects the same endpoints as OAuth2
+authentication, and the CORS configuration is applied in both modes.</p>
+</div>
+<div class="paragraph">
+<p>API key authentication is enabled with <code>commons.security.api-key.server.enabled</code>. At the same time the OAuth2 resource
+server must be disabled by setting <code>spring.security.oauth2.resourceserver.enabled</code> to <code>false</code>. If both mechanisms are
+enabled, the service does not start, because both security configurations contribute conflicting security filter chains.
+If both mechanisms are disabled, the MCP endpoints are not protected at all.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commons.security.api-key.server.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables API key authentication for the MCP endpoints. Requires <code>spring.security.oauth2.resourceserver.enabled</code> to be
+  <code>false</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commons.security.api-key.server.keys.&lt;label&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not set</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A valid API key. Any number of keys can be configured. The label is freely chosen and is only used to identify the key
+  within the service; it is never sent by clients.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.security.oauth2.resourceserver.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables the OAuth2 resource server. Must be set to <code>false</code> when API key authentication is used.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An example configuration for API key authentication:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">resourceserver</span>:
+        <span class="key">enabled</span>: <span class="string"><span class="content">false</span></span>
+      <span class="key">client</span>:
+        <span class="key">registration</span>:
+          <span class="key">keycloak-client-credentials</span>:
+            <span class="key">provider</span>: <span class="string"><span class="content">keycloak</span></span>
+            <span class="key">client-id</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">techclient</span><span class="delimiter">&quot;</span></span>
+            <span class="key">client-secret</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;client-secret&gt;</span><span class="delimiter">&quot;</span></span>
+            <span class="key">authorization-grant-type</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">client_credentials</span><span class="delimiter">&quot;</span></span>
+            <span class="key">scope</span>: <span class="string"><span class="content">openid</span></span>
+        <span class="key">provider</span>:
+          <span class="key">keycloak</span>:
+            <span class="key">issuer-uri</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://&lt;keycloak-host&gt;/realms/&lt;realm&gt;</span><span class="delimiter">&quot;</span></span>
+
+<span class="key">commons</span>:
+  <span class="key">security</span>:
+    <span class="key">api-key</span>:
+      <span class="key">server</span>:
+        <span class="key">enabled</span>: <span class="string"><span class="content">true</span></span>
+        <span class="key">keys</span>:
+          <span class="key">key1</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;api-key&gt;</span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>API keys are credentials and should be provided through the configuration server or through Vault instead of a local
+configuration file.</p>
+</div>
+<div class="paragraph">
+<p>Two restrictions apply when API key authentication is used. The OAuth2 auto-discovery endpoint is disabled together with
+the OAuth2 resource server, so MCP clients that determine their configuration from that endpoint cannot connect to the
+service in this mode.</p>
+</div>
+<div class="paragraph">
+<p>There is also no impersonation. The OAuth2 client configuration shown above is still required, because requests to the
+Content Repository Service continue to use OAuth2, but they are performed with the credentials of the technical user of
+the <code>keycloak-client-credentials</code> registration. All API keys therefore share the same repository identity and the same
+repository permissions, and the label of the key is not propagated to the Content Repository Service.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_configuration">1.3. Client Configuration</h3>
+<div class="paragraph">
+<p>The <code>ecr-mcp-service-client-spring</code> module provides an auto-configuration that authenticates the MCP requests of a
+Spring based MCP client. By default the OAuth2 access token of the current security context is sent as a bearer token.
+For MCP servers that are secured with an API key, the key is configured per server through
+<code>spring.ai.mcp.client.api-keys.servers</code>. The map key is the base URL of the MCP server, the map value is the API key.
+Servers that are not listed are authenticated with an OAuth2 bearer token.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.ai.mcp.client.api-keys.servers.&lt;server-url&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not set</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The API key sent in the <code>API-Key</code> header to the MCP server with the given base URL. The base URL consists of scheme,
+  host, and port (<code>&lt;scheme&gt;://&lt;host&gt;:&lt;port&gt;</code>) and must contain the port explicitly.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An example configuration for a client that connects to an OAuth2 secured and an API key secured MCP server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">spring</span>:
+  <span class="key">ai</span>:
+    <span class="key">mcp</span>:
+      <span class="key">client</span>:
+        <span class="key">api-keys</span>:
+          <span class="key">servers</span>:
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">[http://localhost:30771]</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;api-key&gt;</span><span class="delimiter">&quot;</span></span>
+        <span class="key">streamable-http</span>:
+          <span class="key">connections</span>:
+            <span class="key">oauth2-server</span>:
+              <span class="key">url</span>: <span class="string"><span class="content">http://localhost:30770</span></span>
+            <span class="key">api-key-server</span>:
+              <span class="key">url</span>: <span class="string"><span class="content">http://localhost:30771</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The base URL must be enclosed in square brackets, because it contains characters that Spring interprets as separators
+within a property name. It must match the configured connection URL, including scheme and port.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tools">2. Tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All built-in tools are read-only, non-destructive, idempotent operations.</p>
+</div>
+<div class="sect2">
+<h3 id="_enabling_and_disabling_tool_groups">2.1. Enabling and Disabling Tool Groups</h3>
+<div class="paragraph">
+<p>The built-in tools are grouped, and each group can be enabled or disabled independently through a Spring property of the
+form <code>mcp-service.tools.&lt;group&gt;.enabled</code>. All tool groups are enabled by default; set the corresponding property to
+<code>false</code> to disable a group and remove its tools and resources from the MCP server.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mcp-service.tools.info.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">General information tools (<code>getCurrentDateTime</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mcp-service.tools.user.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Current-user tool and resource (<code>getUserInfo</code>, <code>arveo://current-user</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mcp-service.tools.type-definition.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type definition tools and resources (<code>getTypeDefinitions</code>, <code>getTypeDefinitionDetails</code> and the related
+  <code>arveo://type-definitions</code> and <code>arveo://type-definition/{name}</code> resources).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mcp-service.tools.search.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Search tools and resources (<code>eql-grammar</code>, <code>search</code> and the <code>arveo://eql-grammar</code> resource).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mcp-service.tools.dynamic.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dynamically generated type tools and document content resources (see <a href="#_dynamic_type_tools">Dynamic Type Tools</a>).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_general_information">2.2. General Information</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>getCurrentDateTime</code></dt>
+<dd>
+<p>Returns the current date and time in the user&#8217;s time zone. The result contains the date and time fields, milliseconds,
+and the resolved time zone identifier.</p>
+</dd>
+<dt class="hdlist1"><code>getUserInfo</code></dt>
+<dd>
+<p>Returns information about the currently authenticated user as seen by the Content Repository Service. The response
+contains the user&#8217;s additional identifier, external ID, and internal ID.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_type_definitions">2.3. Type Definitions</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>getTypeDefinitions</code></dt>
+<dd>
+<p>Returns the names and optional descriptions of all available type definitions. Type definitions describe the attributes
+and features of entities in the repository. Each entity belongs to exactly one type definition.</p>
+</dd>
+<dt class="hdlist1"><code>getTypeDefinitionDetails</code></dt>
+<dd>
+<p>Returns detailed information for a single type definition by name. The response contains the type definition name,
+entity type, attributes, system attributes, data type information, and optional descriptions.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_search">2.4. Search</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>eql-grammar</code></dt>
+<dd>
+<p>Returns the ANTLR 4 grammar of the ECR Query Language (EQL). MCP clients should inspect this grammar before constructing
+queries for the <code>search</code> tool.</p>
+</dd>
+<dt class="hdlist1"><code>search</code></dt>
+<dd>
+<p>Searches for entities within a specific type definition. The <code>queryString</code> must conform to the EQL grammar provided by
+the <code>eql-grammar</code> tool or resource. Attribute names and literal formats must match the selected type definition and its
+data type descriptions. Query parameters should be preferred over inline literals. The current implementation searches
+documents and containers and returns matching arveo entities.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dynamic_type_tools">2.5. Dynamic Type Tools</h3>
+<div class="paragraph">
+<p>When <code>mcp-service.tools.dynamic.enabled</code> is enabled, which is the default, the service creates additional read-only
+tools from the configured repository type definitions.</p>
+</div>
+<div class="paragraph">
+<p>For each document type definition, the service provides:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>get-meta-data-&lt;type-definition-name&gt;</code></dt>
+<dd>
+<p>Returns the metadata attributes of a document with the given entity ID.</p>
+</dd>
+<dt class="hdlist1"><code>get-content-links-&lt;type-definition-name&gt;</code></dt>
+<dd>
+<p>Returns MCP resource links for all content elements of a document with the given entity ID. The returned links point to
+download resources for the individual binary content elements.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>For each container type definition, the service provides:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>get-meta-data-&lt;type-definition-name&gt;</code></dt>
+<dd>
+<p>Returns the metadata attributes of a container with the given entity ID.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Dynamic tools are currently not generated for folder, meta, or relation type definitions.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resources">3. Resources</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_static_resources">3.1. Static Resources</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>arveo://current-user</code></dt>
+<dd>
+<p>JSON resource containing the same current-user information returned by the <code>getUserInfo</code> tool.</p>
+</dd>
+<dt class="hdlist1"><code>arveo://type-definitions</code></dt>
+<dd>
+<p>JSON resource containing the list of all available type definitions with their names and descriptions.</p>
+</dd>
+<dt class="hdlist1"><code>arveo://type-definition/{name}</code></dt>
+<dd>
+<p>JSON resource containing detailed information about the type definition identified by <code>{name}</code>.</p>
+</dd>
+<dt class="hdlist1"><code>arveo://eql-grammar</code></dt>
+<dd>
+<p>Text resource containing the ANTLR 4 grammar of the query language used by the <code>search</code> tool.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dynamic_document_resources">3.2. Dynamic Document Resources</h3>
+<div class="paragraph">
+<p>When dynamic tools are enabled, the service also creates document content resource templates for document type
+definitions:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>arveo://document/&lt;type-definition-name&gt;/{entityId}/{contentElement}</code></dt>
+<dd>
+<p>Downloads the binary content of the selected document content element. The content is returned as an MCP blob resource
+and is Base64 encoded by the MCP transport.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_plugins">4. Custom Plugins</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MCP Service can be extended with custom MCP tools by adding a Spring Boot auto-configuration in a separate plugin
+JAR. A plugin contributes regular Spring beans to the MCP Service application context. Methods annotated with
+<code>@McpTool</code> are detected by Spring AI and exposed as MCP tools.</p>
+</div>
+<div class="sect2">
+<h3 id="_add_dependencies">4.1. Add Dependencies</h3>
+<div class="paragraph">
+<p>A custom tool plugin needs Spring Boot auto-configuration support and the Spring AI MCP annotations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">    <span class="tag">&lt;dependencies&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework.boot<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-boot-starter<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+        <span class="tag">&lt;dependency&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.springframework.ai<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>spring-ai-mcp-annotations<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;/dependency&gt;</span>
+    <span class="tag">&lt;/dependencies&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_implement_a_tool">4.2. Implement a Tool</h3>
+<div class="paragraph">
+<p>Create a Spring bean class and annotate the methods that should become MCP tools with <code>@McpTool</code>. The annotation defines
+the public tool name, the description shown to MCP clients, optional schema generation, and tool behavior hints.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.springframework.ai.mcp.annotation.McpTool</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">MyCustomTool</span> {
+
+    <span class="annotation">@McpTool</span>(
+        name = <span class="string"><span class="delimiter">&quot;</span><span class="content">add</span><span class="delimiter">&quot;</span></span>,
+        description = <span class="string"><span class="delimiter">&quot;</span><span class="content">This tool adds two numbers</span><span class="delimiter">&quot;</span></span>,
+        generateOutputSchema = <span class="predefined-constant">true</span>,
+        annotations = <span class="annotation">@McpTool</span>.McpAnnotations(title = <span class="string"><span class="delimiter">&quot;</span><span class="content">Add</span><span class="delimiter">&quot;</span></span>, readOnlyHint = <span class="predefined-constant">true</span>, openWorldHint = <span class="predefined-constant">false</span>, destructiveHint = <span class="predefined-constant">false</span>, idempotentHint = <span class="predefined-constant">true</span>)
+    )
+    <span class="directive">public</span> <span class="type">int</span> add(<span class="type">int</span> a, <span class="type">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use precise descriptions and behavior hints. The built-in tools are read-only and idempotent; custom plugins should set
+the <code>readOnlyHint</code>, <code>destructiveHint</code>, and <code>idempotentHint</code> values to match their real behavior so that MCP clients can
+choose and present tools correctly.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_register_the_tool_bean">4.3. Register the Tool Bean</h3>
+<div class="paragraph">
+<p>Expose the tool class as a Spring bean from an auto-configuration class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.slf4j.Logger</span>;
+<span class="keyword">import</span> <span class="include">org.slf4j.LoggerFactory</span>;
+<span class="keyword">import</span> <span class="include">org.springframework.context.annotation.Bean</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CustomToolsAutoConfiguration</span> {
+
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">Logger</span> LOGGER = LoggerFactory.getLogger(CustomToolsAutoConfiguration.class);
+
+    <span class="directive">public</span> CustomToolsAutoConfiguration() {
+        LOGGER.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomToolsAutoConfiguration started</span><span class="delimiter">&quot;</span></span>);
+    }
+
+    <span class="annotation">@Bean</span>
+    <span class="directive">public</span> MyCustomTool myCustomTool() {
+        <span class="keyword">return</span> <span class="keyword">new</span> MyCustomTool();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The auto-configuration class must be listed in
+<code>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</code> so that Spring Boot can discover it
+when the plugin JAR is on the application class path:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>de.eitco.ecr.mcp.test.tools.CustomToolsAutoConfiguration</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploy_the_plugin">4.4. Deploy the Plugin</h3>
+<div class="paragraph">
+<p>Build the plugin as a JAR and add it to the MCP Service runtime class path by placing the plugin JAR and its
+additional dependencies in a directory that is added to <code>loader.path</code> when starting <code>ecr-mcp-service.jar</code>.</p>
+</div>
+<div class="paragraph">
+<p>After startup, the custom tool appears in the MCP tool list with the configured name. In the example plugin, the exposed
+tool is named <code>add</code>.</p>
+</div>
+<div class="paragraph">
+<p>TODO: document</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_release_notes">5. Release Notes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_release_notes_1_1_1_october_14_2026">5.1. Release notes 1.1.1 (October 14, 2026)</h3>
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1930: Switch to Fabric8 Kubernetes discovery client</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2026-10-14 10:00:07 UTC
+</div>
+</div>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+pre.CodeRay{background:#f7f7f8}
+.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
+.CodeRay .line-numbers strong{color:#000}
+table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.CodeRay td{vertical-align:top;line-height:inherit}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.code{padding:0 0 0 .75em}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+</body>
+</html>
