@@ -465,6 +465,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#history">2.8. Versions and comments</a></li>
 <li><a href="#recovery">2.9. Recover from errors and unfinished work</a></li>
+<li><a href="#_document_workspace_settings">2.10. Document workspace settings</a></li>
 </ul>
 </li>
 <li><a href="#_administration">3. Administration</a>
@@ -506,6 +507,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_configuration_import_fields">3.13.1. Configuration import fields</a></li>
 </ul>
 </li>
+<li><a href="#_configure_scenario_permissions">3.14. Configure scenario permissions</a></li>
+<li><a href="#_browse_the_permission_catalog">3.15. Browse the permission catalog</a>
+<ul class="sectlevel3">
+<li><a href="#_independent_document_permissions_and_upgrades">3.15.1. Independent document permissions and upgrades</a></li>
+</ul>
+</li>
+<li><a href="#_configuration_qa_behavior">3.16. Configuration QA behavior</a></li>
 </ul>
 </li>
 </ul>
@@ -515,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 0.1.3-SNAPSHOT; source e854337664ad14be0254cfc7071794a60500c266.</p>
+<p>Version 0.1.3-SNAPSHOT; source a46447b64d5a58bd2610d2cfb18e1f877d7f1595.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -539,7 +547,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Open Arveo Shell using the address supplied by your administrator and sign in with your own account. Open <strong>Flex Client</strong> from the Shell dashboard. The application runs inside Shell; a bookmark must use the Shell entry point. If authentication expires, sign in again through Shell. Before repeating a failed save, reload and check whether the change was already persisted.</p>
 </div>
 <div class="paragraph">
-<p>A normal user works with scenarios made visible by configuration. Administrators additionally manage configuration and languages. Repository permissions still control access to data: a visible button or an enabled configuration switch does not grant permission. Ask your administrator when access is denied; do not repeatedly submit a destructive action.</p>
+<p>A normal user sees only visible scenarios with an explicit scenario-access grant. Direct links require the same grant. Access alone does not permit reading records, documents or content: actions have independent grants and must also be enabled in configuration. Administrators can configure all scenarios but receive no automatic scenario grants. Repository authorization still applies independently. Ask your administrator when access is denied; do not repeatedly submit an action.</p>
+</div>
+<div class="paragraph">
+<p>Columns, details and create/update fields may have independent visibility and editability rules. Hidden fields do not appear; visible restricted fields are read-only. A form cannot submit if a required restricted field cannot be satisfied. Navigation refreshes permissions. If permissions change, protected views disappear and further unauthorized submissions are blocked; unsaved input is retained only in memory. An ECR denial preserves input and does not remove the Flex grant.</p>
 </div>
 </div>
 <div class="sect2">
@@ -659,10 +670,13 @@ creation and removal instructions. Sharing does not copy the document.</p>
 </div>
 </div>
 <div class="paragraph">
+<p>Record labels show only currently permitted metadata, falling back to the record ID. Recent-record history uses record IDs so saved descriptive labels cannot reveal fields that are now hidden.</p>
+</div>
+<div class="paragraph">
 <p>Parent record actions and child document actions are separate. Use the record list&#8217;s actions to create, edit, inspect history or delete a parent where offered. Use child actions for an individual document. Creating a record does not automatically create its documents. Changing parent metadata does not edit all children.</p>
 </div>
 <div class="paragraph">
-<p>For a <strong>1:n with foreign key</strong> scenario, before the record deletion confirmation opens, the client counts the related documents. Check the count and whether those documents will be deleted or unlinked. If the count cannot be determined, the client reports an error and does not open the confirmation; retry after resolving the loading or access problem. Record deletion is blocked for m:n scenarios, regardless of the cascade setting.</p>
+<p>For a <strong>1:n with foreign key</strong> scenario, before the deletion confirmation opens, the client counts the related documents using record-scoped document read permission. Cascade deletion requires record-scoped document delete permission; unlinking requires record-scoped document edit permission and permission to update the relationship field. All-document workspace grants do not substitute for these permissions. Check the count and whether those documents will be deleted or unlinked. If the count cannot be determined, the client reports an error and does not open the confirmation; retry after resolving the loading or access problem. Record deletion is blocked for m:n scenarios, regardless of the cascade setting.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -688,10 +702,10 @@ Editing shared metadata or content changes the same document wherever it is link
 <p>Open the document from a selected record&#8217;s document list or the scenario&#8217;s flat document view.</p>
 </li>
 <li>
-<p>Open <strong>Details</strong>, then <strong>Edit document</strong>. The picker requires enabled document editing and the existing document-edit permission.</p>
+<p>Open <strong>Details</strong>, then <strong>Edit document</strong>. The picker requires enabled document editing and the document-edit permission for the active workspace. Record-scoped grants and all-document grants are independent.</p>
 </li>
 <li>
-<p>Search in <strong>Add document to record</strong> and check the identifying values of the target record. The picker searches authorized records using administrator-configured fields, independently of table columns and personal column preferences. An empty result is not proof that a record does not exist or is accessible to you.</p>
+<p>Search in <strong>Add document to record</strong> and check the identifying values of the target record. The picker searches authorized records using administrator-configured fields, independently of authored table columns and personal column preferences; record-read and field visibility permissions still restrict those values. An empty result is not proof that a record does not exist or is accessible to you.</p>
 </li>
 <li>
 <p>Choose one record. Already-linked records are marked and cannot be selected again. Selection is staged: searching, choosing, clearing an unsaved choice or closing the drawer does not add or remove a membership.</p>
@@ -765,7 +779,7 @@ reported as success; check the refreshed membership before retrying.</p>
 <p>Use the search fields offered by the scenario, choose a supported operator and enter a value of the displayed type. For example, search for a known document name, then clear the search to return to the complete permitted list. Sort using the available table headings; use paging to move through results. Configuration determines available columns, order and searchable fields.</p>
 </div>
 <div class="paragraph">
-<p>Select a row to open the document workspace. Choose <strong>Details</strong> to inspect metadata. Read-only fields cannot be changed. Dates, enumerations and references use their corresponding controls rather than arbitrary text. Not every configured field has a control in every view. There are no column-header filter controls or table CSV/ZIP export actions in this version.</p>
+<p>Select a row to open the document workspace. Choose <strong>Details</strong> to inspect metadata. Read-only fields cannot be changed and retain their stored values when other fields are saved. Dates, enumerations and references use their corresponding controls rather than arbitrary text. Not every configured field has a control in every view. There are no column-header filter controls or table CSV/ZIP export actions in this version.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1003,6 +1017,21 @@ reported as success; check the refreshed membership before retrying.</p>
 <div class="paragraph">
 <p>Recent records and saved views depend on scenario context and repository access. For removed or inaccessible records, return to the scenario and search again.</p>
 </div>
+<div class="paragraph">
+<p>When a configuration administrator has no accessible visible scenarios, the dashboard
+explains that scenario access requires an explicit mapping and offers a configuration
+shortcut. Administration remains available. Your administrator can browse the permission
+catalog and configure access; no permissions are granted automatically.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_document_workspace_settings"><a class="anchor" href="#_document_workspace_settings"></a><a class="link" href="#_document_workspace_settings">2.10. Document workspace settings</a></h3>
+<div class="paragraph">
+<p>In Record scenarios, <strong>Documents</strong> lists all scenario documents and a selected record lists only its
+linked documents. Administrators can configure these workspaces independently, so their columns,
+filters, details and permitted actions may differ. Each workspace remembers its own enabled table
+and search preferences. Content and version capabilities share the scenario&#8217;s document-type settings.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1015,7 +1044,10 @@ reported as success; check the refreshed membership before retrying.</p>
 <p>Sign in through Arveo Shell with a configuration-administrator account. Open Flex Client, then <strong>Open settings</strong>. Normal users cannot manage configuration. Repository access and configuration-administrator permissions are distinct; enabled scenario capabilities never override repository authorization.</p>
 </div>
 <div class="paragraph">
-<p>Use the administration navigation to switch between <strong>Scenario configuration</strong>, <strong>Categories</strong> and <strong>Localization</strong>. Scenario settings, category hierarchy/assignments and dashboard presentation share one configuration draft. Moving between these workspaces retains unsaved changes; it does not save them. Enter through the Shell client and use this navigation rather than bookmarking a nested administration URL.</p>
+<p>Use the administration navigation to switch between <strong>Scenario configuration</strong>, <strong>Permission catalog</strong>, <strong>Categories</strong> and <strong>Localization</strong>. Scenario settings, category hierarchy/assignments and dashboard presentation share one configuration draft. Moving between these workspaces retains unsaved changes; it does not save them. Enter through the Shell client and use this navigation rather than bookmarking a nested administration URL.</p>
+</div>
+<div class="paragraph">
+<p>Each administration page starts with a short explanation. Configuration cards describe their purpose and provide a direct action. Shared type settings distinguish global attribute availability from view-specific visibility; permission pages distinguish configuration defaults from individual rules. Expand <strong>How are these rules applied?</strong> for the rule explanation. The global Permission catalog shows discovery status separately from identity search and usage inspection.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1023,7 +1055,7 @@ reported as success; check the refreshed membership before retrying.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Select a scenario in the sidebar. The editor contains General, Content &amp; Versions, and Views, with additional record sections for two-stage scenarios. Expand the relevant section. The JSON preview is read-only; edit using structured controls or validated import. Export a backup before significant changes.</p>
+<p>Choose <strong>Scenario Configuration</strong> in the navigation to open the scenario list. Search by scenario name, title or type, filter by stage kind, or use Create, Import and Export all. Select a scenario to open its overview, which shows its description, identity, structure, types and visibility, plus Export, Duplicate and Delete. Use the <strong>Configuration</strong> and <strong>Permissions</strong> navigation cards or sidebar children to open the corresponding editor. The breadcrumb shows Dashboard, Scenario Configuration, the scenario title and the current section; ancestor links navigate back. Clicking the Scenario Configuration row opens the list and toggles its submenu. Clicking a scenario row opens its overview and toggles its children, closing other scenario branches. The chevron is part of the row. Clicking anywhere on a scenario card opens its overview. Cancelling an unsaved-change prompt preserves the current page and menu expansion. The Configuration sidebar contains <strong>General</strong> and <strong>View Configuration</strong>. Each grouping opens a landing page with links to its children. General contains Overview (naming, icon, dashboard and record management) and TypeDefinitions (record and document attributes, versions and content). One-stage scenarios omit record settings. View Configuration follows runtime navigation: Records contains Record search and Documents within a record; Documents configures direct document search. Select a screen area using its button or the example image to open its settings without deeper navigation. Breadcrumb ancestors return to their landing pages. The JSON preview is read-only; edit using structured controls or validated import. Export a backup before significant changes. Unsaved edits are retained between a scenario’s overview, Configuration and Permissions pages. Moving to another scenario or the scenario list asks you to save, revert or cancel when the current scenario is dirty. Import returns to the list, where Save all persists the shared draft; successful duplication opens the copy’s overview, and deleting the open scenario returns to the list.</p>
 </div>
 <div class="paragraph">
 <p>The separate <strong>Categories</strong> workspace manages the category tree, scenario assignments and dashboard presentation. In scenario General settings, choose an optional semantic icon; it changes presentation only, not repository data or permissions.</p>
@@ -1107,7 +1139,7 @@ m:n authoring, record-scoped browsing, document-edit linking, creation from a se
 <p><strong>Step 3 - defaults explanation:</strong> read the explanation of the proposed document configuration. This step is informational, not the attribute editor. The editor becomes available after creation.</p>
 </li>
 <li>
-<p><strong>Step 4 - review:</strong> check the name, kind and document type. Choose Create only when these structural choices are correct. Successful creation immediately stores the scenario and opens its configuration; later changes require Save.</p>
+<p><strong>Step 4 - review:</strong> check the name, kind and document type. Choose Create only when these structural choices are correct. Successful creation immediately stores the scenario and opens its overview; choose Configuration to edit it; later changes require Save.</p>
 </li>
 </ol>
 </div>
@@ -1189,17 +1221,17 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 </ol>
 </div>
 <div class="paragraph">
-<p>Expand <strong>Record selection</strong>. Enable the record attributes shown in options and order them with the shared ordering control. Configure searchable record attributes separately, with <strong>equals</strong>, <strong>contains</strong> or <strong>starts with</strong> where compatible with the live type. Text predicates are intended to match case-insensitively and be combined with OR. Numeric/scalar attributes support equality only; unsupported types are rejected.</p>
+<p>Open General → Overview and expand <strong>Record selection</strong>. Enable the record attributes shown in options and order them with the shared ordering control. Configure searchable record attributes separately, with <strong>equals</strong>, <strong>contains</strong> or <strong>starts with</strong> where compatible with the live type. Text predicates are intended to match case-insensitively and be combined with OR. Numeric/scalar attributes support equality only; unsupported types are rejected.</p>
 </div>
 <div class="paragraph">
-<p>At least one display column and one compatible search column are required. The picker settings are independent of record-table visibility, sorting and personal column preferences. Removed or disabled references remain visible as invalid settings for explicit repair; they are not silently dropped. Save, export and reload to verify the authored order and search rules. Use V2 files for these fields: legacy V1/unversioned imports cannot contain them.</p>
+<p>At least one display column and one compatible search column are required. The picker settings are independent of authored record-table columns, sorting and personal column preferences. Record-read permission and record table-field visibility rules still restrict its identifying and searchable values. Removed or disabled references remain visible as invalid settings for explicit repair; they are not silently dropped. Save, export and reload to verify the authored order and search rules. Use V2 files for these fields: legacy V1/unversioned imports cannot contain them.</p>
 </div>
 <div class="paragraph">
 <p>Enable document editing for membership additions, and document creation for creation from a selected
 record. Additions require the existing document-edit grant; creation requires both document-create
 and document-edit grants, independently of the switch for editing existing documents. A create-only
 configuration permits initial-link retry without further metadata changes. Current-record removal
-checks document-edit permission independently of the editing switch. Repository authorization still applies. Browsing, linking, selected-record
+checks record-scoped document-edit permission independently of the editing switch. Record-scoped create/edit grants are separate from the all-document workspace grants. Repository authorization still applies. Browsing, linking, selected-record
 creation and unlinking are available; enabling a setting does not grant access or enable global deletion.</p>
 </div>
 <div class="paragraph">
@@ -1229,10 +1261,10 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <p>Set the displayed title, description and dashboard visibility. A useful title such as Invoice documents is easier to recognize than a technical type name. Hiding a scenario removes ordinary navigation; it does not revoke repository access.</p>
 </li>
 <li>
-<p>Expand the document&#8217;s General settings. Enable globally available attributes and give them clear labels. Review mandatory, primary-key, read-only and unique badges before enabling creation or editing.</p>
+<p>Open General → Document type, versions and content. Enable globally available attributes and give them clear labels. Review mandatory, primary-key, read-only and unique badges before enabling creation or editing.</p>
 </li>
 <li>
-<p>Configure table/search persistence and the exposed create/edit capabilities. Persistence controls remembered view state; it does not store repository documents. Repository permissions still decide whether an action is allowed.</p>
+<p>Open View Configuration → Documents. Configure table persistence in Table, search persistence in Search, and creation/editing switches in Details. Persistence controls remembered view state; it does not store repository documents. Repository permissions still decide whether an action is allowed.</p>
 </li>
 <li>
 <p>Configure Content and document Versions as described below. Choose a default available content element and decide which originals and renditions users can view or download.</p>
@@ -1253,11 +1285,14 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <div class="paragraph">
 <p>Example: for invoices, expose invoice number and date in the list, add corresponding search fields, and organize writable metadata in a meaningful form section. Keep repository-maintained fields read-only. Enable download only for the content elements users need.</p>
 </div>
+<div class="paragraph">
+<p>Configuration navigation stops at four editor pages: <strong>General → Overview</strong> for naming, icon, dashboard and record management; <strong>General → TypeDefinitions</strong> for document and record attributes, content and versions; and <strong>View Configuration → Records</strong> and <strong>View Configuration → Documents</strong> for grouped view settings.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="config-record"><a class="anchor" href="#config-record"></a><a class="link" href="#config-record">3.4. Configure a Record scenario</a></h3>
 <div class="paragraph">
-<p>A Record scenario has two independently configured stages. <strong>Record</strong> is stage 1, the parent list; <strong>Document</strong> is stage 2, the documents of the selected record. The configuration editor may display Document settings before Record settings; these labels determine the target, not their screen order.</p>
+<p>A Record scenario has shared record/document type settings and three independently configured runtime workspaces: Record Search View, Record Documents View, and Documents (all documents). View Configuration groups the record workspaces on the Records page and the all-document workspace on the Documents page. Documents inside a selected record can have different table columns, search filters, detail fields, action permissions and saved preferences from all documents.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1270,13 +1305,13 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <p>Review the immutable child type and relationship. Confirm that the derived parent type represents the intended record, such as a case or folder.</p>
 </li>
 <li>
-<p>Configure Record General attributes and actions. Include fields that help identify the parent, such as its name or reference number. Parent create/edit settings do not enable child creation or editing.</p>
+<p>Open General → TypeDefinitions and use the Record sections to configure shared record attributes and history. Include fields that help identify the parent, such as its name or reference number. Parent create/edit settings do not enable child creation or editing.</p>
 </li>
 <li>
-<p>Configure Record views separately: record table columns and search fields identify the parent, detail fields describe it, and summary fields display context after selection. Set summary order, labels and highlighting where offered. Include enough information to distinguish similarly named records.</p>
+<p>Under View Configuration → Records, expand the Record search sections and configure record table columns, search filters and details. On that same Records page, configure the Record summary card and expand the Documents in record sections for child-document table, search and details. Summary-card field visibility permissions are independent of record-detail visibility. Set summary order, labels and highlighting where offered. Include enough information to distinguish similarly named records.</p>
 </li>
 <li>
-<p>Configure Document General and Document views for the child type. Use child attributes, not parent attributes, in these matrices. Child searches are scoped by the selected relationship and record.</p>
+<p>Configure shared child attributes, versions and content under the Document sections in General → TypeDefinitions. Configure View Configuration → Documents separately from the Documents in record sections on Records. Both use child attributes; only Record Documents View is scoped by the selected relationship and record.</p>
 </li>
 <li>
 <p>Configure document originals, renditions and annotation behavior. Parent records without content do not gain a document viewer merely because document content is enabled.</p>
@@ -1285,7 +1320,7 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <p>Enable Record versions/comments and Document versions/comments independently. Choose version fields appropriate to each type.</p>
 </li>
 <li>
-<p>Review Record management before exposing deletion. In a one-to-many scenario, cascade deletes child documents first; without cascade, the client clears their foreign-key relationship before deleting the parent. A mandatory foreign key forces cascade behavior. In m:n scenarios, configure the separate record selector; record deletion remains blocked with either cascade setting.</p>
+<p>Review Record management on General → Overview before exposing deletion. In a one-to-many scenario, cascade deletes child documents first; without cascade, the client clears their foreign-key relationship before deleting the parent. A mandatory foreign key forces cascade behavior. In m:n scenarios, configure the separate record selector; record deletion remains blocked with either cascade setting.</p>
 </li>
 <li>
 <p>Save and test both stages: find a record, open its child list, check the summary, inspect a child and return to the parent list. Repeat with another record to verify that documents are scoped correctly.</p>
@@ -1304,13 +1339,16 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <div class="sect2">
 <h3 id="general"><a class="anchor" href="#general"></a><a class="link" href="#general">3.5. General settings and attributes</a></h3>
 <div class="paragraph">
-<p>Set the localized title, description and dashboard visibility. Visibility controls navigation, not security. Each document or record stage has its own creation and editing switches. Disable these actions when they should not be exposed; repository authorization still applies. Deletion availability also depends on permissions and the relationship architecture. Record management determines the treatment of children where record deletion is supported; it does not override the m:n deletion safeguard.</p>
+<p>Overview settings are always expanded. Use General → Overview to set the localized title, description and dashboard visibility. Use General → TypeDefinitions to edit shared settings. The Record card appears first with Attributes and Versions; the Document card contains Attributes, Content and Versions. One-stage scenarios show only Document. Visibility controls navigation, not security. Each document workspace and the record search workspace have their own creation and editing switches in their Details editor. Disable these actions when they should not be exposed; repository authorization still applies. Deletion availability also depends on permissions, and Record management determines the treatment of children. Record management does not override the m:n deletion safeguard.</p>
 </div>
 <div class="paragraph">
-<p>Choose a scenario icon from the icon picker in General settings. The icon is used in dashboard cards, favorites and list rows. Choose the default option to restore the scenario initial. Imported icon identifiers that are valid but unavailable in this client are retained and also display the initial; do not supply SVG markup or an image URL as an icon identifier.</p>
+<p>Choose a scenario icon from the icon picker in General → Overview. The icon is used in dashboard cards, favorites and list rows. Choose the default option to restore the scenario initial. Imported icon identifiers that are valid but unavailable in this client are retained and also display the initial; do not supply SVG markup or an image URL as an icon identifier.</p>
 </div>
 <div class="paragraph">
 <p>The attribute matrix displays type information and mandatory, primary-key, read-only and unique metadata. These badges describe the repository contract. Enable available fields and preserve required writable fields when creation or editing is enabled. Do not try to make a repository read-only attribute editable.</p>
+</div>
+<div class="paragraph">
+<p>After adding an attribute to a repository type definition, restart the client to load the updated definition. Existing configurations discover the field in their matrices while preserving authored settings. If you have unsaved administration edits, save or discard them before schema reconciliation completes. Review the new field&#8217;s availability and view settings, then save the scenario to publish it to runtime views. Discovery alone does not change the published configuration.</p>
 </div>
 <div class="paragraph">
 <p>Localized text includes a default value and optional values per language. Use the localization drawer to supply translations. A field/view label override applies only where enabled; otherwise the normal configured label applies. Preview each supported language after saving.</p>
@@ -1319,7 +1357,7 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <div class="sect2">
 <h3 id="content-settings"><a class="anchor" href="#content-settings"></a><a class="link" href="#content-settings">3.6. Content, versions and record deletion</a></h3>
 <div class="paragraph">
-<p>Expand <strong>Content &amp; Versions</strong>. Configure original and rendition labels, availability and independent download switches. Choose an available default content element or rendition. Annotation settings belong to the original and are shared by its renditions; default visibility must be disabled when annotations are disabled.</p>
+<p>Open <strong>General → TypeDefinitions</strong> and expand the Document <strong>Content</strong> or <strong>Versions</strong> section. Configure original and rendition labels, availability and independent download switches. Choose an available default content element or rendition. Annotation settings belong to the original and are shared by its renditions; default visibility must be disabled when annotations are disabled.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1344,7 +1382,10 @@ final membership is removed. This behavior is independent of the cascade toggle.
 <div class="sect2">
 <h3 id="views"><a class="anchor" href="#views"></a><a class="link" href="#views">3.7. Configure views</a></h3>
 <div class="paragraph">
-<p>Expand <strong>Views</strong> and select the document or record view. Configure globally available attributes first, then their supported use in search, table, detail and create/edit views. Adjust order and labels with the provided controls. Only actual runtime consumers are customer features: a configuration field alone does not establish an available UI action.</p>
+<p>Open <strong>View Configuration</strong> and choose <strong>Records</strong> or <strong>Documents</strong>. In Records, choose <strong>Record search</strong> or <strong>Documents within a record</strong>. Select <strong>Results table</strong>, <strong>Search filters</strong>, <strong>Details</strong> or the record-owned <strong>Record summary</strong> using the labelled buttons or highlighted screenshot areas. The selected settings open immediately; these selections do not add deeper navigation. Configure globally available attributes first, then their supported use in search, table, detail and create/edit views. Adjust order and labels with the provided controls. Only actual runtime consumers are customer features: a configuration field alone does not establish an available UI action.</p>
+</div>
+<div class="paragraph">
+<p>The example screen stays visible beside the settings on wide screens and above them on smaller screens. <strong>Where your changes appear</strong> explains the runtime location, and the settings guidance explains availability, initial visibility, order and label overrides. Record summary settings belong to the record even though the summary appears beside its documents. Example screenshots are fixed English demo images; they do not reflect unsaved changes. Documents examples match the scenario layout: one-stage examples have no scenario side navigation, while two-stage examples retain it. Documents within a record use their own examples and settings. Use the area buttons if an image cannot load. Switching areas retains your draft; the footer reports unsaved changes until you choose Save.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1367,6 +1408,7 @@ final membership is removed. This behavior is independent of the cascade toggle.
 </li>
 </ul>
 </div>
+<div style="page-break-after: always;"></div>
 <div class="sect3">
 <h4 id="_understand_the_view_matrices"><a class="anchor" href="#_understand_the_view_matrices"></a><a class="link" href="#_understand_the_view_matrices">3.7.1. Understand the view matrices</a></h4>
 <table class="tableblock frame-all grid-all stretch">
@@ -1467,7 +1509,7 @@ final membership is removed. This behavior is independent of the cascade toggle.
 <p>In Categories, choose the tree/category presentation or the flat catalog and then <strong>Save all</strong>. Tree presentation shows category navigation. Flat presentation shows all visible scenarios in configured order without a category filter. Both retain search, favorites, cards/list selection and pagination.</p>
 </div>
 <div class="paragraph">
-<p>This is an administrator-owned setting for everyone, not a private user preference. Switching to flat retains the category tree, translations and scenario assignments; switching back to tree restores their navigation structure. It also preserves users' favorites and cards/list preferences.</p>
+<p>Choose <strong>Save all</strong> after changing this setting. A presentation-only save preserves the saved scenario layouts; switching Flat catalog to Categories / tree does not require editing a scenario first. This is an administrator-owned setting for everyone, not a private user preference. Switching to flat retains the category tree, translations and scenario assignments; switching back to tree restores their navigation structure. It also preserves users' favorites and cards/list preferences.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1511,7 +1553,7 @@ final membership is removed. This behavior is independent of the cascade toggle.
 <div class="sect3">
 <h4 id="_save_and_discard_scopes"><a class="anchor" href="#_save_and_discard_scopes"></a><a class="link" href="#_save_and_discard_scopes">3.9.1. Save and discard scopes</a></h4>
 <div class="paragraph">
-<p>Save editor changes and verify the result after reloading. The scenario editor&#8217;s <strong>Save current</strong> saves the selected scenario. When category or dashboard-presentation changes are pending, the action becomes <strong>Save all</strong> and saves the complete shared configuration draft, even when the selected scenario itself is unchanged. <strong>Revert current</strong> discards only the selected scenario&#8217;s edits; it does not undo category, presentation or other scenario edits.</p>
+<p>Save editor changes and verify the result after reloading. Save success and failure messages appear as toast notifications, consistently across the administration workspaces. Field validation remains beside the affected controls. Failed saves retain your changes; a success notification confirms that the write completed. The scenario editor&#8217;s <strong>Save current</strong> saves the selected scenario. When category or dashboard-presentation changes are pending, the action becomes <strong>Save all</strong> and saves the complete shared configuration draft, even when the selected scenario itself is unchanged. <strong>Revert current</strong> discards only the selected scenario&#8217;s edits; it does not undo category, presentation or other scenario edits.</p>
 </div>
 <div class="paragraph">
 <p><strong>Save all</strong> in Categories also persists retained scenario edits. Confirmed configuration reload discards the whole shared configuration draft and restores saved data, rather than only the visible workspace. Export needed drafts before discarding them.</p>
@@ -1532,10 +1574,10 @@ final membership is removed. This behavior is independent of the cascade toggle.
 <p>To import configuration, use the JSON import action in Scenario configuration. Imports merge by scenario name, keeping unrelated scenarios and categories. Matching names update compatible scenario settings; they do not permit changing immutable structure or conflicting category assignments. Category conflicts abort the import. The complete merged draft must pass schema and live repository validation before it is applied. Review it and save explicitly; import success is not a successful save.</p>
 </div>
 <div class="paragraph">
-<p>An explicit <code>scenarioPresentation</code> in a v2 import selects tree or flat. If it is omitted from a v2 import, the current draft choice is retained. This merge behavior differs from a new v2 configuration, where omission defaults to tree.</p>
+<p>An explicit <code>scenarioPresentation</code> in a supported versioned import selects tree or flat. If it is omitted from a supported versioned import, the current draft choice is retained. This merge behavior differs from a new v2 configuration, where omission defaults to tree.</p>
 </div>
 <div class="paragraph">
-<p>Legacy files containing only <code>{ "scenarios": [&#8230;&#8203;] }</code> or <code>{ "schemaVersion": 1, "scenarios": [&#8230;&#8203;] }</code> are also accepted by this import action. They are converted to v2 with flat presentation before validation, without repairing scenario fields. Existing unrelated scenarios and categories remain; an existing scenario&#8217;s conflicting category assignment still prevents import. Unknown fields/versions and mixed legacy/v2 envelopes are rejected. An empty scenario array does not clear the existing configuration. Subsequent exports always use v2.</p>
+<p>Legacy files containing only <code>{ "scenarios": [&#8230;&#8203;] }</code> or <code>{ "schemaVersion": 1, "scenarios": [&#8230;&#8203;] }</code> are also accepted by this import action. They are converted to v2 with flat presentation before validation, upgrading document-view structure while preserving authored settings. Existing unrelated scenarios and categories remain; an existing scenario&#8217;s conflicting category assignment still prevents import. Unknown fields/versions and mixed legacy/versioned envelopes are rejected. An empty scenario array does not clear the existing configuration. Subsequent exports always use v2.</p>
 </div>
 <div class="paragraph">
 <p>Normal saves and new exports use configuration version 2. Full exports preserve categories, scenario category assignments, optional icons and dashboard presentation. Supported legacy V1/unversioned payloads are normalized to flat V2 with an empty category list before merging; this does not clear the draft&#8217;s existing categories or change existing relationship models. The backend upgrades valid stored V1 configuration on startup rather than requiring a reset. A merge retains the current dashboard presentation when the imported V2 file omits that setting.</p>
@@ -1551,9 +1593,9 @@ final membership is removed. This behavior is independent of the cascade toggle.
 <p>Open <strong>Categories</strong> from the settings sidebar. Create root or child categories, configure their localized labels, and arrange their navigation order. Stable category identities are distinct from repository record identities; moving or assigning a scenario does not link documents to records.</p>
 </div>
 <div class="paragraph">
-<p>Category translation keys currently accept a two- or three-letter lowercase language code, optionally
-followed by a hyphen and a two-letter uppercase region, for example <code>de</code> or <code>de-DE</code>.
-Script subtags and numeric regions such as <code>zh-Hans</code> and <code>en-001</code> are rejected by configuration import validation.</p>
+<p>Category and scenario translation keys use canonical language tags, matching language settings.
+Examples include <code>de</code>, <code>de-DE</code>, <code>zh-Hans</code>, <code>en-001</code> and <code>sr-Latn-RS</code>. Incorrect casing, underscores
+and malformed or repeated subtags are rejected by configuration validation.</p>
 </div>
 <div class="paragraph">
 <p>Assign scenarios to categories and choose <strong>Tree</strong> or <strong>Flat</strong> presentation. Tree presentation uses the authored category hierarchy; flat presentation keeps scenario navigation without that hierarchy. Save changes explicitly and check the dashboard as a normal user. Category and scenario changes share the configuration draft: preserve unsaved edits when switching workspaces, and resolve stale-save errors before retrying.</p>
@@ -1562,12 +1604,19 @@ Script subtags and numeric regions such as <code>zh-Hans</code> and <code>en-001
 <div class="sect2">
 <h3 id="localization"><a class="anchor" href="#localization"></a><a class="link" href="#localization">3.11. Manage languages and translations</a></h3>
 <div class="paragraph">
-<p>Open localization administration from the settings navigation. Choose a catalog language, search by translation key or text, edit the translation and save. Enable a language for users only when it is suitable for your audience. Select the language on the dashboard and check both static UI text and scenario labels.</p>
+<p>On first system startup, English and German UI catalogs are installed automatically from the packaged application; no translation-provider setup or manual import is required. The shipped scenario and category labels also include both languages. Later startups add newly shipped UI keys and update untouched shipped defaults while preserving administrator overrides and saved scenario/category configuration. Customer-authored text requires its own translations.</p>
+</div>
+<div class="paragraph">
+<p>Open <strong>Localization</strong> from the administration navigation. Choose a catalog language, search by translation key or text, edit the translation and save. Enable a language for users only when it is suitable for your audience. Select the language on the dashboard and check both static UI text and scenario labels.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="images/localization.png" alt="Language administration" width="680">
 </div>
+</div>
+<div class="paragraph">
+<p>Editing a label&#8217;s default-language text also updates an inherited translation for that same language.
+Translations in other languages remain unchanged.</p>
 </div>
 <div class="paragraph">
 <p>Missing text uses the default language. Scenario-owned labels and global UI translations are separate. An unsaved translated draft is not persisted by changing the runtime language. Translation generation, when offered, needs a configured available provider; review generated text before accepting overrides. This guide does not assume that a generation provider is installed.</p>
@@ -1975,16 +2024,6 @@ Script subtags and numeric regions such as <code>zh-Hans</code> and <code>en-001
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSelection.displayColumns</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSelection.search</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.cascadeDeleteEnabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
@@ -2069,6 +2108,111 @@ Script subtags and numeric regions such as <code>zh-Hans</code> and <code>en-001
 <td class="tableblock halign-left valign-top"><p class="tableblock">recordManagement</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.permissions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scenarioPermissions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.recordDocuments</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">documentView</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>permissionRule.allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>permissionRule.deny</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldPermission.stage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document, record, recordDocument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldPermission.surface</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">table, detail, create, update, summaryCard</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldPermission.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldPermission.visibility</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">permissionSetting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldPermission.editability</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">permissionSetting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenarioPermissions.actions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenarioPermissions.fields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenarioPermissions.defaults</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">permissionRule</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenarioPermissions.newTargetMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">defaults</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>permissionSetting.allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>permissionSetting.deny</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>permissionSetting.mode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none, defaults</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentView.table</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentView.search</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">search</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentView.detail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">detail</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSelection.displayColumns</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSelection.search</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
 </tbody>
 </table>
 <div class="admonitionblock note">
@@ -2085,12 +2229,151 @@ Conditional requirements and live repository validation also apply. Export an ex
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_configure_scenario_permissions"><a class="anchor" href="#_configure_scenario_permissions"></a><a class="link" href="#_configure_scenario_permissions">3.14. Configure scenario permissions</a></h3>
+<div class="paragraph">
+<p>Select a scenario and use the <strong>Configuration</strong> and <strong>Permissions</strong> navigation destinations. Both edit the same scenario draft. Permission drawers stage their changes separately until you choose Save; the page Save/Save all then persists the scenario draft. The Permissions overview groups scenario access, actions and field controls. Search by feature, attribute or criterion; filter explicit rules, configuration defaults, entries without grants or disabled targets. Grouped tables show <strong>Name</strong>, <strong>Allowed</strong> and <strong>Denied</strong> with the complete configured identity labels and a three-dot menu at the end of each row. Empty sections are hidden. These lists describe configuration, not a user&#8217;s effective access.</p>
+</div>
+<div class="paragraph">
+<p>Edit permissions only in the scenario’s <strong>Permissions</strong> section. Configuration feature switches and view matrices contain no permission controls. Each permission row’s three-dot menu contains only <strong>Edit Permission</strong>, which opens the shared right-hand drawer. Browse one catalog, initially filtered to <strong>All</strong>, and select an identity; its dialog offers green <strong>Allow</strong>, red <strong>Deny</strong>, and <strong>Cancel</strong>. The wide drawer keeps the Allow and Deny lists prominent above the catalog, with a Remove button for every entry in either list. Any allow criterion may grant; any matching deny wins. Client roles retain their client identity, groups retain full paths, and claim values retain their type. Disabled features retain editable rules.</p>
+</div>
+<div class="paragraph">
+<p>Configure the scenario-wide <strong>Configuration defaults</strong> rule above the permission tables. Edit its Allowed and Denied criteria using the same staged drawer. Configuration status is read-only text in the table. Choose <strong>No grants</strong>, <strong>Configuration defaults</strong>, or <strong>Explicit permission rule</strong> inside the editor. Rows using defaults show their resolved criteria, labelled as inherited, and follow changes to the shared rule. No grants always denies. Explicit rules remain independent. New scenarios start with every row using defaults and a shared Allowed criterion for realm role <code>flex-admin</code>, with no Denied criteria. Administrators can edit this initial rule; existing scenarios retain their saved settings. Previously omitted field rules show <em>Existing configuration behavior</em>; explicitly choose Configuration defaults to opt them into the shared rule. Without a default rule, inherited actions grant nothing and inherited fields retain their configuration behavior. An explicitly empty default rule denies.</p>
+</div>
+<div class="paragraph">
+<p>For fields, table visibility, detail visibility, create visibility/editability and update visibility/editability are independent. Rules can only restrict existing schema/configuration availability and writability. Removing the final criterion from an explicit rule leaves an empty denying rule.</p>
+</div>
+<div class="paragraph">
+<p>At the bottom of Permissions, <strong>Reset to factory defaults</strong> asks for confirmation, restores the shared Allowed criterion for realm role <code>flex-admin</code>, clears Denied criteria and all explicit row rules, and sets every row to Configuration defaults. Other scenario settings are preserved. Reset remains an unsaved draft change until page Save/Save all.</p>
+</div>
+<div class="paragraph">
+<p>Select multiple rows across sections to add identities to all selected Allowed or Denied lists. Section selection affects only its visible rows; selected rows remain selected when filtering. Clear the selection explicitly or switch scenarios. Bulk additions merge into existing rules without duplicates or removals. Save in the drawer applies additions to the scenario draft; Cancel discards them.</p>
+</div>
+<div class="paragraph">
+<p>Choose <strong>Validate Permissions</strong> for advisory checks of the current draft. Hints identify missing catalog identities, duplicates, identities present in both lists, obsolete field references, unavailable grants and missing access/viewing prerequisites. For example, annotation grants cannot enable content whose availability is disabled. Findings refresh after draft changes and link to the affected configuration. Checks do not simulate user memberships, block saving or automatically change rules.</p>
+</div>
+<div class="paragraph">
+<p>A stale catalog warning retains existing selections. Deployment operators provision read-only discovery credentials and register selectable audiences and typed claim values. Administrators do not select criteria based only on their own identity. Imports reject unsupported new criteria, including deny rules; correct the complete mapping before saving.</p>
+</div>
+<div class="paragraph">
+<p>Schema v2 exports include the scenario&#8217;s action rules and field overrides, with no discovery credentials, cached catalogs or current-user grants. Supported v2, v2 and v2 imports upgrade without generating grants. Existing scenarios without mappings deny access after migration: configure initial access and action mappings before rollout. Configuration administration does not automatically grant business access.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_browse_the_permission_catalog"><a class="anchor" href="#_browse_the_permission_catalog"></a><a class="link" href="#_browse_the_permission_catalog">3.15. Browse the permission catalog</a></h3>
+<div class="paragraph">
+<p>Open <strong>Permission catalog</strong> in administration navigation to browse all discovered realm
+roles, client roles and groups, independently of your own memberships. Search by role,
+client identifier or full group path and filter by category. Audiences and custom claims
+are registered by operators and are marked separately from Keycloak entries.</p>
+</div>
+<div class="paragraph">
+<p>The page shows the last successful discovery and warns when its snapshot is stale.
+<strong>Reload catalog</strong> reloads the server snapshot; discovery retries occur at most every five
+minutes. If discovery has never succeeded, ask your operator to configure the dedicated
+read-only Keycloak discovery account. Existing choices and scenario mappings survive an
+outage. The inventory itself remains read-only. Each entry shows its number of configured occurrences, including unsaved changes and hidden scenarios. Identities referenced by scenarios but absent from the catalog are also shown as <strong>Missing from catalog</strong>. Absence from an unavailable or stale snapshot is unconfirmed.</p>
+</div>
+<div class="paragraph">
+<p>Sort the catalogue by Source, Identity, Usage count or Status using the column headers.
+Open <strong>Usage details</strong> from an entry’s trailing three-dot menu to see each scenario, action or field/control and its Allowed/Denied disposition. Remove an individual occurrence to update the shared administration draft. Removing the final identity preserves the explicit empty rule; it does not restore field inheritance. Choose <strong>Save</strong> to persist the shared draft, or <strong>Discard changes</strong> to discard all unsaved administration changes, including changes made on other configuration pages. Navigation to a usage retains the draft. <strong>Validate Permissions</strong> checks all scenarios on this page.</p>
+</div>
+<div class="paragraph">
+<p>To grant or deny access, open the scenario&#8217;s <strong>Permissions</strong> page and select catalog entries
+in the target&#8217;s drawer. Configure <strong>SCENARIO_ACCESS</strong> and the required action rules, then
+save the scenario. Configuration administration alone grants no scenario access. You can
+use administration even when the dashboard shows no scenarios. Navigation to the catalog
+retains unsaved configuration drafts.</p>
+</div>
+<div class="paragraph">
+<p>The drawer header and Save/Cancel footer stay visible while the body scrolls. <strong>Save</strong>
+applies only its working copy to the scenario draft. <strong>Cancel</strong>, Escape and drawer dismissal
+discard drawer-only changes. Canceling the identity-choice dialog leaves the drawer draft
+intact. Save the scenario page to persist applied edits.</p>
+</div>
+<div class="paragraph">
+<p>Select a permission name to open <strong>Affected UI</strong>. Choose a location to see its effect and,
+where useful, a highlighted screenshot. Use <strong>Zoom in</strong> for a larger, readable image. One rule can apply to several locations; changing the
+selected location does not create or edit a rule. <strong>Edit Permission</strong> opens the existing editor.
+The preview is independent of bulk-selection checkboxes and remains open when filtering the list.
+On smaller screens it appears above the tables. <strong>Close preview</strong> closes only the explanation.</p>
+</div>
+<div class="paragraph">
+<p>The screenshots are static English examples. They do not show your exact configured fields,
+unsaved changes or a user&#8217;s effective access. Each field is identified by its actual target label;
+the image highlights a representative region. Read the conditions for related permissions and
+configuration requirements. Historical content shares content-view/download rules, while historical
+annotations cannot be edited. Unimplemented actions and effects without a useful screenshot are
+explained in text.</p>
+</div>
+<div class="paragraph">
+<p>Select the <strong>Configuration defaults</strong> heading to inspect targets explicitly using the shared rule.
+An omitted field rule retains existing configuration behavior and is not an explicit defaults selection.</p>
+</div>
+<div class="paragraph">
+<p>The Permissions tables contain independent targets for table visibility, detail visibility,
+create visibility/editability and update visibility/editability. Select targets across
+sections and choose bulk Allow or Deny to collect additions in the drawer. Save merges
+criteria, skips duplicates and retains unrelated controls. Bulk operations add only;
+remove existing criteria or return to defaults by editing an individual permission.</p>
+</div>
+<div class="paragraph">
+<p>The scenario permission overview shows <strong>Configuration status</strong>. Search applies together
+with the selected filter. <strong>Configuration defaults</strong> includes explicit defaults selections
+and field controls retaining inherited configuration behavior; the visual defaults explanation
+lists only explicit consumers of the shared rule. Explicit empty rules deny access.</p>
+</div>
+<div class="paragraph">
+<p>Choose <strong>Use configuration defaults</strong> inside a permission editor to stage an explicit selection
+of the shared scenario rule. <strong>Save</strong> applies that choice to the scenario draft; <strong>Cancel</strong> retains
+the previous rule. Visibility and editability remain independent. An omitted field rule retains
+existing configuration behavior, while an omitted action grants nothing.</p>
+</div>
+<div class="paragraph">
+<p>The catalogue also discovers explicitly configured access-token audiences and hardcoded
+string, boolean or number claims from Keycloak clients and client scopes. Operator-registered
+criteria remain available. Dynamic claim mappers do not provide selectable values, and an
+empty group category can mean the realm has no groups. The catalogue does not show user
+memberships or automatically grant permissions.</p>
+</div>
+<div class="paragraph">
+<p>The permission catalog scrolls continuously without pagination. Permission Identity precedes Source. Click a column heading to sort; the arrow shows its direction. Row three-dot menus open usage details.</p>
+</div>
+<div class="sect3">
+<h4 id="_independent_document_permissions_and_upgrades"><a class="anchor" href="#_independent_document_permissions_and_upgrades"></a><a class="link" href="#_independent_document_permissions_and_upgrades">3.15.1. Independent document permissions and upgrades</a></h4>
+<div class="paragraph">
+<p>The Permissions editor lists Documents and Record Documents View separately, including content,
+download, annotation and history actions. A grant in one workspace does not grant the corresponding
+action in the other. Shared content and version feature switches remain under General and still limit
+availability in both. The record summary card has its own field-visibility permissions.</p>
+</div>
+<div class="paragraph">
+<p>Current exports use schema version 2. Supported older imports and stored configurations copy their
+existing document view settings and permission selections into both document workspaces, retaining
+existing behavior. Subsequent edits are independent. Existing saved table/search preferences initialize
+the new view contexts when no new preferences exist. Record-document preferences are shared across
+records within the scenario; the selected record always restricts the document query.</p>
+</div>
+<div class="paragraph">
+<p>CSV and ZIP export are not implemented. Their configuration switches remain off and disabled in every workspace. Saving through ConfigUI sets both export flags to false, including configurations imported with those flags enabled.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_qa_behavior"><a class="anchor" href="#_configuration_qa_behavior"></a><a class="link" href="#_configuration_qa_behavior">3.16. Configuration QA behavior</a></h3>
+<div class="paragraph">
+<p>Creation and update forms follow the selected workspace&#8217;s detail field order, section headings, labels and read-only settings. In two-stage scenarios, record-scoped documents and the all-documents view retain their independent table, search, detail and permission settings. Disabling a shared attribute removes it from both document workspaces. Stored column preferences cannot restore fields that the current permissions hide.</p>
+</div>
+<div class="paragraph">
+<p>A permission change also applies when a drawer or confirmation was already open: a revoked action cannot be submitted. Configuration administration alone does not grant business actions. Restore, CSV/ZIP export, column-header filtering controls and document summary cards remain unavailable; record summary cards are supported.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-14 04:01:59 UTC
+Last updated 2026-10-15 02:58:42 UTC
 </div>
 </div>
 </body>
