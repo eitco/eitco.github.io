@@ -26647,6 +26647,9 @@ AWS S3</p></td>
 <div class="ulist">
 <ul>
 <li>
+<p>ECR-1926: Range requests for content now follow RFC 9110: an end position beyond the content and a suffix range longer than the content are reduced to the content instead of failing with <code>416</code>, and headers with other range units or multiple ranges are ignored, so the whole content is returned. Malformed byte ranges like <code>bytes=600-500</code> or <code>bytes=10</code> are rejected with <code>400</code>.</p>
+</li>
+<li>
 <p>ECR-1936: Entities and versions in the recycle bin can be read by their ID, so loading the content and annotations of a deleted document no longer fails with a <code>ResourceNotFoundException</code>. Batch updates of document content now check the update counter of types with optimistic locking.</p>
 </li>
 </ul>
@@ -28932,7 +28935,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-16 01:42:10 UTC
+Last updated 2026-10-16 13:02:09 UTC
 </div>
 </div>
 <style>
