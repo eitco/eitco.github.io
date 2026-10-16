@@ -442,13 +442,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_release_notes_13_0_4_snapshot_october_16_2026">Release notes 13.0.4-SNAPSHOT (October 16, 2026)</h2>
+<h2 id="_release_notes_13_1_0_snapshot_october_16_2026">Release notes 13.1.0-SNAPSHOT (October 16, 2026)</h2>
 <div class="sectionbody">
 <details>
 <summary class="title">Details</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">New Features</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1926: Added SDKs for the api: a java sdk (<code>download-service-sdk-http-spring</code>, <code>download-service-sdk-http-apache</code>), a typescript sdk (<code>download-service-client-typescript</code>) and a c# sdk (<code>download-service-client-csharp</code>). Errors of the zip download are part of the api (<code>ZipJobNotCompletedException</code>, <code>ZipJobQueueFullException</code> and the subclasses of <code>InvalidZipRequestException</code> for each reason of an invalid request, e.g. <code>InvalidZipFolderException</code> or <code>TooManyZipEntriesException</code>), so that the sdks can deserialize them and clients can react on them without parsing the message.</p>
+</li>
+<li>
+<p>ECR-1926: Added zip downloads: a client describes the structure of a zip file with documents or versions and their target folders, the service builds the zip file asynchronously (<code>/api/zip-jobs</code>) and offers it for a resumable download using HTTP range requests. Entries referencing a document by its id are pinned to the version that is current when the job is created, so later changes of the document do not affect the zip file.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Changes</strong></p>
@@ -461,6 +471,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1926: Zip jobs keep running after the access token of the user has expired: the download-service requests a refresh token in the token exchange (<code>commons.security.oauth2.client.token-exchange-refresh-tokens</code>, default: <code>true</code>). The token exchange client in Keycloak must allow this (<em>Allow refresh token in Standard Token Exchange</em> = <em>Same session</em>), otherwise every token exchange fails. A job can only run as long as the session of the user at the IDP. To disable the mechanism, set <code>commons.security.oauth2.client.token-exchange-refresh-tokens: false</code>.</p>
+</li>
+<li>
+<p>ECR-1926: Added the properties <code>download-service.zip.*</code> to configure the directory, retention time and limits of zip downloads.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
@@ -535,7 +555,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-16 00:31:17 UTC
+Last updated 2026-10-16 15:31:00 UTC
 </div>
 </div>
 </body>

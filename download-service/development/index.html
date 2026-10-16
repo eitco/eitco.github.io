@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Download Service 13.0.4-SNAPSHOT</title>
+<title>Download Service 13.1.0-SNAPSHOT</title>
 <style>
 @import "https://eitco.github.io/eitco.css";
 
@@ -15,45 +15,47 @@
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Download Service 13.0.4-SNAPSHOT</h1>
+<h1>Download Service 13.1.0-SNAPSHOT</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_overview">1. Overview</a></li>
 <li><a href="#_how_it_works">2. How it works</a></li>
 <li><a href="#_download_links">3. Download links</a></li>
-<li><a href="#_other_endpoints">4. Other endpoints</a></li>
-<li><a href="#_prerequisites">5. Prerequisites</a></li>
-<li><a href="#idp-setup">6. Setting up the identity provider</a>
+<li><a href="#zip-downloads">4. Zip downloads</a></li>
+<li><a href="#_other_endpoints">5. Other endpoints</a></li>
+<li><a href="#_prerequisites">6. Prerequisites</a></li>
+<li><a href="#idp-setup">7. Setting up the identity provider</a>
 <ul class="sectlevel2">
-<li><a href="#_login_client_authorization_code_flow">6.1. Login client (authorization code flow)</a></li>
-<li><a href="#_token_exchange_client_on_behalf_of_flow">6.2. Token exchange client (on behalf of flow)</a></li>
+<li><a href="#_login_client_authorization_code_flow">7.1. Login client (authorization code flow)</a></li>
+<li><a href="#token-exchange-client">7.2. Token exchange client (on behalf of flow)</a></li>
 </ul>
 </li>
-<li><a href="#configuration">7. Configuration</a>
+<li><a href="#configuration">8. Configuration</a>
 <ul class="sectlevel2">
-<li><a href="#_complete_example">7.1. Complete example</a></li>
-<li><a href="#_service_properties">7.2. Service properties</a></li>
-<li><a href="#_security_properties">7.3. Security properties</a></li>
-<li><a href="#service-discovery">7.4. Service discovery</a></li>
-<li><a href="#_logging">7.5. Logging</a></li>
+<li><a href="#_complete_example">8.1. Complete example</a></li>
+<li><a href="#impersonation">8.2. Impersonation and refresh tokens</a></li>
+<li><a href="#_service_properties">8.3. Service properties</a></li>
+<li><a href="#_security_properties">8.4. Security properties</a></li>
+<li><a href="#service-discovery">8.5. Service discovery</a></li>
+<li><a href="#_logging">8.6. Logging</a></li>
 </ul>
 </li>
-<li><a href="#_deployment">8. Deployment</a>
+<li><a href="#_deployment">9. Deployment</a>
 <ul class="sectlevel2">
-<li><a href="#_container_image">8.1. Container image</a></li>
-<li><a href="#_kubernetes">8.2. Kubernetes</a></li>
-<li><a href="#_windows_service">8.3. Windows service</a></li>
-<li><a href="#_running_behind_a_reverse_proxy">8.4. Running behind a reverse proxy</a></li>
+<li><a href="#_container_image">9.1. Container image</a></li>
+<li><a href="#_kubernetes">9.2. Kubernetes</a></li>
+<li><a href="#_windows_service">9.3. Windows service</a></li>
+<li><a href="#_running_behind_a_reverse_proxy">9.4. Running behind a reverse proxy</a></li>
 </ul>
 </li>
-<li><a href="#_using_download_links_in_external_applications">9. Using download links in external applications</a></li>
-<li><a href="#_troubleshooting">10. Troubleshooting</a></li>
-<li><a href="#_release_notes">11. Release Notes</a>
+<li><a href="#_using_download_links_in_external_applications">10. Using download links in external applications</a></li>
+<li><a href="#_troubleshooting">11. Troubleshooting</a></li>
+<li><a href="#_release_notes">12. Release Notes</a>
 <ul class="sectlevel2">
-<li><a href="#_release_notes_13_0_4_snapshot_october_16_2026">11.1. Release notes 13.0.4-SNAPSHOT (October 16, 2026)</a></li>
-<li><a href="#_release_notes_13_0_3_october_14_2026">11.2. Release notes 13.0.3 (October 14, 2026)</a></li>
-<li><a href="#_release_notes_13_0_2_october_06_2026">11.3. Release notes 13.0.2 (October 06, 2026)</a></li>
+<li><a href="#_release_notes_13_1_0_snapshot_october_16_2026">12.1. Release notes 13.1.0-SNAPSHOT (October 16, 2026)</a></li>
+<li><a href="#_release_notes_13_0_3_october_14_2026">12.2. Release notes 13.0.3 (October 14, 2026)</a></li>
+<li><a href="#_release_notes_13_0_2_october_06_2026">12.3. Release notes 13.0.2 (October 06, 2026)</a></li>
 </ul>
 </li>
 </ul>
@@ -100,7 +102,8 @@ are allowed to read.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The service does not store any data. It needs no database and no storage of its own.</p>
+<p>The service needs no database. Only zip downloads (see <a href="#zip-downloads">Zip downloads</a>) store the built zip files for a limited
+time in a local directory.</p>
 </div>
 </div>
 </div>
@@ -277,7 +280,188 @@ add it to the base URL of the download-service. The IDs do not change, so you ca
 </div>
 </div>
 <div class="sect1">
-<h2 id="_other_endpoints">4. Other endpoints</h2>
+<h2 id="zip-downloads">4. Zip downloads</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A client can download several content elements as one zip file. The client describes the structure of the zip file,
+the service builds the zip file in the background and offers it for download afterwards. The download supports HTTP
+range requests, so an interrupted download can be resumed.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Endpoint</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /api/zip-jobs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates a job that builds a zip file. The body describes the zip file (see below). All entries are checked before the
+  job is created, so a missing content element or missing access rights are reported immediately. Returns the job
+  with status <code>202</code> and a <code>Location</code> header pointing to it.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET /api/zip-jobs/{jobId}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the state of the job: <code>status</code> (<code>PENDING</code>, <code>RUNNING</code>, <code>COMPLETED</code> or <code>FAILED</code>), the progress
+  (<code>processedEntries</code> of <code>totalEntries</code>), and for completed jobs <code>size</code>, <code>etag</code> and <code>expiresAt</code>. Failed jobs contain an
+  <code>error</code> message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET /api/zip-jobs/{jobId}/content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Downloads the zip file of a completed job. Supports the headers <code>Range</code> (a single byte range, for example
+  <code>bytes=1048576-</code>) and <code>If-Range</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE /api/zip-jobs/{jobId}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deletes the job and its zip file. A running job is cancelled.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Example request body:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">fileName</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">export.zip</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span>: [
+    { <span class="key"><span class="delimiter">&quot;</span><span class="content">documentId</span><span class="delimiter">&quot;</span></span>: <span class="integer">281474976712345</span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">contentName</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">folder</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoices/2026</span><span class="delimiter">&quot;</span></span> },
+    { <span class="key"><span class="delimiter">&quot;</span><span class="content">versionId</span><span class="delimiter">&quot;</span></span>: <span class="integer">281474976798765</span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">contentName</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">content</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">folder</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoices/2025</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">fileName</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">old.pdf</span><span class="delimiter">&quot;</span></span> }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>fileName</code></dt>
+<dd>
+<p>The file name offered when downloading the zip file. Optional, defaults to <code>download.zip</code>.</p>
+</dd>
+<dt class="hdlist1"><code>entries</code></dt>
+<dd>
+<p>The files of the zip file. Each entry needs either a <code>documentId</code> (latest version) or a <code>versionId</code>, and the
+<code>contentName</code>. <code>folder</code> is the folder inside the zip file, nested folders are separated by <code>/</code>. Leave it empty for
+the root folder. <code>fileName</code> optionally overrides the file name stored with the content element.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Rules for the structure of the zip file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Folders must not contain <code>.</code> or <code>..</code> segments and must not be absolute paths.</p>
+</li>
+<li>
+<p>File names must not contain <code>/</code> or <code>\</code>. File names stored in the repository are adjusted accordingly.</p>
+</li>
+<li>
+<p>If the same path occurs more than once, a counter is added to the file name, for example <code>invoice (1).pdf</code>. Paths
+are compared case insensitively.</p>
+</li>
+<li>
+<p>The number of entries and the total size of the contents are limited, see <a href="#zip-properties">[zip-properties]</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A typical client works like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the job with <code>POST /api/zip-jobs</code> and remember the <code>id</code> and the <code>Location</code> header.</p>
+</li>
+<li>
+<p>Poll <code>GET /api/zip-jobs/{jobId}</code> until the status is <code>COMPLETED</code> or <code>FAILED</code>.</p>
+</li>
+<li>
+<p>Download the zip file with <code>GET /api/zip-jobs/{jobId}/content</code>.</p>
+</li>
+<li>
+<p>If the download is interrupted, request the rest with <code>Range: bytes=&lt;received bytes&gt;-</code> and <code>If-Range: &lt;etag&gt;</code>. The
+service answers with <code>206 Partial Content</code>. The zip file of a job never changes, so the parts fit together.</p>
+</li>
+<li>
+<p>Optionally delete the job with <code>DELETE /api/zip-jobs/{jobId}</code>. Otherwise it is deleted after the retention time.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Jobs belong to the user that created them. Other users get <code>404</code>. The zip file is built on behalf of this user: the
+download-service exchanges the access token of the request that created the job for a token for the
+content-repository-service. By default, the token exchange also returns a refresh token (see <a href="#impersonation">Impersonation and refresh tokens</a>). The
+download-service then renews the exchanged token while the zip file is built, so the job keeps running after the
+access token of the user has expired.</p>
+</div>
+<div class="paragraph">
+<p>The refresh token belongs to the session of the user at the IDP. A job can therefore only run as long as this session
+exists. In Keycloak, the limits are the realm settings <em>SSO Session Max</em> (default: 10 hours) and <em>SSO Session Idle</em>
+(default: 30 minutes; renewing the token keeps the session active). If the user logs out or an administrator ends the
+session, the job fails as well. If the refresh token mechanism is disabled, the job fails as soon as the access token
+of the user expires, typically after 5 minutes. A failed job has to be created again.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The request was successful. For downloads: the whole zip file is returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>202</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job was created. The zip file is built in the background.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>206</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A part of the zip file is returned, as requested with the <code>Range</code> header.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>400</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The request is invalid, for example an entry without content name, a folder containing <code>..</code>, too many
+  entries, or a malformed <code>Range</code> header.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>403</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The content-repository-service denies access to a content element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>404</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job does not exist, belongs to another user, or a content element does not exist.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>409</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The zip file is requested, but the job is not completed yet.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>416</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The requested range lies outside the zip file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>503</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Too many jobs are waiting. Try again later.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_other_endpoints">5. Other endpoints</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -318,7 +502,7 @@ add it to the base URL of the download-service. The IDs do not change, so you ca
 </div>
 </div>
 <div class="sect1">
-<h2 id="_prerequisites">5. Prerequisites</h2>
+<h2 id="_prerequisites">6. Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To run the download-service, you need:</p>
@@ -344,14 +528,14 @@ secrets,</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="idp-setup">6. Setting up the identity provider</h2>
+<h2 id="idp-setup">7. Setting up the identity provider</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The download-service needs two clients at the IDP. The following describes the setup for Keycloak. Other IDPs need
 equivalent settings.</p>
 </div>
 <div class="sect2">
-<h3 id="_login_client_authorization_code_flow">6.1. Login client (authorization code flow)</h3>
+<h3 id="_login_client_authorization_code_flow">7.1. Login client (authorization code flow)</h3>
 <div class="paragraph">
 <p>The browser uses this client to log in.</p>
 </div>
@@ -375,7 +559,7 @@ the client registration in the download-service configuration (see <a href="#con
 </div>
 </div>
 <div class="sect2">
-<h3 id="_token_exchange_client_on_behalf_of_flow">6.2. Token exchange client (on behalf of flow)</h3>
+<h3 id="token-exchange-client">7.2. Token exchange client (on behalf of flow)</h3>
 <div class="paragraph">
 <p>The download-service uses this client to exchange the user&#8217;s token for a token for the content-repository-service.</p>
 </div>
@@ -390,7 +574,18 @@ the client registration in the download-service configuration (see <a href="#con
 <li>
 <p><strong>Standard token exchange</strong>: enabled (Keycloak 26.2 and newer: <em>Capability config &#8594; Standard Token Exchange</em>)</p>
 </li>
+<li>
+<p><strong>Allow refresh token in Standard Token Exchange</strong>: <em>Same session</em> (<em>Advanced &#8594; OpenID Connect Compatibility Modes</em>).
+The download-service requests a refresh token in every token exchange by default, so that zip jobs can take longer
+than the lifetime of the user&#8217;s access token (see <a href="#zip-downloads">Zip downloads</a>). If this option is <em>No</em>, every token exchange
+fails. If your IDP does not support this, disable the mechanism, see <a href="#impersonation">Impersonation and refresh tokens</a>.</p>
+</li>
 </ul>
+</div>
+<div class="paragraph">
+<p>A refresh token from the token exchange is bound to the session of the user. Offline tokens cannot be requested
+by token exchange, so a zip job never runs longer than the session of the user (see <em>SSO Session Max</em> and <em>SSO
+Session Idle</em> in the realm settings).</p>
 </div>
 <div class="paragraph">
 <p>Make sure the content-repository-service accepts the tokens issued by token exchange, for example by adding it as
@@ -400,7 +595,7 @@ an audience (audience mapper in Keycloak).</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration">7. Configuration</h2>
+<h2 id="configuration">8. Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The download-service is a Spring Boot application. You can provide the configuration with any mechanism that
@@ -425,7 +620,7 @@ application name, and therefore the name of the configuration file at the config
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_complete_example">7.1. Complete example</h3>
+<h3 id="_complete_example">8.1. Complete example</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">server</span>:
@@ -462,22 +657,15 @@ application name, and therefore the name of the configuration file at the config
                 <span class="key">metadata</span>:
                   <span class="key">api-version</span>: <span class="string"><span class="content">1.2.0</span></span>
 
-<span class="key">commons</span>:
-  <span class="key">security</span>:
-    <span class="key">oauth2</span>:
-      <span class="key">client</span>:
-        <span class="key">auto-impersonate</span>: <span class="string"><span class="content">true </span></span><i class="conum" data-value="6"></i><b>(6)</b>
-        <span class="key">replace-authorization-header</span>: <span class="string"><span class="content">true </span></span><i class="conum" data-value="7"></i><b>(7)</b>
-
 <span class="key">openapi</span>:
-  <span class="key">token-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://idp.example.com/realms/arveo/protocol/openid-connect/token</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="8"></i><b>(8)</b>
+  <span class="key">token-url</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://idp.example.com/realms/arveo/protocol/openid-connect/token</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="6"></i><b>(6)</b>
 
 <span class="key">security</span>:
   <span class="key">general</span>:
-    <span class="key">role-for-actuator-access</span>: <span class="string"><span class="content">ACTUATOR </span></span><i class="conum" data-value="9"></i><b>(9)</b>
+    <span class="key">role-for-actuator-access</span>: <span class="string"><span class="content">ACTUATOR </span></span><i class="conum" data-value="7"></i><b>(7)</b>
 
 <span class="key">download-service</span>:
-  <span class="key">add-missing-file-name-extension</span>: <span class="string"><span class="content">true </span></span><i class="conum" data-value="10"></i><b>(10)</b></code></pre>
+  <span class="key">add-missing-file-name-extension</span>: <span class="string"><span class="content">true </span></span><i class="conum" data-value="8"></i><b>(8)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -509,31 +697,77 @@ redirect URI that you have to register at the IDP.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Use the token of the current user to request content from the content-repository-service on behalf of this user.
-Keep this <code>true</code>, otherwise the content-repository-service cannot check the access rights of the user.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Replace the authorization header that Spring sets for the logged-in user by the token obtained by token exchange.
-Keep this <code>true</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>The token URL of the IDP. The Swagger UI uses it to obtain tokens. This property is mandatory.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
 <td>The role a user needs to access the protected actuator endpoints. If empty, these endpoints are not protected.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>See <a href="#add-missing-file-name-extension">[add-missing-file-name-extension]</a>.</td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_service_properties">7.2. Service properties</h3>
+<h3 id="impersonation">8.2. Impersonation and refresh tokens</h3>
+<div class="paragraph">
+<p>The download-service ships with the following defaults. You do not have to configure them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">commons</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">client</span>:
+        <span class="key">auto-impersonate</span>: <span class="string"><span class="content">true </span></span><i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="key">token-exchange-refresh-tokens</span>: <span class="string"><span class="content">true </span></span><i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the token of the current user to request content from the content-repository-service on behalf of this user.
+Keep this <code>true</code>, otherwise the content-repository-service cannot check the access rights of the user.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Request a refresh token in the token exchange. The download-service renews the exchanged token with it, so zip
+jobs keep running after the access token of the user has expired. A job can still only run as long as the session
+of the user at the IDP exists, see <a href="#zip-downloads">Zip downloads</a>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The refresh token mechanism requires that the IDP issues refresh tokens in the token exchange. In Keycloak, set
+<em>Allow refresh token in Standard Token Exchange</em> to <em>Same session</em> at the token exchange client (see
+<a href="#token-exchange-client">Token exchange client (on behalf of flow)</a>). If the IDP does not allow this, every token exchange fails, and no content can be
+downloaded at all.</p>
+</div>
+<div class="paragraph">
+<p>Disable the mechanism if your IDP does not support refresh tokens in the token exchange, or if you do not want the
+download-service to hold refresh tokens of the users:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">commons</span>:
+  <span class="key">security</span>:
+    <span class="key">oauth2</span>:
+      <span class="key">client</span>:
+        <span class="key">token-exchange-refresh-tokens</span>: <span class="string"><span class="content">false</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The download-service then requests only an access token in the token exchange. Downloads and download links are not
+affected. A zip job, however, fails as soon as the access token of the user that created it expires (in Keycloak,
+<em>Access Token Lifespan</em> of the realm, default: 5 minutes). Large zip files may not be finished in time. In this case,
+limit the size of zip jobs (see <a href="#zip-properties">[zip-properties]</a>) or increase the access token lifespan at the IDP.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_service_properties">8.3. Service properties</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 37.5%;">
@@ -558,9 +792,65 @@ Keep this <code>true</code>.</td>
 </tr>
 </tbody>
 </table>
+<div id="zip-properties" class="paragraph">
+<p>The following properties configure zip downloads (see <a href="#zip-downloads">Zip downloads</a>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.zip.directory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>${java.io.tmpdir}/download-service-zips</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The directory the zip files and the state of the jobs are stored in. Jobs survive a restart, but jobs that were
+  running are marked as failed. Each instance of the service needs its own directory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.zip.retention</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1h</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How long a completed or failed job and its zip file are kept.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.zip.cleanup-interval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The interval in which expired jobs are deleted.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.zip.max-entries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of entries of a zip file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.zip.max-total-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10GB</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum total size of the contents of a zip file. Make sure the directory has enough free space for the zip
+  files of all jobs within the retention time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.zip.max-concurrent-jobs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of zip files built in parallel. Changes require a restart.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.zip.queue-capacity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>100</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of jobs that may wait for a free worker. Further jobs are rejected with <code>503</code>. Changes require a restart.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
-<h3 id="_security_properties">7.3. Security properties</h3>
+<h3 id="_security_properties">8.4. Security properties</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 37.5%;">
@@ -595,7 +885,7 @@ Keep this <code>true</code>.</td>
 </table>
 </div>
 <div class="sect2">
-<h3 id="service-discovery">7.4. Service discovery</h3>
+<h3 id="service-discovery">8.5. Service discovery</h3>
 <div class="paragraph">
 <p>The download-service finds the content-repository-service with Spring Cloud service discovery, using the service ID
 <code>content-repository-service</code>. You have the following options:</p>
@@ -615,7 +905,7 @@ services and endpoints.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_logging">7.5. Logging</h3>
+<h3 id="_logging">8.6. Logging</h3>
 <div class="paragraph">
 <p>By default, the service logs to the console and to the file <code>logs/download-service.log</code> in the working directory. You
 can change the log levels at runtime with the <code>/actuator/loggers</code> endpoint or with the usual Spring Boot properties,
@@ -633,10 +923,10 @@ for example:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_deployment">8. Deployment</h2>
+<h2 id="_deployment">9. Deployment</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_container_image">8.1. Container image</h3>
+<h3 id="_container_image">9.1. Container image</h3>
 <div class="paragraph">
 <p>The main deliverable is a container image:</p>
 </div>
@@ -655,12 +945,12 @@ for example:</p>
   -e SERVER_PORT=32224 \
   -e SPRING_CLOUD_CONFIG_URI=http://config-service:8888 \
   -e SPRING_CLOUD_VAULT_ENABLED=false \
-  docker-intern.eitco.de:10080/eitco/arveo/download-service:13.0.4-SNAPSHOT</code></pre>
+  docker-intern.eitco.de:10080/eitco/arveo/download-service:13.1.0-SNAPSHOT</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_kubernetes">8.2. Kubernetes</h3>
+<h3 id="_kubernetes">9.2. Kubernetes</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -675,11 +965,16 @@ Secrets as configuration sources.</p>
 sticky sessions (session affinity) at the ingress. Otherwise, a user may be redirected to the IDP again when a
 request reaches another replica.</p>
 </li>
+<li>
+<p>Zip jobs are only known to the replica that created them. With more than one replica, sticky sessions are required
+for zip downloads as well. Use a volume for <code>download-service.zip.directory</code> with enough space, so the zip files are
+not stored in the container file system.</p>
+</li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_windows_service">8.3. Windows service</h3>
+<h3 id="_windows_service">9.3. Windows service</h3>
 <div class="paragraph">
 <p>The build also creates a zip file (<code>download-service-&lt;version&gt;-zip.zip</code>) that contains:</p>
 </div>
@@ -707,7 +1002,7 @@ download-service.exe start</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_running_behind_a_reverse_proxy">8.4. Running behind a reverse proxy</h3>
+<h3 id="_running_behind_a_reverse_proxy">9.4. Running behind a reverse proxy</h3>
 <div class="paragraph">
 <p>The download links point to the download-service, and the IDP redirects the browser back to the download-service
 after the login. Therefore:</p>
@@ -737,7 +1032,7 @@ redirect URI (for example <code>http://</code> instead of <code>https://</code>)
 </div>
 </div>
 <div class="sect1">
-<h2 id="_using_download_links_in_external_applications">9. Using download links in external applications</h2>
+<h2 id="_using_download_links_in_external_applications">10. Using download links in external applications</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>You can use the links like any other link to a file, for example in a SharePoint page, a Teams message or an HTML
@@ -771,7 +1066,7 @@ for references that must not change, for example in approvals or audit documents
 </div>
 </div>
 <div class="sect1">
-<h2 id="_troubleshooting">10. Troubleshooting</h2>
+<h2 id="_troubleshooting">11. Troubleshooting</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -797,6 +1092,13 @@ for references that must not change, for example in approvals or audit documents
   content-repository-service is in the audience of the exchanged token. Also check the access rights of the user.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Every download fails, and the log of the download-service shows an error of the token exchange like
+  "requested_token_type unsupported" or "invalid_request".</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The download-service requests a refresh token in the token exchange, but the token exchange client does not allow
+  this. Set <em>Allow refresh token in Standard Token Exchange</em> to <em>Same session</em>, or disable the mechanism, see
+  <a href="#impersonation">Impersonation and refresh tokens</a>.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A script gets <code>401</code> instead of a redirect.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This is intended. Non-browser clients must send an <code>Authorization: Bearer</code> header.</p></td>
 </tr>
@@ -814,15 +1116,25 @@ for references that must not change, for example in approvals or audit documents
 </div>
 </div>
 <div class="sect1">
-<h2 id="_release_notes">11. Release Notes</h2>
+<h2 id="_release_notes">12. Release Notes</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_release_notes_13_0_4_snapshot_october_16_2026">11.1. Release notes 13.0.4-SNAPSHOT (October 16, 2026)</h3>
+<h3 id="_release_notes_13_1_0_snapshot_october_16_2026">12.1. Release notes 13.1.0-SNAPSHOT (October 16, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">New Features</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1926: Added SDKs for the api: a java sdk (<code>download-service-sdk-http-spring</code>, <code>download-service-sdk-http-apache</code>), a typescript sdk (<code>download-service-client-typescript</code>) and a c# sdk (<code>download-service-client-csharp</code>). Errors of the zip download are part of the api (<code>ZipJobNotCompletedException</code>, <code>ZipJobQueueFullException</code> and the subclasses of <code>InvalidZipRequestException</code> for each reason of an invalid request, e.g. <code>InvalidZipFolderException</code> or <code>TooManyZipEntriesException</code>), so that the sdks can deserialize them and clients can react on them without parsing the message.</p>
+</li>
+<li>
+<p>ECR-1926: Added zip downloads: a client describes the structure of a zip file with documents or versions and their target folders, the service builds the zip file asynchronously (<code>/api/zip-jobs</code>) and offers it for a resumable download using HTTP range requests. Entries referencing a document by its id are pinned to the version that is current when the job is created, so later changes of the document do not affect the zip file.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Changes</strong></p>
@@ -836,6 +1148,16 @@ for references that must not change, for example in approvals or audit documents
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1926: Zip jobs keep running after the access token of the user has expired: the download-service requests a refresh token in the token exchange (<code>commons.security.oauth2.client.token-exchange-refresh-tokens</code>, default: <code>true</code>). The token exchange client in Keycloak must allow this (<em>Allow refresh token in Standard Token Exchange</em> = <em>Same session</em>), otherwise every token exchange fails. A job can only run as long as the session of the user at the IDP. To disable the mechanism, set <code>commons.security.oauth2.client.token-exchange-refresh-tokens: false</code>.</p>
+</li>
+<li>
+<p>ECR-1926: Added the properties <code>download-service.zip.*</code> to configure the directory, retention time and limits of zip downloads.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
 </div>
@@ -843,7 +1165,7 @@ for references that must not change, for example in approvals or audit documents
 </details>
 </div>
 <div class="sect2">
-<h3 id="_release_notes_13_0_3_october_14_2026">11.2. Release notes 13.0.3 (October 14, 2026)</h3>
+<h3 id="_release_notes_13_0_3_october_14_2026">12.2. Release notes 13.0.3 (October 14, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -876,7 +1198,7 @@ for references that must not change, for example in approvals or audit documents
 </details>
 </div>
 <div class="sect2">
-<h3 id="_release_notes_13_0_2_october_06_2026">11.3. Release notes 13.0.2 (October 06, 2026)</h3>
+<h3 id="_release_notes_13_0_2_october_06_2026">12.3. Release notes 13.0.2 (October 06, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -906,7 +1228,7 @@ for references that must not change, for example in approvals or audit documents
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-16 00:31:04 UTC
+Last updated 2026-10-16 15:30:47 UTC
 </div>
 </div>
 <style>
