@@ -514,6 +514,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_configuration_qa_behavior">3.16. Configuration QA behavior</a></li>
+<li><a href="#recycle-bin-development">3.17. Recycle-bin configuration (in development)</a></li>
+<li><a href="#_lifecycle_policy_defaults_and_repository_constraints">3.18. Lifecycle policy defaults and repository constraints</a></li>
+<li><a href="#_recycle_bin_view_configuration">3.19. Recycle Bin view configuration</a></li>
 </ul>
 </li>
 </ul>
@@ -523,7 +526,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 0.1.3-SNAPSHOT; source a46447b64d5a58bd2610d2cfb18e1f877d7f1595.</p>
+<p>Version 0.1.3-SNAPSHOT; source 1f790929e654b392de4252fad9f03ea93cb09e2f.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -624,6 +627,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Example: to inspect an invoice, search for its number, select the matching row, check Details, then open Viewer. If a filter hides the saved item, clear that filter before assuming the save failed.</p>
 </div>
+<div class="paragraph">
+<p>The sidebar shows <strong>Documents</strong> in a Simple Document scenario. When your administrator enables
+Recycle Bin and grants access, <strong>Recycle Bin</strong> opens trashed documents directly. Record scenarios
+also provide <strong>Records</strong> and nested Records/Documents destinations in Recycle Bin. Breadcrumbs
+above the workspace show the scenario and current destination and let you return to an ancestor.
+Table headings distinguish <strong>Documents</strong>, <strong>Records</strong>, <strong>Trashed Documents</strong> and <strong>Trashed Records</strong>;
+these labels follow the selected language. When a search includes trashed items, a muted row
+tint and a narrow status column identify them. The header reserves the same space as each row,
+so business values stay aligned whether an item is active or trashed.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="user-record"><a class="anchor" href="#user-record"></a><a class="link" href="#user-record">2.4. Work in a Record scenario</a></h3>
@@ -673,7 +686,7 @@ creation and removal instructions. Sharing does not copy the document.</p>
 <p>Record labels show only currently permitted metadata, falling back to the record ID. Recent-record history uses record IDs so saved descriptive labels cannot reveal fields that are now hidden.</p>
 </div>
 <div class="paragraph">
-<p>Parent record actions and child document actions are separate. Use the record list&#8217;s actions to create, edit, inspect history or delete a parent where offered. Use child actions for an individual document. Creating a record does not automatically create its documents. Changing parent metadata does not edit all children.</p>
+<p>Parent record actions and child document actions are separate. The record summary card&#8217;s three-dot menu offers Edit, Delete and Trash for active records, or Restore and permanent Delete for trashed records, according to scenario settings and permissions. It uses the same confirmation workflows as the record list. Use the record list&#8217;s actions to create, edit, inspect history or delete a parent where offered. Use child actions for an individual document. Creating a record does not automatically create its documents. Changing parent metadata does not edit all children.</p>
 </div>
 <div class="paragraph">
 <p>For a <strong>1:n with foreign key</strong> scenario, before the deletion confirmation opens, the client counts the related documents using record-scoped document read permission. Cascade deletion requires record-scoped document delete permission; unlinking requires record-scoped document edit permission and permission to update the relationship field. All-document workspace grants do not substitute for these permissions. Check the count and whether those documents will be deleted or unlinked. If the count cannot be determined, the client reports an error and does not open the confirmation; retry after resolving the loading or access problem. Record deletion is blocked for m:n scenarios, regardless of the cascade setting.</p>
@@ -809,7 +822,43 @@ reported as success; check the refreshed membership before retrying.</p>
 <p>To edit, open the existing item and use its edit action. Change writable fields and save. Metadata-only edits leave unchanged content intact. When replacing original content, check filename and MIME information before saving. A failed save is not proof that nothing was stored: reload the item before retrying.</p>
 </div>
 <div class="paragraph">
-<p>Deletion is permanent unless your repository provides a separate recovery mechanism. Read the confirmation carefully. In a one-to-many scenario, deleting a record can delete its children when cascade deletion is enabled; otherwise children are unlinked. Mandatory foreign-key relationships require cascade behavior. In m:n scenarios, use <strong>Remove from this record</strong> for membership removal; global document deletion and record deletion are unavailable. Cancel if the affected scope is unclear.</p>
+<p>Trash and permanent deletion are different actions. Where the scenario enables the
+recycle bin, use <strong>Trash</strong> to retain an item for restoration. Selected documents can
+be trashed or restored together. For a record action, confirmation shows related
+items and, when configured, asks whether to include children. Restoring included
+children restores all trashed children, even those trashed earlier. Restoring a
+single document may first require restoring its parent; declining that parent
+restoration cancels the document action. Native repository cascades are automatic.</p>
+</div>
+<div class="paragraph">
+<p>Permanent deletion still requires its own confirmation and cannot be undone.
+For the existing active-record deletion workflow, one-to-many cascade deletion
+removes children; disabling it unlinks children, and mandatory foreign keys require
+cascade behavior. In m:n scenarios, use <strong>Remove from this record</strong> for membership
+removal. The recycle-bin feature remains in development; see the administration
+chapter&#8217;s development notice before relying on it. Cancel if scope is unclear.</p>
+</div>
+<div class="paragraph">
+<p>Deleting an active record follows the same cascade/unlink policy with Recycle Bin
+on or off. The count includes all linked documents. If any child is trashed, restore
+it before choosing an unlink policy. Deleting children permanently needs the
+corresponding active-delete or trash-purge permissions. Individual document deletion
+from a record also works with Recycle Bin on or off and remains limited to that record.
+If an item changes between active and trashed during permanent deletion, execution
+stops; refresh and confirm the current state before trying again.</p>
+</div>
+<div class="paragraph">
+<p>Permanently deleting a trashed record always deletes its trashed children first;
+active linked children must be moved to the recycle bin beforehand. Restore, Delete
+and Trash are separate actions. Restoring a parent through a native cascade can
+restore other trashed siblings too, including documents trashed independently.
+Read the total impact before confirming.</p>
+</div>
+<div class="paragraph">
+<p>For bin deletion, enter the displayed name exactly, or DELETE for bulk/unnamed
+items. Restore needs no deletion phrase. Cancelling makes no changes. A failed or
+interrupted action may have completed some steps: refresh the list and inspect the
+items before starting again. Repository retention restrictions still apply.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1119,6 +1168,9 @@ m:n authoring, record-scoped browsing, document-edit linking, creation from a se
 </table>
 <div class="paragraph">
 <p>The wizard identifies these choices as <strong>One-stage</strong> and <strong>Two-stage</strong>. This guide calls them Simple Document and Record scenarios. A record is the parent organizing the documents, not another content rendition.</p>
+</div>
+<div class="paragraph">
+<p>After a new scenario is successfully saved, leaving administration requires no further save unless other configuration or localization edits remain unsaved.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1894,6 +1946,11 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>search.includeTrashedEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>detail.fields</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
@@ -2034,6 +2091,31 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.cascadeTrashEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.cascadeRestoreEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.trashChildrenMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">automatic, ask</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.restoreChildrenMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">automatic, ask</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.restoreParentMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">automatic, ask</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
@@ -2116,6 +2198,11 @@ Translations in other languages remain unchanged.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.recordDocuments</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">documentView</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scenario.recycleBin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recycleBin</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
@@ -2211,6 +2298,21 @@ Translations in other languages remain unchanged.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordSelection.search</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recycleBin.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recycleBin.viewEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recycleBin.deleteOnlyTrashed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
 </tr>
 </tbody>
@@ -2365,7 +2467,152 @@ records within the scenario; the selected record always restricts the document q
 <p>Creation and update forms follow the selected workspace&#8217;s detail field order, section headings, labels and read-only settings. In two-stage scenarios, record-scoped documents and the all-documents view retain their independent table, search, detail and permission settings. Disabling a shared attribute removes it from both document workspaces. Stored column preferences cannot restore fields that the current permissions hide.</p>
 </div>
 <div class="paragraph">
-<p>A permission change also applies when a drawer or confirmation was already open: a revoked action cannot be submitted. Configuration administration alone does not grant business actions. Restore, CSV/ZIP export, column-header filtering controls and document summary cards remain unavailable; record summary cards are supported.</p>
+<p>A permission change also applies when a drawer or confirmation was already open: a revoked action cannot be submitted. Configuration administration alone does not grant business actions. Restoring historical versions, CSV/ZIP export, column-header filtering controls and document summary cards remain unavailable; record summary cards are supported.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="recycle-bin-development"><a class="anchor" href="#recycle-bin-development"></a><a class="link" href="#recycle-bin-development">3.17. Recycle-bin configuration (in development)</a></h3>
+<div class="paragraph">
+<p>General Overview includes scenario-wide trash, trash-bin visibility and deletion-only-for-trashed
+settings. Search settings control whether each workspace offers Include trashed items
+in its table filter bar. The filter also requires the workspace&#8217;s Trash, View trashed items
+and Include trashed items in search permissions. Clearing it returns to active items only.</p>
+</div>
+<div class="paragraph">
+<p>Recycle bin appears below Documents and above History in scenario navigation. Its Records
+and Documents entries open separate lists with their configured columns; the Documents list
+also includes trashed documents whose record is active. One-stage bins show Documents only.
+The breadcrumb returns to the scenario. Trashed items are read-only. Editors offer Move to
+recycle bin and permanent Delete only when the current state, permissions and deletion policy
+allow them. The record summary card uses a three-dot menu for the same state-sensitive
+Edit, Delete, Trash and Restore actions; Restore has a recovery icon. A narrow status
+column keeps trash markers aligned separately from business values. Permanent deletion
+from the bin requires typing the displayed item name, or
+DELETE for bulk operations and items without a display name.
+Record scenarios provide independent automatic/ask modes for trashing children,
+restoring children and restoring a document&#8217;s parent. Native repository cascades
+are identified as repository-managed and cannot be overridden. Existing disabled
+trash cascading preserves record-only behavior.</p>
+</div>
+<div class="paragraph">
+<p>Confirmation shows affected counts and shared/global impact. When children are
+included in record restoration, all trashed children are restored, even those
+trashed earlier independently. Declining children applies the action to the record
+only; declining a required parent restoration cancels document restoration.
+Relationships are preserved. Each action still requires its scenario permissions.
+Bulk operations replace the journal; partial failures refresh repository state and
+can be acted on again using fresh confirmation, without progress/recovery controls.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+AFC-123 remains in development until replacement runtime, native-cascade and
+inheritance acceptance is complete. Database and configuration schema remain V2.
+Production content/annotation viewing while trashed requires the upstream ECR fix.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_lifecycle_policy_defaults_and_repository_constraints"><a class="anchor" href="#_lifecycle_policy_defaults_and_repository_constraints"></a><a class="link" href="#_lifecycle_policy_defaults_and_repository_constraints">3.18. Lifecycle policy defaults and repository constraints</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 16.6666%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Setting</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scenario Recycle Bin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Off</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable only for types supporting the repository deleted system field. External views do not support trash.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recycle Bin navigation / Include trashed items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Off</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Navigation and each workspace filter need their own settings and permissions.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deletion only for trashed items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Off</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, active items must be trashed before irreversible deletion.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete documents with record</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">On for newly created scenarios</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Applies with Recycle Bin on or off. Off clears an optional FK; a mandatory FK forces deletion.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Trash documents with record</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">On when omitted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Off permits record-only trash for explicit cascades; it conflicts with native repository CASCADE.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Trash children / Restore children / Restore parent mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Automatic</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Three independent settings. Ask offers one related-item choice in confirmation.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Repository retention and deletion restrictions are administered in the repository,
+not through scenario switches. No retention timeout does not mean trash is disabled.
+The effective inherited FK definition determines native CASCADE; type inheritance
+alone does not create a cascade. Native downward trash/restore cannot be overridden
+by a scenario or end-user decline. Restoring a document&#8217;s trashed parent may also
+restore its trashed siblings through that native cascade; review the complete count.</p>
+</div>
+<div class="paragraph">
+<p>An imported legacy restore-cascade false becomes Ask; true or omitted becomes
+Automatic. Explicit modes take precedence. Saving or editing another mode preserves
+that choice; disabling trash cascading does not disable child restoration.</p>
+</div>
+<div class="paragraph">
+<p>For active strict records, the delete/unlink confirmation covers every linked
+child, including trash. A cascade needs child Delete permissions for active items
+and Permanent delete plus View trashed items for trash. Unlink needs record-scoped
+Edit and an editable relationship field. Restore trashed children before unlinking.
+If trash is disabled, use an authorized enabled-bin scenario to resolve linked
+trash; disabling a feature does not grant purge access.</p>
+</div>
+<div class="paragraph">
+<p>For a trashed record, permanent deletion always removes its linked trashed children
+first, regardless of the active-record cascade toggle. Active linked children block
+purge: trash them first. m:n record and global document irreversible deletion remain
+unavailable. This safeguard also applies when another scenario exposes the same
+shared type or attempts to cascade-delete it. Optional strict-FK unlink can still
+preserve those shared documents. Configuration deletion removes a scenario, not
+its repository data.</p>
+</div>
+<div class="paragraph">
+<p>Deletion removes metadata irreversibly. Repository document purge additionally
+attempts immediate content cleanup; ordinary deletion can queue content cleanup.
+Retention, repository permissions or integrity rules may reject either operation.
+Separate child/parent mutations are not atomic. After partial failure, a lost
+response or changed scope, refresh and review actual state before confirming again.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_recycle_bin_view_configuration"><a class="anchor" href="#_recycle_bin_view_configuration"></a><a class="link" href="#_recycle_bin_view_configuration">3.19. Recycle Bin view configuration</a></h3>
+<div class="paragraph">
+<p>Recycle Bin reuses the scenario&#8217;s existing view settings. Trashed records use the <strong>Records</strong>
+configuration. Trashed documents use the standalone <strong>Documents</strong> configuration, including in a
+Record scenario; they do not use <strong>Documents within a record</strong>. Changes to those views also
+apply in Recycle Bin. The configuration editor explains this inheritance beside the relevant
+settings. Recycle Bin retains separate permissions, trash-only searches and saved view preferences.
+There are no separate view configuration fields for trashed items.</p>
 </div>
 </div>
 </div>
@@ -2373,7 +2620,7 @@ records within the scenario; the selected record always restricts the document q
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-15 04:06:02 UTC
+Last updated 2026-10-17 04:11:57 UTC
 </div>
 </div>
 </body>
