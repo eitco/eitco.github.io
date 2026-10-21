@@ -23,39 +23,55 @@
 <li><a href="#_how_it_works">2. How it works</a></li>
 <li><a href="#_download_links">3. Download links</a></li>
 <li><a href="#zip-downloads">4. Zip downloads</a></li>
-<li><a href="#_other_endpoints">5. Other endpoints</a></li>
-<li><a href="#_prerequisites">6. Prerequisites</a></li>
-<li><a href="#idp-setup">7. Setting up the identity provider</a>
+<li><a href="#csv-exports">5. Csv exports</a>
 <ul class="sectlevel2">
-<li><a href="#_login_client_authorization_code_flow">7.1. Login client (authorization code flow)</a></li>
-<li><a href="#token-exchange-client">7.2. Token exchange client (on behalf of flow)</a></li>
+<li><a href="#csv-file-exports">5.1. Exporting customer files</a></li>
+<li><a href="#csv-unions">5.2. Combining different types</a></li>
+<li><a href="#csv-meta-data">5.3. Exporting meta data types</a></li>
 </ul>
 </li>
-<li><a href="#configuration">8. Configuration</a>
+<li><a href="#typescript-sdk">6. TypeScript SDK</a>
 <ul class="sectlevel2">
-<li><a href="#_complete_example">8.1. Complete example</a></li>
-<li><a href="#impersonation">8.2. Impersonation and refresh tokens</a></li>
-<li><a href="#_service_properties">8.3. Service properties</a></li>
-<li><a href="#_security_properties">8.4. Security properties</a></li>
-<li><a href="#service-discovery">8.5. Service discovery</a></li>
-<li><a href="#_logging">8.6. Logging</a></li>
+<li><a href="#_creating_the_clients">6.1. Creating the clients</a></li>
+<li><a href="#_downloading_content">6.2. Downloading content</a></li>
+<li><a href="#_zip_downloads">6.3. Zip downloads</a></li>
+<li><a href="#_csv_exports">6.4. Csv exports</a></li>
+<li><a href="#_errors">6.5. Errors</a></li>
 </ul>
 </li>
-<li><a href="#_deployment">9. Deployment</a>
+<li><a href="#_other_endpoints">7. Other endpoints</a></li>
+<li><a href="#_prerequisites">8. Prerequisites</a></li>
+<li><a href="#idp-setup">9. Setting up the identity provider</a>
 <ul class="sectlevel2">
-<li><a href="#_container_image">9.1. Container image</a></li>
-<li><a href="#_kubernetes">9.2. Kubernetes</a></li>
-<li><a href="#_windows_service">9.3. Windows service</a></li>
-<li><a href="#_running_behind_a_reverse_proxy">9.4. Running behind a reverse proxy</a></li>
+<li><a href="#_login_client_authorization_code_flow">9.1. Login client (authorization code flow)</a></li>
+<li><a href="#token-exchange-client">9.2. Token exchange client (on behalf of flow)</a></li>
 </ul>
 </li>
-<li><a href="#_using_download_links_in_external_applications">10. Using download links in external applications</a></li>
-<li><a href="#_troubleshooting">11. Troubleshooting</a></li>
-<li><a href="#_release_notes">12. Release Notes</a>
+<li><a href="#configuration">10. Configuration</a>
 <ul class="sectlevel2">
-<li><a href="#_release_notes_13_1_0_snapshot_october_21_2026">12.1. Release notes 13.1.0-SNAPSHOT (October 21, 2026)</a></li>
-<li><a href="#_release_notes_13_0_3_october_14_2026">12.2. Release notes 13.0.3 (October 14, 2026)</a></li>
-<li><a href="#_release_notes_13_0_2_october_06_2026">12.3. Release notes 13.0.2 (October 06, 2026)</a></li>
+<li><a href="#_complete_example">10.1. Complete example</a></li>
+<li><a href="#impersonation">10.2. Impersonation and refresh tokens</a></li>
+<li><a href="#_service_properties">10.3. Service properties</a></li>
+<li><a href="#_security_properties">10.4. Security properties</a></li>
+<li><a href="#service-discovery">10.5. Service discovery</a></li>
+<li><a href="#_logging">10.6. Logging</a></li>
+</ul>
+</li>
+<li><a href="#_deployment">11. Deployment</a>
+<ul class="sectlevel2">
+<li><a href="#_container_image">11.1. Container image</a></li>
+<li><a href="#_kubernetes">11.2. Kubernetes</a></li>
+<li><a href="#_windows_service">11.3. Windows service</a></li>
+<li><a href="#_running_behind_a_reverse_proxy">11.4. Running behind a reverse proxy</a></li>
+</ul>
+</li>
+<li><a href="#_using_download_links_in_external_applications">12. Using download links in external applications</a></li>
+<li><a href="#_troubleshooting">13. Troubleshooting</a></li>
+<li><a href="#_release_notes">14. Release Notes</a>
+<ul class="sectlevel2">
+<li><a href="#_release_notes_13_1_0_snapshot_october_21_2026">14.1. Release notes 13.1.0-SNAPSHOT (October 21, 2026)</a></li>
+<li><a href="#_release_notes_13_0_3_october_14_2026">14.2. Release notes 13.0.3 (October 14, 2026)</a></li>
+<li><a href="#_release_notes_13_0_2_october_06_2026">14.3. Release notes 13.0.2 (October 06, 2026)</a></li>
 </ul>
 </li>
 </ul>
@@ -102,8 +118,11 @@ are allowed to read.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The service needs no database. Only zip downloads (see <a href="#zip-downloads">Zip downloads</a>) store the built zip files for a limited
-time in a local directory.</p>
+<p>Besides single files, the service offers zip downloads of several files (see <a href="#zip-downloads">Zip downloads</a>) and csv exports of
+meta data (see <a href="#csv-exports">Csv exports</a>).</p>
+</div>
+<div class="paragraph">
+<p>The service needs no database. Only zip downloads store the built zip files for a limited time in a local directory.</p>
 </div>
 </div>
 </div>
@@ -394,6 +413,9 @@ service answers with <code>206 Partial Content</code>. The zip file of a job nev
 </ol>
 </div>
 <div class="paragraph">
+<p>An example with the TypeScript SDK is shown in <a href="#typescript-sdk">TypeScript SDK</a>.</p>
+</div>
+<div class="paragraph">
 <p>Jobs belong to the user that created them. Other users get <code>404</code>. The zip file is built on behalf of this user: the
 download-service exchanges the access token of the request that created the job for a token for the
 content-repository-service. By default, the token exchange also returns a refresh token (see <a href="#impersonation">Impersonation and refresh tokens</a>). The
@@ -461,7 +483,951 @@ of the user expires, typically after 5 minutes. A failed job has to be created a
 </div>
 </div>
 <div class="sect1">
-<h2 id="_other_endpoints">5. Other endpoints</h2>
+<h2 id="csv-exports">5. Csv exports</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A client can export meta data of documents, folders, containers, relations and meta data types as a csv file. The client sends an EQL
+filter, the columns of the file and its format. There are two kinds of exports with an endpoint each: an export of
+types searches one or more types, every row of the file is one entity. An export with parts joins types, for
+example invoices with the customer file they belong to (see <a href="#csv-file-exports">Exporting customer files</a>), and combines different types in
+one file (see <a href="#csv-unions">Combining different types</a>). Both kinds of exports use the union search of the content-repository-service, the
+export of types with one part per type. The service searches the entities on behalf of the user and streams
+the csv file while it reads the entities page by page from the content-repository-service. Only one page is held in
+memory, so large exports need no disk space and the client receives the first lines immediately.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Endpoint</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /api/csv-export/types</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exports one or more types without joins (body <code>CsvTypesExportRequest</code>, method <code>exportTypes</code> of the generated
+  clients).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST /api/csv-export/parts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exports parts with joins (body <code>CsvPartsExportRequest</code>, method <code>exportParts</code> of the generated clients), see
+  <a href="#csv-file-exports">Exporting customer files</a> and <a href="#csv-unions">Combining different types</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Both endpoints search the entities and return the csv file (<code>Content-Type: text/csv</code>). The request is validated and
+the first page is read before the response starts, so errors are reported with the status codes below. The header
+<code>X-Total-Count</code> contains the number of entities matching the filter, independent of <code>offset</code> and <code>maxRows</code>.</p>
+</div>
+<div class="paragraph">
+<p>Example request body of an export of types. The body uses the JSON format of the generated SDKs: every object carries its type in
+<code>@type</code>, lists are wrapped in <code>@list</code> and <code>long</code> values in <code>@long</code>. The filter is an EQL expression in the same format
+as in the search API of the content-repository-service. Java clients build the filter with
+<code>de.eitco.commons.query.language.api.model.Eql</code>, for example
+<code>Eql.equal(Eql.contextReference("customer_name"), Eql.value("ACME Inc."))</code>, and the order with
+<code>new Order(OrderDirection.DESCENDING, ContextReference.newInstance("invoice_date"))</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvTypesExportRequest</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">fileName</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoices.csv</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">types</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>]},
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">filter</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:and</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:eq</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">customer_name</span><span class="delimiter">&quot;</span></span>]}},
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:value</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ACME Inc.</span><span class="delimiter">&quot;</span></span>}
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span>: {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:eq</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">fiscal_year</span><span class="delimiter">&quot;</span></span>]}},
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:value</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="integer">2026</span>}
+    }
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">order</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.query.language.api.Order</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">direction</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.query.language.api.OrderDirection</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">@value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">DESCENDING</span><span class="delimiter">&quot;</span></span>},
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice_date</span><span class="delimiter">&quot;</span></span>]}}
+      }
+    ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">columns</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [
+      {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ID</span><span class="delimiter">&quot;</span></span>},
+      {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice_number</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Invoice</span><span class="delimiter">&quot;</span></span>},
+      {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice_date</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Date</span><span class="delimiter">&quot;</span></span>},
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">amount</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Amount</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#,##0.00</span><span class="delimiter">&quot;</span></span>
+      },
+      {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">initial_creation_date</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Created</span><span class="delimiter">&quot;</span></span>}
+    ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">offset</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@long</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">0</span><span class="delimiter">&quot;</span></span>},
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">maxRows</span><span class="delimiter">&quot;</span></span>: <span class="integer">50000</span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">format</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvFormat</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">delimiter</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">;</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">byteOrderMark</span><span class="delimiter">&quot;</span></span>: <span class="value">true</span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">locale</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de-DE</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">datePattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">dd.MM.yyyy</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">dateTimePattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">dd.MM.yyyy HH:mm</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">timeZone</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Europe/Berlin</span><span class="delimiter">&quot;</span></span>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>fileName</code></dt>
+<dd>
+<p>The file name offered when downloading the file. Optional, defaults to <code>export.csv</code>.</p>
+</dd>
+<dt class="hdlist1"><code>types</code></dt>
+<dd>
+<p>Only for exports of types: the names of the type definitions to search in. Meta data types need a primary key and
+cannot be combined with other object types (see <a href="#csv-meta-data">Exporting meta data types</a>).</p>
+</dd>
+<dt class="hdlist1"><code>parts</code></dt>
+<dd>
+<p>Only for exports with parts: the parts of an export with joins or unions, see <a href="#csv-file-exports">Exporting customer files</a> and <a href="#csv-unions">Combining different types</a>.
+Each part has a main
+<code>type</code> with an <code>alias</code> and optionally <code>joins</code>, each with a <code>joinType</code> (<code>LEFT</code>, the default, or <code>INNER</code>), a <code>type</code>, an
+<code>alias</code> and a join condition <code>on</code>. An optional <code>filter</code> of a part only applies to the rows of this part, in addition
+to the filter of the request. The filters, the order, the join conditions and the columns reference fields by alias,
+for example <code>["customer", "name"]</code>.</p>
+</dd>
+<dt class="hdlist1"><code>filter</code></dt>
+<dd>
+<p>The EQL expression selecting the entities. Optional, all entities of the types are exported if it is missing.</p>
+</dd>
+<dt class="hdlist1"><code>order</code></dt>
+<dd>
+<p>The order of the rows, a list of attributes with direction <code>ASCENDING</code> or <code>DESCENDING</code>. The service always adds the
+key fields as last criteria, so the order is unique: the <code>id</code>, for meta data types the primary key (see
+<a href="#csv-meta-data">Exporting meta data types</a>). For exports with parts, it adds the key fields of all aliases every part uses. With several types
+or parts, the index of the part follows. Optional, defaults to the order of the key fields.</p>
+</dd>
+<dt class="hdlist1"><code>offset</code></dt>
+<dd>
+<p>The number of entities to skip in the given order. Optional, defaults to <code>0</code>.</p>
+</dd>
+<dt class="hdlist1"><code>maxRows</code></dt>
+<dd>
+<p>The maximum number of rows without header line. Optional, defaults to <code>download-service.csv.max-rows</code>, which is also
+the upper limit (see <a href="#csv-properties">[csv-properties]</a>).</p>
+</dd>
+<dt class="hdlist1"><code>columns</code></dt>
+<dd>
+<p>The columns in the order they appear in the file. <code>attribute</code> is the name of an attribute of one of the types or one
+of the system fields <code>id</code>, <code>version_id</code>, <code>version_number</code>, <code>version_comment</code>, <code>initial_creation_date</code>,
+<code>initial_creation_user_id</code>, <code>creation_date</code>, <code>creator_user_id</code>, <code>modification_date</code>, <code>modification_user_id</code>,
+<code>retention_date</code>, <code>litigation_hold</code>, <code>deleted</code>, <code>update_counter</code> and <code>last_delete_restore_date</code>. <code>header</code> is the name
+in the header line and defaults to the attribute. <code>pattern</code> optionally overrides the number or date pattern of the
+format for this column. If several types are exported, attributes that a type does not have are empty. Meta data
+types only have the system fields <code>deleted</code>, <code>update_counter</code> and <code>last_delete_restore_date</code>, the other system fields
+are empty for them.</p>
+<div class="paragraph">
+<p><code>alias</code> selects the type of the attribute. It is required for exports with parts. For exports with <code>types</code> it is
+optional: an alias that is one of the type names restricts the column to entities of this type, so attributes with
+the same name in different types can be written to different columns.</p>
+</div>
+<div class="paragraph">
+<p>Two pseudo fields describe where a row comes from: <code>type_name</code> is the name of the type of the entity of the alias,
+<code>union_part</code> the index of the part (or of the type in <code>types</code>) of the row. <code>union_part</code> needs no alias. Attributes and
+system fields of the same name take precedence.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>format</code></dt>
+<dd>
+<p>The format of the file. All options are optional, the defaults produce a file as defined by RFC 4180:</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Option</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delimiter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character separating the values, for example <code>;</code> or a tab.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quoteCharacter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character enclosing quoted values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quoteMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MINIMAL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MINIMAL</code> quotes values containing the delimiter, the quote or escape character or a line break. To be safe for
+  parsers, it also quotes values starting with a character up to <code>#</code> (for example a space), values ending with
+  whitespace and an empty value at the start of a line. <code>ALL</code> quotes every value, <code>NON_NUMERIC</code> every value except
+  numbers and booleans. Values without content (null) are never quoted, so they can be distinguished from empty
+  strings. <code>NONE</code> quotes nothing and escapes delimiters, escape characters and line breaks with the escape character
+  instead (line breaks become <code>\r</code> and <code>\n</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>escapeCharacter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Escapes the quote character in quoted values instead of doubling it. Required for <code>quoteMode</code> <code>NONE</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lineSeparator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CRLF</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CRLF</code> or <code>LF</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>includeHeader</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the first line contains the names of the columns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nullValue</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">empty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The text written for attributes without value, for example <code>\N</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>UTF-8</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The character set, for example <code>windows-1252</code>. Characters it cannot represent are replaced by <code>?</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>byteOrderMark</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starts the file with a byte order mark, which some spreadsheet applications need to
+  detect UTF-8. Only for unicode character sets.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>locale</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A language tag like <code>de-DE</code>. Defines the decimal and grouping separators and the names of months and
+  days in patterns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>decimalSeparator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>.</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the decimal separator of the locale.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupingSeparator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overrides the grouping separator of the locale. Only used by number patterns.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>integerPattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>java.text.DecimalFormat</code> pattern for integral numbers, for example <code><mark>,</mark>#0</code>. Without
+  pattern, integral numbers are written without grouping.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>decimalPattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>java.text.DecimalFormat</code> pattern for decimal numbers, for example <code><mark>,</mark>#0.00</code>. Values
+  are rounded half up. Without pattern, decimal numbers are written with all digits.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>datePattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yyyy-MM-dd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>java.time.format.DateTimeFormatter</code> pattern for dates.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timePattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ISO 8601</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>DateTimeFormatter</code> pattern for times, for example <code>HH:mm</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dateTimePattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ISO 8601</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <code>DateTimeFormatter</code> pattern for timestamps, for example <code>dd.MM.yyyy HH:mm:ss</code>.
+  Defaults to the ISO format with offset, for example <code>2026-01-31T12:45:30.123Z</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timeZone</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Converts timestamps to this time zone before they are formatted, for example <code>Europe/Berlin</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>trueValue</code>, <code>falseValue</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code>, <code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The texts for boolean values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>listSeparator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Separates the elements of multi valued attributes.</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Errors are reported before the response starts:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The csv file is returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>400</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The request is invalid. The service reports the reason with a subclass of <code>InvalidCsvExportRequestException</code>,
+  for example an unknown type, alias or attribute, a part or join without alias or join condition, a meta data type
+  without primary key, types with different key fields, an empty element in the order, an invalid format option, a negative offset or too many rows. The content-repository-service may also reject the filter, for example because of an
+  unknown field.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>403</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The content-repository-service denies the search.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A large export can be split into several requests: request the first part with <code>offset</code> <code>0</code> and <code>maxRows</code> <code>n</code>, the
+following parts with <code>offset</code> <code>n</code>, <code>2n</code>, &#8230;&#8203; and <code>includeHeader</code> <code>false</code> (and without byte order mark), and append
+them. <code>X-Total-Count</code> of the first response tells how many parts are needed. Each part is a separate search, and the
+service reads the pages of a part with offsets as well. Entities that are created, changed or deleted in the meantime
+may therefore be missing or appear twice. An order by attributes that do not change (the default order by the key
+fields)
+keeps the effect small. If the content-repository-service fails after the response has started,
+the service aborts the connection, so the client receives an incomplete file and an error of its HTTP library.</p>
+</div>
+<div class="paragraph">
+<p>The generated clients only return the file. To read the number of entities as well, the SDKs contain a
+<code>CsvExportClient</code> that wraps the generated client and reads the header <code>X-Total-Count</code>. In Java it is part of
+<code>download-service-sdk</code> (package <code>de.eitco.arveo.download.sdk.csv</code>), which both packagings of the Java SDK include.
+Like the generated client, it has the methods <code>exportTypes</code> and <code>exportParts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">CsvExportClient client = <span class="keyword">new</span> CsvExportClient(csvExportResourceClientFactory.newClient());
+
+<span class="keyword">try</span> (CsvExportResponse response = client.exportTypes(request)) {
+
+    <span class="type">long</span> totalCount = response.totalCount();
+    <span class="predefined-type">InputStream</span> csv = response.csv();
+
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An example with the TypeScript SDK is shown in <a href="#typescript-sdk">TypeScript SDK</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="csv-file-exports">5.1. Exporting customer files</h3>
+<div class="paragraph">
+<p>A customer file often consists of several types connected by foreign keys. The following types describe a simple
+example: invoices reference the customer they belong to.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.DOCUMENT)
+<span class="annotation">@FilingEnabled</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">Customer</span> {
+
+    <span class="annotation">@SystemProperty</span>(SystemPropertyName.ID)
+    DocumentId id();
+
+    <span class="annotation">@Unique</span>
+    <span class="predefined-type">String</span> getName();
+    <span class="type">void</span> setName(<span class="predefined-type">String</span> name);
+}
+
+<span class="annotation">@Type</span>(ObjectType.DOCUMENT)
+<span class="annotation">@FilingEnabled</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">Invoice</span> {
+
+    <span class="annotation">@ForeignKey</span>(name = <span class="string"><span class="delimiter">&quot;</span><span class="content">fk_invoice_customer</span><span class="delimiter">&quot;</span></span>, target = Customer.class, targetProperty = <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>)
+    <span class="type">long</span> getCustomerNumber();
+    <span class="type">void</span> setCustomerNumber(<span class="type">long</span> number);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">String</span> getCustomerName();
+    <span class="type">void</span> setCustomerName(<span class="predefined-type">String</span> customerName);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">String</span> getName();
+    <span class="type">void</span> setName(<span class="predefined-type">String</span> name);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">Integer</span> getTotal();
+    <span class="type">void</span> setTotal(<span class="predefined-type">Integer</span> total);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">Boolean</span> getOpen();
+    <span class="type">void</span> setOpen(<span class="predefined-type">Boolean</span> open);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An export of the open invoices with the data of their customers is an export with parts (<code>POST
+/api/csv-export/parts</code>). It has one part: the main type <code>invoice</code>, joined with
+the type <code>customer</code> by the foreign key. Every row of the file is an invoice combined with its customer. A customer with
+several invoices therefore appears in several rows. With the Java SDK the request looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">CsvExportJoin customer = <span class="keyword">new</span> CsvExportJoin();
+customer.setType(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>);
+customer.setAlias(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>);
+customer.setOn(Eql.equal(
+    Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">customer_number</span><span class="delimiter">&quot;</span></span>),
+    Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>)
+));
+
+CsvExportPart invoices = <span class="keyword">new</span> CsvExportPart();
+invoices.setType(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>);
+invoices.setAlias(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>);
+invoices.setJoins(<span class="predefined-type">List</span>.of(customer));
+
+CsvPartsExportRequest request = <span class="keyword">new</span> CsvPartsExportRequest();
+request.setFileName(<span class="string"><span class="delimiter">&quot;</span><span class="content">open-invoices.csv</span><span class="delimiter">&quot;</span></span>);
+request.setParts(<span class="predefined-type">List</span>.of(invoices));
+request.setFilter(Eql.equal(Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">open</span><span class="delimiter">&quot;</span></span>), Eql.value(<span class="predefined-constant">true</span>)));
+request.setOrder(<span class="predefined-type">List</span>.of(
+    <span class="keyword">new</span> Order(OrderDirection.ASCENDING, ContextReference.newInstance(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>)),
+    <span class="keyword">new</span> Order(OrderDirection.DESCENDING, ContextReference.newInstance(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">total</span><span class="delimiter">&quot;</span></span>))
+));
+<span class="comment">// column(alias, attribute, header) creates a CsvColumn with these properties</span>
+request.setColumns(<span class="predefined-type">List</span>.of(
+    column(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Customer number</span><span class="delimiter">&quot;</span></span>),
+    column(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Customer</span><span class="delimiter">&quot;</span></span>),
+    column(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Invoice</span><span class="delimiter">&quot;</span></span>),
+    column(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">total</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Total</span><span class="delimiter">&quot;</span></span>)
+));
+
+CsvFormat format = <span class="keyword">new</span> CsvFormat();
+format.setDelimiter(<span class="string"><span class="delimiter">&quot;</span><span class="content">;</span><span class="delimiter">&quot;</span></span>);
+request.setFormat(format);
+
+<span class="keyword">try</span> (<span class="predefined-type">InputStream</span> csv = csvExportResourceClient.exportParts(request)) {
+    <span class="comment">// ...</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The same request as JSON:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvPartsExportRequest</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">fileName</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">open-invoices.csv</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">parts</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvExportPart</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">alias</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">joins</span><span class="delimiter">&quot;</span></span>: {
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [
+            {
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvExportJoin</span><span class="delimiter">&quot;</span></span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">joinType</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvJoinType</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">@value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">LEFT</span><span class="delimiter">&quot;</span></span>},
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">alias</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>,
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">on</span><span class="delimiter">&quot;</span></span>: {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:eq</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">customer_number</span><span class="delimiter">&quot;</span></span>]}},
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>]}}
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">filter</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:eq</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">left</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">open</span><span class="delimiter">&quot;</span></span>]}},
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">right</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:value</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="value">true</span>}
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">order</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.query.language.api.Order</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">direction</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.query.language.api.OrderDirection</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">@value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">ASCENDING</span><span class="delimiter">&quot;</span></span>},
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>]}}
+      },
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.query.language.api.Order</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">direction</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.commons.query.language.api.OrderDirection</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">@value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">DESCENDING</span><span class="delimiter">&quot;</span></span>},
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">eql:reference</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">reference</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">total</span><span class="delimiter">&quot;</span></span>]}}
+      }
+    ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">columns</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">@list</span><span class="delimiter">&quot;</span></span>: [
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">alias</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Customer number</span><span class="delimiter">&quot;</span></span>
+      },
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">alias</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Customer</span><span class="delimiter">&quot;</span></span>
+      },
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">alias</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Invoice</span><span class="delimiter">&quot;</span></span>
+      },
+      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvColumn</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">alias</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">attribute</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">total</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">header</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Total</span><span class="delimiter">&quot;</span></span>
+      }
+    ]
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">format</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">@type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">de.eitco.arveo.download.api.csv.CsvFormat</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">delimiter</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">;</span><span class="delimiter">&quot;</span></span>}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resulting file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>Customer number;Customer;Invoice;Total
+4503599627371521;ACME Inc.;2026-0815;250
+4503599627371521;ACME Inc.;2026-0802;100
+4503599627371522;Globex Corp.;2026-0811;80</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notes on joins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <code>LEFT</code> join also exports invoices without customer, the customer columns are empty then. An <code>INNER</code> join only
+exports invoices that have a customer.</p>
+</li>
+<li>
+<p>The service adds <code>invoice.id</code> and <code>customer.id</code> to the order. A join may find several entities for one main
+entity, so both ids are needed to read the pages without skipping or repeating rows.</p>
+</li>
+<li>
+<p>A part may contain several joins, for example the customer and the contract of an invoice. Join conditions may
+reference all aliases defined before.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="csv-unions">5.2. Combining different types</h3>
+<div class="paragraph">
+<p>Several parts are combined like <code>UNION ALL</code> in SQL. If the parts use the same aliases, a column with such an alias
+contains the value of the type of each row. Columns of an alias a part does not define are empty for its rows. The
+following parts export invoices with their customer and documents of the type <code>basic_document</code> in one file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">CsvExportPart invoices = ...;            <span class="comment">// invoice as &quot;document&quot;, joined with customer as &quot;customer&quot;</span>
+
+CsvExportPart basicDocuments = <span class="keyword">new</span> CsvExportPart();
+basicDocuments.setType(<span class="string"><span class="delimiter">&quot;</span><span class="content">basic_document</span><span class="delimiter">&quot;</span></span>);
+basicDocuments.setAlias(<span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span>);
+
+request.setParts(<span class="predefined-type">List</span>.of(invoices, basicDocuments));
+request.setColumns(<span class="predefined-type">List</span>.of(
+    column(<span class="predefined-constant">null</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">union_part</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Part</span><span class="delimiter">&quot;</span></span>),
+    column(<span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">type_name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Type</span><span class="delimiter">&quot;</span></span>),
+    column(<span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">customer_name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Customer name</span><span class="delimiter">&quot;</span></span>),   <span class="comment">// both types have this attribute</span>
+    column(<span class="string"><span class="delimiter">&quot;</span><span class="content">customer</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Customer</span><span class="delimiter">&quot;</span></span>)                  <span class="comment">// empty for basic documents</span>
+));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The filter applies to every part. A field that only some of the types have can be referenced by the name of its type
+instead of the alias, for example <code>["invoice", "name"]</code>. The content-repository-service then evaluates the condition
+only in the parts containing this type and treats it as false in the other parts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">request.setFilter(Eql.or(
+    Eql.equal(Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">invoice</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>), Eql.value(<span class="string"><span class="delimiter">&quot;</span><span class="content">2026-0815</span><span class="delimiter">&quot;</span></span>)),
+    Eql.equal(Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">basic_document</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">a_string</span><span class="delimiter">&quot;</span></span>), Eql.value(<span class="string"><span class="delimiter">&quot;</span><span class="content">archived</span><span class="delimiter">&quot;</span></span>))
+));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, each part gets its own <code>filter</code>. It only applies to the rows of the part, so it may reference every
+field of the types of the part by alias. The filter of the request then contains only conditions for all parts, or is
+left out:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">invoices.setFilter(Eql.and(
+    Eql.equal(Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>), Eql.value(<span class="string"><span class="delimiter">&quot;</span><span class="content">2026-0815</span><span class="delimiter">&quot;</span></span>)),
+    Eql.equal(Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">open</span><span class="delimiter">&quot;</span></span>), Eql.value(<span class="predefined-constant">true</span>))
+));
+basicDocuments.setFilter(Eql.equal(Eql.contextReference(<span class="string"><span class="delimiter">&quot;</span><span class="content">document</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">a_string</span><span class="delimiter">&quot;</span></span>), Eql.value(<span class="string"><span class="delimiter">&quot;</span><span class="content">archived</span><span class="delimiter">&quot;</span></span>)));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service adds the ids of the aliases all parts use and the index of the part to the order, <code>document.id</code> in the
+example. If the parts have no alias in common, the order given by the client must be unique.</p>
+</div>
+<div class="paragraph">
+<p>For exports without joins, an export of types is sufficient. Since a row is one entity there, a column with the
+name of a type as alias contains only values of entities of this type, and <code>type_name</code> and <code>union_part</code> tell which
+type a row has.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="csv-meta-data">5.3. Exporting meta data types</h3>
+<div class="paragraph">
+<p>Meta data types have no <code>id</code>. The service orders their rows by the attributes of the primary key instead, so a meta
+data type can only be exported if it has a primary key. The following type is identified by its <code>code</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Type</span>(ObjectType.META)
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">PaymentTerm</span> {
+
+    <span class="annotation">@PrimaryKey</span>
+    <span class="predefined-type">String</span> getCode();
+    <span class="type">void</span> setCode(<span class="predefined-type">String</span> code);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">String</span> getName();
+    <span class="type">void</span> setName(<span class="predefined-type">String</span> name);
+
+    <span class="annotation">@Optional</span>
+    <span class="predefined-type">Integer</span> getDays();
+    <span class="type">void</span> setDays(<span class="predefined-type">Integer</span> days);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A meta data type is exported like every other type, in an export of types or as type of a part or join. Without an order given
+by the client, the rows are ordered by the primary key:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">CsvTypesExportRequest request = <span class="keyword">new</span> CsvTypesExportRequest();
+request.setTypes(<span class="predefined-type">List</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">payment_term</span><span class="delimiter">&quot;</span></span>));
+request.setColumns(<span class="predefined-type">List</span>.of(column(<span class="predefined-constant">null</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Code</span><span class="delimiter">&quot;</span></span>), column(<span class="predefined-constant">null</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">days</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Days</span><span class="delimiter">&quot;</span></span>)));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The union search of the content-repository-service resolves the fields of the order in the first part. The types an
+alias refers to in the different parts, and the types of <code>types</code>, must therefore have the same key fields: a meta data
+type cannot be combined with documents, folders, containers or relations under the same alias, and meta data types can
+only be combined with each other if their primary keys consist of the same attributes. Otherwise the service rejects
+the request with an <code>IncompatibleCsvExportTypesException</code>. Under different aliases, for example a meta data type
+joined with documents, the types can be combined freely.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="typescript-sdk">6. TypeScript SDK</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Web applications can call the API with the generated TypeScript SDK, the npm package <code>@eitco/download-service</code>
+(Maven artifact <code>de.eitco.arveo.download:download-service-client-typescript</code>, type <code>tgz</code>). The SDK sends its requests
+with the <code>HttpClient</code> of Angular, via the package <code>@eitco/asdl-library-angular-http</code>. The filters and the order of
+csv exports are EQL expressions of the package <code>@eitco/eql</code>. The package <code>@eitco/download-service-sdk</code> adds client side
+utilities to the generated SDK, for example the number of entities of a csv export (see <a href="#_number_of_entities">Number of entities</a>).</p>
+</div>
+<div class="paragraph">
+<p>The examples in this chapter are taken from the TypeScript integration tests of the download-service
+(<code>test/system-test/src/test/ts</code>). Every method of the SDK returns an RxJS <code>Observable</code>, the examples convert them to
+promises with <code>firstValueFrom</code>. IDs and other <code>long</code> values, for example the <code>size</code> of a zip job, are strings in
+TypeScript.</p>
+</div>
+<div class="sect2">
+<h3 id="_creating_the_clients">6.1. Creating the clients</h3>
+<div class="paragraph">
+<p>The SDK uses the Angular <code>HttpClient</code> of the application. Its interceptors apply to the requests of the SDK as well, so
+the access token is added the same way as for other requests of the application, for example by the interceptor of
+<code>angular-oauth2-oidc</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">import {HttpClient} from '@angular/common/http';
+import {Angular17HttpRequestExecutorImpl} from '@eitco/asdl-library-angular-http';
+import {HttpClient as AsdlHttpClient} from '@eitco/asdl-library-http';
+import {
+    CsvExportResourceClient,
+    CsvExportResourceClientImplementation,
+    DownloadServiceResourceClient,
+    DownloadServiceResourceClientImplementation,
+    InfoResourceClient,
+    InfoResourceClientImplementation,
+    ZipDownloadResourceClient,
+    ZipDownloadResourceClientImplementation,
+} from '@eitco/download-service';
+import {CsvExportClient} from '@eitco/download-service-sdk';
+
+// serviceUrl is the base url of the download-service, for example 'https://download.example.com'
+const executor = new Angular17HttpRequestExecutorImpl(angularHttpClient);
+const httpClient = new AsdlHttpClient(executor);
+
+const info = new InfoResourceClientImplementation(httpClient, serviceUrl);
+const download = new DownloadServiceResourceClientImplementation(httpClient, serviceUrl);
+const zip = new ZipDownloadResourceClientImplementation(httpClient, serviceUrl);
+const csv = new CsvExportResourceClientImplementation(httpClient, serviceUrl);
+
+// additionally returns the number of entities of a csv export (package @eitco/download-service-sdk)
+const csvExport = new CsvExportClient(executor, serviceUrl);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_downloading_content">6.2. Downloading content</h3>
+<div class="paragraph">
+<p>The download methods return the content as <code>Blob</code> (see <a href="#_download_links">Download links</a> for the parameters):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">// documentId is the id of the document in the content-repository-service, for example '281474976712345'
+const content: Blob = await firstValueFrom(download.downloadLatest(documentId, 'content'));
+
+// versionId is the id of a version of a document, for example '281474976798765'
+const content: Blob = await firstValueFrom(download.downloadVersion(versionId, 'content'));</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To offer a file for download in the browser, a plain download link is usually the better choice: the browser
+downloads the file directly and the application does not hold it in memory.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_zip_downloads">6.3. Zip downloads</h3>
+<div class="paragraph">
+<p>A zip download consists of several requests (see <a href="#zip-downloads">Zip downloads</a>): create the job, poll it until it is completed,
+download the zip file and optionally delete the job. A function polling the job:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">/**
+ * Polls the job until it is completed or failed.
+ */
+function awaitCompletion(zip: ZipDownloadResourceClient, jobId: string): Observable&lt;ZipJob&gt; {
+    return timer(0, 500).pipe(
+        concatMap(() =&gt; zip.getZipJob(jobId)),
+        filter(job =&gt; job.status === ZipJobStatus.COMPLETED || job.status === ZipJobStatus.FAILED),
+        take(1),
+    );
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The whole download:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">// without 'fileName', an entry gets the file name stored with the content element
+const request = new ZipRequest({
+    fileName: 'export.zip',
+    entries: [
+        new ZipEntryRequest({documentId: documentId, contentName: 'content', folder: 'invoices/2026', fileName: 'first.txt'}),
+        new ZipEntryRequest({versionId: versionId, contentName: 'content', folder: 'invoices/2025', fileName: 'old.txt'}),
+    ],
+});
+
+const created = await firstValueFrom(zip.createZipJob(request));
+const job = await firstValueFrom(awaitCompletion(zip, created.id));
+
+if (job.status === ZipJobStatus.FAILED) {
+    throw new Error(job.error);
+}
+
+const zipFile: Blob = await firstValueFrom(zip.downloadZip(job.id, null, null));
+
+// optional, otherwise the job is deleted after the retention time
+await firstValueFrom(zip.deleteZipJob(job.id));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The parameters <code>range</code> and <code>ifRange</code> of <code>downloadZip</code> resume an interrupted download. <code>received</code> contains the bytes
+that were received before the interruption:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">// request the rest of the file, the etag ensures that it belongs to the same zip file
+const rest: Blob = await firstValueFrom(zip.downloadZip(job.id, `bytes=${received.length}-`, job.etag));</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_csv_exports">6.4. Csv exports</h3>
+<div class="paragraph">
+<p>The generated client has a method for each kind of csv export (see <a href="#csv-exports">Csv exports</a>): <code>exportTypes</code> with a
+<code>CsvTypesExportRequest</code> and <code>exportParts</code> with a <code>CsvPartsExportRequest</code>. An export of types with a filter, an order,
+two columns and a different delimiter. The csv file is returned as <code>Blob</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">// exports the documents of the type 'basic_document' whose attribute 'a_string' has the value of 'group'
+const request = new CsvTypesExportRequest({
+    fileName: 'customers.csv',
+    types: ['basic_document'],
+    filter: new Equality({
+        left: new ContextReference({reference: ['a_string']}),
+        right: new Value({value: group}),
+    }),
+    order: [
+        new Order({direction: OrderDirection.ASCENDING, reference: new ContextReference({reference: ['customer_name']})}),
+    ],
+    columns: [
+        new CsvColumn({attribute: 'customer_name', header: 'Customer'}),
+        // without header the attribute name is used
+        new CsvColumn({attribute: 'a_string'}),
+    ],
+    format: new CsvFormat({delimiter: ';'}),
+});
+
+const csv: string = await firstValueFrom(csvExport.exportTypes(request).pipe(concatMap(file =&gt; file.text())));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An export with parts references the types by alias:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">// an export with parts references the types by the aliases of the parts, joins are added with 'joins'
+const request = new CsvPartsExportRequest({
+    parts: [new CsvExportPart({type: 'basic_document', alias: 'document'})],
+    filter: new Equality({
+        left: new ContextReference({reference: ['document', 'a_string']}),
+        right: new Value({value: group}),
+    }),
+    order: [
+        new Order({direction: OrderDirection.ASCENDING, reference: new ContextReference({reference: ['document', 'customer_name']})}),
+    ],
+    columns: [
+        new CsvColumn({alias: 'document', attribute: 'customer_name', header: 'Customer'}),
+        new CsvColumn({alias: 'document', attribute: 'type_name', header: 'Type'}),
+    ],
+});
+
+const csv: string = await firstValueFrom(csvExport.exportParts(request).pipe(concatMap(file =&gt; file.text())));</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_number_of_entities">6.4.1. Number of entities</h4>
+<div class="paragraph">
+<p>The header <code>X-Total-Count</code> of the response contains the number of entities matching the filter, independent of
+<code>offset</code> and <code>maxRows</code>. The methods of the generated client only return the body of the response. The package
+<code>@eitco/download-service-sdk</code> (Maven artifact <code>de.eitco.arveo.download:download-service-sdk-typescript</code>, type <code>tgz</code>)
+contains a <code>CsvExportClient</code> that reads the header as well. It is created with the executor of the other clients (see
+<a href="#_creating_the_clients">Creating the clients</a>) and, like the generated client, has the methods <code>exportTypes</code> and <code>exportParts</code>. They return
+the csv file together with the number of entities:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">const {csv, totalCount} = await firstValueFrom(csvExport.exportTypes(request));</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the browser, JavaScript can only read the response headers that the CORS configuration of the
+download-service exposes. The default configuration exposes <code>X-Total-Count</code>, see
+<code>security.general.cors-configuration.exposed-headers</code> in <a href="#configuration">Configuration</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With the number of entities, a large export can be split into several requests (see <a href="#csv-exports">Csv exports</a>). The first
+request tells how many parts are needed, the following parts are requested without header line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript">const maxRows = 2;
+
+// the parts must have a stable order
+const part = (offset: number) =&gt; new CsvTypesExportRequest({
+    types: ['basic_document'],
+    filter: new Equality({left: new ContextReference({reference: ['a_string']}), right: new Value({value: group})}),
+    order: [new Order({direction: OrderDirection.ASCENDING, reference: new ContextReference({reference: ['customer_name']})})],
+    columns: [new CsvColumn({attribute: 'customer_name', header: 'Customer'})],
+    offset: String(offset),
+    maxRows: maxRows,
+    // only the first part has a header line
+    format: new CsvFormat({includeHeader: offset === 0}),
+});
+
+const first = await firstValueFrom(csvExport.exportTypes(part(0)));
+const parts = [await first.csv.text()];
+
+// X-Total-Count of the first part tells how many parts are needed
+for (let offset = maxRows; offset &lt; first.totalCount; offset += maxRows) {
+    const next = await firstValueFrom(csvExport.exportTypes(part(offset)));
+    parts.push(await next.csv.text());
+}
+
+const csv = parts.join('');</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_errors">6.5. Errors</h3>
+<div class="paragraph">
+<p>If the service answers with an error status, the observable fails with the <code>HttpErrorResponse</code> of Angular. Its
+<code>status</code> is the status code described in the chapters of the endpoints, for example <code>400</code> for an invalid request.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_other_endpoints">7. Other endpoints</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -502,7 +1468,7 @@ of the user expires, typically after 5 minutes. A failed job has to be created a
 </div>
 </div>
 <div class="sect1">
-<h2 id="_prerequisites">6. Prerequisites</h2>
+<h2 id="_prerequisites">8. Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To run the download-service, you need:</p>
@@ -528,14 +1494,14 @@ secrets,</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="idp-setup">7. Setting up the identity provider</h2>
+<h2 id="idp-setup">9. Setting up the identity provider</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The download-service needs two clients at the IDP. The following describes the setup for Keycloak. Other IDPs need
 equivalent settings.</p>
 </div>
 <div class="sect2">
-<h3 id="_login_client_authorization_code_flow">7.1. Login client (authorization code flow)</h3>
+<h3 id="_login_client_authorization_code_flow">9.1. Login client (authorization code flow)</h3>
 <div class="paragraph">
 <p>The browser uses this client to log in.</p>
 </div>
@@ -559,7 +1525,7 @@ the client registration in the download-service configuration (see <a href="#con
 </div>
 </div>
 <div class="sect2">
-<h3 id="token-exchange-client">7.2. Token exchange client (on behalf of flow)</h3>
+<h3 id="token-exchange-client">9.2. Token exchange client (on behalf of flow)</h3>
 <div class="paragraph">
 <p>The download-service uses this client to exchange the user&#8217;s token for a token for the content-repository-service.</p>
 </div>
@@ -595,7 +1561,7 @@ an audience (audience mapper in Keycloak).</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration">8. Configuration</h2>
+<h2 id="configuration">10. Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The download-service is a Spring Boot application. You can provide the configuration with any mechanism that
@@ -620,7 +1586,7 @@ application name, and therefore the name of the configuration file at the config
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_complete_example">8.1. Complete example</h3>
+<h3 id="_complete_example">10.1. Complete example</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">server</span>:
@@ -711,7 +1677,7 @@ redirect URI that you have to register at the IDP.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="impersonation">8.2. Impersonation and refresh tokens</h3>
+<h3 id="impersonation">10.2. Impersonation and refresh tokens</h3>
 <div class="paragraph">
 <p>The download-service ships with the following defaults. You do not have to configure them:</p>
 </div>
@@ -767,7 +1733,7 @@ limit the size of zip jobs (see <a href="#zip-properties">[zip-properties]</a>) 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_service_properties">8.3. Service properties</h3>
+<h3 id="_service_properties">10.3. Service properties</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 37.5%;">
@@ -848,9 +1814,39 @@ limit the size of zip jobs (see <a href="#zip-properties">[zip-properties]</a>) 
 </tr>
 </tbody>
 </table>
+<div id="csv-properties" class="paragraph">
+<p>The following properties configure csv exports (see <a href="#csv-exports">Csv exports</a>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.csv.max-rows</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1000000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of rows of a csv export. It is also used if a request does not limit the rows.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.csv.page-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>500</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of entities read from the content-repository-service with one request while a csv file is streamed.
+  Larger pages need fewer requests, but more memory. The content-repository-service may limit the page size.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
-<h3 id="_security_properties">8.4. Security properties</h3>
+<h3 id="_security_properties">10.4. Security properties</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 37.5%;">
@@ -877,15 +1873,17 @@ limit the size of zip jobs (see <a href="#zip-properties">[zip-properties]</a>) 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>security.general.cors-configuration.*</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">all origins, headers and common methods allowed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all origins, headers and common methods allowed, <code>X-Total-Count</code> exposed</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The CORS configuration. Restrict <code>allowed-origins</code> if the API is called from JavaScript in other web applications.
-  Plain download links do not need CORS.</p></td>
+  Plain download links do not need CORS. JavaScript clients can only read the response headers listed in
+  <code>exposed-headers</code>. Keep <code>X-Total-Count</code> in the list if you change it, the csv exports need it (see
+  <a href="#typescript-sdk">TypeScript SDK</a>).</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="service-discovery">8.5. Service discovery</h3>
+<h3 id="service-discovery">10.5. Service discovery</h3>
 <div class="paragraph">
 <p>The download-service finds the content-repository-service with Spring Cloud service discovery, using the service ID
 <code>content-repository-service</code>. You have the following options:</p>
@@ -905,7 +1903,7 @@ services and endpoints.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_logging">8.6. Logging</h3>
+<h3 id="_logging">10.6. Logging</h3>
 <div class="paragraph">
 <p>By default, the service logs to the console and to the file <code>logs/download-service.log</code> in the working directory. You
 can change the log levels at runtime with the <code>/actuator/loggers</code> endpoint or with the usual Spring Boot properties,
@@ -923,10 +1921,10 @@ for example:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_deployment">9. Deployment</h2>
+<h2 id="_deployment">11. Deployment</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_container_image">9.1. Container image</h3>
+<h3 id="_container_image">11.1. Container image</h3>
 <div class="paragraph">
 <p>The main deliverable is a container image:</p>
 </div>
@@ -950,7 +1948,7 @@ for example:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_kubernetes">9.2. Kubernetes</h3>
+<h3 id="_kubernetes">11.2. Kubernetes</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -974,7 +1972,7 @@ not stored in the container file system.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_windows_service">9.3. Windows service</h3>
+<h3 id="_windows_service">11.3. Windows service</h3>
 <div class="paragraph">
 <p>The build also creates a zip file (<code>download-service-&lt;version&gt;-zip.zip</code>) that contains:</p>
 </div>
@@ -1002,7 +2000,7 @@ download-service.exe start</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_running_behind_a_reverse_proxy">9.4. Running behind a reverse proxy</h3>
+<h3 id="_running_behind_a_reverse_proxy">11.4. Running behind a reverse proxy</h3>
 <div class="paragraph">
 <p>The download links point to the download-service, and the IDP redirects the browser back to the download-service
 after the login. Therefore:</p>
@@ -1032,7 +2030,7 @@ redirect URI (for example <code>http://</code> instead of <code>https://</code>)
 </div>
 </div>
 <div class="sect1">
-<h2 id="_using_download_links_in_external_applications">10. Using download links in external applications</h2>
+<h2 id="_using_download_links_in_external_applications">12. Using download links in external applications</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>You can use the links like any other link to a file, for example in a SharePoint page, a Teams message or an HTML
@@ -1066,7 +2064,7 @@ for references that must not change, for example in approvals or audit documents
 </div>
 </div>
 <div class="sect1">
-<h2 id="_troubleshooting">11. Troubleshooting</h2>
+<h2 id="_troubleshooting">13. Troubleshooting</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1116,10 +2114,10 @@ for references that must not change, for example in approvals or audit documents
 </div>
 </div>
 <div class="sect1">
-<h2 id="_release_notes">12. Release Notes</h2>
+<h2 id="_release_notes">14. Release Notes</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_release_notes_13_1_0_snapshot_october_21_2026">12.1. Release notes 13.1.0-SNAPSHOT (October 21, 2026)</h3>
+<h3 id="_release_notes_13_1_0_snapshot_october_21_2026">14.1. Release notes 13.1.0-SNAPSHOT (October 21, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -1134,6 +2132,15 @@ for references that must not change, for example in approvals or audit documents
 <li>
 <p>ECR-1926: Added zip downloads: a client describes the structure of a zip file with documents or versions and their target folders, the service builds the zip file asynchronously (<code>/api/zip-jobs</code>) and offers it for a resumable download using HTTP range requests. Entries referencing a document by its id are pinned to the version that is current when the job is created, so later changes of the document do not affect the zip file.</p>
 </li>
+<li>
+<p>ECR-1928: Added csv exports of meta data with two endpoints: <code>POST /api/csv-export/types</code> (<code>CsvTypesExportRequest</code>) exports one or more types without joins, <code>POST /api/csv-export/parts</code> (<code>CsvPartsExportRequest</code>) exports parts with joins. A client sends an EQL filter expression, an optional order (a list of EQL <code>Order</code>) and offset, a mapping of attributes and system fields to csv columns and format options (delimiter, quote character and mode, escape character, line separator, header line, null value, charset and byte order mark, locale, decimal and grouping separators, number, date, time and timestamp patterns, time zone, boolean texts, list separator) and an optional maximum number of rows. The csv file is streamed while the entities are read page by page from the content-repository-service; the header <code>X-Total-Count</code> contains the number of matching entities. Invalid requests are reported with the subclasses of <code>InvalidCsvExportRequestException</code>, e.g. <code>UnknownCsvColumnAttributeException</code>, <code>InvalidCsvOffsetException</code> or <code>InvalidCsvFormatOptionException</code>. With <code>offset</code>, <code>maxRows</code> and the format option <code>includeHeader</code>, a large export can be split into several requests. Exports with parts use the union search of the content-repository-service: a part joins types by conditions like foreign keys (e.g. invoices with the customer file they belong to), several parts are combined in one file, each part may have an own filter in addition to the filter of the request. Columns reference attributes by alias, the pseudo fields <code>type_name</code> and <code>union_part</code> tell where a row comes from. Exports of types use the union search as well, with one part per type. Meta data types can be exported if they have a primary key: their rows are ordered by the primary key instead of the id. Meta data types without primary key are rejected with <code>UnsupportedCsvExportTypeException</code>, types with different key fields (a meta data type and other types under the same alias) with <code>IncompatibleCsvExportTypesException</code>.</p>
+</li>
+<li>
+<p>ECR-1928: The documentation describes the use of the TypeScript SDK (<code>@eitco/download-service</code>) for downloads, zip downloads and csv exports. The examples are taken from new TypeScript integration tests, which run the SDK in an Angular test bed with Karma and a headless Chrome.</p>
+</li>
+<li>
+<p>ECR-1928: Added a <code>CsvExportClient</code> to the Java SDK (<code>download-service-sdk</code>, package <code>de.eitco.arveo.download.sdk.csv</code>) and to the new TypeScript package <code>@eitco/download-service-sdk</code> (<code>download-service-sdk-typescript</code>). It wraps the generated client of the csv export, offers its methods <code>exportTypes</code> and <code>exportParts</code> and returns the csv file together with the number of entities matching the filter (header <code>X-Total-Count</code>), which the generated clients do not expose.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -1141,6 +2148,13 @@ for references that must not change, for example in approvals or audit documents
 </div>
 <div class="paragraph">
 <p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1928: A download or csv export that fails after the response has started, e.g. because the content-repository-service cannot be reached or the session of the user at the IDP has ended, now aborts the connection. Before, the response ended like a complete one, so a client could not notice that the file was incomplete. The fix is part of <code>asdl-runtime-http-server-spring</code> 13.1.1, the download-service uses it instead of the version managed by the commons BOM.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
@@ -1156,6 +2170,12 @@ for references that must not change, for example in approvals or audit documents
 <li>
 <p>ECR-1926: Added the properties <code>download-service.zip.*</code> to configure the directory, retention time and limits of zip downloads.</p>
 </li>
+<li>
+<p>ECR-1928: Added the properties <code>download-service.csv.max-rows</code> (default: <code>1000000</code>) and <code>download-service.csv.page-size</code> (default: <code>500</code>) to limit csv exports and to configure the number of entities read with one request.</p>
+</li>
+<li>
+<p>ECR-1928: The default CORS configuration exposes the header <code>X-Total-Count</code> (<code>security.general.cors-configuration.exposed-headers</code>), so that JavaScript clients in the browser can read the number of entities of a csv export. If you override <code>exposed-headers</code>, keep <code>X-Total-Count</code> in the list.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -1165,7 +2185,7 @@ for references that must not change, for example in approvals or audit documents
 </details>
 </div>
 <div class="sect2">
-<h3 id="_release_notes_13_0_3_october_14_2026">12.2. Release notes 13.0.3 (October 14, 2026)</h3>
+<h3 id="_release_notes_13_0_3_october_14_2026">14.2. Release notes 13.0.3 (October 14, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -1198,7 +2218,7 @@ for references that must not change, for example in approvals or audit documents
 </details>
 </div>
 <div class="sect2">
-<h3 id="_release_notes_13_0_2_october_06_2026">12.3. Release notes 13.0.2 (October 06, 2026)</h3>
+<h3 id="_release_notes_13_0_2_october_06_2026">14.3. Release notes 13.0.2 (October 06, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
@@ -1228,7 +2248,7 @@ for references that must not change, for example in approvals or audit documents
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-21 00:31:04 UTC
+Last updated 2026-10-21 16:37:12 UTC
 </div>
 </div>
 <style>

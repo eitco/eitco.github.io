@@ -458,6 +458,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>ECR-1926: Added zip downloads: a client describes the structure of a zip file with documents or versions and their target folders, the service builds the zip file asynchronously (<code>/api/zip-jobs</code>) and offers it for a resumable download using HTTP range requests. Entries referencing a document by its id are pinned to the version that is current when the job is created, so later changes of the document do not affect the zip file.</p>
 </li>
+<li>
+<p>ECR-1928: Added csv exports of meta data with two endpoints: <code>POST /api/csv-export/types</code> (<code>CsvTypesExportRequest</code>) exports one or more types without joins, <code>POST /api/csv-export/parts</code> (<code>CsvPartsExportRequest</code>) exports parts with joins. A client sends an EQL filter expression, an optional order (a list of EQL <code>Order</code>) and offset, a mapping of attributes and system fields to csv columns and format options (delimiter, quote character and mode, escape character, line separator, header line, null value, charset and byte order mark, locale, decimal and grouping separators, number, date, time and timestamp patterns, time zone, boolean texts, list separator) and an optional maximum number of rows. The csv file is streamed while the entities are read page by page from the content-repository-service; the header <code>X-Total-Count</code> contains the number of matching entities. Invalid requests are reported with the subclasses of <code>InvalidCsvExportRequestException</code>, e.g. <code>UnknownCsvColumnAttributeException</code>, <code>InvalidCsvOffsetException</code> or <code>InvalidCsvFormatOptionException</code>. With <code>offset</code>, <code>maxRows</code> and the format option <code>includeHeader</code>, a large export can be split into several requests. Exports with parts use the union search of the content-repository-service: a part joins types by conditions like foreign keys (e.g. invoices with the customer file they belong to), several parts are combined in one file, each part may have an own filter in addition to the filter of the request. Columns reference attributes by alias, the pseudo fields <code>type_name</code> and <code>union_part</code> tell where a row comes from. Exports of types use the union search as well, with one part per type. Meta data types can be exported if they have a primary key: their rows are ordered by the primary key instead of the id. Meta data types without primary key are rejected with <code>UnsupportedCsvExportTypeException</code>, types with different key fields (a meta data type and other types under the same alias) with <code>IncompatibleCsvExportTypesException</code>.</p>
+</li>
+<li>
+<p>ECR-1928: The documentation describes the use of the TypeScript SDK (<code>@eitco/download-service</code>) for downloads, zip downloads and csv exports. The examples are taken from new TypeScript integration tests, which run the SDK in an Angular test bed with Karma and a headless Chrome.</p>
+</li>
+<li>
+<p>ECR-1928: Added a <code>CsvExportClient</code> to the Java SDK (<code>download-service-sdk</code>, package <code>de.eitco.arveo.download.sdk.csv</code>) and to the new TypeScript package <code>@eitco/download-service-sdk</code> (<code>download-service-sdk-typescript</code>). It wraps the generated client of the csv export, offers its methods <code>exportTypes</code> and <code>exportParts</code> and returns the csv file together with the number of entities matching the filter (header <code>X-Total-Count</code>), which the generated clients do not expose.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -465,6 +474,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="paragraph">
 <p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1928: A download or csv export that fails after the response has started, e.g. because the content-repository-service cannot be reached or the session of the user at the IDP has ended, now aborts the connection. Before, the response ended like a complete one, so a client could not notice that the file was incomplete. The fix is part of <code>asdl-runtime-http-server-spring</code> 13.1.1, the download-service uses it instead of the version managed by the commons BOM.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
@@ -479,6 +495,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li>
 <p>ECR-1926: Added the properties <code>download-service.zip.*</code> to configure the directory, retention time and limits of zip downloads.</p>
+</li>
+<li>
+<p>ECR-1928: Added the properties <code>download-service.csv.max-rows</code> (default: <code>1000000</code>) and <code>download-service.csv.page-size</code> (default: <code>500</code>) to limit csv exports and to configure the number of entities read with one request.</p>
+</li>
+<li>
+<p>ECR-1928: The default CORS configuration exposes the header <code>X-Total-Count</code> (<code>security.general.cors-configuration.exposed-headers</code>), so that JavaScript clients in the browser can read the number of entities of a csv export. If you override <code>exposed-headers</code>, keep <code>X-Total-Count</code> in the list.</p>
 </li>
 </ul>
 </div>
@@ -555,7 +577,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-21 00:31:17 UTC
+Last updated 2026-10-21 16:37:57 UTC
 </div>
 </div>
 </body>
