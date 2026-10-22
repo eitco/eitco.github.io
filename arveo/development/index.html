@@ -5783,6 +5783,17 @@ the end of the retention interval is reached.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the protection level of the immutability policies. Can be <code>LOCKED</code> or <code>UNLOCKED</code>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>UNLOCKED</code></p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deleteBatchSize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of blobs deleted with a single batch request. Must be between 1 and 256, the maximum
+  supported by Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">256</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deleteConcurrency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of batch requests sent in parallel when deleting many blobs.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -26615,6 +26626,11 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kubernetes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.32 to 1.37</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Older versions may work, too.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">JDK</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Java 21</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integration tests run on Eclipse Temurin 21, but all JDKs are supported</p></td>
@@ -26699,6 +26715,9 @@ AWS S3</p></td>
 <li>
 <p>ECR-1947: Purge now checks the retention period and the litigation hold before the content is removed from the storage. Before, purging a retention protected document without the required authority removed its content from the storage, although the document itself was kept because the subsequent delete failed.</p>
 </li>
+<li>
+<p>ECR-1952: The Azure blob storage plugin no longer reports blobs as deleted that Azure failed to delete. Before, such blobs remained in the container unnoticed when a purge failed to delete some of them. They are now scheduled for the purge content job like other failed deletes. Purging documents now also schedules content of older versions for the purge content job when it cannot be deleted from the storage. Before, only content of the current version was scheduled. Purging many documents is also faster, because the Azure blob storage plugin now sends its delete batches in parallel.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -26706,6 +26725,13 @@ AWS S3</p></td>
 </div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1952: The Azure blob storage plugin has the new parameter <code>deleteConcurrency</code> (default 4), the maximum number of delete batch requests sent in parallel. The parameter <code>deleteBatchSize</code> is now validated on startup and must be between 1 and 256.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
@@ -29028,7 +29054,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-22 08:00:31 UTC
+Last updated 2026-10-22 16:24:42 UTC
 </div>
 </div>
 <style>
