@@ -485,6 +485,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#views">3.7. Configure views</a>
 <ul class="sectlevel3">
 <li><a href="#_understand_the_view_matrices">3.7.1. Understand the view matrices</a></li>
+<li><a href="#config-lookups">3.7.2. Configure lookup-backed attributes</a></li>
 </ul>
 </li>
 <li><a href="#categories">3.8. Organize scenarios into categories</a>
@@ -526,7 +527,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 0.1.3-SNAPSHOT; source 5d79782de2a941e3f0bc0af1e7e1d08cfc9be135.</p>
+<p>Version 0.1.3-SNAPSHOT; source e74de3b6ab3c1f402da3b08ab3e9d0af6557db5f.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -792,6 +793,24 @@ reported as success; check the refreshed membership before retrying.</p>
 <p>Use the search fields offered by the scenario, choose a supported operator and enter a value of the displayed type. For example, search for a known document name, then clear the search to return to the complete permitted list. Sort using the available table headings; use paging to move through results. Configuration determines available columns, order and searchable fields.</p>
 </div>
 <div class="paragraph">
+<p>When a field uses an administrator-configured lookup, select a permitted repository value from its dropdown instead of entering arbitrary text. Labels can combine several columns with ` — `; the filter uses the stored key, never the displayed label. Depending on its settings, the dropdown allows one or several selections and optional case-insensitive search. Multiple stored keys match with OR within that field; other active fields still narrow the query.
+When search is enabled, start typing and continue in the same input as the dropdown opens; opening it does not move focus to <strong>Retry</strong>. Typing searches the options without applying a document filter until a value is selected.
+Empty lookup search filters show the field name inside the input, matching the other search fields, rather than as a separate label above it.
+Multiple-selection dropdowns show checkboxes beside the matches and stay open when a value is selected or deselected. Click a row or use the arrow keys and Enter to toggle a value; press Escape or click outside to close the dropdown. While a selected key is being validated, the dropdown stays open and further checkbox changes are temporarily unavailable; continue selecting once validation finishes. Checkboxes reflect confirmed selections only. Changing visible matches preserves selections on other pages.
+Scroll through the matches to browse more records. Single- and multiple-selection dropdowns automatically load the next page when you reach the final 10% of the scroll range, without a <strong>Load more records</strong> button. If loading fails, use <strong>Retry</strong> to continue.
+Active lookup filters show the latest selected match in that input without extra search captions, repeated labels or selection-removal buttons. The green filter chips use the same configured display columns as the dropdown, including for restored selections; unresolved values fall back to their stored key. Use a chip&#8217;s <strong>×</strong> button to remove only that selected key: other selections and active fields remain applied, and the dropdown reflects the remaining selections. Removing the last key clears that lookup filter; <strong>Clear all</strong> removes all filters. Filtering still uses exact stored keys, not chip labels, even when several selections have the same label.</p>
+</div>
+<div class="paragraph">
+<p>Select lookup values individually, including across pages; lookup-filter <strong>Select all</strong> is deferred to AFC-134 and is not available.
+Press <strong>Escape</strong> to close the dropdown and cancel its search. The search text clears, and reopening starts with unfiltered values. Committed selections and active filter chips remain. Replace the input text to start another query, or erase it to browse unfiltered values; editing the search text alone does not remove active filter chips.</p>
+</div>
+<div class="paragraph">
+<p>Restored lookup selections resolve separately from dropdown search and paging. A value outside the visible page is not cleared. Unavailable or ambiguous saved selections and retry actions remain visible beside the lookup input when the dropdown is closed; the stored keys remain in the active chips. If the administrator changes a mapping or disables its filter, incompatible saved filter preferences are discarded before querying. If its source type disappears or is no longer a supported document/container type, the lookup control is omitted until the configuration can be repaired.</p>
+</div>
+<div class="paragraph">
+<p>Lookup browsing and saved-value resolution also require access to a configured source scenario and permission to read its records or documents. All configured label, stored-value and dropdown search columns must be visible in that source&#8217;s Details and permitted for you. If access changes or a required column is hidden, the lookup cannot use another scenario to bypass that restriction in the matching active source. Keep existing selections and ask an administrator to check the source scenario and field visibility; an unavailable lookup is not proof that a saved value was deleted.</p>
+</div>
+<div class="paragraph">
 <p>Select a row to open the document workspace. Choose <strong>Details</strong> to inspect metadata. Read-only fields cannot be changed and retain their stored values when other fields are saved. Dates, enumerations and references use their corresponding controls rather than arbitrary text. Not every configured field has a control in every view. There are no column-header filter controls or table CSV/ZIP export actions in this version.</p>
 </div>
 <div class="imageblock">
@@ -820,6 +839,15 @@ reported as success; check the refreshed membership before retrying.</p>
 </div>
 <div class="paragraph">
 <p>To edit, open the existing item and use its edit action. Change writable fields and save. Metadata-only edits leave unchanged content intact. When replacing original content, check filename and MIME information before saving. A failed save is not proof that nothing was stored: reload the item before retrying.</p>
+</div>
+<div class="paragraph">
+<p>Configured metadata lookups show a single-selection dropdown. Choose the displayed item; its stored key, not its label, is saved. A saved value outside the current page or dropdown search is resolved independently. Optional editable fields offer <strong>Clear selection</strong>; required fields still need a value, and read-only or permission-restricted fields cannot be changed through the dropdown.</p>
+</div>
+<div class="paragraph">
+<p>Wait while selections load. Empty results do not mean that an existing value should be erased. If loading fails, keep the draft and use <strong>Retry</strong>. A confirmed unavailable selection remains visible: depending on the administrator&#8217;s policy, it is preserved or an editable field requires replacement before saving. An ambiguous/invalid selection is not resolved by choosing the first matching row. A temporary service failure is shown separately and does not silently clear data or turn into a removal.</p>
+</div>
+<div class="paragraph">
+<p>In a strict one-to-many scenario, an administrator may enable choosing another parent. Creation starts with the selected record&#8217;s referenced key, which need not be its ID. If the parent field is editable and you have the required grant, select another parent and save. After a successful move, the original record&#8217;s document list refreshes and the moved document disappears from that list. Creation under another parent likewise does not add a row to the original parent&#8217;s list. A failed save retains your draft parent selection for retry; it does not change the persisted relationship. When the setting is disabled or the field is read-only, keep the existing parent. Many-to-many scenarios continue using their separate membership controls.</p>
 </div>
 <div class="paragraph">
 <p>Trash and permanent deletion are different actions. Where the scenario enables the
@@ -1024,6 +1052,15 @@ items before starting again. Repository retention restrictions still apply.</p>
 <p>Loading errors can result from inaccessible content, invalid format metadata, missing renditions or viewer initialization failures. Check the content selector, try an available original, and reload through Shell if needed. An empty preview alone does not establish an authorization failure. Report the scenario, document and selected element to your administrator without including credentials.</p>
 </div>
 <div class="paragraph">
+<p>Content and annotations may be unavailable while a document is in the recycle bin,
+including content and annotations of historical versions. Retention does not guarantee
+preview or download access while trashed; a failed read does not prove that content
+was deleted. If access is needed, use the authorized Restore workflow, review its
+related-item impact before confirming, then reopen the content after restoration.
+Ask your administrator if restoration is unavailable. See <a href="#recycle-bin-development">Recycle-bin configuration (in development)</a>
+for the current limitation.</p>
+</div>
+<div class="paragraph">
 <p>From History, open a historical version to inspect its content and version fields in a separate drawer. Historical content uses its own content selector. Close that drawer to return to the current version. Viewing an old version does not restore it; annotations of historical content cannot be edited.</p>
 </div>
 </div>
@@ -1157,7 +1194,7 @@ m:n authoring, record-scoped browsing, document-edit linking, creation from a se
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document attributes, views, content and history</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Separate record and document attributes, views and history; document content; record management</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Separate record and document attributes, views and history; document content; stored record-deletion policy</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Example</p></td>
@@ -1287,8 +1324,8 @@ checks record-scoped document-edit permission independently of the editing switc
 creation and unlinking are available; enabling a setting does not grant access or enable global deletion.</p>
 </div>
 <div class="paragraph">
-<p>The m:n cascade toggle records a policy: ON would delete associated documents globally, including
-their memberships under other records; OFF would preserve documents and remove memberships before
+<p>The stored m:n cascade setting records a policy: enabled would delete associated documents globally, including
+their memberships under other records; disabled would preserve documents and remove memberships before
 deleting the record. Neither setting enables record deletion in the current runtime. Global document
 deletion and record deletion remain blocked until complete repository-wide relationship cleanup is
 verified; a scenario&#8217;s configured relation alone cannot establish that guarantee.</p>
@@ -1338,7 +1375,7 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <p>Example: for invoices, expose invoice number and date in the list, add corresponding search fields, and organize writable metadata in a meaningful form section. Keep repository-maintained fields read-only. Enable download only for the content elements users need.</p>
 </div>
 <div class="paragraph">
-<p>Configuration navigation stops at four editor pages: <strong>General → Overview</strong> for naming, icon, dashboard and record management; <strong>General → TypeDefinitions</strong> for document and record attributes, content and versions; and <strong>View Configuration → Records</strong> and <strong>View Configuration → Documents</strong> for grouped view settings.</p>
+<p>Configuration navigation stops at four editor pages: <strong>General → Overview</strong> for naming, icon and dashboard visibility; <strong>General → TypeDefinitions</strong> for document and record attributes, attribute lookups, content and versions; and <strong>View Configuration → Records</strong> and <strong>View Configuration → Documents</strong> for grouped view settings.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1372,7 +1409,7 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <p>Enable Record versions/comments and Document versions/comments independently. Choose version fields appropriate to each type.</p>
 </li>
 <li>
-<p>Review Record management on General → Overview before exposing deletion. In a one-to-many scenario, cascade deletes child documents first; without cascade, the client clears their foreign-key relationship before deleting the parent. A mandatory foreign key forces cascade behavior. In m:n scenarios, configure the separate record selector; record deletion remains blocked with either cascade setting.</p>
+<p>Review the stored record-deletion policy before exposing deletion; the configuration editor does not offer a Record management card or Delete child documents toggle. In a one-to-many scenario, cascade deletes child documents first; without cascade, the client clears their foreign-key relationship before deleting the parent. A mandatory foreign key forces cascade behavior. In m:n scenarios, configure the separate record selector; record deletion remains blocked with either cascade setting.</p>
 </li>
 <li>
 <p>Save and test both stages: find a record, open its child list, check the summary, inspect a child and return to the parent list. Repeat with another record to verify that documents are scoped correctly.</p>
@@ -1391,7 +1428,7 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <div class="sect2">
 <h3 id="general"><a class="anchor" href="#general"></a><a class="link" href="#general">3.5. General settings and attributes</a></h3>
 <div class="paragraph">
-<p>Overview settings are always expanded. Use General → Overview to set the localized title, description and dashboard visibility. Use General → TypeDefinitions to edit shared settings. The Record card appears first with Attributes and Versions; the Document card contains Attributes, Content and Versions. One-stage scenarios show only Document. Visibility controls navigation, not security. Each document workspace and the record search workspace have their own creation and editing switches in their Details editor. Disable these actions when they should not be exposed; repository authorization still applies. Deletion availability also depends on permissions, and Record management determines the treatment of children. Record management does not override the m:n deletion safeguard.</p>
+<p>Overview settings are always expanded. Use General → Overview to set the localized title, description and dashboard visibility. Use General → TypeDefinitions to edit shared settings. The Record card appears first with Attributes, Versions and Attribute lookups; the Document card contains Attributes, Content, Versions and Attribute lookups. One-stage scenarios show only Document. Visibility controls navigation, not security. Each document workspace and the record search workspace have their own creation and editing switches in their Details editor. Disable these actions when they should not be exposed; repository authorization still applies. Deletion availability also depends on permissions, and the stored record-management policy determines the treatment of children. It does not override the m:n deletion safeguard. Existing cascade-deletion and parent-selection settings are retained when editing and saving other settings, but their toggles are not exposed in the configuration editor.</p>
 </div>
 <div class="paragraph">
 <p>Choose a scenario icon from the icon picker in General → Overview. The icon is used in dashboard cards, favorites and list rows. Choose the default option to restore the scenario initial. Imported icon identifiers that are valid but unavailable in this client are retained and also display the initial; do not supply SVG markup or an image URL as an icon identifier.</p>
@@ -1423,12 +1460,12 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 <p>Enable version history and comments separately for document and record stages. These options control the client surfaces, not underlying permission grants.</p>
 </div>
 <div class="paragraph">
-<p>For <strong>1:n with foreign key</strong> scenarios, review record-management cascade deletion. With cascade enabled, deleting a parent deletes its documents first. Without it, the foreign key is cleared on the children; their metadata and stored content are retained. A mandatory foreign key forces cascade deletion. The deletion confirmation shows the related-document count and the configured delete or unlink consequence. If the count cannot be loaded, confirmation is blocked. Test the configured policy with a disposable record and explain this consequence to users before exposing record deletion.</p>
+<p>For <strong>1:n with foreign key</strong> scenarios, review the stored <code>recordManagement.cascadeDeleteEnabled</code> policy in a configuration export. With cascade enabled, deleting a parent deletes its documents first. Without it, the foreign key is cleared on the children; their metadata and stored content are retained. A mandatory foreign key forces cascade deletion. The deletion confirmation shows the related-document count and the configured delete or unlink consequence. If the count cannot be loaded, confirmation is blocked. Test the configured policy with a disposable record and explain this consequence to users before exposing record deletion.</p>
 </div>
 <div class="paragraph">
 <p>For <strong>m:n with shared documents</strong>, the cascade setting is stored policy only: record deletion and
 global document deletion are unavailable. Membership removal preserves the document, even when its
-final membership is removed. This behavior is independent of the cascade toggle.</p>
+final membership is removed. This behavior is independent of the stored cascade setting.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1447,7 +1484,7 @@ final membership is removed. This behavior is independent of the cascade toggle.
 <div class="ulist">
 <ul>
 <li>
-<p>Search: enable fields and arrange their order. Runtime controls and operators follow each field type; the matrix does not offer an arbitrary operator editor.</p>
+<p>Search: enable fields and arrange their order. Ordinary controls and operators follow each field type; lookup dropdowns have their own search settings described below.</p>
 </li>
 <li>
 <p>Table: configure available columns, ordering and visibility and sorting. Verify the result in the runtime list.</p>
@@ -1522,6 +1559,63 @@ final membership is removed. This behavior is independent of the cascade toggle.
 </div>
 <div class="paragraph">
 <p>Column-header filtering and CSV/ZIP table export are not available in this version. Do not configure a workflow around those actions.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="config-lookups"><a class="anchor" href="#config-lookups"></a><a class="link" href="#config-lookups">3.7.2. Configure lookup-backed attributes</a></h4>
+<div class="paragraph">
+<p>Open <strong>General → TypeDefinitions</strong> and expand <strong>Attribute lookups</strong> inside the Document or Record card. Select an attribute and enable a shared lookup mapping.
+Lookup sections expand like Attributes, Content and Versions; they are not separate nested cards.
+The header lists attributes with enabled mappings as <strong>Active lookup filters</strong>, or shows <strong>No lookup filters set up</strong> when none exist. This summary remains visible when collapsed and updates with draft edits; it does not depend on dropdown search being enabled. Disabled mappings and imported filter/form settings without a shared mapping are not listed as active.
+The source must be an accessible repository document or container type represented by a configured scenario of the same type and object kind. A container source needs the record stage of a Record scenario; a document source needs a document stage. Users need access to that source scenario and permission to read its records or documents; configuring a lookup does not grant these permissions.</p>
+</div>
+<div class="paragraph">
+<p>Make every configured display, stored-value and dropdown search column visible in the source stage&#8217;s Details and permitted for the user. This includes <code>id</code> when explicitly chosen for any of those purposes; retaining an item&#8217;s identity internally does not make <code>id</code> an unrestricted lookup column. The active scenario is preferred when it is an eligible source; otherwise sources follow configuration order. If a matching active source hides a required column, the lookup does not switch to another scenario to bypass the restriction. Missing source access or hidden required columns make the lookup unavailable rather than exposing restricted fields. Check this setup with the intended normal-user permissions, not only as an administrator.</p>
+</div>
+<div class="paragraph">
+<p>For a Record scenario, the document lookup source, stored column and labels are shared by the all-document and record-scoped document workspaces. Their filter and form dropdown settings are independent. Open the record view configuration and select its document workspace to edit those scoped settings; changing them does not change the all-document dropdowns. Saving validates all configured workspaces, including retained settings on a workspace you are not currently editing.</p>
+</div>
+<div class="paragraph">
+<p>When reopening the editor or switching scenarios, the attribute selector initially shows the first attribute with a saved lookup, if one exists. Select another attribute to inspect or configure its settings; an ordinary attribute correctly shows lookup disabled. An explicit attribute choice remains selected while editing the current stage.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Choose the source type and a <strong>unique stored-value column</strong> compatible with the target attribute&#8217;s scalar type. For example, store a unique customer code while displaying the customer&#8217;s name and city. A composite unique key is not sufficient for a single stored column.</p>
+</li>
+<li>
+<p>Select and order the display columns. Their formatted values are joined with ` — `; users see this label, but queries and saves use only the stored value.</p>
+</li>
+<li>
+<p>Choose what happens when a saved value is no longer available: <strong>Preserve</strong> keeps it, while <strong>Require replacement</strong> requires a valid selection before an editable form can save. A temporary lookup failure is not proof that the value was removed.</p>
+</li>
+<li>
+<p>Configure filter and form dropdown search independently. Enable search and select columns with Equals, Contains or Starts with. Only display columns have an <strong>Order</strong> control; search-column order does not affect matches or result sorting. Text matches are case-insensitive and matches across columns combine with OR. Non-text scalar columns support Equals only. A query that cannot represent a column&#8217;s type skips that column, so a name search can still match text columns alongside numeric Equals columns. If no column can accept the query, no matches are returned. Disabling search leaves browsing available.</p>
+</li>
+<li>
+<p>For the filter, choose single or multiple selection. Users select individual values and can retain selections across dropdown pages. Forms always select one value.</p>
+</li>
+<li>
+<p>Save the scenario, reload it, and verify the permitted workflow as a normal user. Full version-2 exports retain the mapping and both sets of dropdown settings; existing configurations without these optional fields remain valid.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Each dropdown search attribute may appear only once, even with a different operator. Imported column objects can pass JSON Schema&#8217;s whole-object uniqueness check yet fail semantic validation for repeating an attribute; remove the duplicate before saving.
+Lookup-filter <strong>Select all</strong> is not available; it is deferred to AFC-134.
+Imports reject the retired <code>selectAllEnabled</code> property even when it is <code>false</code>; remove only that property from older branch-created exports. Before deploying this unreleased contract update, an administrator must also clean any saved configuration containing it, otherwise startup validation fails. There is no automatic cleanup or data reset; preserve other settings and saved filter selections.</p>
+</div>
+<div class="paragraph">
+<p>Changing a source does not silently rewrite the stored, display or search columns. Removed, inaccessible or incompatible references remain in the draft with validation errors so that you can repair them explicitly. A mapping on a foreign-key field must match the repository&#8217;s declared relationship; an ordinary lookup does not create a relationship.</p>
+</div>
+<div class="paragraph">
+<p>Imported filter/form lookup settings without a shared attribute mapping remain marked for repair. Enabling the shared mapping preserves those authored surface settings; complete the source and column mapping before saving. Scenario, category and localization configuration saves all apply the same lookup and parent-selection validation, so stale settings must be repaired even when the current edit is elsewhere.</p>
+</div>
+<div class="paragraph">
+<p>For a strict one-to-many foreign-key scenario, the optional <code>recordManagement.parentSelectionEnabled</code> setting is disabled by default. The configuration editor does not offer an Allow choosing another parent record toggle; existing or validated imported settings remain supported. When enabled in the stored configuration, users can choose another parent during document creation or editing. The picker derives its source and stored column from the selected relation; a non-ID referenced key is supported. Existing create/edit grants and relation-field read-only rules still apply. This setting does not alter many-to-many membership workflows or introduce new permissions.</p>
+</div>
+<div class="paragraph">
+<p>Parent selection uses the dropdown search settings and relation-field read-only rule of the current document workspace. A read-only relation in the record-scoped form remains locked even when the all-document form allows reassignment, and conversely.</p>
 </div>
 </div>
 </div>
@@ -1766,6 +1860,61 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attributeLookup.sourceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attributeLookup.storedValueColumn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attributeLookup.displayColumns</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attributeLookup.unavailableValuePolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">preserve, requireReplacement</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>repositoryLookupSearchColumn.attribute</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>repositoryLookupSearchColumn.operator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">equals, contains, startsWith</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lookupSearch.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lookupSearch.columns</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchFilterLookup.selectionMode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">single, multiple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchFilterLookup.search</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lookupSearch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailFieldLookup.search</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lookupSearch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>attribute.attribute</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
@@ -1779,6 +1928,11 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>attribute.available</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attribute.lookup</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attributeLookup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>tableColumn.attribute</code></p></td>
@@ -1841,6 +1995,11 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>searchFilter.lookup</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">searchFilterLookup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.attribute</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">identifier</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
@@ -1868,6 +2027,11 @@ Translations in other languages remain unchanged.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.labelOverride</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">labelOverride</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailField.lookup</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">detailFieldLookup</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
@@ -2084,6 +2248,11 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.cascadeDeleteEnabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.parentSelectionEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordManagement.recordSelection</code></p></td>
@@ -2512,10 +2681,19 @@ can be acted on again using fresh confirmation, without progress/recovery contro
 <td class="content">
 AFC-123 remains in development until replacement runtime, native-cascade and
 inheritance acceptance is complete. Database and configuration schema remain V2.
-Production content/annotation viewing while trashed requires the upstream ECR fix.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The ECR CoreTeam decision on reading retained content and annotations while trashed
+is pending, for both current and historical versions. Retention alone does not
+guarantee read access. The original delivered ECR 28.1.0 returns Not found for these
+reads while trashed; the same reads succeed after restoration. Do not promise
+preview or download access while trashed until the supported contract is decided
+and verified against an original delivered ECR artifact. For now, use the authorized
+Restore workflow and verify access after restoration, as described in
+<a href="#viewer-download">Downloads, unavailable content and historical viewing</a>; scenario settings cannot override this repository limitation.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2620,7 +2798,7 @@ There are no separate view configuration fields for trashed items.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-10-27 05:09:43 UTC
+Last updated 2026-10-27 08:46:54 UTC
 </div>
 </div>
 </body>
