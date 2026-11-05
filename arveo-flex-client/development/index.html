@@ -452,20 +452,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#search">2.5. Find and inspect documents</a></li>
-<li><a href="#mutations">2.6. Create, edit and delete</a></li>
-<li><a href="#content">2.7. Choose content and a viewer</a>
+<li><a href="#zip-downloads">2.6. ZIP downloads and DownloadManager</a></li>
+<li><a href="#csv-downloads">2.7. CSV downloads</a></li>
+<li><a href="#mutations">2.8. Create, edit and delete</a></li>
+<li><a href="#content">2.9. Choose content and a viewer</a>
 <ul class="sectlevel3">
-<li><a href="#viewer-pdf">2.7.1. Read a PDF</a></li>
-<li><a href="#viewer-annotations">2.7.2. View, edit and save PDF annotations</a></li>
-<li><a href="#viewer-image">2.7.3. Inspect an image</a></li>
-<li><a href="#viewer-tiff">2.7.4. Read a TIFF</a></li>
-<li><a href="#viewer-text">2.7.5. Read text content</a></li>
-<li><a href="#viewer-download">2.7.6. Downloads, unavailable content and historical viewing</a></li>
+<li><a href="#viewer-pdf">2.9.1. Read a PDF</a></li>
+<li><a href="#viewer-annotations">2.9.2. View, edit and save PDF annotations</a></li>
+<li><a href="#viewer-image">2.9.3. Inspect an image</a></li>
+<li><a href="#viewer-tiff">2.9.4. Read a TIFF</a></li>
+<li><a href="#viewer-text">2.9.5. Read text content</a></li>
+<li><a href="#viewer-download">2.9.6. Downloads, unavailable content and historical viewing</a></li>
 </ul>
 </li>
-<li><a href="#history">2.8. Versions and comments</a></li>
-<li><a href="#recovery">2.9. Recover from errors and unfinished work</a></li>
-<li><a href="#_document_workspace_settings">2.10. Document workspace settings</a></li>
+<li><a href="#history">2.10. Versions and comments</a></li>
+<li><a href="#recovery">2.11. Recover from errors and unfinished work</a></li>
+<li><a href="#_document_workspace_settings">2.12. Document workspace settings</a></li>
 </ul>
 </li>
 <li><a href="#litigation-holds">3. Litigation holds</a></li>
@@ -478,6 +480,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_select_permission_discovery_and_start_flex">5.1.2. Select permission discovery and start Flex</a></li>
 <li><a href="#_register_the_application_in_workspace">5.1.3. Register the application in Workspace</a></li>
 <li><a href="#_accept_the_installation_and_hand_over">5.1.4. Accept the installation and hand over</a></li>
+<li><a href="#installation-runtime-reference">5.1.5. Complete runtime configuration reference</a></li>
 </ul>
 </li>
 <li><a href="#admin-access">5.2. Enter administration</a></li>
@@ -512,7 +515,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#admin-categories">5.11. Categories and dashboard presentation</a></li>
 <li><a href="#localization">5.12. Manage languages and translations</a></li>
-<li><a href="#admin-recovery">5.13. Validation and concurrent editing</a></li>
+<li><a href="#admin-recovery">5.13. Validation and concurrent editing</a>
+<ul class="sectlevel3">
+<li><a href="#_first_startup_and_skipped_examples">5.13.1. First startup and skipped examples</a></li>
+<li><a href="#_correct_invalid_or_conflicting_edits">5.13.2. Correct invalid or conflicting edits</a></li>
+</ul>
+</li>
 <li><a href="#reference">5.14. Import reference</a>
 <ul class="sectlevel3">
 <li><a href="#_configuration_import_fields">5.14.1. Configuration import fields</a></li>
@@ -522,6 +530,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_browse_the_permission_catalog">5.16. Browse the permission catalog</a>
 <ul class="sectlevel3">
 <li><a href="#_independent_document_permissions_and_upgrades">5.16.1. Independent document permissions and upgrades</a></li>
+<li><a href="#csv-download-configuration">5.16.2. CSV downloads</a></li>
 </ul>
 </li>
 <li><a href="#_configuration_qa_behavior">5.17. Configuration QA behavior</a></li>
@@ -535,7 +544,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_understanding_type_settings_without_a_separate_reference">6.1. Understanding type settings without a separate reference</a></li>
 </ul>
 </li>
-<li><a href="#retention-configuration">7. Configure retention management</a></li>
+<li><a href="#retention-configuration">7. Configure retention management</a>
+<ul class="sectlevel2">
+<li><a href="#_released_configuration_compatibility">7.1. Released configuration compatibility</a></li>
+<li><a href="#permission-target-links">7.2. Direct links to permission targets</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -543,7 +557,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 1.0.0-SNAPSHOT; source 08982debb803443b8a9655ac86572792ec011276.</p>
+<p>Version 1.0.0-SNAPSHOT; source 63cf624e346057d1b05aff1c67efc4eb5d547f20.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -580,6 +594,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="navigation"><a class="anchor" href="#navigation"></a><a class="link" href="#navigation">2.2. Choose a scenario and language</a></h3>
 <div class="paragraph">
 <p>The enabled Workspace language is used when Flex Client opens and whenever you change the language in Workspace. Use the Workspace language selector to change the language for Flex Client. When the selector is hidden on a narrow screen, open <strong>More actions</strong> in the Workspace header to choose a language. Flex does not display its own language selector or branding footer. If Workspace language is unavailable or disabled in Flex, the client uses an enabled saved preference, then a matching browser language, then the configured default. Scenario names, descriptions, category labels and field labels use the configured translations, falling back to the default text when a translation is missing. Open a scenario from a card or list row. To read a long description in full, hover over a scenario card or list row for one second. Keyboard focus on the scenario title opens the same enlarged preview. Move into the preview to scroll or select its text; press Escape to close it. Use the breadcrumb to return to the dashboard or to the parent record. Hidden scenarios are not available through ordinary navigation.</p>
+</div>
+<div class="paragraph">
+<p>The browser address follows your scenario, Records or Documents workspace, selected record, and document open in the right-side panel.
+You can bookmark or share that address, paste it into the browser, or reload it to reopen the same workspace.
+Closing the document panel removes the document from the address. Browser Back and Forward follow these destinations and reopen or close the panel. Opening a saved address still requires your current
+scenario and repository permissions. Old links using scenario query parameters redirect to the new paths.
+Unsaved editor changes must be resolved before leaving through in-app navigation or browser history.</p>
 </div>
 <div class="paragraph">
 <p>Use the dashboard search and card/list view controls to find scenarios, and mark favorites for quick access. When your administrator uses tree presentation, choose a category in the sidebar to narrow navigation. Flat presentation does not use that category hierarchy. Scroll within the scenario card or list area to reach more scenarios. The dashboard heading, search, view controls, and pagination remain visible. Favorites and long category trees have their own scroll areas. Optional scenario icons and categories help navigation; neither changes document membership or grants repository access.</p>
@@ -638,6 +659,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Use an item&#8217;s edit or delete action where offered. Check the confirmation and persisted result. Closing the workspace returns attention to the list and does not delete the item.</p>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>Before permanent deletion, read the consequences and type the displayed item name exactly. If no recognizable name is available, type <code>DELETE</code> as instructed. The Delete button remains unavailable until the text matches. While deletion is running, wait for the result. If it fails, the confirmation stays open with an error so you can retry or cancel. For record deletion, also review the consequences for child documents.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -812,6 +836,15 @@ reported as success; check the refreshed membership before retrying.</p>
 <p>Use the search fields offered by the scenario, choose a supported operator and enter a value of the displayed type. For example, search for a known document name, then clear the search to return to the complete permitted list. Sort using the available table headings; use paging to move through results. Configuration determines available columns, order and searchable fields.</p>
 </div>
 <div class="paragraph">
+<p>Open <strong>Set up filter criteria</strong> to edit filters in the drawer. Choose a comparison and a value, then select <strong>Apply</strong> to update the chips and search results. <strong>Cancel</strong>, the close button and Escape discard drawer edits. Remove an applied chip to clear that criterion, or use <strong>Clear all</strong> to reset the search. Filter changes restart the result list at its first page and continue to respect the selected record&#8217;s scope.</p>
+</div>
+<div class="paragraph">
+<p>Applied table filters are included in the address. Copy the full address to reopen or share the same search, including comparisons, ranges, lookup selections and the permitted inclusion of trashed items. Record and document tables retain separate searches in the same link. A valid URL search takes precedence over saved search preferences, including when the linked search is empty. Filters are checked against the current configuration and permissions; incompatible criteria are discarded. Base64 is an encoding, so filter values remain readable to anyone with the link.</p>
+</div>
+<div class="paragraph">
+<p>Number and date bounds are inclusive: <strong>greater than or equal to</strong> and <strong>on or after</strong> include the selected lower bound; <strong>less than or equal to</strong> and <strong>on or before</strong> include the upper bound. <strong>Between</strong> applies both bounds together. A date equality on a timestamp matches that entire local calendar day. <strong>Is empty</strong> and <strong>is not empty</strong> check whether a stored value is absent or present and need no entered value. Enumeration selections and time ranges are also sent to the repository search. Drawer actions, comparison labels and chips follow the selected language.</p>
+</div>
+<div class="paragraph">
 <p>When a field uses an administrator-configured lookup, select a permitted repository value from its dropdown instead of entering arbitrary text. Labels can combine several columns with ` — `; the filter uses the stored key, never the displayed label. Depending on its settings, the dropdown allows one or several selections and optional case-insensitive search. Multiple stored keys match with OR within that field; other active fields still narrow the query.
 When search is enabled, start typing and continue in the same input as the dropdown opens; opening it does not move focus to <strong>Retry</strong>. Typing searches the options without applying a document filter until a value is selected.
 Empty lookup search filters show the field name inside the input, matching the other search fields, rather than as a separate label above it.
@@ -831,7 +864,7 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 <p>Lookup browsing and saved-value resolution also require access to a configured source scenario and permission to read its records or documents. All configured label, stored-value and dropdown search columns must be visible in that source&#8217;s Details and permitted for you. If access changes or a required column is hidden, the lookup cannot use another scenario to bypass that restriction in the matching active source. Keep existing selections and ask an administrator to check the source scenario and field visibility; an unavailable lookup is not proof that a saved value was deleted.</p>
 </div>
 <div class="paragraph">
-<p>Select a row to open the document workspace. Choose <strong>Details</strong> to inspect metadata. Read-only fields cannot be changed and retain their stored values when other fields are saved. Dates, enumerations and references use their corresponding controls rather than arbitrary text. Not every configured field has a control in every view. There are no column-header filter controls or table CSV/ZIP export actions in this version.</p>
+<p>Select a row to open the document workspace. Choose <strong>Details</strong> to inspect metadata. Read-only fields cannot be changed and retain their stored values when other fields are saved. Dates, enumerations and references use their corresponding controls rather than arbitrary text. Not every configured field has a control in every view. Column-header filter controls remain unavailable. CSV actions appear when configured for the current table and supported by its visible fields. ZIP actions appear when configured for the current workspace, permitted for your account and backed by an available Download-Service.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -840,7 +873,58 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 </div>
 </div>
 <div class="sect2">
-<h3 id="mutations"><a class="anchor" href="#mutations"></a><a class="link" href="#mutations">2.6. Create, edit and delete</a></h3>
+<h3 id="zip-downloads"><a class="anchor" href="#zip-downloads"></a><a class="link" href="#zip-downloads">2.6. ZIP downloads and DownloadManager</a></h3>
+<div class="paragraph">
+<p>Select one or more table rows and choose <strong>Download selected as ZIP</strong>. Selection checkboxes do not open a row. After selecting all loaded rows, choose whether to include <strong>Loaded rows</strong> or <strong>All matching</strong>. When the table has finished loading the complete result set without an error, those sets are identical and preparation starts directly without this choice. Loaded rows include previously loaded scroll pages. All matching follows the current authorized search, filters and parent record, including rows not yet loaded. If that search cannot be translated safely, all matching is disabled; loaded-row export remains available.</p>
+</div>
+<div class="paragraph">
+<p>Loading another scroll page does not select its new rows automatically. Select those rows, or use the header checkbox again, to include them. The review shows selected documents, included documents and included files separately; several original files can belong to one included document.</p>
+</div>
+<div class="paragraph">
+<p>Record tables export the selected records' direct readable documents. Use <strong>Download entire record as ZIP</strong> from the record-context action menu to export one record independently of table selection and document-table filters. Recursive subrecords, deleted documents, historical versions, renditions and annotations are excluded. Shared documents appear separately in each selected owning record folder.</p>
+</div>
+<div class="paragraph">
+<p>Preparation resolves original contents and exact sizes before generation. Review the counts and confirm any size warning or disclosed omissions. Hard limits cannot be overridden; unknown sizes, no surviving files or interrupted preparation prevent generation. Changing selection, search or parent context invalidates pending preparation. Generated jobs remain available while navigating between scenarios or returning to the dashboard.</p>
+</div>
+<div class="paragraph">
+<p><strong>DownloadManager</strong> appears at the bottom-left while you have retained preparations, jobs or pending save acknowledgements. It shows actual generation progress, failures and the archive&#8217;s expiry. Its badge counts ready archives that have not been saved or removed. A ready notification never starts downloading; opening the popover does not clear the badge.</p>
+</div>
+<div class="paragraph">
+<p>Choose <strong>Download</strong> explicitly to select a destination where verified saving is supported. Flex streams the archive, verifies its size and waits for the file to close successfully before acknowledging the save. Canceling the picker or encountering a transfer/write failure leaves the archive available for retry. A successfully saved archive disappears from the ordinary list; if acknowledgement fails, <strong>Saved — cleanup pending</strong> is retried without forcing another download.</p>
+</div>
+<div class="paragraph">
+<p><strong>Browser download</strong> provides an explicit alternative when verified saving is unavailable or blocked. The browser manages that download, so Flex cannot confirm that it was saved. Keep the entry until you choose <strong>Downloaded / Remove</strong>, or let it expire. Canceling a save picker never silently switches to browser downloading.</p>
+</div>
+<div class="paragraph">
+<p>After the first acknowledged verified save, Flex schedules deletion five minutes later. Repeated acknowledgements do not extend that delay, and service retention can expire sooner. The expiry timestamp is not extended by viewing, polling or downloading. Expired or confirmed unavailable archives disappear from the ordinary list; temporary service errors retain retry feedback. After a reload, retained jobs can reappear before every service status has been refreshed. A temporary-unavailability indication keeps the job available for retry; starting a download still checks its current availability and your permission. An already started transfer may finish after expiry, but upstream cleanup can still interrupt it. Source permissions are checked again before generating an archive; starting a generated archive download still requires its current ZIP entitlement.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="csv-downloads"><a class="anchor" href="#csv-downloads"></a><a class="link" href="#csv-downloads">2.7. CSV downloads</a></h3>
+<div class="paragraph">
+<p>Choose <strong>Download selected as CSV</strong> to export metadata from a document, record or record-document table. Record exports contain record attributes, not the contents of their documents. Record-document exports stay within the current parent record. CSV activation is independent of ZIP. Your administrator must enable CSV globally for documents or records and for the current scenario table. The document setting also applies to documents inside records.</p>
+</div>
+<div class="paragraph">
+<p>Select individual rows, or select all loaded rows and choose <strong>Loaded rows</strong> or <strong>All matching</strong>. Loaded rows include previously loaded scroll pages. When the complete result set has finished loading, no scope choice is needed. Newly loaded rows remain unchecked until explicitly selected. All matching follows the current authorized search and filters. CSV is unavailable while Include trashed items is active; clear that filter before exporting. The export keeps the visible data columns in their current order and the table&#8217;s row sorting. Checkbox and action columns are excluded. Reference and lookup columns contain stored IDs, which can differ from their displayed labels. Unsupported column, filter, sort or formatting mappings prevent export with an explanation. In this delivery, date-only and decimal-family columns cannot be mapped faithfully for every value and prevent export while included; timestamp formatting is limited to supported locale profiles. Hide unsupported columns before starting a new export if they are not needed.</p>
+</div>
+<div class="paragraph">
+<p>Flex checks the row count before starting a transfer. Zero rows show <strong>No data to export</strong>. Counts above the effective maximum are blocked; confirmation cannot override this limit. At the warning threshold, review the scope, count and maximum and confirm using the final save action. Below that threshold, a <strong>Save CSV</strong> action may still be necessary to let the browser open its save picker. Changing the export intent requires a fresh check.</p>
+</div>
+<div class="paragraph">
+<p>When native saving is available, choose a destination. Only a complete transfer and successful file close count as a verified save. When the native picker is unavailable or blocked by browser policy, Flex reads the complete response into temporary browser memory and hands it to the browser&#8217;s download mechanism. Large CSV files can require substantial memory; a row limit does not establish a file-size limit. Canceling the picker never silently starts the fallback. Browser-managed saving and cancellation after handoff are outside Flex&#8217;s control; handoff does not verify a local save.</p>
+</div>
+<div class="paragraph">
+<p>An active CSV transfer remains in <strong>DownloadManager</strong> while navigating within Flex. It has no percentage, estimated completion time, expiry, retry or reload recovery. Successful native saves and browser handoffs show <strong>CSV downloaded successfully</strong> and remove the entry. Explicit cancellations remove the entry without a success message. Failed entries remain with an error until dismissed; start a new export from the table to try again. A failed transfer never intentionally hands off a partial CSV.</p>
+</div>
+<div class="paragraph">
+<p>CSV uses UTF-8 with a byte order mark and semicolons. Column headings use the active language; supported date and number formats follow the table and browser time zone. Filenames use the localized scenario name and a timestamp. CSV text is passed through from Download-Service: spreadsheet formula-like strings, including values starting with <code>=</code>, are preserved. Review untrusted text before opening CSV in software that evaluates formulas.</p>
+</div>
+<div class="paragraph">
+<p>The export freezes selection, columns, search and sorting, not repository data. Concurrent changes can remove rows or change results between the count check and streaming. A changed count within the hard limit does not require another confirmation. An empty result after a successful check is accepted. CSV exports are direct transfers, with no stored artifact or later re-download.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mutations"><a class="anchor" href="#mutations"></a><a class="link" href="#mutations">2.8. Create, edit and delete</a></h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -913,7 +997,7 @@ items before starting again. Repository retention restrictions still apply.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="content"><a class="anchor" href="#content"></a><a class="link" href="#content">2.7. Choose content and a viewer</a></h3>
+<h3 id="content"><a class="anchor" href="#content"></a><a class="link" href="#content">2.9. Choose content and a viewer</a></h3>
 <div class="paragraph">
 <p>Open Viewer in the document workspace. The client chooses the viewer from the selected content&#8217;s format, not from the scenario name. The same scenario can contain PDFs, images and text documents.</p>
 </div>
@@ -968,7 +1052,7 @@ items before starting again. Repository retention restrictions still apply.</p>
 <p>There is no dedicated native Office, audio or video viewer in this client. A supported rendition may make such content viewable, for example a PDF rendition. HTML identified as text is shown as text rather than as an interactive webpage. Viewer display controls do not change stored content.</p>
 </div>
 <div class="sect3">
-<h4 id="viewer-pdf"><a class="anchor" href="#viewer-pdf"></a><a class="link" href="#viewer-pdf">2.7.1. Read a PDF</a></h4>
+<h4 id="viewer-pdf"><a class="anchor" href="#viewer-pdf"></a><a class="link" href="#viewer-pdf">2.9.1. Read a PDF</a></h4>
 <div class="imageblock">
 <div class="content">
 <img src="images/viewer.png" alt="PDF viewer and content selector" width="1040">
@@ -998,7 +1082,7 @@ items before starting again. Repository retention restrictions still apply.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="viewer-annotations"><a class="anchor" href="#viewer-annotations"></a><a class="link" href="#viewer-annotations">2.7.2. View, edit and save PDF annotations</a></h4>
+<h4 id="viewer-annotations"><a class="anchor" href="#viewer-annotations"></a><a class="link" href="#viewer-annotations">2.9.2. View, edit and save PDF annotations</a></h4>
 <div class="paragraph">
 <p>Annotations require enabled configuration and repository permissions. The viewer can show saved annotations without allowing you to edit them. Historical versions are read-only. Annotation settings belong to an original and also apply to its renditions.</p>
 </div>
@@ -1031,7 +1115,7 @@ items before starting again. Repository retention restrictions still apply.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="viewer-image"><a class="anchor" href="#viewer-image"></a><a class="link" href="#viewer-image">2.7.3. Inspect an image</a></h4>
+<h4 id="viewer-image"><a class="anchor" href="#viewer-image"></a><a class="link" href="#viewer-image">2.9.3. Inspect an image</a></h4>
 <div class="imageblock">
 <div class="content">
 <img src="images/viewer-image.png" alt="Image viewer controls" width="1040">
@@ -1045,7 +1129,7 @@ items before starting again. Repository retention restrictions still apply.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="viewer-tiff"><a class="anchor" href="#viewer-tiff"></a><a class="link" href="#viewer-tiff">2.7.4. Read a TIFF</a></h4>
+<h4 id="viewer-tiff"><a class="anchor" href="#viewer-tiff"></a><a class="link" href="#viewer-tiff">2.9.4. Read a TIFF</a></h4>
 <div class="imageblock">
 <div class="content">
 <img src="images/viewer-tiff.png" alt="TIFF viewer and page controls" width="1040">
@@ -1056,7 +1140,7 @@ items before starting again. Repository retention restrictions still apply.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="viewer-text"><a class="anchor" href="#viewer-text"></a><a class="link" href="#viewer-text">2.7.5. Read text content</a></h4>
+<h4 id="viewer-text"><a class="anchor" href="#viewer-text"></a><a class="link" href="#viewer-text">2.9.5. Read text content</a></h4>
 <div class="imageblock">
 <div class="content">
 <img src="images/viewer-text.png" alt="Text viewer with wrapping and line numbers" width="1040">
@@ -1067,7 +1151,7 @@ items before starting again. Repository retention restrictions still apply.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="viewer-download"><a class="anchor" href="#viewer-download"></a><a class="link" href="#viewer-download">2.7.6. Downloads, unavailable content and historical viewing</a></h4>
+<h4 id="viewer-download"><a class="anchor" href="#viewer-download"></a><a class="link" href="#viewer-download">2.9.6. Downloads, unavailable content and historical viewing</a></h4>
 <div class="paragraph">
 <p>Viewing and downloading are separate capabilities. Each original and rendition has its own availability and download settings; repository permissions still apply. A hidden download control does not mean the document has no content. An unsupported format offers a download fallback only when download is enabled.</p>
 </div>
@@ -1089,7 +1173,7 @@ for the current limitation.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="history"><a class="anchor" href="#history"></a><a class="link" href="#history">2.8. Versions and comments</a></h3>
+<h3 id="history"><a class="anchor" href="#history"></a><a class="link" href="#history">2.10. Versions and comments</a></h3>
 <div class="paragraph">
 <p>When history is enabled, open <strong>History</strong>. Select a historical version to inspect that version rather than the current document. Return to the current version before editing. Comments appear only where enabled and permitted; cancel an unfinished comment to discard it, or submit it and reopen history to check the saved result.</p>
 </div>
@@ -1103,7 +1187,7 @@ for the current limitation.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="recovery"><a class="anchor" href="#recovery"></a><a class="link" href="#recovery">2.9. Recover from errors and unfinished work</a></h3>
+<h3 id="recovery"><a class="anchor" href="#recovery"></a><a class="link" href="#recovery">2.11. Recover from errors and unfinished work</a></h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1134,7 +1218,7 @@ catalog and configure access; no permissions are granted automatically.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_document_workspace_settings"><a class="anchor" href="#_document_workspace_settings"></a><a class="link" href="#_document_workspace_settings">2.10. Document workspace settings</a></h3>
+<h3 id="_document_workspace_settings"><a class="anchor" href="#_document_workspace_settings"></a><a class="link" href="#_document_workspace_settings">2.12. Document workspace settings</a></h3>
 <div class="paragraph">
 <p>In Record scenarios, <strong>Documents</strong> lists all scenario documents and a selected record lists only its
 linked documents. Administrators can configure these workspaces independently, so their columns,
@@ -1200,6 +1284,14 @@ configuration and repository isolation are deferred.</p>
 </div>
 <div class="sect3">
 <h4 id="_prepare_services_and_identities"><a class="anchor" href="#_prepare_services_and_identities"></a><a class="link" href="#_prepare_services_and_identities">5.1.1. Prepare services and identities</a></h4>
+<div class="paragraph">
+<p>A standard installation requires arveo Workspace, the identity provider, ECR,
+the Flex Backend with PostgreSQL, and the original arveo Download-Service.
+Provision and activate the Download-Service with private storage, delegated-token
+audience and matching file/byte limits. Flex can run in a reduced installation
+without it, but ZIP downloads are then unsupported; the configuration UI explains
+that the service is disabled, unreachable or incompatible.</p>
+</div>
 <div class="paragraph">
 <p>Record the delivered ECR, Workspace, Keycloak and Flex versions and verify their
 compatibility. The current Workspace migration targets develop.17; the development
@@ -1347,6 +1439,712 @@ integrated verification and documentation publication checks before rollout; wri
 or reviewing this procedure does not constitute a successful installation.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="installation-runtime-reference"><a class="anchor" href="#installation-runtime-reference"></a><a class="link" href="#installation-runtime-reference">5.1.5. Complete runtime configuration reference</a></h4>
+<div class="paragraph">
+<p>Use this reference with the <a href="#installation">installation procedure</a>
+and <a href="#installation">managed-bootstrap runbook</a>. It covers every application-owned
+runtime property in the backend runtime configuration, plus the
+Spring settings needed to deploy the delivered image/JAR. It is not a catalogue of
+every optional Spring Boot, JVM, Workspace, Keycloak or ECR setting; those products
+retain their own configuration references. Development-stack orchestration settings
+are not customer installation defaults.</p>
+</div>
+<div class="sect4">
+<h5 id="_supply_configuration_and_secrets"><a class="anchor" href="#_supply_configuration_and_secrets"></a><a class="link" href="#_supply_configuration_and_secrets">Supply configuration and secrets</a></h5>
+<div class="paragraph">
+<p>Mount an operator-owned <code>application.yaml</code> in a private configuration directory and
+set <code>SPRING_CONFIG_ADDITIONAL_LOCATION=file:/etc/arveo-flex/</code> (including the trailing
+slash). Keep packaged defaults active; do not replace them with a development profile.
+The image/JAR must have read access to configuration, trust and secret mounts, and
+write access only to its required temporary storage. PostgreSQL holds durable Flex
+state; managed-bootstrap keys must survive container replacement separately.</p>
+</div>
+<div class="paragraph">
+<p>The canonical keys below work in Spring YAML/properties. <code>application.yaml</code> also
+provides explicit <code>ARVEO_FLEX_BACKEND_*</code> environment aliases for common settings;
+the delivered backend <code>application.yaml</code> mapping is authoritative.
+For example <code>ARVEO_FLEX_BACKEND_SEED_TYPE_CLIENT_SECRET_FILE</code> maps to
+<code>arveo-flex-backend.configuration.type-verification.client-secret-file</code>.
+Do not invent similarly named aliases for keys without a packaged mapping: use the
+canonical YAML key. Spring&#8217;s generic environment binding removes hyphens and replaces
+dots with underscores; it is different from the explicit aliases. Use YAML for lists,
+typed claims and encryption-key maps. Environment values override file configuration;
+command-line properties override both, so keep secrets out of command-line arguments.</p>
+</div>
+<div class="paragraph">
+<p>A minimal deployment-specific file is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  datasource:
+    url: jdbc:postgresql://postgres.internal.example:5432/flex
+    username: flex_runtime
+    password: ${DEPLOYMENT_DATABASE_PASSWORD}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://identity.example/realms/customer
+          audiences: arveo-flex-client
+arveo-flex-backend:
+  ecr-proxy:
+    upstream: https://ecr.internal.example
+    public-origin: https://workspace.example</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Inject <code>DEPLOYMENT_DATABASE_PASSWORD</code> privately; the example defines no password.
+Also choose one discovery mode below, set deployment-appropriate CSP/trust, and
+provision ZIP when included. JWT issuer/audience must match the existing installation,
+not the example. All public application/API acceptance enters through Workspace.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_mandatory_platform_settings_and_operational_defaults"><a class="anchor" href="#_mandatory_platform_settings_and_operational_defaults"></a><a class="link" href="#_mandatory_platform_settings_and_operational_defaults">Mandatory platform settings and operational defaults</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Canonical key</th>
+<th class="tableblock halign-left valign-top">Packaged default</th>
+<th class="tableblock halign-left valign-top">Installation requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required dedicated PostgreSQL JDBC URL. Never share ECR-owned schema/storage.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required dedicated database identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.datasource.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required private credential; mount/inject through deployment secret management.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.security.oauth2.resourceserver.jwt.issuer-uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:8180/realms/ArveoFlexRealm" class="bare">http://localhost:8180/realms/ArveoFlexRealm</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace with the exact existing HTTPS issuer and trusted discovery/JWK endpoints.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.security.oauth2.resourceserver.jwt.audiences</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>arveo-flex-client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Match the audience in accepted Workspace access tokens; keep validation enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>server.port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>39003</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal listener only; configure gateway target/firewall consistently.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.flyway.default-schema</code>, <code>spring.flyway.schemas</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>flex_backend</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retain Flex schema ownership and the same schema during upgrades.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.flyway.create-schemas</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database identity needs schema creation on first installation and migration DDL rights.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>server.forward-headers-strategy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>framework</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Accept forwarded headers only from the trusted gateway; restrict direct network access.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>server.compression.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Preserve streaming/byte behavior; assess any gateway compression separately.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.endpoints.web.exposure.include</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>health,info</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal management exposure only; do not publish via the business API route.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.endpoint.health.probes.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Probe <code>/actuator/health/liveness</code> and <code>/actuator/health/readiness</code> internally.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.endpoint.health.group.readiness.include</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>readinessState,flexBootstrap</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retain managed-bootstrap readiness gating.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>management.endpoint.health.show-details</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>never</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Keep internal details private.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>server.error.include-message</code>, <code>server.error.include-stacktrace</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>never</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Preserve sanitized error responses.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logging.structured.format.console</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logstash</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Route structured logs to the platform collector; never enable credential/body dumps.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Terminate public TLS at the approved platform boundary; configure backend TLS if the
+internal route uses HTTPS. JVM/platform trust must cover PostgreSQL TLS, issuer/JWK,
+ECR and Download-Service as applicable. Feature-specific CA file settings below do
+not configure global JVM trust. Back up PostgreSQL and the corresponding bootstrap
+key ring; test restore before accepting the installation. Preserve released Flyway
+migration bytes/checksums. Database migration versions and configuration payload v4
+are independent; released v2/v3 configuration is upgraded through validated paths.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_core_application_settings"><a class="anchor" href="#_core_application_settings"></a><a class="link" href="#_core_application_settings">Core application settings</a></h5>
+<div class="paragraph">
+<p>Prefix each key in this table with <code>arveo-flex-backend.</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Required/optional behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>paths.application</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/app</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal packaged-client path; align the Workspace cluster target if changed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>paths.api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal business API path; align its gateway target.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>paths.public-application</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/flex-client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Public single-segment path; align registration and delivered client base path.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>paths.public-api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/flex-backend</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Public single-segment API path; align Workspace registration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>security.administrator-claim</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>roles</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Claim used for configuration-administrator authorization.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>security.administrator-role</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>flex-admin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exact role value; configuration authority does not replace scenario/ECR grants.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content-security-policy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Packaged policy in <code>application.yaml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Explicitly review for the actual Workspace origin: packaged <code>frame-ancestors</code> includes legacy <code><a href="http://localhost:31080" class="bare">http://localhost:31080</a></code>. Retain same-origin bridge, viewer workers/WASM, fonts and previews; never allow arbitrary framing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>referrer-policy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>no-referrer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional response policy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>max-payload-bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10485760</code> (10 MiB)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Owned JSON/API payload ceiling; positive, at most 1 GiB. Separate from ECR streaming uploads.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user-state.max-payload-bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>65536</code> (64 KiB)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Per-private-state payload ceiling; positive, at most 1 GiB.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_permission_catalogues_and_discovery"><a class="anchor" href="#_permission_catalogues_and_discovery"></a><a class="link" href="#_permission_catalogues_and_discovery">Permission catalogues and discovery</a></h5>
+<div class="paragraph">
+<p>Prefix with <code>arveo-flex-backend.permissions.</code>. Catalogues expose selectable rule
+values; they do not assign membership or grant repository access.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Required/optional behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>audiences</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional list of selectable audience values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>claims[].path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No entries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Registered dotted claim path, letters/digits/underscore/hyphen per segment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>claims[].type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No entries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRING</code>, <code>BOOLEAN</code> or <code>NUMBER</code>; required for every registered claim.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>claims[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No entries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required matching JSON scalar; no string/boolean/number coercion.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discovery.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable catalogue discovery only after provisioning the selected mode.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discovery.mode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>external</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>external</code> or <code>managed</code>; choose explicitly for operator handover.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discovery.server-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required HTTPS identity-provider URL when external discovery is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discovery.realm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required target realm for enabled external discovery.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discovery.client-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required separately provisioned read-only discovery client in external mode.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discovery.client-secret-file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required private secret file for enabled external discovery.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discovery.trusted-certificate-file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional external discovery CA when normal trust is insufficient.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Managed mode requires <code>discovery.enabled: true</code>; all external connection/secret/CA
+keys must be absent. Put managed connection settings under <code>bootstrap</code> instead.
+Disabled discovery is supported but supplies no discovered catalogue; it is not an
+authentication bypass. Provision the external account&#8217;s agreed read-only mappings
+or follow managed setup&#8217;s exact privileges in the bootstrap runbook.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_managed_bootstrap_and_retirement"><a class="anchor" href="#_managed_bootstrap_and_retirement"></a><a class="link" href="#_managed_bootstrap_and_retirement">Managed bootstrap and retirement</a></h5>
+<div class="paragraph">
+<p>Prefix with <code>arveo-flex-backend.bootstrap.</code>. These settings are registered only in
+managed discovery mode. No setup credentials, initial user or encryption keys have
+a generated production default.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Required/optional behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>server-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required HTTPS provider address without userinfo/query/fragment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>realm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required existing target realm.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>authentication-realm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Target <code>realm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional separate realm authorized to perform setup.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required for first setup/recovery together with <code>password-file</code>; remove after success.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password-file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Temporary private setup-password mount; remove with <code>username</code> after success.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>initial-administrator-user-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required explicitly selected human user&#8217;s immutable ID; never inferred from setup login.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>trusted-certificate-file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional provider CA; normal hostname validation remains active.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>active-key-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required ID present in <code>key-files</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>key-files.&lt;id&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required persistent map of key IDs to secret files, each Base64-encoded 32-byte AES key. Retain old read keys for stored credentials/backups.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Follow <a href="#installation">setup authority, startup order, restart and recovery</a>.
+Back up keys separately from the database. After readiness succeeds, retire both
+setup login keys and password mount; retain provider settings, user ID and key ring.
+Restart and prove readiness/discovery without setup credentials. No automatic
+reencryption or arbitrary account adoption is implied by rotating the active key.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_initial_configuration_and_optional_ecr_type_verification"><a class="anchor" href="#_initial_configuration_and_optional_ecr_type_verification"></a><a class="link" href="#_initial_configuration_and_optional_ecr_type_verification">Initial configuration and optional ECR type verification</a></h5>
+<div class="paragraph">
+<p>Prefix with <code>arveo-flex-backend.configuration.</code>. The seed must be a complete valid
+supported payload; changing the seed resource does not overwrite existing saved
+configuration. Explicit administrator reset uses the configured system defaults.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Required/optional behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>seed-location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>classpath:config.json</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional Spring resource override, for example an operator-mounted <code>file:/etc/arveo-flex/config.json</code>. Validate it before first startup/reset.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.token-endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dedicated client-credentials token endpoint; use HTTPS in installations. Only explicit localhost/127.0.0.1 test runtimes permit HTTP. No userinfo/query/fragment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.client-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dedicated outbound account with authority to read referenced ECR type definitions.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.client-secret-file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private secret mount for that dedicated account.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.trusted-certificate-file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional CA for the dedicated verification connection.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.connect-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Positive duration, at most one minute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.read-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Positive duration, at most one minute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.attempt-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>12s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Overall bounded attempt; positive, at most one minute.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Supply the dedicated settings together when packaged examples must be initialized.
+This credential is separate from permission discovery and actual user tokens. On a
+pristine database, missing/unverifiable ECR references cause affected seed scenarios
+to be skipped; <strong>all skipped scenarios still produce durable empty initialization</strong>.
+Categories, presentation and ZIP/CSV collection settings are preserved. Fixing the
+connection and restarting does not retry seeding: an administrator must create,
+import or explicitly reset configuration. Existing saved configuration, supported
+upgrades and runtime CRUD do not pass through this first-start filtering step.
+The first-start behavior above is separate from runtime repository authorization.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_zip_and_csv_deployment_options"><a class="anchor" href="#_zip_and_csv_deployment_options"></a><a class="link" href="#_zip_and_csv_deployment_options">ZIP and CSV deployment options</a></h5>
+<div class="paragraph">
+<p>Prefix with <code>arveo-flex-backend.</code>. Standard installations provision the original
+Download-Service privately; reduced installations may omit it but cannot generate
+ZIP archives. Both export families require their own effective grants, collection
+settings and table activation; these switches never grant repository access.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Required/optional behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set true after original-service provisioning, trust and delegated-token compatibility are verified.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.upstream</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:32224" class="bare">http://localhost:32224</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace with private HTTP(S) origin; no credentials/base path/query/fragment. No browser route/port is needed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.connect-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection deadline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.metadata-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>15s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Complete bounded metadata-response deadline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.probe-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compatibility-probe deadline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.inactivity-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Artifact inactivity deadline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>download-service.transfer-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Active artifact transfer lifetime. All service durations must be positive and at most 24 hours.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>zip-downloads.max-files</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Positive operator ceiling, at most <code>9007199254740991</code>; provision the same effective ceiling in the original service.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>zip-downloads.max-uncompressed-bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10737418240</code> (10 GiB)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Positive operator ceiling with the same integer maximum; align original-service byte limits.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>csv-downloads.max-rows</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1000000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Positive integer row ceiling; saved administrator settings may tighten it, never raise it.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Provision persistent private original-service storage, its validated current-user
+bearer/delegated-client audience and required default scopes, and matching ceilings
+before activation. Use the original Download-Service operator documentation for its own setting
+names; Flex transport settings do not provision that service. A
+running container is not compatibility proof. ZIP manifests expire after 15 minutes;
+the post-save cleanup deadline is five minutes and does not extend upstream retention.
+These business deadlines are not configurable transport timeouts. Proxy/gateway
+upload limits and timeouts must also permit the intended transfers.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_optional_translation_generation"><a class="anchor" href="#_optional_translation_generation"></a><a class="link" href="#_optional_translation_generation">Optional translation generation</a></h5>
+<div class="paragraph">
+<p>Prefix with <code>arveo-flex-backend.translation.</code>. Packaged UI catalogues and manually
+maintained translations do not need an external generation provider.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Required/optional behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows the temporary account-free generation provider; disable when outbound provider access is not intended. Does not disable localization.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>timeout-seconds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>20</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provider request timeout, range 1–60 seconds.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>job-delay-ms</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1000</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job scheduling delay, range 1000–3600000 milliseconds; not a provider credential setting.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_optional_ecr_transport_sizing"><a class="anchor" href="#_optional_ecr_transport_sizing"></a><a class="link" href="#_optional_ecr_transport_sizing">Optional ECR transport sizing</a></h5>
+<div class="paragraph">
+<p>Prefix with <code>arveo-flex-backend.ecr-proxy.</code>. Read proxy sizing and failure behavior
+before raising concurrency or limits; budgets are shared per backend instance.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Required/optional behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>upstream</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:39001" class="bare">http://localhost:39001</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace with fixed reachable ECR HTTP(S) origin; no credentials/path/query/fragment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>public-origin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:31080" class="bare">http://localhost:31080</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the actual public HTTPS Workspace origin.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>max-request-bytes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1073741824</code> (1 GiB)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Positive total upload budget including multipart overhead, distinct from owned JSON limits.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>concurrency</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>256</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Active request/connection budget, range 1–1024.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>max-pending-requests</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>256</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admission queue, range 0–1024; zero disables waiting.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>admission-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Admission wait, zero to one minute; zero rejects immediately when saturated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>connect-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Upstream connection deadline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>response-header-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>120s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Header wait after upload completion.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inactivity-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>60s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Upload/download inactivity deadline.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>total-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full admitted transfer lifetime; admission wait is separate. All non-admission durations must be positive and at most 24 hours.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_installation_acceptance_checklist"><a class="anchor" href="#_installation_acceptance_checklist"></a><a class="link" href="#_installation_acceptance_checklist">Installation acceptance checklist</a></h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Record versions/digests, identity owner, public origin, routes, database/schema,
+secret/key backup ownership and both selected discovery/seed-verification modes.</p>
+</li>
+<li>
+<p>Verify internal liveness/readiness and real administrator, normal-user and denied
+access through Workspace. Test issuer/audience, scenario/field and ECR permissions.</p>
+</li>
+<li>
+<p>Verify type-filtered first startup and intended create/import/reset recovery before
+handing over an unexpectedly empty configuration; test supported upgrades separately.</p>
+</li>
+<li>
+<p>Verify ZIP/CSV availability, limits and a bounded owned data journey, with cleanup.
+Test disabled/reduced-service behavior when that installation option is selected.</p>
+</li>
+<li>
+<p>Retire setup credentials, restart, and verify database/key restore and persisted
+Workspace registrations. Never repair checksums by editing released migrations.</p>
+</li>
+<li>
+<p>Retain sanitized evidence. Automated disposable verification does not establish
+acceptance of a particular customer&#8217;s existing infrastructure or authorize rollout.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="admin-access"><a class="anchor" href="#admin-access"></a><a class="link" href="#admin-access">5.2. Enter administration</a></h3>
@@ -1369,6 +2167,9 @@ or reviewing this procedure does not constitute a successful installation.</p>
 </div>
 <div class="paragraph">
 <p>The separate <strong>Categories</strong> workspace manages the category tree, scenario assignments and dashboard presentation. In scenario General settings, choose an optional semantic icon; it changes presentation only, not repository data or permissions.</p>
+</div>
+<div class="paragraph">
+<p>Deletion dialogs require you to type the displayed item name exactly, or <code>DELETE</code> when instructed, before the destructive Delete action becomes available. Category subtree deletion lists every affected scenario assignment, including hidden scenarios; the scenarios themselves are not deleted. Language removal and category removal change the draft and still require Save. Scenario deletion waits for the server result. If a request fails, its dialog stays open with an error so you can retry or cancel. Duplicate opens a name editor and stays open if saving the new scenario fails.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1782,7 +2583,7 @@ final membership is removed. This behavior is independent of the stored cascade 
 <p>Do not hide required writable inputs from enabled creation/editing workflows. Primary keys, system-maintained fields and the relationship managed by a Record scenario may be locked. A field can be visible in a table and absent from search, or searchable and absent from the table; these are independent choices.</p>
 </div>
 <div class="paragraph">
-<p>Column-header filtering and CSV/ZIP table export are not available in this version. Do not configure a workflow around those actions.</p>
+<p>Column-header filtering is not available in this version. CSV activation is configured independently for each table. ZIP export additionally requires the global settings, per-surface controls, business permissions and an available compatible Download-Service described below.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1944,19 +2745,19 @@ Imports reject the retired <code>selectAllEnabled</code> property even when it i
 <div class="sect3">
 <h4 id="_configuration_transfer_and_legacy_files"><a class="anchor" href="#_configuration_transfer_and_legacy_files"></a><a class="link" href="#_configuration_transfer_and_legacy_files">5.10.2. Configuration transfer and legacy files</a></h4>
 <div class="paragraph">
-<p>Configuration exports use a version-2 envelope with <code>schemaVersion</code>, <code>categories</code>, <code>scenarios</code> and <code>scenarioPresentation</code>. A single-scenario export uses the same envelope, including the full category tree and presentation but only the selected scenario. It is not a bare scenario object or a category-only array. Full configuration export is the appropriate backup for scenarios, their assignments and the shared dashboard layout; neither export includes private dashboard preferences.</p>
+<p>Configuration exports use a version-4 envelope with <code>schemaVersion</code>, <code>categories</code>, <code>scenarios</code> and <code>scenarioPresentation</code>. If configured, the optional shared <code>zipDownloads</code> block is retained too; ZIP actions also require enabled surface controls, current business permissions and service availability. An imported file that omits that block preserves the current ZIP settings, while an explicit empty object restores disabled/inherited defaults. Supplied limits must be positive whole numbers and cannot exceed the configured service ceilings. A single-scenario export uses the same envelope, including the full category tree and presentation but only the selected scenario. It is not a bare scenario object or a category-only array. Full configuration export is the appropriate backup for scenarios, their assignments and the shared dashboard layout; neither export includes private dashboard preferences.</p>
 </div>
 <div class="paragraph">
 <p>To import configuration, use the JSON import action in Scenario configuration. Imports merge by scenario name, keeping unrelated scenarios and categories. Matching names update compatible scenario settings; they do not permit changing immutable structure or conflicting category assignments. Category conflicts abort the import. The complete merged draft must pass schema and live repository validation before it is applied. Review it and save explicitly; import success is not a successful save.</p>
 </div>
 <div class="paragraph">
-<p>An explicit <code>scenarioPresentation</code> in a supported versioned import selects tree or flat. If it is omitted from a supported versioned import, the current draft choice is retained. This merge behavior differs from a new v2 configuration, where omission defaults to tree.</p>
+<p>An explicit <code>scenarioPresentation</code> in a supported versioned import selects tree or flat. If it is omitted from a supported versioned import, the current draft choice is retained. This merge behavior differs from a new v3 configuration, where omission defaults to tree.</p>
 </div>
 <div class="paragraph">
-<p>Legacy files containing only <code>{ "scenarios": [&#8230;&#8203;] }</code> or <code>{ "schemaVersion": 1, "scenarios": [&#8230;&#8203;] }</code> are also accepted by this import action. They are converted to v2 with flat presentation before validation, upgrading document-view structure while preserving authored settings. Existing unrelated scenarios and categories remain; an existing scenario&#8217;s conflicting category assignment still prevents import. Unknown fields/versions and mixed legacy/versioned envelopes are rejected. An empty scenario array does not clear the existing configuration. Subsequent exports always use v2.</p>
+<p>Legacy files containing only <code>{ "scenarios": [&#8230;&#8203;] }</code> or <code>{ "schemaVersion": 1, "scenarios": [&#8230;&#8203;] }</code> are also accepted by this import action. They are converted to v4 with flat presentation before validation, upgrading document-view structure while preserving authored settings. Existing unrelated scenarios and categories remain; an existing scenario&#8217;s conflicting category assignment still prevents import. Unknown fields/versions and mixed legacy/versioned envelopes are rejected. An empty scenario array does not clear the existing configuration. Subsequent exports always use v4.</p>
 </div>
 <div class="paragraph">
-<p>Normal saves and new exports use configuration version 2. Full exports preserve categories, scenario category assignments, optional icons and dashboard presentation. Supported legacy V1/unversioned payloads are normalized to flat V2 with an empty category list before merging; this does not clear the draft&#8217;s existing categories or change existing relationship models. The backend upgrades valid stored V1 configuration on startup rather than requiring a reset. A merge retains the current dashboard presentation when the imported V2 file omits that setting.</p>
+<p>Normal saves and new exports use configuration version 4. Full exports preserve categories, scenario category assignments, optional icons and dashboard presentation. Supported legacy V1/unversioned payloads are normalized to flat V4 with an empty category list before merging; this does not clear the draft&#8217;s existing categories or change existing relationship models. The backend upgrades valid stored V1 configuration on startup rather than requiring a reset. A merge retains the current dashboard presentation when the imported V2 file omits that setting.</p>
 </div>
 <div class="paragraph">
 <p>Delete only the intended scenario after reviewing confirmation. Configuration removal does not itself describe a repository data-deletion workflow. Reset replaces configuration with seeded defaults; back up first and use reset only in an explicitly disposable or otherwise authorized environment.</p>
@@ -2009,11 +2810,49 @@ Translations in other languages remain unchanged.</p>
 </div>
 <div class="sect2">
 <h3 id="admin-recovery"><a class="anchor" href="#admin-recovery"></a><a class="link" href="#admin-recovery">5.13. Validation and concurrent editing</a></h3>
+<div class="sect3">
+<h4 id="_first_startup_and_skipped_examples"><a class="anchor" href="#_first_startup_and_skipped_examples"></a><a class="link" href="#_first_startup_and_skipped_examples">5.13.1. First startup and skipped examples</a></h4>
+<div class="paragraph">
+<p>On a pristine installation, the backend validates the complete packaged scenario configuration,
+then checks its referenced repository types against one catalogue snapshot. A Simple scenario
+needs its document type. A Record scenario needs both its document and record types; a many-to-many
+relationship also needs its relation type. A strict relationship&#8217;s foreign-key name is not a
+separate type. Only confirmed scenarios are installed, retaining their order, settings, categories
+and dashboard presentation.</p>
+</div>
+<div class="paragraph">
+<p>Scenarios are skipped when a required type is absent or verification is unavailable, including
+missing service credentials, authentication failures, timeouts and invalid repository responses.
+Operators can inspect sanitized skip reason codes and installation totals in backend logs; do not
+copy credentials or tokens into support reports. Invalid packaged configuration or corrupt or
+partially initialized storage still prevents startup and needs operator investigation.</p>
+</div>
+<div class="paragraph">
+<p>If every scenario is skipped, the saved configuration contains no scenarios. This is a valid,
+durable initial state, not a failed configuration load. Administrators can still open administration;
+an empty dashboard can also result from permissions, so check the saved scenario list and startup
+diagnostics before concluding that examples were skipped.</p>
+</div>
+<div class="paragraph">
+<p>Restarting after types or credentials become available does not retry skipped examples and never
+replaces saved configuration. Arrange for the operator to resolve the verification problem, then
+recover explicitly: create the required scenarios or import, review and save suitable configuration.
+Where appropriate, use the existing administrator configuration reset after backing up needed
+configuration. Reset replaces the saved collection with the validated configured system defaults and does
+not apply the first-start type filter; ensure those defaults suit the installed repository before
+resetting. This is distinct from resetting permission defaults within one scenario draft.
+Saved configurations, upgrades, imports, scenario edits and draft validation retain their existing
+validation behavior; first-start filtering does not silently remove scenarios from those workflows.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_correct_invalid_or_conflicting_edits"><a class="anchor" href="#_correct_invalid_or_conflicting_edits"></a><a class="link" href="#_correct_invalid_or_conflicting_edits">5.13.2. Correct invalid or conflicting edits</a></h4>
 <div class="paragraph">
 <p>Invalid references, duplicate scenario names or category IDs, blank category defaults, dangling category assignments, unavailable default content, inconsistent annotation switches, missing required fields and unsupported relationships prevent a save. Correct the indicated setting rather than removing validation.</p>
 </div>
 <div class="paragraph">
 <p>A stale save is rejected when another administrator has changed the scenario or shared configuration being saved. Your draft is retained. Preserve a copy of the intended edits, explicitly reload the saved configuration and reapply necessary changes. Remember that a shared reload can discard edits from other administration workspaces. This version does not provide a conflict-specific merge interface. For authorization or session errors, sign in again through Workspace and check current state before repeating writes.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2036,12 +2875,22 @@ Translations in other languages remain unchanged.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.schemaVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.scenarioPresentation</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">tree, flat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.csvDownloads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>envelope.zipDownloads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
@@ -2375,6 +3224,11 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.recordCardZipDownloadEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage.attributes</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
@@ -2685,6 +3539,11 @@ Translations in other languages remain unchanged.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentView.recordCardZipDownloadEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentView.table</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">table</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
@@ -2837,7 +3696,7 @@ Conditional requirements and live repository validation also apply. Export an ex
 <p>A stale catalog warning retains existing selections. Deployment operators provision read-only discovery credentials and register selectable audiences and typed claim values. Administrators do not select criteria based only on their own identity. Imports reject unsupported new criteria, including deny rules; correct the complete mapping before saving.</p>
 </div>
 <div class="paragraph">
-<p>Schema v2 exports include the scenario&#8217;s action rules and field overrides, with no discovery credentials, cached catalogs or current-user grants. Supported v2, v2 and v2 imports upgrade without generating grants. Existing scenarios without mappings deny access after migration: configure initial access and action mappings before rollout. Configuration administration does not automatically grant business access.</p>
+<p>Schema v4 exports include the scenario&#8217;s action rules and field overrides, with no discovery credentials, cached catalogs or current-user grants. Supported legacy and released v2 imports upgrade without generating grants. Existing scenarios without mappings deny access after migration: configure initial access and action mappings before rollout. Configuration administration does not automatically grant business access.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2929,14 +3788,32 @@ action in the other. Shared content and version feature switches remain under Ge
 availability in both. The record summary card has its own field-visibility permissions.</p>
 </div>
 <div class="paragraph">
-<p>Current exports use schema version 2. Supported older imports and stored configurations copy their
+<p>Current exports use schema version 4. Supported older imports and stored configurations copy their
 existing document view settings and permission selections into both document workspaces, retaining
 existing behavior. Subsequent edits are independent. Existing saved table/search preferences initialize
 the new view contexts when no new preferences exist. Record-document preferences are shared across
 records within the scenario; the selected record always restricts the document query.</p>
 </div>
 <div class="paragraph">
-<p>CSV and ZIP export are not implemented. Their configuration switches remain off and disabled in every workspace. Saving through ConfigUI sets both export flags to false, including configurations imported with those flags enabled.</p>
+<p>Configure ZIP export in <strong>General → Overview → ZIP downloads</strong>. This section appears after Naming and Dashboard, before Retention. These settings apply to all scenarios and use the shared Save/Cancel draft. Both global switches default to off. Empty file/byte limits inherit the configured service maximum; the effective maximum uses the stricter value. The file limit counts archive files, which can include multiple files per document. The byte limit counts the total size before compression, not the resulting ZIP size. Confirmation thresholds require explicit user consent at the configured file count or uncompressed size; they do not override hard limits. Numeric limits and thresholds cannot be edited while both global ZIP switches are off; their saved values are retained. Configured and effective maxima use localized thousands separators. The availability status reports whether the compatible service can be reached with your current session; permissions and surface switches still apply.</p>
+</div>
+<div class="paragraph">
+<p>When the corresponding global switch is enabled, configure ZIP independently in each workspace&#8217;s table settings. Entire-record card switches in record details and RecordDocuments are independent of table ZIP settings. Disabling a global switch retains authored surface settings and locks the affected ZIP permission rules. Saving preserves ZIP settings. An enabled switch does not grant users permission to download. CSV has independent table activation and application-wide row settings described below.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="csv-download-configuration"><a class="anchor" href="#csv-download-configuration"></a><a class="link" href="#csv-download-configuration">5.16.2. CSV downloads</a></h4>
+<div class="paragraph">
+<p>Enable CSV independently in the document, record and record-document table settings. It exports the visible data columns in their current user-defined order. A record table exports record metadata, without expanding its documents. Existing scenario access, field visibility and repository permissions apply; configuration administration does not grant data access. This delivery does not activate separate CSV permission grants.</p>
+</div>
+<div class="paragraph">
+<p>CSV downloads have separate global switches for documents and records. The document switch also covers documents inside records. A scenario table must additionally enable CSV. Existing configurations with omitted global switches retain their table activation. When both global switches are off, row-limit fields are disabled; previously configured limits remain stored for reactivation.</p>
+</div>
+<div class="paragraph">
+<p>Application-wide CSV settings contain an optional maximum row override and a positive warning threshold, defaulting to 10,000 rows. An empty maximum inherits the operator-configured service ceiling; the effective maximum is the smaller value. New overrides above that ceiling are rejected. If an operator later lowers the ceiling, the lower value applies even to an older saved override. Review any discrepancy shown in the settings. Neither global row settings nor a warning threshold enable a table, and confirmation cannot override a hard limit. CSV limits count rows, independently of ZIP file counts and uncompressed bytes.</p>
+</div>
+<div class="paragraph">
+<p>Configuration exports and imports preserve <code>csvDownloads</code> in schema version 4. A missing maximum inherits the service ceiling and an omitted warning threshold uses 10,000. There is no format designer, persisted CSV job or download history. See <a href="#csv-downloads">CSV downloads</a> for native saving, mandatory browser fallback, temporary memory use, stored reference IDs, concurrent-data limitations and spreadsheet formula-like text.</p>
 </div>
 </div>
 </div>
@@ -2946,7 +3823,7 @@ records within the scenario; the selected record always restricts the document q
 <p>Creation and update forms follow the selected workspace&#8217;s detail field order, section headings, labels and read-only settings. In two-stage scenarios, record-scoped documents and the all-documents view retain their independent table, search, detail and permission settings. Disabling a shared attribute removes it from both document workspaces. Stored column preferences cannot restore fields that the current permissions hide.</p>
 </div>
 <div class="paragraph">
-<p>A permission change also applies when a drawer or confirmation was already open: a revoked action cannot be submitted. Configuration administration alone does not grant business actions. Restoring historical versions, CSV/ZIP export, column-header filtering controls and document summary cards remain unavailable; record summary cards are supported.</p>
+<p>A permission change also applies when a drawer or confirmation was already open: a revoked action cannot be submitted. Configuration administration alone does not grant business actions. Restoring historical versions, column-header filtering controls and document summary cards remain unavailable; record summary cards are supported. ZIP export is controlled independently by its global/surface settings, current grants and service availability.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3157,12 +4034,26 @@ The Retention QA category supplies separate native-inherited and configured-prop
 <div class="paragraph">
 <p>Native destructive cascades into retention-capable child types are blocked when protection of unreadable targets cannot be established. A visible child listing is not proof of complete native scope; no privileged identity is substituted to discover hidden data.</p>
 </div>
+<div class="sect2">
+<h3 id="_released_configuration_compatibility"><a class="anchor" href="#_released_configuration_compatibility"></a><a class="link" href="#_released_configuration_compatibility">7.1. Released configuration compatibility</a></h3>
+<div class="paragraph">
+<p>Release 0.1.4 uses configuration version 2. ZIP settings belong to version 3. Released version-2 imports retain scenarios, categories, presentation and permissions through an explicit upgrade; files labeled version 2 that contain version-3 ZIP settings are rejected. Stored version-2 and version-3 configurations are validated against their inherited schemas and upgraded automatically to version 4 at startup without resetting data. CSV collection settings require version 4; imports labeled version 2 or 3 that contain these settings are rejected. Authored ZIP settings and scenario permissions are preserved. New exports use version 4 and require a compatible application; importing them into a version-2-only release is unsupported. Database migration numbers are independent of configuration-file versions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="permission-target-links"><a class="anchor" href="#permission-target-links"></a><a class="link" href="#permission-target-links">7.2. Direct links to permission targets</a></h3>
+<div class="paragraph">
+<p>Links from permission catalog usages include the scenario and exact permission target in the address path.
+Bookmarking or reloading that address reopens the corresponding Permissions editor and target drawer,
+subject to administrator access. Older query-based links redirect to the same destination.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-05 05:17:45 UTC
+Last updated 2026-11-05 18:18:09 UTC
 </div>
 </div>
 </body>
