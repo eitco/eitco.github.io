@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#localization">5.12. Manage languages and translations</a></li>
 <li><a href="#admin-recovery">5.13. Validation and concurrent editing</a>
 <ul class="sectlevel3">
-<li><a href="#_first_startup_and_skipped_examples">5.13.1. First startup and skipped examples</a></li>
+<li><a href="#_startup_additive_examples_and_recovery">5.13.1. Startup, additive examples and recovery</a></li>
 <li><a href="#_correct_invalid_or_conflicting_edits">5.13.2. Correct invalid or conflicting edits</a></li>
 </ul>
 </li>
@@ -557,7 +557,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 1.0.0-SNAPSHOT; source 63cf624e346057d1b05aff1c67efc4eb5d547f20.</p>
+<p>Version 1.0.0-SNAPSHOT; source 08910ccba0c90fa633ddc513d7e7c923ea9ad3b8.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -1464,8 +1464,8 @@ state; managed-bootstrap keys must survive container replacement separately.</p>
 <p>The canonical keys below work in Spring YAML/properties. <code>application.yaml</code> also
 provides explicit <code>ARVEO_FLEX_BACKEND_*</code> environment aliases for common settings;
 the delivered backend <code>application.yaml</code> mapping is authoritative.
-For example <code>ARVEO_FLEX_BACKEND_SEED_TYPE_CLIENT_SECRET_FILE</code> maps to
-<code>arveo-flex-backend.configuration.type-verification.client-secret-file</code>.
+For example <code>ARVEO_FLEX_BACKEND_SEED_TYPE_ATTEMPT_TIMEOUT</code> maps to
+<code>arveo-flex-backend.configuration.type-verification.attempt-timeout</code>.
 Do not invent similarly named aliases for keys without a packaged mapping: use the
 canonical YAML key. Spring&#8217;s generic environment binding removes hyphens and replaces
 dots with underscores; it is different from the explicit aliases. Use YAML for lists,
@@ -1869,52 +1869,24 @@ configuration. Explicit administrator reset uses the configured system defaults.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Optional Spring resource override, for example an operator-mounted <code>file:/etc/arveo-flex/config.json</code>. Validate it before first startup/reset.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.token-endpoint</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dedicated client-credentials token endpoint; use HTTPS in installations. Only explicit localhost/127.0.0.1 test runtimes permit HTTP. No userinfo/query/fragment.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.client-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dedicated outbound account with authority to read referenced ECR type definitions.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.client-secret-file</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Private secret mount for that dedicated account.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.trusted-certificate-file</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unset</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Optional CA for the dedicated verification connection.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.connect-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2s</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Positive duration, at most one minute.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.read-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5s</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Positive duration, at most one minute.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Positive duration, at most 30 seconds; bounded by remaining reconciliation budget.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type-verification.attempt-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>12s</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Overall bounded attempt; positive, at most one minute.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Total optional-work budget, positive and at most 30 seconds; excludes normal HTTP work and transaction cleanup.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Supply the dedicated settings together when packaged examples must be initialized.
-This credential is separate from permission discovery and actual user tokens. On a
-pristine database, missing/unverifiable ECR references cause affected seed scenarios
-to be skipped; <strong>all skipped scenarios still produce durable empty initialization</strong>.
-Categories, presentation and ZIP/CSV collection settings are preserved. Fixing the
-connection and restarting does not retry seeding: an administrator must create,
-import or explicitly reset configuration. Existing saved configuration, supported
-upgrades and runtime CRUD do not pass through this first-start filtering step.
-The first-start behavior above is separate from runtime repository authorization.</p>
+<p>The current authenticated user supplies the token for one complete repository catalogue on the
+first aggregate read after each process start. There are no seed-specific credentials or trust
+mounts. Local startup remains independent of ECR. Existing scenario names/settings win; new eligible
+entries append atomically. Technical failures preserve pending state for a later read, returning
+stored configuration or pristine HTTP 503. Confirmed missing types complete the cycle and require
+a Flex restart after installation. See <a href="#admin-recovery">Validation and concurrent editing</a> for recovery and deleted-seed consequences.</p>
 </div>
 </div>
 <div class="sect4">
@@ -2119,15 +2091,15 @@ before raising concurrency or limits; budgets are shared per backend instance.</
 <ul>
 <li>
 <p>Record versions/digests, identity owner, public origin, routes, database/schema,
-secret/key backup ownership and both selected discovery/seed-verification modes.</p>
+secret/key backup ownership and the selected discovery mode and reconciliation budget.</p>
 </li>
 <li>
 <p>Verify internal liveness/readiness and real administrator, normal-user and denied
 access through Workspace. Test issuer/audience, scenario/field and ECR permissions.</p>
 </li>
 <li>
-<p>Verify type-filtered first startup and intended create/import/reset recovery before
-handing over an unexpectedly empty configuration; test supported upgrades separately.</p>
+<p>Verify authenticated first-read initialization, additive restart behavior and technical-failure
+recovery before handover; test confirmed missing types and supported upgrades separately.</p>
 </li>
 <li>
 <p>Verify ZIP/CSV availability, limits and a bounded owned data journey, with cleanup.
@@ -2811,38 +2783,44 @@ Translations in other languages remain unchanged.</p>
 <div class="sect2">
 <h3 id="admin-recovery"><a class="anchor" href="#admin-recovery"></a><a class="link" href="#admin-recovery">5.13. Validation and concurrent editing</a></h3>
 <div class="sect3">
-<h4 id="_first_startup_and_skipped_examples"><a class="anchor" href="#_first_startup_and_skipped_examples"></a><a class="link" href="#_first_startup_and_skipped_examples">5.13.1. First startup and skipped examples</a></h4>
+<h4 id="_startup_additive_examples_and_recovery"><a class="anchor" href="#_startup_additive_examples_and_recovery"></a><a class="link" href="#_startup_additive_examples_and_recovery">5.13.1. Startup, additive examples and recovery</a></h4>
 <div class="paragraph">
-<p>On a pristine installation, the backend validates the complete packaged scenario configuration,
-then checks its referenced repository types against one catalogue snapshot. A Simple scenario
-needs its document type. A Record scenario needs both its document and record types; a many-to-many
-relationship also needs its relation type. A strict relationship&#8217;s foreign-key name is not a
-separate type. Only confirmed scenarios are installed, retaining their order, settings, categories
-and dashboard presentation.</p>
+<p>The backend validates the packaged configuration at startup and checks existing storage locally.
+On the first signed-in aggregate configuration read after each backend restart, it checks missing
+scenario names against one complete repository type catalogue using that user&#8217;s token. No separate
+seed account or secret is needed. Simple scenarios require their document type; Record scenarios
+also require their record type, and many-to-many relationships require their relation type.
+Document and record attribute lookups also require their source repository types. A lookup source
+does not need a separate scenario. A strict foreign-key name is not a separate type.</p>
 </div>
 <div class="paragraph">
-<p>Scenarios are skipped when a required type is absent or verification is unavailable, including
-missing service credentials, authentication failures, timeouts and invalid repository responses.
-Operators can inspect sanitized skip reason codes and installation totals in backend logs; do not
-copy credentials or tokens into support reports. Invalid packaged configuration or corrupt or
-partially initialized storage still prevents startup and needs operator investigation.</p>
+<p>Existing scenarios, their order and revisions remain authoritative. Newly eligible scenarios append
+in packaged order with required missing categories; existing category labels/locations and shared
+presentation, ZIP and CSV settings remain unchanged. On a pristine installation the packaged metadata
+is retained even if confirmed missing types leave no eligible scenarios.</p>
 </div>
 <div class="paragraph">
-<p>If every scenario is skipped, the saved configuration contains no scenarios. This is a valid,
-durable initial state, not a failed configuration load. Administrators can still open administration;
-an empty dashboard can also result from permissions, so check the saved scenario list and startup
-diagnostics before concluding that examples were skipped.</p>
+<p>Technical verification failures (denied upstream token, timeout, outage or invalid response) do not
+initialize empty storage. Existing configuration stays readable where the database can be read
+reliably; a pristine request receives a temporary configuration-unavailable error. Resolve the cause
+and retry the configuration load. Logs contain sanitized outcome/reason/count diagnostics; never
+copy tokens into support reports. Invalid packaged configuration or corrupt/partial storage still
+prevents startup and requires operator investigation.</p>
 </div>
 <div class="paragraph">
-<p>Restarting after types or credentials become available does not retry skipped examples and never
-replaces saved configuration. Arrange for the operator to resolve the verification problem, then
-recover explicitly: create the required scenarios or import, review and save suitable configuration.
-Where appropriate, use the existing administrator configuration reset after backing up needed
-configuration. Reset replaces the saved collection with the validated configured system defaults and does
-not apply the first-start type filter; ensure those defaults suit the installed repository before
-resetting. This is distinct from resetting permission defaults within one scenario draft.
-Saved configurations, upgrades, imports, scenario edits and draft validation retain their existing
-validation behavior; first-start filtering does not silently remove scenarios from those workflows.</p>
+<p>Confirmed missing types complete this process&#8217;s check. After installing those types, restart Flex:
+the next signed-in aggregate read considers them again and adds newly eligible scenarios. Repeated
+reads after a completed check do not poll the repository. The default optional-work budget is five
+seconds (operator configurable up to thirty); normal request/database cleanup time is additional.</p>
+</div>
+<div class="paragraph">
+<p>Deleting a scenario whose name remains in the packaged seed is not permanent suppression: it can
+return after a restart or another pending instance&#8217;s reconciliation. Removing an entry from the seed
+does not delete saved scenarios. Renaming a seed entry creates a new identity and retains the old
+saved entry. Existing administrator reset/import/save semantics remain available; reset replaces the
+collection with validated configured defaults, so back up and review before using it. These actions
+do not reset a completed reconciliation cycle. Existing saved scenarios receive no additional repair
+or live-type audit, and ordinary CRUD/draft validation keeps its established behavior.</p>
 </div>
 </div>
 <div class="sect3">
@@ -4053,7 +4031,7 @@ subject to administrator access. Older query-based links redirect to the same de
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-06 05:23:17 UTC
+Last updated 2026-11-06 11:04:57 UTC
 </div>
 </div>
 </body>
