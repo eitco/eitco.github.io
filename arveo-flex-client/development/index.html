@@ -557,7 +557,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 1.0.0-SNAPSHOT; source ce995b184bb95f831e77f8d55cab8c55ac621300.</p>
+<p>Version 1.0.0-SNAPSHOT; source b1d04d876300ffa20ae1a998b75bf57aa1ff82c4.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -847,10 +847,12 @@ reported as success; check the refreshed membership before retrying.</p>
 <div class="paragraph">
 <p>When a field uses an administrator-configured lookup, select a permitted repository value from its dropdown instead of entering arbitrary text. Labels can combine several columns with ` — `; the filter uses the stored key, never the displayed label. Depending on its settings, the dropdown allows one or several selections and optional case-insensitive search. Multiple stored keys match with OR within that field; other active fields still narrow the query.
 When search is enabled, start typing and continue in the same input as the dropdown opens; opening it does not move focus to <strong>Retry</strong>. Typing searches the options without applying a document filter until a value is selected.
+Lookup search inputs in forms use the field label, for example <em>Search Customer…</em>, to identify the values being searched.
 Empty lookup search filters show the field name inside the input, matching the other search fields, rather than as a separate label above it.
 Multiple-selection dropdowns show checkboxes beside the matches and stay open when a value is selected or deselected. Click a row or use the arrow keys and Enter to toggle a value; press Escape or click outside to close the dropdown. While a selected key is being validated, the dropdown stays open and further checkbox changes are temporarily unavailable; continue selecting once validation finishes. Checkboxes reflect confirmed selections only. Changing visible matches preserves selections on other pages.
 Scroll through the matches to browse more records. Single- and multiple-selection dropdowns automatically load the next page when you reach the final 10% of the scroll range, without a <strong>Load more records</strong> button. If loading fails, use <strong>Retry</strong> to continue.
-If the lookup source is unavailable, ask an administrator to check its scenario configuration and your read access. Your selection is preserved; retry after the setup or access problem has been resolved. This message does not mean that a saved value has been deleted.
+Selecting a value preserves the dropdown&#8217;s loaded pages while the address updates to reflect the active filters.
+If the lookup source is unavailable, ask an administrator to check this attribute&#8217;s lookup mapping and your scenario/repository access. Your selection is preserved; retry after the setup or access problem has been resolved. This message does not mean that a saved value has been deleted.
 Active lookup filters show the latest selected match in that input without extra search captions, repeated labels or selection-removal buttons. The green filter chips use the same configured display columns as the dropdown, including for restored selections; unresolved values fall back to their stored key. Use a chip&#8217;s <strong>×</strong> button to remove only that selected key: other selections and active fields remain applied, and the dropdown reflects the remaining selections. Removing the last key clears that lookup filter; <strong>Clear all</strong> removes all filters. Filtering still uses exact stored keys, not chip labels, even when several selections have the same label.</p>
 </div>
 <div class="paragraph">
@@ -861,7 +863,7 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 <p>Restored lookup selections resolve separately from dropdown search and paging. A value outside the visible page is not cleared. Unavailable or ambiguous saved selections and retry actions remain visible beside the lookup input when the dropdown is closed; the stored keys remain in the active chips. If the administrator changes a mapping or disables its filter, incompatible saved filter preferences are discarded before querying. If its source type disappears or is no longer a supported document/container type, the lookup control is omitted until the configuration can be repaired.</p>
 </div>
 <div class="paragraph">
-<p>Lookup browsing and saved-value resolution also require access to a configured source scenario and permission to read its records or documents. All configured label, stored-value and dropdown search columns must be visible in that source&#8217;s Details and permitted for you. If access changes or a required column is hidden, the lookup cannot use another scenario to bypass that restriction in the matching active source. Keep existing selections and ask an administrator to check the source scenario and field visibility; an unavailable lookup is not proof that a saved value was deleted.</p>
+<p>Lookup browsing and saved-value resolution use the permissions of this scenario and attribute, together with your repository access to the configured source data. The source does not need its own scenario. If your access or the mapping changes, pending lookup results are discarded. Keep existing selections and ask an administrator to check the mapping and your permissions; an unavailable lookup is not proof that a saved value was deleted. Read-only fields may still show permitted saved-value labels without allowing a different value to be selected. Deleted or trashed source entries cannot become valid selections.</p>
 </div>
 <div class="paragraph">
 <p>Select a row to open the document workspace. Choose <strong>Details</strong> to inspect metadata. Read-only fields cannot be changed and retain their stored values when other fields are saved. Dates, enumerations and references use their corresponding controls rather than arbitrary text. Not every configured field has a control in every view. Column-header filter controls remain unavailable. CSV actions appear when configured for the current table and supported by its visible fields. ZIP actions appear when configured for the current workspace, permitted for your account and backed by an available Download-Service.</p>
@@ -2567,13 +2569,13 @@ final membership is removed. This behavior is independent of the stored cascade 
 <p>Open <strong>General → TypeDefinitions</strong> and expand <strong>Attribute lookups</strong> inside the Document or Record card. Select an attribute and enable a shared lookup mapping.
 Lookup sections expand like Attributes, Content and Versions; they are not separate nested cards.
 The header lists attributes with enabled mappings as <strong>Active lookup filters</strong>, or shows <strong>No lookup filters set up</strong> when none exist. This summary remains visible when collapsed and updates with draft edits; it does not depend on dropdown search being enabled. Disabled mappings and imported filter/form settings without a shared mapping are not listed as active.
-The source must be an accessible repository document or container type represented by a configured scenario of the same type and object kind. A standalone container source uses the Documents area of its one-stage scenario; a container can also use the Records area of a two-stage Record scenario. A document source uses a matching Documents area. Users need access to the source scenario and its applicable read permission: Documents read for standalone containers and documents, or Records read for two-stage container sources. Configuring a lookup does not grant these permissions.</p>
+The source must be an accessible repository document or container type with valid configured columns. It does not need a separate scenario. For example, an invoice scenario can offer customer codes and names without a customer-management scenario. Existing mappings remain visible for repair if the source or columns become unavailable.</p>
 </div>
 <div class="paragraph">
-<p>If no matching source scenario exists, the source is unavailable for a new mapping. Existing invalid mappings remain visible for repair. Configure the source scenario first, or save it together with the lookup mapping in the shared configuration. Saving one scenario cannot rely on a source scenario that exists only in another unsaved draft. Shared configuration validation checks the source setup independently of the administrator&#8217;s personal read permissions; verify the eventual user&#8217;s read permissions separately.</p>
+<p>Access belongs to the scenario and attribute using the lookup. Users need the applicable scenario action and field permissions, together with repository read access to the source data. Filter lookups follow the attribute&#8217;s Search availability and applicable table field rules; the attribute need not also appear as a displayed table column. Form fields retain their independent create/update visibility and editability rules. Visible read-only values may display their resolved labels, but cannot be changed through the lookup. Record-scoped document lookups use that workspace&#8217;s permissions and current record context.</p>
 </div>
 <div class="paragraph">
-<p>Make every configured display, stored-value and dropdown search column visible in the source stage&#8217;s Details and permitted for the user. This includes <code>id</code> when explicitly chosen for any of those purposes; retaining an item&#8217;s identity internally does not make <code>id</code> an unrestricted lookup column. The active scenario is preferred when it is an eligible source; otherwise sources follow configuration order. If a matching active source hides a required column, the lookup does not switch to another scenario to bypass the restriction. Missing source access or hidden required columns make the lookup unavailable rather than exposing restricted fields. Check this setup with the intended normal-user permissions, not only as an administrator.</p>
+<p>The configured mapping determines which stored and display values users may receive. Dropdown search columns can find matches without appearing in the returned label or values. Unrelated scenarios and their Details columns, permissions or order do not affect this lookup. Deleted or trashed source entries are unavailable as valid selections. Configuring a lookup grants no source creation, editing, deletion, content or version-history access. Check the setup using the intended normal-user permissions as well as an administrator account.</p>
 </div>
 <div class="paragraph">
 <p>For a Record scenario, the document lookup source, stored column and labels are shared by the all-document and record-scoped document workspaces. Their filter and form dropdown settings are independent. Open the record view configuration and select its document workspace to edit those scoped settings; changing them does not change the all-document dropdowns. Saving validates all configured workspaces, including retained settings on a workspace you are not currently editing.</p>
@@ -4034,7 +4036,7 @@ subject to administrator access. Older query-based links redirect to the same de
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-10 05:58:08 UTC
+Last updated 2026-11-10 23:19:48 UTC
 </div>
 </div>
 </body>
