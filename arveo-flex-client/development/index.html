@@ -557,7 +557,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Version 1.0.0-SNAPSHOT; source b1d04d876300ffa20ae1a998b75bf57aa1ff82c4.</p>
+<p>Version 1.0.0-SNAPSHOT; source 7d1895fb3f85be9ee93b80a4d1e9f41c45546cec.</p>
 </div>
 <div class="paragraph">
 <p><a href="index.pdf">Download PDF</a> | <a href="documentation-html.zip">Download HTML</a></p>
@@ -3691,6 +3691,15 @@ client identifier or full group path and filter by category. Audiences and custo
 are registered by operators and are marked separately from Keycloak entries.</p>
 </div>
 <div class="paragraph">
+<p>Groups stay listed by full path, for example <strong>Group: /Admin</strong>. Token group names
+match the final path segment: <code>Admin</code> matches <code>/Admin</code>, and <code>accounts</code> matches
+<code>/finance/accounts</code>. Existing mappings need no changes. Groups with equal names
+under different parents cannot be distinguished when the token supplies names only;
+allow and deny rules match all such paths, with deny taking precedence. A name-only
+membership does not imply access through ancestor groups. Tokens supplying full
+paths retain path-specific matching and descendant membership. Names are case-sensitive.</p>
+</div>
+<div class="paragraph">
 <p>The page shows the last successful discovery and warns when its snapshot is stale.
 <strong>Reload catalog</strong> reloads the server snapshot; discovery retries occur at most every five
 minutes. If discovery has never succeeded, ask your operator to configure the dedicated
@@ -4036,7 +4045,7 @@ subject to administrator access. Older query-based links redirect to the same de
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-11 05:28:31 UTC
+Last updated 2026-11-12 05:29:35 UTC
 </div>
 </div>
 </body>
