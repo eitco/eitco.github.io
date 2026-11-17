@@ -26693,6 +26693,31 @@ AWS S3</p></td>
 <div class="paragraph">
 <p><strong class="big">Bug Fixes</strong></p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1958: Fixed relocating chunked content to another storage profile (e.g. after changing the retention date) silently truncating the content if a chunk started with the byte <code>0xFF</code>. Rolling back a relocation now deletes all written chunks.</p>
+</li>
+<li>
+<p>ECR-1959: Fixed the file system storage plugin storing truncated or empty content after an I/O error (e.g. a full disk) while writing. Partially written files are deleted now, and the content is synced to the disk before the write is reported as successful.</p>
+</li>
+<li>
+<p>ECR-1960: Fixed the S3 storage plugin storing truncated, undecryptable objects when encryption is enabled. The upload now fails instead of silently dropping data that exceeds the declared length, and failed deletions of single objects are no longer ignored.</p>
+</li>
+<li>
+<p>ECR-1961: Fixed content stored with a bucket organizer profile being chunked differently than recorded in its content information, which made it unreadable or lost the chunks after the first one on relocation. Content is now chunked using the chunk size of the bucket it is written to.</p>
+</li>
+<li>
+<p>ECR-1962: Fixed relocated content (e.g. after changing the retention date or litigation hold) being deleted although the database references it, when deleting the original content of another relocation failed or the outcome of the database commit was unknown. A relocated copy is now also verified against the size and hash of the original content before the original is deleted.</p>
+</li>
+<li>
+<p>ECR-1963: Fixed the check archive consistency job considering referenced content as abandoned, so that the delete abandoned content job deleted it. This affected versions with several content elements, content in the buckets of a bucket organizer, content in a profile no longer configured for its content element and content written while the job was running. Content younger than the new job parameter <code>minimumAgeMinutes</code> (default: one day) is no longer considered abandoned, and the delete job only deletes content found in its own profile.</p>
+</li>
+<li>
+<p>ECR-1964: Fixed purging documents removing their content from the storage before the documents were deleted from the database. If deleting the documents failed, they were kept without their content. The content is now removed after the database transaction has been committed, and the retention period is checked using the time of the database.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
 </div>
@@ -29085,7 +29110,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-17 02:52:10 UTC
+Last updated 2026-11-17 04:16:10 UTC
 </div>
 </div>
 <style>
