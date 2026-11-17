@@ -5499,6 +5499,10 @@ in memory at the same time.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">storagePath</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path to the directory that is used to store the files</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">createStorageDirectory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the directory given by <code>storagePath</code> is created if it does not exist (default: <code>true</code>). Set it to <code>false</code> if the directory is located on a mounted file system: otherwise the content is silently written to the local file system while the file system is not mounted.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -26549,15 +26553,15 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.3</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Registry Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.3</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.3</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Job Service</p></td>
@@ -26693,6 +26697,13 @@ AWS S3</p></td>
 </div>
 <div class="paragraph">
 <p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1966: Fixed content remaining in the storage unnoticed: chunked content was reported as deleted although some of its chunks could not be deleted, and content written before a write failed was not removed. A missing storage directory, bucket or container no longer counts as deleted content, and the new setting <code>createStorageDirectory</code> of the file system storage plugin prevents writing to the local file system while a mounted file system is missing.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Interface breaking changes</strong></p>
@@ -29143,7 +29154,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-17 14:40:43 UTC
+Last updated 2026-11-17 17:13:31 UTC
 </div>
 </div>
 <style>
