@@ -26716,6 +26716,9 @@ AWS S3</p></td>
 <li>
 <p>ECR-1964: Fixed purging documents removing their content from the storage before the documents were deleted from the database. If deleting the documents failed, they were kept without their content. The content is now removed after the database transaction has been committed, and the retention period is checked using the time of the database.</p>
 </li>
+<li>
+<p>ECR-1965: Fixed content being purged although an older version still referenced it with another file name. Content replaced by a batch overwrite and content replaced several times in the same version is now purged completely instead of remaining in the storage.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -29110,7 +29113,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-17 04:16:10 UTC
+Last updated 2026-11-17 08:17:11 UTC
 </div>
 </div>
 <style>
