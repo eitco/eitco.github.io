@@ -1915,6 +1915,29 @@ or administration endpoint separate; do not use it as a public login address or
 change an existing realm issuer without an explicit platform migration.</p>
 </div>
 <div class="paragraph">
+<p>The standalone deployment supports three HTTPS modes through <code>TLS_MODE</code> in its
+private <code>.env</code>: <code>acme</code> obtains a public certificate, <code>provided</code> loads your PEM
+certificate, private key and CA chain from <code>deployment/certificates/provided/</code>,
+and <code>self-signed</code> generates a certificate on first startup. Generated certificates
+are retained across restarts and expire after 365 days; plan renewal and client
+trust updates. Internal service trust is configured automatically. Administrators
+must also trust the self-signed certificate or private issuing CA in client browsers
+and operating systems. Public ACME requires public DNS and reachable validation
+ports; a hostname known only to internal DNS cannot use the default public ACME
+validation. Preserve the deployment&#8217;s encryption keys, data volumes and certificate
+identity during restarts. See <code>deployment/README.md</code> for file names, export and
+restart instructions.</p>
+</div>
+<div class="paragraph">
+<p>The standalone deployment automatically verifies the Workspace browser client&#8217;s
+login and logout callback URLs against <code>WORKSPACE_HOST</code> after Workspace becomes
+healthy. It repairs stale callback settings without manual Keycloak edits, while
+preserving client secrets, scopes and other settings. Downstream startup fails if
+the callback update cannot be verified. Keep the Workspace login setup receipt
+with the deployment&#8217;s persistent data; after retiring the bootstrap account,
+changing the origin requires an active setup account and renewed verification.</p>
+</div>
+<div class="paragraph">
 <p>Allocate a dedicated PostgreSQL database and user for Flex. Flex initializes its
 own <code>flex_backend</code> schema with versioned migrations. Keep its database and encryption
 keys backed up separately from ECR. Use the delivered backend image with its packaged
@@ -5390,7 +5413,7 @@ is unacceptable. Credentials and access tokens must never appear in either param
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-19 05:37:54 UTC
+Last updated 2026-11-19 13:56:53 UTC
 </div>
 </div>
 </body>
