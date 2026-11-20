@@ -3446,6 +3446,9 @@ Each document can have a retention period that ensures that the document cannot 
 <div class="paragraph">
 <p>If you delete or purge an object in the recycle bin it is deleted like a document without recycle bin feature and cannot be restored.</p>
 </div>
+<div class="paragraph">
+<p>For type definitions with retention protection, only users with the <em>ECR_DSGVO_ADMIN</em> or the <em>ECR_DSGVO_PRIVILEGED_DELETE</em> privilege can move objects within their retention period to the recycle bin. Objects under litigation hold cannot be moved to the recycle bin at all, but objects in the recycle bin can be put under litigation hold or retention. They stay in the recycle bin and can then no longer be deleted or purged according to the retention rules, neither manually nor by the timed deletion of the recycle bin (see <a href="#_retention_recycle_bin">Retention</a>).</p>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -3457,12 +3460,6 @@ For compliance reasons the audit entries in the database are not deleted by the 
 </td>
 </tr>
 </table>
-</div>
-<div class="sect4">
-<h5 id="_automated_recycle_bin_emptying"><a class="anchor" href="#_automated_recycle_bin_emptying"></a><a class="link" href="#_automated_recycle_bin_emptying">Automated recycle bin emptying</a></h5>
-<div class="paragraph">
-<p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>.You can activate the predefined empty recycle bin job, and you can change the age from the 6 months default value to the age you choose. The job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
-</div>
 </div>
 </div>
 </div>
@@ -12181,6 +12178,12 @@ in detail in the Open Telemetry documentation.</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">append-id-order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines whether the system field id is appended to the order-by clause of searches to provide a reliable order for paging. Searches over all versions use the version id instead. Modifications with a selector and a limit (delete, recycle bin, batch update) order the selected entities by id as well. This is not done for meta-data types, since they have no id. A request can disable this using an IdOrderQueryExtension or the appendIdOrder property of ExpressionAndLimit and ExpressionAndTimeout.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">in-condition-optimization-limit</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the number of entries in an in clause from which in the optimized query is used. -1 disables that feature.</p></td>
@@ -16960,11 +16963,13 @@ access control.</p>
 </li>
 <li>
 <p><strong>ECR_DSGVO_ADMIN</strong>: Allows a user to change the litigation hold and retention settings of entities contained in type
-definitions using the retention feature.</p>
+definitions using the retention feature. It also allows to move an entity which is still within it&#8217;s retention period
+to the recycle bin and to restore it, except entities under litigation hold.</p>
 </li>
 <li>
 <p><strong>ECR_DSGVO_PRIVILEGED_DELETE</strong>: An addition to ECR_DSGVO_ADMIN that allows a user to delete an entity which is still
-within it&#8217;s retention period. Entities under litigation hold cannot be deleted, not even with this authority. Organisational precautions must be put in place to ensure DSGVO compliance when making use
+within it&#8217;s retention period or to move it to the recycle bin. Entities under litigation hold cannot be deleted or moved
+to the recycle bin, not even with this authority. Organisational precautions must be put in place to ensure DSGVO compliance when making use
 of this authority. ECR_DSGVO_PRIVILEGED_DELETE privilege does NOT require ECR_DSGVO_ADMIN privilege.</p>
 </li>
 <li>
@@ -20922,9 +20927,32 @@ hold are still possible. The rule is additionally enforced by a database trigger
 <div class="paragraph">
 <p>An object under litigation hold cannot be deleted or purged either. This applies to all users, including users with the
 <em>ECR_DSGVO_PRIVILEGED_DELETE</em> privilege. The delete fails with a <em>NonRetentionCompliantDeleteException</em>. If the object
-is only affected indirectly, e.g. as a sub folder of a deleted folder or as an object in the recycle bin, the database
-trigger rejects the delete with a <em>DeleteWhileLitigationHoldException</em>. The litigation hold must be removed before the
-object can be deleted.</p>
+is only affected indirectly, e.g. as a sub folder of a deleted folder, the database trigger rejects the delete with a
+<em>DeleteWhileLitigationHoldException</em>. The litigation hold must be removed before the object can be deleted.</p>
+</div>
+<div class="paragraph">
+<p>An object under litigation hold cannot be moved to the recycle bin by anyone. The operation fails with a
+<em>NonRetentionCompliantRecycleException</em>, or with a <em>RecycleWhileLitigationHoldException</em> if it is rejected by the
+database trigger. An object that is already in the recycle bin can still be put under litigation hold, including a
+litigation hold inherited from its container or folder. It stays in the recycle bin, but it can no longer be deleted or
+purged, see <a href="#_retention_recycle_bin">Recycle bin</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_retention_recycle_bin"><a class="anchor" href="#_retention_recycle_bin"></a><a class="link" href="#_retention_recycle_bin">Recycle bin</a></h5>
+<div class="paragraph">
+<p>An object within its retention period can only be moved to the recycle bin by users with the <em>ECR_DSGVO_ADMIN</em> or the
+<em>ECR_DSGVO_PRIVILEGED_DELETE</em> privilege. For all other users the operation fails with a
+<em>NonRetentionCompliantRecycleException</em>. Objects whose retention period has expired or that have no retention period can
+be moved to the recycle bin with the <em>DELETE</em> right as usual. Restoring an object from the recycle bin only requires the
+<em>DELETE</em> right.</p>
+</div>
+<div class="paragraph">
+<p>Objects in the recycle bin can be put under litigation hold and their retention period can be set or prolonged. They
+stay in the recycle bin, but the same delete rules apply as for any other object: an object under litigation hold
+cannot be deleted by anyone, an object within its retention period only with the <em>ECR_DSGVO_PRIVILEGED_DELETE</em>
+privilege. The timed deletion of a type&#8217;s recycle bin skips such objects, they stay in the recycle bin until they are
+restored or recycled again after the protection has ended.</p>
 </div>
 </div>
 <div class="sect4">
@@ -21077,6 +21105,18 @@ in charge of this task and you must set the option <em>delete rows only</em>.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Delete under litigation hold</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recycle before retention</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recycle under litigation hold</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
@@ -23163,7 +23203,11 @@ to upload a new document to the archive:</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Defines the ordering for paging. The ID system field can be used for ordering as it&#8217;s value is created from a sequence.</td>
+<td>Defines the ordering for paging. The server appends an ascending order by the ID system field (the version ID for
+version searches), whose value is created from a sequence, so the order is reliable for paging even if the given
+order is ambiguous. This can be disabled for a single request with an <code>IdOrderQueryExtension</code> or for the whole
+system with the configuration property <code>ecr.server.query.append-id-order</code>. Meta-data types have no ID, so a reliable
+order must be given for them explicitly.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -25061,7 +25105,7 @@ based on the metadata of the service instance in the service registry (manual co
 service will reject requests with incompatible versions.</p>
 </div>
 <div class="paragraph">
-<p>The current API version is 1.2.1.</p>
+<p>The current API version is 1.3.0.</p>
 </div>
 </div>
 <div class="sect4">
@@ -26979,14 +27023,10 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Content Repository Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">28.4.0-SNAPSHOT (API-version: 1.2.1)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">28.4.0-SNAPSHOT (API-version: 1.3.0)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.3</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Registry Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">8.0.3</p></td>
 </tr>
 <tr>
@@ -27135,6 +27175,12 @@ AWS S3</p></td>
 <div class="ulist">
 <ul>
 <li>
+<p>ECR-1948: Entities of retention protected types within their retention period can now only be moved to the recycle bin by users with the <code>ECR_DSGVO_ADMIN</code> or <code>ECR_DSGVO_PRIVILEGED_DELETE</code> authority, other users get a <code>NonRetentionCompliantRecycleException</code> (HTTP 403). Entities under litigation hold can no longer be moved to the recycle bin by anyone. Entities that are already in the recycle bin can still be put under litigation hold or retention; they stay in the recycle bin but can no longer be deleted, and the timed deletion of the recycle bin skips them.</p>
+</li>
+<li>
+<p>ECR-1955: Searches over entities with an EQL filter now return a reliable order, so paging no longer skips or repeats entities. The server appends an ascending order by the system field <code>id</code> to the requested order unless it already contains the <code>id</code>. Searches over all versions (e.g. <code>findVersions</code>) use the <code>version_id</code> instead, since all versions of an entity share the same ID. This applies to all searches with a main entity alias, including searches over several type definitions. Modifications with a filter and a limit (delete, purge, move to and restore from the recycle bin, batch updates) now affect the entities with the lowest IDs. Meta-data types have no ID, so for these the caller still has to provide a reliable order. A single search can switch this off with an <code>IdOrderQueryExtension</code> with <code>appendIdOrder = false</code> in the query extensions of the <code>SearchRequest</code>. <code>ExpressionAndLimit</code> and <code>ExpressionAndTimeout</code> have a new optional property <code>appendIdOrder</code> for the same purpose; <code>null</code> (the default for existing clients) uses the system setting.</p>
+</li>
+<li>
 <p>ECR-1975: Changed default configuration of concurrency settings for messaging to avoid deadlock situations.</p>
 </li>
 </ul>
@@ -27148,6 +27194,9 @@ AWS S3</p></td>
 <p>ECR-1931: <code>TypeDefinition.isVariablesVersioned()</code> no longer returns <code>true</code> for types without variables.</p>
 </li>
 <li>
+<p>ECR-1955: The shell now rejects commands with options that are given more than once, options the command does not know, or unexpected positional arguments (e.g. an unquoted constraint). Previously, only one value of a repeated option such as <code>--constraint</code> or <code>--where</code> was used and unknown options and surplus words were ignored, so a command like <code>delete</code> could affect more entities than intended.</p>
+</li>
+<li>
 <p>ECR-1966: Fixed content remaining in the storage unnoticed: chunked content was reported as deleted although some of its chunks could not be deleted, and content written before a write failed was not removed. A missing storage directory, bucket or container no longer counts as deleted content, and the new setting <code>createStorageDirectory</code> of the file system storage plugin prevents writing to the local file system while a mounted file system is missing.</p>
 </li>
 </ul>
@@ -27158,8 +27207,45 @@ AWS S3</p></td>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1955: New property <code>ecr.server.query.append-id-order</code> (default <code>true</code>). It controls whether the server appends the system field <code>id</code> (or <code>version_id</code> for version searches) to the order of searches and orders the entities selected by modifications with a limit by <code>id</code>. If it is <code>false</code>, this is never done, regardless of the options of a request.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1948: Retention protected types with recycle bin get a new database trigger that blocks moving entities under litigation hold to the recycle bin. Run a schema update in maintenance mode after the upgrade to create the trigger for existing types. Entities that are already in the recycle bin while under litigation hold are not changed by the schema update.</p>
+</li>
+<li>
+<p>ECR-1955: The API version of the service is now <code>1.3.0</code> (before <code>1.2.1</code>). Clients built with this SDK version send <code>X-Service-Version: 1.3.0</code>, so the load balancer of the Java Spring SDK only selects service instances that advertise API version <code>1.3.0</code> or higher, and older service instances reject their requests. Older clients keep working with the new service.</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>Migration guide</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Kubernetes: update the pod annotation <code>de.eitco/api-version</code> of the Content Repository Service to <code>1.3.0</code>. Without the update, new clients find no matching instance.</p>
+</li>
+<li>
+<p>Manually configured service instances (<code>spring.cloud.discovery.client.simple.instances</code>): set the metadata <code>api-version</code> of each <code>content-repository-service</code> instance to <code>1.3.0</code>.</p>
+</li>
+<li>
+<p>Update the service instances before or together with the clients. During a blue/green deployment, clients with the new SDK only use the new instances.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </details>
@@ -29601,7 +29687,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-20 16:02:57 UTC
+Last updated 2026-11-20 16:40:43 UTC
 </div>
 </div>
 <style>
