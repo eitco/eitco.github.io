@@ -11843,7 +11843,7 @@ in detail in the Open Telemetry documentation.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">concurrency-limit</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of concurrent message listeners. This limits the number of threads used for message processing.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>64</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">entities-per-message</p></td>
@@ -12125,7 +12125,7 @@ in detail in the Open Telemetry documentation.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">queue-listener-concurrency</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Specify the number of threads used for listeners for queues (NOT topics!) via a "lower-upper" String, e.g. "5-10", or a simple upper limit String, e.g. "10" (the lower limit will be 1 in this case).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1-10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1-2</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.back-off-multiplier</p></td>
@@ -26695,6 +26695,13 @@ AWS S3</p></td>
 <div class="paragraph">
 <p><strong class="big">Changes</strong></p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1975: Changed default configuration of concurrency settings for messaging to avoid deadlock situations.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong class="big">Bug Fixes</strong></p>
 </div>
@@ -29154,7 +29161,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-20 02:52:24 UTC
+Last updated 2026-11-20 11:41:22 UTC
 </div>
 </div>
 <style>
