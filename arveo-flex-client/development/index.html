@@ -1543,6 +1543,12 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 <p>To edit, open the existing item and use its edit action. Change writable fields and save. Metadata-only edits leave unchanged content intact. When replacing original content, check filename and MIME information before saving. A failed save is not proof that nothing was stored: reload the item before retrying.</p>
 </div>
 <div class="paragraph">
+<p>Selecting or replacing the primary file can fill the filename and MIME fields chosen by your administrator. Review these copied values and edit them where permitted before saving. Selecting another original file keeps its metadata separate. Saving without selecting a new file does not refill these fields.</p>
+</div>
+<div class="paragraph">
+<p>The client checks supported file signatures to identify upload MIME. A recognized signature takes priority over the browser&#8217;s type hint; unidentified formats use that hint when available, otherwise <code>application/octet-stream</code>. Editing an entity&#8217;s MIME field changes that metadata value while the upload keeps its resolved MIME.</p>
+</div>
+<div class="paragraph">
 <p>Configured metadata lookups show a single-selection dropdown. Choose the displayed item; its stored key, not its label, is saved. A saved value outside the current page or dropdown search is resolved independently. Optional editable fields offer <strong>Clear selection</strong>; required fields still need a value, and read-only or permission-restricted fields cannot be changed through the dropdown.</p>
 </div>
 <div class="paragraph">
@@ -3233,7 +3239,13 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 </div>
 </div>
 <div class="paragraph">
-<p>Optional filename and MIME attributes must reference writable string fields. If omitted, repository content metadata supplies the values. The primary upload populates configured filename/MIME fields; other content elements retain their own metadata. Editing the filename before submission also changes the primary content&#8217;s system name.</p>
+<p>Use the filename and MIME attribute selectors to choose which document fields receive uploaded-file metadata. Each destination must be a writable string attribute. The configuration stores its repository attribute identifier, so changing a displayed field label preserves the mapping. Choose <strong>System fields</strong> to keep that value in content metadata without copying it to an entity field.</p>
+</div>
+<div class="paragraph">
+<p>Selecting the primary file during creation or replacing it during editing fills the configured destinations with its filename and resolved MIME type. Users can edit the copied entity values before saving. Make the destination fields available and editable for the intended users; a mapping does not grant field access. Other original files retain independent content metadata and do not fill these primary-file destinations. Saving metadata without selecting a new file does not refill the mapped fields.</p>
+</div>
+<div class="paragraph">
+<p>For every selected file, the client checks a limited header sample for supported PDF and image signatures, including SVG prefixes. A recognized signature takes priority over the browser&#8217;s MIME hint, even if the filename suggests another type. Otherwise the client uses a specific browser MIME hint, then <code>application/octet-stream</code>. Detection covers supported signatures rather than every document format; ZIP-based formats such as DOCX need additional inspection and are not identified by their ZIP signature alone. The upload retains its resolved MIME even if a user later edits the mapped entity MIME field.</p>
 </div>
 <div class="paragraph">
 <p>Enable version history and comments separately for document and record stages. These options control the client surfaces, not underlying permission grants.</p>
@@ -5413,7 +5425,7 @@ is unacceptable. Credentials and access tokens must never appear in either param
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-22 05:34:35 UTC
+Last updated 2026-11-23 13:21:18 UTC
 </div>
 </div>
 </body>
