@@ -19,6 +19,7 @@ Here you can find documentation for any version of the EITCO Archive Link Servic
  * [15.0.2](archive/15.0.2)
  * [15.0.1](archive/15.0.1)
  * [15.0.0](archive/15.0.0)
+ * [14.1.3](archive/14.1.3)
  * [14.1.1](archive/14.1.1)
  * [14.1.0](archive/14.1.0)
  * [14.0.1](archive/14.0.1)
