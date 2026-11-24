@@ -7677,6 +7677,12 @@ the <em>arveo</em> service using the default configuration properties of the Spr
 </div>
 </div>
 <div class="paragraph">
+<p>If <code>spring.activemq.broker-url</code> is not configured or empty, messaging is disabled. <em>arveo</em> then does not connect
+to a message broker and does not register any message listeners. Features depending on messaging, like the creation of
+renditions, the full text extraction, the automated deletion of entities in the recycle bin or the forwarding of events,
+are not available. Operations requiring to send a message fail in that case.</p>
+</div>
+<div class="paragraph">
 <p>ActiveMQ&#8217;s OpenWire protocol is used to connect to the broker. The names of the queues and topics used by <em>arveo</em>
 are prefixed with the system ID of the <em>arveo</em> system. <em>arveo</em> uses text messages containing JSON data
 to make it possible to consume messages in components not implemented in Java. The JSON data uses the same serialization
@@ -27183,6 +27189,9 @@ AWS S3</p></td>
 <li>
 <p>ECR-1975: Changed default configuration of concurrency settings for messaging to avoid deadlock situations.</p>
 </li>
+<li>
+<p>ECR-1976: Messaging is now disabled if <code>spring.activemq.broker-url</code> is not configured or empty. In that case arveo starts without a message broker and does not register any message listeners. Features depending on messaging, like renditions, full text extraction, delayed deletion of recycled entities and event forwarding, are not available and operations sending a message fail.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -29687,7 +29696,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-24 02:51:10 UTC
+Last updated 2026-11-24 11:25:21 UTC
 </div>
 </div>
 <style>
