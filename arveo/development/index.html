@@ -334,7 +334,11 @@ a, a:hover, a:focus {
 <li><a href="#implementation_details_of_aes_encryption">Implementation details of AES encryption</a></li>
 </ul>
 </li>
-<li><a href="#messaging">Configure Active MQ</a></li>
+<li><a href="#messaging">Configure Active MQ</a>
+<ul class="sectlevel3">
+<li><a href="#messaging_listeners">Message listener concurrency</a></li>
+</ul>
+</li>
 <li><a href="#database-schema-creation">Database schema creation</a>
 <ul class="sectlevel3">
 <li><a href="#_maintenance_mode_for_the_database_schema">Maintenance mode for the database schema</a></li>
@@ -6278,7 +6282,8 @@ be one of the following values:</p>
 <div class="paragraph">
 <p>Renditions are created asynchronously. When a document is created or updated, a message will be posted to a queue in
 ActiveMQ. The messages are processed by event listeners in the repository service. Depending on the current load it
-might take some time until the rendition is available.</p>
+might take some time until the rendition is available. The number of renditions created in parallel can be configured
+with <code>ecr.server.messaging.listeners.create-renditions.concurrency</code> (see <a href="#messaging_listeners">message listener concurrency</a>).</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -6304,6 +6309,10 @@ be configured, the default is three (see <a href="#_configuration_properties">co
 When all retries have failed, the rendition message will be added to a dead letter queue and the status field of the
 rendition will be set to -1 (FAILED). For this to work, the message queue in ActiveMQ must be configured to
 use an individual dead letter queue as described in <a href="https://activemq.apache.org/message-redelivery-and-dlq-handling.html">the ActiveMQ documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>When the Document Conversion Service rejects a conversion as not supported (HTTP status 400), for example because
+the content cannot be converted, the status of the rendition is set to FAILED immediately without any retries.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7729,6 +7738,135 @@ dead letter queues must be activated by adding the following policy entries to <
         <span class="nt">&lt;individualDeadLetterStrategy</span> <span class="na">queuePrefix=</span><span class="s">""</span> <span class="na">queueSuffix=</span><span class="s">".DLQ"</span> <span class="na">useQueueForQueueMessages=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/deadLetterStrategy&gt;</span>
 <span class="nt">&lt;/policyEntry&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="messaging_listeners"><a class="anchor" href="#messaging_listeners"></a><a class="link" href="#messaging_listeners">Message listener concurrency</a></h4>
+<div class="paragraph">
+<p><em>arveo</em> processes the messages of each queue with its own message listener. Each listener runs between a
+minimum and a maximum number of consumers, and each consumer uses one thread. While messages are waiting in the queue,
+the listener adds consumers up to the maximum. Consumers that stay idle are removed again down to the minimum.</p>
+</div>
+<div class="paragraph">
+<p>The following configuration properties control the parallel processing of messages:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Configuration of message listeners</caption>
+<colgroup>
+<col style="width: 35%;">
+<col style="width: 10%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">property</th>
+<th class="tableblock halign-left valign-top">default</th>
+<th class="tableblock halign-left valign-top">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.server.messaging.queue-listener-concurrency</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1-2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of consumers of each queue listener, either as <code>min-max</code> (e.g. <code>1-4</code>) or as <code>max</code> (e.g. <code>4</code>, the minimum
+is 1 in this case).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.server.messaging.listeners.&lt;name&gt;.concurrency</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of consumers of a single queue listener, in the same format. Overrides <code>queue-listener-concurrency</code> for
+this listener.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.server.messaging.concurrency-limit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>64</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of messages processed at the same time by all queue listeners together. Topic listeners have a
+limit of their own. The limit does not restrict the number of consumers: a consumer that has received a message waits
+until processing is allowed. <code>-1</code> disables the limit.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following queue listeners can be configured with <code>ecr.server.messaging.listeners.&lt;name&gt;</code>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Queue listeners</caption>
+<colgroup>
+<col style="width: 35%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-left valign-top">purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>create-renditions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates renditions (see <a href="#renditions">renditions</a>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>renditions-dlq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks renditions as failed whose messages were moved to the dead letter queue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delete-audit-entries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deletes audit entries.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delete-recycled-entities</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deletes entities from the recycle bin.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rdb-fulltext-extraction</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extracts the full text of documents for the full text search in the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rdb-fulltext-extraction-dlq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks full text extractions as failed whose messages were moved to the dead letter queue.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Case and separators are ignored when the name is matched, so <code>create-renditions</code> and <code>createRenditions</code> are
+equivalent. Listeners of extensions are addressed by their endpoint ID without the suffix <code>Listener</code>. At startup,
+<em>arveo</em> logs every applied setting. It logs a warning for every configured name that does not match a
+listener.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example: more consumers for creating renditions</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">ecr</span><span class="pi">:</span>
+  <span class="na">server</span><span class="pi">:</span>
+    <span class="na">messaging</span><span class="pi">:</span>
+      <span class="na">queue-listener-concurrency</span><span class="pi">:</span> <span class="s">1-2</span>
+      <span class="na">concurrency-limit</span><span class="pi">:</span> <span class="m">64</span>
+      <span class="na">listeners</span><span class="pi">:</span>
+        <span class="na">create-renditions</span><span class="pi">:</span>
+          <span class="na">concurrency</span><span class="pi">:</span> <span class="s">1-8</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Per instance, at most <code>concurrency-limit</code> messages are processed at the same time, and never more than the sum of
+the maximum consumers of all listeners. Most listeners need a database connection while they process a message, and
+the rendition listener also uses the Document Conversion Service. Size the database connection pool and the conversion
+service for this number. With several instances of <em>arveo</em>, the numbers add up.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Topic listeners always use a single consumer. The settings <code>queue-listener-concurrency</code> and <code>listeners</code> apply to queue
+listeners only.</p>
 </div>
 </div>
 </div>
@@ -11847,7 +11985,7 @@ in detail in the Open Telemetry documentation.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">concurrency-limit</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of concurrent message listeners. This limits the number of threads used for message processing.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of message listener executions running at the same time. The limit applies separately to all queue listeners and to all topic listeners. It does not limit the number of listener threads, waiting listeners keep their received message until a permit is available. A value of -1 disables the limit.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>64</code></p></td>
 </tr>
 <tr>
@@ -12125,6 +12263,12 @@ in detail in the Open Telemetry documentation.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If enabled, the payload of JMS messages will be a JSON string.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">listeners</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for single queue listeners that override the defaults, e.g. the concurrency. The key is the name of the listener, e.g. create-renditions, renditions-dlq, delete-audit-entries, delete-recycled-entities, rdb-fulltext-extraction or rdb-fulltext-extraction-dlq. Listeners of extensions are addressed by their endpoint ID without the suffix "Listener". Case and separators are ignored when matching the name.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">queue-listener-concurrency</p></td>
@@ -27173,6 +27317,9 @@ AWS S3</p></td>
 <li>
 <p>ECR-1931: The type definition model now exposes all optional features enabled by the type definition annotations in every SDK (Java, TypeScript, C# and Go): <code>filingEnabled</code>, <code>retentionProtected</code>, <code>optimisticLocking</code>, <code>recycleBinEnabled</code>, <code>usingVariables</code> and <code>variablesVersioned</code> are now part of the model (previously they were only computed by the Java SDK), <code>abacEnabled</code> shows attribute based access checks, <code>defaultValueAttributes</code> lists the attributes with default values, <code>inputProperties</code> lists the input properties, and the content element settings show whether an element is a <code>rendition</code> or a <code>thumbnail</code>.</p>
 </li>
+<li>
+<p>ECR-1975: The concurrency of single queue listeners can now be configured with <code>ecr.server.messaging.listeners.&lt;name&gt;.concurrency</code>, e.g. <code>ecr.server.messaging.listeners.create-renditions.concurrency: 1-8</code>. Listeners without an entry use <code>ecr.server.messaging.queue-listener-concurrency</code>.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -27207,6 +27354,9 @@ AWS S3</p></td>
 </li>
 <li>
 <p>ECR-1966: Fixed content remaining in the storage unnoticed: chunked content was reported as deleted although some of its chunks could not be deleted, and content written before a write failed was not removed. A missing storage directory, bucket or container no longer counts as deleted content, and the new setting <code>createStorageDirectory</code> of the file system storage plugin prevents writing to the local file system while a mounted file system is missing.</p>
+</li>
+<li>
+<p>ECR-1975: Fixed queue listeners (e.g. for rendition jobs) that stopped consuming messages after the first round: the setting <code>ecr.server.messaging.concurrency-limit</code> now limits the number of message listener executions running at the same time instead of the listener threads, which could deadlock the listener containers. Renditions rejected by the conversion service as not supported (HTTP 400) are now marked as failed immediately instead of being redelivered. The defaults changed: <code>ecr.server.messaging.queue-listener-concurrency</code> is now <code>1-2</code> (was <code>1-10</code>) and <code>ecr.server.messaging.concurrency-limit</code> is now <code>64</code> (was <code>10</code>).</p>
 </li>
 </ul>
 </div>
@@ -29696,7 +29846,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-24 11:25:21 UTC
+Last updated 2026-11-24 18:15:13 UTC
 </div>
 </div>
 <style>
