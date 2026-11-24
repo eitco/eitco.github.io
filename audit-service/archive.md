@@ -8,6 +8,7 @@ Here you can find documentation for any version of the EITCO Audit Service deplo
  * [11.0.2](archive/11.0.2)
  * [11.0.1](archive/11.0.1)
  * [11.0.0](archive/11.0.0)
+ * [10.0.8](archive/10.0.8)
  * [10.0.7](archive/10.0.7)
  * [10.0.6](archive/10.0.6)
  * [10.0.5](archive/10.0.5)
