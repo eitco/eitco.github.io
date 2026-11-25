@@ -10,6 +10,7 @@ Here you can find documentation for any version of arveo deployed so far.
  * [28.1.1](archive/28.1.1)
  * [28.1.0](archive/28.1.0)
  * [28.0.0](archive/28.0.0)
+ * [27.2.5](archive/27.2.5)
  * [27.2.4](archive/27.2.4)
  * [27.2.3](archive/27.2.3)
  * [27.2.2](archive/27.2.2)
