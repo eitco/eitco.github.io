@@ -12,6 +12,7 @@ This archive contains all published documentation versions for the EITCO Documen
  * [11.1.1](archive/11.1.1)
  * [11.1.0](archive/11.1.0)
  * [11.0.0](archive/11.0.0)
+ * [10.2.5](archive/10.2.5)
  * [10.2.4](archive/10.2.4)
  * [10.2.3](archive/10.2.3)
  * [10.2.2](archive/10.2.2)
