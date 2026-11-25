@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <link rel="icon" type="image/png" href="./images/arveo_logo_800px.png">
-<title>arveo Documentation 28.3.1</title>
+<title>arveo Documentation 28.4.0</title>
 <style>
 @import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
 @import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
@@ -156,9 +156,9 @@ a, a:hover, a:focus {
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>arveo Documentation 28.3.1</h1>
+<h1>arveo Documentation 28.4.0</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">arveo 28.3.1</div>
+<div id="toctitle">arveo 28.4.0</div>
 <ul class="sectlevel1">
 <li><a href="#_introduction">Introduction</a>
 <ul class="sectlevel2">
@@ -334,7 +334,11 @@ a, a:hover, a:focus {
 <li><a href="#implementation_details_of_aes_encryption">Implementation details of AES encryption</a></li>
 </ul>
 </li>
-<li><a href="#messaging">Configure Active MQ</a></li>
+<li><a href="#messaging">Configure Active MQ</a>
+<ul class="sectlevel3">
+<li><a href="#messaging_listeners">Message listener concurrency</a></li>
+</ul>
+</li>
 <li><a href="#database-schema-creation">Database schema creation</a>
 <ul class="sectlevel3">
 <li><a href="#_maintenance_mode_for_the_database_schema">Maintenance mode for the database schema</a></li>
@@ -473,12 +477,14 @@ a, a:hover, a:focus {
 </li>
 <li><a href="#client-sdks">Client SDKs</a>
 <ul class="sectlevel3">
+<li><a href="#type-definition-features">Determining the features of a type definition</a></li>
 <li><a href="#sdk-developer-guide">Java SDK for Spring applications</a></li>
 <li><a href="#discovery-and-authentication">Service discovery and authentication</a></li>
 <li><a href="#batch-operations">Batch Operations</a></li>
 <li><a href="#non-spring-sdk">Java SDK for non-Spring applications</a></li>
 <li><a href="#typescript-sdk">TypeScript SDK for web applications</a></li>
 <li><a href="#csharp-sdk">C# SDK for .NET applications</a></li>
+<li><a href="#go-sdk">Go SDK</a></li>
 <li><a href="#rest-api">RESTful API</a></li>
 </ul>
 </li>
@@ -506,6 +512,7 @@ a, a:hover, a:focus {
 <li><a href="#compatibility-list">Compatibility List</a></li>
 <li><a href="#release-notes">Release Notes</a>
 <ul class="sectlevel3">
+<li><a href="#_release_notes_28_4_0_november_25_2026">Release notes 28.4.0 (November 25, 2026)</a></li>
 <li><a href="#_release_notes_28_3_1_november_17_2026">Release notes 28.3.1 (November 17, 2026)</a></li>
 <li><a href="#_release_notes_28_3_0_november_10_2026">Release notes 28.3.0 (November 10, 2026)</a></li>
 <li><a href="#_release_notes_28_2_1_october_16_2026">Release notes 28.2.1 (October 16, 2026)</a></li>
@@ -1021,11 +1028,11 @@ directory and perform the following operation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=28.3.1</code></pre>
+<pre class="rouge highlight"><code data-lang="asciidoc">mvn archetype:generate -DarchetypeGroupId=de.eitco.ecr -DarchetypeArtifactId=ecr-types-archetype -DarchetypeVersion=28.4.0</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The archetype version is the arveo version that you are working with. The current version is 28.3.1.</p>
+<p>The archetype version is the arveo version that you are working with. The current version is 28.4.0.</p>
 </div>
 <div class="paragraph">
 <p>Maven will start by downloading a couple of required artifacts. After that, the archetype plugin will be started in
@@ -1469,7 +1476,7 @@ use the Spring Initializer to generate a maven project with the required depende
 <p>Under "Language", select "Java"</p>
 </li>
 <li>
-<p>Select Spring Boot version 4.1.1. If your required version is not available, select the most
+<p>Select Spring Boot version 4.1.3. If your required version is not available, select the most
 compatible one in terms of major.minor.patch.</p>
 </li>
 <li>
@@ -1510,7 +1517,7 @@ and open the project in your IDE. Delete the <code>src/test</code> directory.</p
             <span class="nt">&lt;dependency&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
                 <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
                 <span class="nt">&lt;artifactId&gt;</span>ecr-bom<span class="nt">&lt;/artifactId&gt;</span>
-                <span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span>
                 <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
                 <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
             <span class="nt">&lt;/dependency&gt;</span>
@@ -3443,6 +3450,9 @@ Each document can have a retention period that ensures that the document cannot 
 <div class="paragraph">
 <p>If you delete or purge an object in the recycle bin it is deleted like a document without recycle bin feature and cannot be restored.</p>
 </div>
+<div class="paragraph">
+<p>For type definitions with retention protection, only users with the <em>ECR_DSGVO_ADMIN</em> or the <em>ECR_DSGVO_PRIVILEGED_DELETE</em> privilege can move objects within their retention period to the recycle bin. Objects under litigation hold cannot be moved to the recycle bin at all, but objects in the recycle bin can be put under litigation hold or retention. They stay in the recycle bin and can then no longer be deleted or purged according to the retention rules, neither manually nor by the timed deletion of the recycle bin (see <a href="#_retention_recycle_bin">Retention</a>).</p>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -3454,12 +3464,6 @@ For compliance reasons the audit entries in the database are not deleted by the 
 </td>
 </tr>
 </table>
-</div>
-<div class="sect4">
-<h5 id="_automated_recycle_bin_emptying"><a class="anchor" href="#_automated_recycle_bin_emptying"></a><a class="link" href="#_automated_recycle_bin_emptying">Automated recycle bin emptying</a></h5>
-<div class="paragraph">
-<p>It is possible to empty your recycle bin by an automated job scheduled in the Enterprise Integration Service of <em>arveo</em>.You can activate the predefined empty recycle bin job, and you can change the age from the 6 months default value to the age you choose. The job deletes all entries permanently that have been in the recycle bin for longer than the set age.</p>
-</div>
 </div>
 </div>
 </div>
@@ -5498,6 +5502,10 @@ in memory at the same time.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">storagePath</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path to the directory that is used to store the files</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">createStorageDirectory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the directory given by <code>storagePath</code> is created if it does not exist (default: <code>true</code>). Set it to <code>false</code> if the directory is located on a mounted file system: otherwise the content is silently written to the local file system while the file system is not mounted.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -6093,7 +6101,7 @@ describes how to write a new storage plugin.</p>
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-server<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span>
     <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -6274,7 +6282,8 @@ be one of the following values:</p>
 <div class="paragraph">
 <p>Renditions are created asynchronously. When a document is created or updated, a message will be posted to a queue in
 ActiveMQ. The messages are processed by event listeners in the repository service. Depending on the current load it
-might take some time until the rendition is available.</p>
+might take some time until the rendition is available. The number of renditions created in parallel can be configured
+with <code>ecr.server.messaging.listeners.create-renditions.concurrency</code> (see <a href="#messaging_listeners">message listener concurrency</a>).</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -6300,6 +6309,10 @@ be configured, the default is three (see <a href="#_configuration_properties">co
 When all retries have failed, the rendition message will be added to a dead letter queue and the status field of the
 rendition will be set to -1 (FAILED). For this to work, the message queue in ActiveMQ must be configured to
 use an individual dead letter queue as described in <a href="https://activemq.apache.org/message-redelivery-and-dlq-handling.html">the ActiveMQ documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>When the Document Conversion Service rejects a conversion as not supported (HTTP status 400), for example because
+the content cannot be converted, the status of the rendition is set to FAILED immediately without any retries.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7673,6 +7686,12 @@ the <em>arveo</em> service using the default configuration properties of the Spr
 </div>
 </div>
 <div class="paragraph">
+<p>If <code>spring.activemq.broker-url</code> is not configured or empty, messaging is disabled. <em>arveo</em> then does not connect
+to a message broker and does not register any message listeners. Features depending on messaging, like the creation of
+renditions, the full text extraction, the automated deletion of entities in the recycle bin or the forwarding of events,
+are not available. Operations requiring to send a message fail in that case.</p>
+</div>
+<div class="paragraph">
 <p>ActiveMQ&#8217;s OpenWire protocol is used to connect to the broker. The names of the queues and topics used by <em>arveo</em>
 are prefixed with the system ID of the <em>arveo</em> system. <em>arveo</em> uses text messages containing JSON data
 to make it possible to consume messages in components not implemented in Java. The JSON data uses the same serialization
@@ -7719,6 +7738,135 @@ dead letter queues must be activated by adding the following policy entries to <
         <span class="nt">&lt;individualDeadLetterStrategy</span> <span class="na">queuePrefix=</span><span class="s">""</span> <span class="na">queueSuffix=</span><span class="s">".DLQ"</span> <span class="na">useQueueForQueueMessages=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/deadLetterStrategy&gt;</span>
 <span class="nt">&lt;/policyEntry&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="messaging_listeners"><a class="anchor" href="#messaging_listeners"></a><a class="link" href="#messaging_listeners">Message listener concurrency</a></h4>
+<div class="paragraph">
+<p><em>arveo</em> processes the messages of each queue with its own message listener. Each listener runs between a
+minimum and a maximum number of consumers, and each consumer uses one thread. While messages are waiting in the queue,
+the listener adds consumers up to the maximum. Consumers that stay idle are removed again down to the minimum.</p>
+</div>
+<div class="paragraph">
+<p>The following configuration properties control the parallel processing of messages:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Configuration of message listeners</caption>
+<colgroup>
+<col style="width: 35%;">
+<col style="width: 10%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">property</th>
+<th class="tableblock halign-left valign-top">default</th>
+<th class="tableblock halign-left valign-top">meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.server.messaging.queue-listener-concurrency</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1-2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of consumers of each queue listener, either as <code>min-max</code> (e.g. <code>1-4</code>) or as <code>max</code> (e.g. <code>4</code>, the minimum
+is 1 in this case).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.server.messaging.listeners.&lt;name&gt;.concurrency</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of consumers of a single queue listener, in the same format. Overrides <code>queue-listener-concurrency</code> for
+this listener.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ecr.server.messaging.concurrency-limit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>64</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of messages processed at the same time by all queue listeners together. Topic listeners have a
+limit of their own. The limit does not restrict the number of consumers: a consumer that has received a message waits
+until processing is allowed. <code>-1</code> disables the limit.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following queue listeners can be configured with <code>ecr.server.messaging.listeners.&lt;name&gt;</code>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Queue listeners</caption>
+<colgroup>
+<col style="width: 35%;">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-left valign-top">purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>create-renditions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates renditions (see <a href="#renditions">renditions</a>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>renditions-dlq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks renditions as failed whose messages were moved to the dead letter queue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delete-audit-entries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deletes audit entries.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>delete-recycled-entities</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deletes entities from the recycle bin.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rdb-fulltext-extraction</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extracts the full text of documents for the full text search in the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rdb-fulltext-extraction-dlq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Marks full text extractions as failed whose messages were moved to the dead letter queue.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Case and separators are ignored when the name is matched, so <code>create-renditions</code> and <code>createRenditions</code> are
+equivalent. Listeners of extensions are addressed by their endpoint ID without the suffix <code>Listener</code>. At startup,
+<em>arveo</em> logs every applied setting. It logs a warning for every configured name that does not match a
+listener.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example: more consumers for creating renditions</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">ecr</span><span class="pi">:</span>
+  <span class="na">server</span><span class="pi">:</span>
+    <span class="na">messaging</span><span class="pi">:</span>
+      <span class="na">queue-listener-concurrency</span><span class="pi">:</span> <span class="s">1-2</span>
+      <span class="na">concurrency-limit</span><span class="pi">:</span> <span class="m">64</span>
+      <span class="na">listeners</span><span class="pi">:</span>
+        <span class="na">create-renditions</span><span class="pi">:</span>
+          <span class="na">concurrency</span><span class="pi">:</span> <span class="s">1-8</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Per instance, at most <code>concurrency-limit</code> messages are processed at the same time, and never more than the sum of
+the maximum consumers of all listeners. Most listeners need a database connection while they process a message, and
+the rendition listener also uses the Document Conversion Service. Size the database connection pool and the conversion
+service for this number. With several instances of <em>arveo</em>, the numbers add up.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Topic listeners always use a single consumer. The settings <code>queue-listener-concurrency</code> and <code>listeners</code> apply to queue
+listeners only.</p>
 </div>
 </div>
 </div>
@@ -8049,7 +8197,7 @@ possible when the schema update itself is skipped.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/11.0.3/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
+<p>In this case the table to be audited to will be the <a href="https://nexus.eitco.de/repository/html-default/de.eitco.commons.audit/cmn-audit-parent/11.0.5/documentation/">audit services</a> default audit table <code>default_audit_log</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_access_audit"><a class="anchor" href="#_access_audit"></a><a class="link" href="#_access_audit">Access audit</a></h4>
@@ -8086,7 +8234,7 @@ repository service will create the jobs (if required), but it will not execute t
 <div class="paragraph">
 <p>It is possible to use one or more external Job Service instances to execute the scheduled system jobs. To be able to
 execute the system jobs, the job implementations must be present in each of the Job Service&#8217;s class paths.
-The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external-28.3.1.zip</em>) that contains all required libraries.
+The jobs are available as a ZIP file (<em>ecr-packaging-jobs-external-28.4.0.zip</em>) that contains all required libraries.
 Simply extract the contents of the ZIP file to a directory (e.g. <em>libs</em>) and start the Job Service with the following parameter:
 <code>-Dloader.path=libs</code>.</p>
 </div>
@@ -8781,7 +8929,7 @@ java 21 is required for the shell.
   `-----------'</span>   <span class="sb">`</span><span class="nt">---------</span><span class="s1">'  '</span><span class="nt">---</span><span class="s1">'               '</span><span class="nt">------------</span>´  <span class="sb">`</span><span class="nt">---</span>´    <span class="sb">`</span><span class="nt">---</span>´   <span class="sb">`</span><span class="nt">-----------</span><span class="s1">'  `------'</span>  <span class="sb">`</span><span class="nt">------</span><span class="s1">'
 
 
-version: 28.3.1                                                                      de.eitco.ecr:ecr-shell
+version: 28.4.0                                                                      de.eitco.ecr:ecr-shell
 
 ecr:&gt;</span></code></pre>
 </div>
@@ -10404,7 +10552,7 @@ this is already configured in the eitco config service.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-28.3.1.jar</code>
+<code>--my.property=myValue</code> must be placed <strong>after</strong> <code>-jar ecr-shell-28.4.0.jar</code>
 </td>
 </tr>
 </table>
@@ -10815,7 +10963,7 @@ configured in the configuration properties of <em>arveo</em> as shown in the exa
 <h4 id="_other_monitoring_systems"><a class="anchor" href="#_other_monitoring_systems"></a><a class="link" href="#_other_monitoring_systems">Other monitoring systems</a></h4>
 <div class="paragraph">
 <p>Support for other monitoring system then Prometheus can be enabled by adding the required library to the classpath.
-The <a href="https://docs.spring.io/spring-boot/docs/4.1.1/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
+The <a href="https://docs.spring.io/spring-boot/docs/4.1.3/reference/htmlsingle/#actuator.metrics.export">Spring Boot documentation</a>
 contains a list of the supported monitoring systems and further information about how to configure them.</p>
 </div>
 </div>
@@ -11837,8 +11985,8 @@ in detail in the Open Telemetry documentation.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">concurrency-limit</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of concurrent message listeners. This limits the number of threads used for message processing.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of message listener executions running at the same time. The limit applies separately to all queue listeners and to all topic listeners. It does not limit the number of listener threads, waiting listeners keep their received message until a permit is available. A value of -1 disables the limit.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>64</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">entities-per-message</p></td>
@@ -12117,10 +12265,16 @@ in detail in the Open Telemetry documentation.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">listeners</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Settings for single queue listeners that override the defaults, e.g. the concurrency. The key is the name of the listener, e.g. create-renditions, renditions-dlq, delete-audit-entries, delete-recycled-entities, rdb-fulltext-extraction or rdb-fulltext-extraction-dlq. Listeners of extensions are addressed by their endpoint ID without the suffix "Listener". Case and separators are ignored when matching the name.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">queue-listener-concurrency</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Specify the number of threads used for listeners for queues (NOT topics!) via a "lower-upper" String, e.g. "5-10", or a simple upper limit String, e.g. "10" (the lower limit will be 1 in this case).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1-10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1-2</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">redelivery.back-off-multiplier</p></td>
@@ -12173,6 +12327,12 @@ in detail in the Open Telemetry documentation.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">append-id-order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines whether the system field id is appended to the order-by clause of searches to provide a reliable order for paging. Searches over all versions use the version id instead. Modifications with a selector and a limit (delete, recycle bin, batch update) order the selected entities by id as well. This is not done for meta-data types, since they have no id. A request can disable this using an IdOrderQueryExtension or the appendIdOrder property of ExpressionAndLimit and ExpressionAndTimeout.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">in-condition-optimization-limit</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
@@ -16953,11 +17113,13 @@ access control.</p>
 </li>
 <li>
 <p><strong>ECR_DSGVO_ADMIN</strong>: Allows a user to change the litigation hold and retention settings of entities contained in type
-definitions using the retention feature.</p>
+definitions using the retention feature. It also allows to move an entity which is still within it&#8217;s retention period
+to the recycle bin and to restore it, except entities under litigation hold.</p>
 </li>
 <li>
 <p><strong>ECR_DSGVO_PRIVILEGED_DELETE</strong>: An addition to ECR_DSGVO_ADMIN that allows a user to delete an entity which is still
-within it&#8217;s retention period. Entities under litigation hold cannot be deleted, not even with this authority. Organisational precautions must be put in place to ensure DSGVO compliance when making use
+within it&#8217;s retention period or to move it to the recycle bin. Entities under litigation hold cannot be deleted or moved
+to the recycle bin, not even with this authority. Organisational precautions must be put in place to ensure DSGVO compliance when making use
 of this authority. ECR_DSGVO_PRIVILEGED_DELETE privilege does NOT require ECR_DSGVO_ADMIN privilege.</p>
 </li>
 <li>
@@ -20915,9 +21077,32 @@ hold are still possible. The rule is additionally enforced by a database trigger
 <div class="paragraph">
 <p>An object under litigation hold cannot be deleted or purged either. This applies to all users, including users with the
 <em>ECR_DSGVO_PRIVILEGED_DELETE</em> privilege. The delete fails with a <em>NonRetentionCompliantDeleteException</em>. If the object
-is only affected indirectly, e.g. as a sub folder of a deleted folder or as an object in the recycle bin, the database
-trigger rejects the delete with a <em>DeleteWhileLitigationHoldException</em>. The litigation hold must be removed before the
-object can be deleted.</p>
+is only affected indirectly, e.g. as a sub folder of a deleted folder, the database trigger rejects the delete with a
+<em>DeleteWhileLitigationHoldException</em>. The litigation hold must be removed before the object can be deleted.</p>
+</div>
+<div class="paragraph">
+<p>An object under litigation hold cannot be moved to the recycle bin by anyone. The operation fails with a
+<em>NonRetentionCompliantRecycleException</em>, or with a <em>RecycleWhileLitigationHoldException</em> if it is rejected by the
+database trigger. An object that is already in the recycle bin can still be put under litigation hold, including a
+litigation hold inherited from its container or folder. It stays in the recycle bin, but it can no longer be deleted or
+purged, see <a href="#_retention_recycle_bin">Recycle bin</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_retention_recycle_bin"><a class="anchor" href="#_retention_recycle_bin"></a><a class="link" href="#_retention_recycle_bin">Recycle bin</a></h5>
+<div class="paragraph">
+<p>An object within its retention period can only be moved to the recycle bin by users with the <em>ECR_DSGVO_ADMIN</em> or the
+<em>ECR_DSGVO_PRIVILEGED_DELETE</em> privilege. For all other users the operation fails with a
+<em>NonRetentionCompliantRecycleException</em>. Objects whose retention period has expired or that have no retention period can
+be moved to the recycle bin with the <em>DELETE</em> right as usual. Restoring an object from the recycle bin only requires the
+<em>DELETE</em> right.</p>
+</div>
+<div class="paragraph">
+<p>Objects in the recycle bin can be put under litigation hold and their retention period can be set or prolonged. They
+stay in the recycle bin, but the same delete rules apply as for any other object: an object under litigation hold
+cannot be deleted by anyone, an object within its retention period only with the <em>ECR_DSGVO_PRIVILEGED_DELETE</em>
+privilege. The timed deletion of a type&#8217;s recycle bin skips such objects, they stay in the recycle bin until they are
+restored or recycled again after the protection has ended.</p>
 </div>
 </div>
 <div class="sect4">
@@ -21070,6 +21255,18 @@ in charge of this task and you must set the option <em>delete rows only</em>.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Delete under litigation hold</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recycle before retention</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recycle under litigation hold</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
@@ -21363,9 +21560,163 @@ should not use the REST API of <em>arveo</em> directly but instead use one of th
 </div>
 </li>
 <li>
-<p>Go SDK</p>
+<p><a href="#go-sdk">Go SDK</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Provides generated resource clients and model types</p>
 </li>
 </ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="type-definition-features"><a class="anchor" href="#type-definition-features"></a><a class="link" href="#type-definition-features">Determining the features of a type definition</a></h4>
+<div class="paragraph">
+<p>The optional features of a type definition are enabled with the annotations of the module
+<code>ecr-type-definition-annotations</code> (see <a href="#entity-annotations">Annotations</a>). Clients can determine which features are active by
+looking at the <code>TypeDefinition</code> model returned by the <code>TypeDefinitionResource</code> alone. The model is the same for every
+SDK, only the naming of the accessors follows the conventions of the respective language (for example
+<code>isFilingEnabled()</code> in Java, <code>getFilingEnabled()</code> in TypeScript, <code>FilingEnabled</code> in C# and <code>GetFilingEnabled()</code> in Go).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Annotations and the corresponding properties of the type definition model</caption>
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 33.3333%;">
+<col style="width: 44.4445%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Annotation</th>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>objectType</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@AccessChecks</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>accessCheck</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type-level access checks only.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">static method annotated with <code>@Security</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>abacEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attribute based access checks (ABAC).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@OverwriteAllowed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>allowsOverwrite</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Versioned</code> on the type or on attributes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>hasVersionTable</code>, <code>versionTableName</code>, <code>attributes[].isVersioned</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@FilingEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>filingEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always <code>false</code> for types other than documents.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@RetentionProtected</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>retentionProtected</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always <code>false</code> for meta data types.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@OptimisticLocking</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>optimisticLocking</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@RecycleBin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recycleBinEnabled</code>, <code>recycleBinTimeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always <code>false</code> for external views.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Variables</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>usingVariables</code>, <code>variablesVersioned</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>variablesVersioned</code> is always <code>false</code> if the type does not use variables.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Audit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auditConfiguration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code> if auditing is disabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@ContentElement</code>, <code>@FullTextExtraction</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contentElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The full text settings are part of each content element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Rendition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contentElements[].rendition</code>, <code>contentElements[].sourceElement</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Thumbnail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contentElements[].thumbnail</code>, <code>contentElements[].thumbnailPage</code>, <code>contentElements[].sourceElement</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@View</code>, <code>@PartialView</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isExternalView</code>, <code>viewOf</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@SourceType</code>, <code>@TargetType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>relationParentType</code>, <code>relationChildType</code>, <code>supportedParentVersion</code>, <code>supportedChildVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Relation types only.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Index</code>, <code>@Indexed</code>, <code>@IndexedForTextMatching</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>indexes</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@ForeignKey</code>, <code>@CascadeDelete</code>, <code>@SetNullOnDelete</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>foreignKeys</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@DefaultValue</code>, <code>@DefaultSystemPropertyValue</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultValueAttributes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains custom attributes as well as system attributes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@InputProperty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inputProperties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maps the property name to the input property it is written to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Mandatory</code>, <code>@Unique</code>, <code>@PrimaryKey</code>, <code>@ReadOnly</code>, <code>@AutoIncrement</code>, <code>@InheritedProperty</code>, <code>@Validated</code>,
+<code>@ValidatedBy</code>, <code>@SecurityProperty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attributes[]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@Encrypted</code>, <code>@CaseSensitive</code>, <code>@Length</code>, <code>@Precision</code>, <code>@TimePrecision</code>, <code>@FormattedCounter</code>,
+<code>@RelationCounter</code>, <code>@Enumeration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attributes[].dataType</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Annotations that only affect the schema initialization on the server (<code>@SkipAutomaticSchemaCreation</code>,
+<code>@PreSchemaInitialization</code>, <code>@PostSchemaInitialization</code>, <code>@ManualSchemaInitializer</code>) and the decision whether a
+rendition is created (<code>@RenditionCreationCondition</code>) are not part of the model.</p>
+</div>
+<div class="paragraph">
+<p>Examples for reading the features can be found in the guide of each SDK.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="sdk-developer-guide"><a class="anchor" href="#sdk-developer-guide"></a><a class="link" href="#sdk-developer-guide">Java SDK for Spring applications</a></h4>
@@ -21379,7 +21730,7 @@ All examples are taken from the integration test suite to ensure they stay up to
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
    <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
    <span class="nt">&lt;artifactId&gt;</span>ecr-sdk-http<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span>
+   <span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -21631,6 +21982,65 @@ The entity client gives access to the typed entity and to the generic representa
     <span class="o">.</span><span class="na">getDocumentServiceClient</span><span class="o">().</span><span class="na">byClass</span><span class="o">(</span><span class="nc">ThirdInterface</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 
 <span class="nc">TypedDocumentClient</span><span class="o">&lt;</span><span class="nc">ThirdInterface</span><span class="o">&gt;</span> <span class="n">otherDocumentClient</span> <span class="o">=</span> <span class="n">serviceClient</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">identifier</span><span class="o">);</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_reading_the_features_of_a_type_definition"><a class="anchor" href="#_reading_the_features_of_a_type_definition"></a><a class="link" href="#_reading_the_features_of_a_type_definition">Reading the features of a type definition</a></h5>
+<div class="paragraph">
+<p>The <code>TypeDefinitionClient</code> of a type provides the <code>TypeDefinition</code> model. It contains the optional features enabled
+by the type definition annotations, see <a href="#type-definition-features">Determining the features of a type definition</a> for the complete list:</p>
+</div>
+<div class="listingblock">
+<div class="title">Reading a type definition</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nc">TypeDefinition</span> <span class="n">typeDefinition</span> <span class="o">=</span> <span class="n">typeDefinitionServiceClient</span><span class="o">.</span><span class="na">getTypeDefinition</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">byName</span><span class="o">(</span><span class="nc">NamedFileNames</span><span class="o">.</span><span class="na">getTypeDefinitionName</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">getTypeDefinition</span><span class="o">();</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Reading the features enabled on the type</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="kt">boolean</span> <span class="n">filingEnabled</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isFilingEnabled</span><span class="o">();</span>               <span class="c1">// @FilingEnabled</span>
+<span class="kt">boolean</span> <span class="n">optimisticLocking</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isOptimisticLocking</span><span class="o">();</span>       <span class="c1">// @OptimisticLocking</span>
+<span class="kt">boolean</span> <span class="n">recycleBin</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isRecycleBinEnabled</span><span class="o">();</span>              <span class="c1">// @RecycleBin</span>
+<span class="kt">boolean</span> <span class="n">variables</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isUsingVariables</span><span class="o">();</span>                  <span class="c1">// @Variables</span>
+<span class="kt">boolean</span> <span class="n">variablesVersioned</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isVariablesVersioned</span><span class="o">();</span>
+<span class="kt">boolean</span> <span class="n">retentionProtected</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isRetentionProtected</span><span class="o">();</span>     <span class="c1">// @RetentionProtected</span>
+<span class="kt">boolean</span> <span class="n">overwriteAllowed</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isAllowsOverwrite</span><span class="o">();</span>          <span class="c1">// @OverwriteAllowed</span>
+<span class="kt">boolean</span> <span class="n">versioned</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isHasVersionTable</span><span class="o">();</span>                 <span class="c1">// @Versioned</span>
+<span class="kt">boolean</span> <span class="n">typeAccessChecks</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isAccessCheck</span><span class="o">();</span>              <span class="c1">// @AccessChecks</span>
+<span class="kt">boolean</span> <span class="n">attributeBasedAccessChecks</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isAbacEnabled</span><span class="o">();</span>    <span class="c1">// static method annotated with @Security</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Content elements, renditions and thumbnails are described by the <code>ContentElementSettings</code> of the type definition:</p>
+</div>
+<div class="listingblock">
+<div class="title">Distinguishing content elements, renditions and thumbnails</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">ContentElementSettings</span><span class="o">&gt;</span> <span class="n">contentElements</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">getContentElements</span><span class="o">();</span>
+
+<span class="nc">ContentElementSettings</span> <span class="n">thumbnail</span> <span class="o">=</span> <span class="n">contentElements</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"thumbnail"</span><span class="o">);</span>    <span class="c1">// @Thumbnail</span>
+<span class="kt">boolean</span> <span class="n">isThumbnail</span> <span class="o">=</span> <span class="n">thumbnail</span><span class="o">.</span><span class="na">isThumbnail</span><span class="o">();</span>
+<span class="nc">String</span> <span class="n">thumbnailSource</span> <span class="o">=</span> <span class="n">thumbnail</span><span class="o">.</span><span class="na">getSourceElement</span><span class="o">();</span>
+
+<span class="nc">ContentElementSettings</span> <span class="n">pdf</span> <span class="o">=</span> <span class="n">contentElements</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"pdf"</span><span class="o">);</span>                <span class="c1">// @ContentElement</span>
+<span class="kt">boolean</span> <span class="n">isPlainContentElement</span> <span class="o">=</span> <span class="o">!</span><span class="n">pdf</span><span class="o">.</span><span class="na">isThumbnail</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">pdf</span><span class="o">.</span><span class="na">isRendition</span><span class="o">();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The attributes for which the server computes a default value and the input properties declared by the type
+definition are available as well:</p>
+</div>
+<div class="listingblock">
+<div class="title">Attributes with default values and input properties</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="c1">// @DefaultValue and @DefaultSystemPropertyValue</span>
+<span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">attributesWithDefaultValue</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">getDefaultValueAttributes</span><span class="o">();</span>
+
+<span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">InputPropertyName</span><span class="o">&gt;</span> <span class="n">inputProperties</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">getInputProperties</span><span class="o">();</span> <span class="c1">// @InputProperty</span></code></pre>
 </div>
 </div>
 </div>
@@ -22738,7 +23148,7 @@ condition.</p>
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
    <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
    <span class="nt">&lt;artifactId&gt;</span>ecr-sdk-http-apache<span class="nt">&lt;/artifactId&gt;</span>
-   <span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span>
+   <span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -22943,7 +23353,11 @@ to upload a new document to the archive:</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Defines the ordering for paging. The ID system field can be used for ordering as it&#8217;s value is created from a sequence.</td>
+<td>Defines the ordering for paging. The server appends an ascending order by the ID system field (the version ID for
+version searches), whose value is created from a sequence, so the order is reliable for paging even if the given
+order is ambiguous. This can be disabled for a single request with an <code>IdOrderQueryExtension</code> or for the whole
+system with the configuration property <code>ecr.server.query.append-id-order</code>. Meta-data types have no ID, so a reliable
+order must be given for them explicitly.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -22968,6 +23382,27 @@ automatically for the type definition <code>BasicDocument</code> and contains th
 <p>More information and examples for conditions can be found in the <a href="https://eitco.github.io/eql/latest/">EQL documentation</a>.
 The <code>EcrQueryLanguage</code> class used in the example above is an extension of the <em>EQL</em> that adds some specifics for the
 Content Repository Service.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_reading_the_features_of_a_type_definition_2"><a class="anchor" href="#_reading_the_features_of_a_type_definition_2"></a><a class="link" href="#_reading_the_features_of_a_type_definition_2">Reading the features of a type definition</a></h5>
+<div class="paragraph">
+<p>The <code>TypeDefinition</code> model returned by the <code>TypeDefinitionResourceClient</code> contains the optional features enabled by
+the type definition annotations, see <a href="#type-definition-features">Determining the features of a type definition</a> for the complete list. The model is the same as in
+the <a href="#sdk-developer-guide">Java SDK for Spring applications</a>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Reading the features of a type definition</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nc">TypeDefinition</span> <span class="n">typeDefinition</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">getTypeDefinitionResourceClient</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">getDefinitionByName</span><span class="o">(</span><span class="k">new</span> <span class="nc">TypeDefinitionName</span><span class="o">(</span><span class="s">"basic_document"</span><span class="o">));</span>
+
+<span class="kt">boolean</span> <span class="n">filingEnabled</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isFilingEnabled</span><span class="o">();</span>               <span class="c1">// @FilingEnabled</span>
+<span class="kt">boolean</span> <span class="n">recycleBin</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isRecycleBinEnabled</span><span class="o">();</span>              <span class="c1">// @RecycleBin</span>
+<span class="kt">boolean</span> <span class="n">variables</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isUsingVariables</span><span class="o">();</span>                  <span class="c1">// @Variables</span>
+<span class="kt">boolean</span> <span class="n">attributeBasedAccessChecks</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">isAbacEnabled</span><span class="o">();</span>    <span class="c1">// static method annotated with @Security</span>
+<span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">attributesWithDefaultValue</span> <span class="o">=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="na">getDefaultValueAttributes</span><span class="o">();</span></code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -23023,8 +23458,8 @@ the EQL query language <code>@eitco/eql</code> and <code>@eitco/commons-lang</co
 <div class="title">Adding the SDK to a project (<code>package.json</code>)</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="json"><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-  </span><span class="nl">"@eitco/ecr-client"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.3.1"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"@eitco/ecr-data-provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.3.1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@eitco/ecr-client"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.4.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"@eitco/ecr-data-provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"28.4.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"@eitco/asdl-library-http"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
   </span><span class="nl">"@eitco/asdl-library-angular-http"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
 </span><span class="p">}</span></code></pre>
@@ -23187,6 +23622,48 @@ the definitions keyed by their id and offers lookups by id and by name:</p>
 <div class="title">Looking up a single definition by name</div>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="typescript"><span class="k">return</span> <span class="nx">helper</span><span class="p">.</span><span class="nx">typeDefinitionResourceClient</span><span class="p">.</span><span class="nx">getDefinitionByName</span><span class="p">(</span><span class="nx">expectedTypeDefinition</span><span class="p">.</span><span class="nx">getAlias</span><span class="p">())</span></code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_reading_the_features_of_a_type_definition_3"><a class="anchor" href="#_reading_the_features_of_a_type_definition_3"></a><a class="link" href="#_reading_the_features_of_a_type_definition_3">Reading the features of a type definition</a></h6>
+<div class="paragraph">
+<p>The <code>TypeDefinition</code> returned by the <code>TypeDefinitionResourceClient</code> contains the optional features enabled by the
+type definition annotations, see <a href="#type-definition-features">Determining the features of a type definition</a> for the complete list:</p>
+</div>
+<div class="listingblock">
+<div class="title">Reading the features of a type definition</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="typescript"><span class="nx">helper</span><span class="p">.</span><span class="nx">typeDefinitionResourceClient</span><span class="p">.</span><span class="nx">getDefinitionByName</span><span class="p">(</span><span class="k">new</span> <span class="nx">TypeDefinitionName</span><span class="p">({</span><span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">named_file</span><span class="dl">'</span><span class="p">}))</span>
+    <span class="p">.</span><span class="nx">pipe</span><span class="p">(</span>
+        <span class="nx">tap</span><span class="p">((</span><span class="nx">typeDefinition</span><span class="p">:</span> <span class="nx">TypeDefinition</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="kd">const</span> <span class="nx">filingEnabled</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getFilingEnabled</span><span class="p">();</span>              <span class="c1">// @FilingEnabled</span>
+            <span class="kd">const</span> <span class="nx">optimisticLocking</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getOptimisticLocking</span><span class="p">();</span>      <span class="c1">// @OptimisticLocking</span>
+            <span class="kd">const</span> <span class="nx">recycleBin</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getRecycleBinEnabled</span><span class="p">();</span>             <span class="c1">// @RecycleBin</span>
+            <span class="kd">const</span> <span class="nx">variables</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getUsingVariables</span><span class="p">();</span>                 <span class="c1">// @Variables</span>
+            <span class="kd">const</span> <span class="nx">variablesVersioned</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getVariablesVersioned</span><span class="p">();</span>
+            <span class="kd">const</span> <span class="nx">retentionProtected</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getRetentionProtected</span><span class="p">();</span>    <span class="c1">// @RetentionProtected</span>
+            <span class="kd">const</span> <span class="nx">overwriteAllowed</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getAllowsOverwrite</span><span class="p">();</span>         <span class="c1">// @OverwriteAllowed</span>
+            <span class="kd">const</span> <span class="nx">versioned</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getHasVersionTable</span><span class="p">();</span>                <span class="c1">// @Versioned</span>
+            <span class="kd">const</span> <span class="nx">typeAccessChecks</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getAccessCheck</span><span class="p">();</span>             <span class="c1">// @AccessChecks</span>
+            <span class="kd">const</span> <span class="nx">attributeBasedAccessChecks</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getAbacEnabled</span><span class="p">();</span>   <span class="c1">// static method annotated with @Security</span>
+
+            <span class="kd">const</span> <span class="nx">thumbnail</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getContentElements</span><span class="p">()</span><span class="o">!</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">thumbnail</span><span class="dl">'</span><span class="p">)</span><span class="o">!</span><span class="p">;</span> <span class="c1">// @Thumbnail</span>
+            <span class="kd">const</span> <span class="nx">isThumbnail</span> <span class="o">=</span> <span class="nx">thumbnail</span><span class="p">.</span><span class="nx">getThumbnail</span><span class="p">();</span>
+            <span class="kd">const</span> <span class="nx">thumbnailSource</span> <span class="o">=</span> <span class="nx">thumbnail</span><span class="p">.</span><span class="nx">getSourceElement</span><span class="p">();</span>
+
+            <span class="c1">// @InputProperty</span>
+            <span class="kd">const</span> <span class="nx">inputProperty</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getInputProperties</span><span class="p">()</span><span class="o">!</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">input_update_counter</span><span class="dl">'</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The attributes for which the server computes a default value are available as a set of attribute names:</p>
+</div>
+<div class="listingblock">
+<div class="title">Attributes with default values</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="typescript"><span class="c1">// @DefaultValue and @DefaultSystemPropertyValue</span>
+<span class="kd">const</span> <span class="nx">attributesWithDefaultValue</span> <span class="o">=</span> <span class="nx">typeDefinition</span><span class="p">.</span><span class="nx">getDefaultValueAttributes</span><span class="p">()</span><span class="o">!</span><span class="p">;</span></code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -23815,7 +24292,7 @@ carries the same base URL and bearer token, so no separate authentication is nee
 <div class="listingblock">
 <div class="title">NuGet package reference of the C# SDK</div>
 <div class="content">
-<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Eitco.Ecr.Sdk"</span> <span class="na">Version=</span><span class="s">"28.3.1"</span> <span class="nt">/&gt;</span></code></pre>
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;PackageReference</span> <span class="na">Include=</span><span class="s">"Eitco.Ecr.Sdk"</span> <span class="na">Version=</span><span class="s">"28.4.0"</span> <span class="nt">/&gt;</span></code></pre>
 </div>
 </div>
 </div>
@@ -24012,6 +24489,52 @@ A service client can also be constructed directly from an executor and a <code>T
 <span class="p">{</span>
     <span class="n">testOutputHelper</span><span class="p">.</span><span class="nf">WriteLine</span><span class="p">(</span><span class="s">$"id=</span><span class="p">{</span><span class="n">id</span><span class="p">?.</span><span class="n">Identifier</span><span class="p">}</span><span class="s">, alias=</span><span class="p">{</span><span class="n">typeDef</span><span class="p">?.</span><span class="n">Alias</span><span class="p">?.</span><span class="n">Id</span><span class="p">}</span><span class="s">"</span><span class="p">);</span>
 <span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_reading_the_features_of_a_type_definition_4"><a class="anchor" href="#_reading_the_features_of_a_type_definition_4"></a><a class="link" href="#_reading_the_features_of_a_type_definition_4">Reading the features of a type definition</a></h6>
+<div class="paragraph">
+<p>A single type definition can be read by its name with the <code>TypeDefinitionResource</code>. The returned <code>TypeDefinition</code>
+contains the optional features enabled by the type definition annotations, see <a href="#type-definition-features">Determining the features of a type definition</a> for the
+complete list:</p>
+</div>
+<div class="listingblock">
+<div class="title">Reading the features of a type definition</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="csharp"><span class="n">TypeDefinitionResource</span> <span class="n">typeDefinitions</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TypeDefinitionResource</span><span class="p">.</span><span class="nf">Implementation</span><span class="p">(</span><span class="n">fixture</span><span class="p">.</span><span class="n">Executor</span><span class="p">);</span>
+
+<span class="n">TypeDefinition</span> <span class="n">typeDefinition</span> <span class="p">=</span> <span class="n">typeDefinitions</span><span class="p">.</span><span class="nf">GetDefinitionByName</span><span class="p">(</span><span class="k">new</span> <span class="n">TypeDefinitionName</span> <span class="p">{</span> <span class="n">Id</span> <span class="p">=</span> <span class="s">"named_file"</span> <span class="p">})!;</span>
+
+<span class="kt">bool</span> <span class="n">filingEnabled</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">FilingEnabled</span><span class="p">;</span>              <span class="c1">// @FilingEnabled</span>
+<span class="kt">bool</span> <span class="n">optimisticLocking</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">OptimisticLocking</span><span class="p">;</span>      <span class="c1">// @OptimisticLocking</span>
+<span class="kt">bool</span> <span class="n">recycleBin</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">RecycleBinEnabled</span><span class="p">;</span>             <span class="c1">// @RecycleBin</span>
+<span class="kt">bool</span> <span class="n">variables</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">UsingVariables</span><span class="p">;</span>                 <span class="c1">// @Variables</span>
+<span class="kt">bool</span> <span class="n">variablesVersioned</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">VariablesVersioned</span><span class="p">;</span>
+<span class="kt">bool</span> <span class="n">retentionProtected</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">RetentionProtected</span><span class="p">;</span>    <span class="c1">// @RetentionProtected</span>
+<span class="kt">bool</span> <span class="n">overwriteAllowed</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">AllowsOverwrite</span><span class="p">;</span>         <span class="c1">// @OverwriteAllowed</span>
+<span class="kt">bool</span> <span class="n">versioned</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">HasVersionTable</span><span class="p">;</span>                <span class="c1">// @Versioned</span>
+<span class="kt">bool</span> <span class="n">typeAccessChecks</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">AccessCheck</span><span class="p">;</span>             <span class="c1">// @AccessChecks</span>
+<span class="kt">bool</span> <span class="n">attributeBasedAccessChecks</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">AbacEnabled</span><span class="p">;</span>   <span class="c1">// static method annotated with @Security</span>
+
+<span class="n">ContentElementSettings</span> <span class="n">thumbnail</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">ContentElements</span><span class="p">![</span><span class="s">"thumbnail"</span><span class="p">]!;</span> <span class="c1">// @Thumbnail</span>
+<span class="kt">bool</span> <span class="n">isThumbnail</span> <span class="p">=</span> <span class="n">thumbnail</span><span class="p">.</span><span class="n">Thumbnail</span><span class="p">;</span>
+<span class="kt">string</span><span class="p">?</span> <span class="n">thumbnailSource</span> <span class="p">=</span> <span class="n">thumbnail</span><span class="p">.</span><span class="n">SourceElement</span><span class="p">;</span>
+
+<span class="c1">// @InputProperty</span>
+<span class="n">InputPropertyName</span><span class="p">?</span> <span class="n">inputProperty</span> <span class="p">=</span> <span class="n">typeDefinition</span><span class="p">.</span><span class="n">InputProperties</span><span class="p">![</span><span class="s">"input_update_counter"</span><span class="p">];</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The attributes for which the server computes a default value are available as a set of attribute names:</p>
+</div>
+<div class="listingblock">
+<div class="title">Attributes with default values</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="csharp"><span class="n">TypeDefinition</span> <span class="n">withDefaults</span> <span class="p">=</span> <span class="n">typeDefinitions</span><span class="p">.</span><span class="nf">GetDefinitionByName</span><span class="p">(</span><span class="k">new</span> <span class="n">TypeDefinitionName</span> <span class="p">{</span> <span class="n">Id</span> <span class="p">=</span> <span class="s">"container_with_default_retention"</span> <span class="p">})!;</span>
+
+<span class="c1">// @DefaultValue and @DefaultSystemPropertyValue</span>
+<span class="n">HashSet</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">?&gt;</span> <span class="n">attributesWithDefaultValue</span> <span class="p">=</span> <span class="n">withDefaults</span><span class="p">.</span><span class="n">DefaultValueAttributes</span><span class="p">!;</span></code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -24608,6 +25131,112 @@ affect any entity because it no longer exists or is hidden by an access rule.</p
 </div>
 </div>
 <div class="sect3">
+<h4 id="go-sdk"><a class="anchor" href="#go-sdk"></a><a class="link" href="#go-sdk">Go SDK</a></h4>
+<div class="paragraph">
+<p>The Go SDK provides the resource clients and the model types of <em>arveo</em> for Go applications. Both are
+generated from the same API definition as the other SDKs, so the model types and their fields match the Java,
+TypeScript and C# SDKs. The SDK is distributed as the Maven artifact <code>de.eitco.ecr:ecr-client-go</code> (type
+<code>mvn-golang</code>) and provides the Go module <code>eitco.de/ecr</code>.</p>
+</div>
+<div class="paragraph">
+<p>All examples in this guide are taken from the Go integration tests under <code>test/system-test/src-templates/main/go</code>.</p>
+</div>
+<div class="sect4">
+<h5 id="_creating_the_resource_clients_2"><a class="anchor" href="#_creating_the_resource_clients_2"></a><a class="link" href="#_creating_the_resource_clients_2">Creating the resource clients</a></h5>
+<div class="paragraph">
+<p>The resource clients use an HTTP client that sends the access token with every request. The tests obtain it with the
+<code>golang.org/x/oauth2</code> package and wrap it into an <code>EcrClient</code>, the entry point of the SDK:</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating the EcrClient</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="go"><span class="n">config</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="n">oauth2</span><span class="o">.</span><span class="n">Config</span><span class="p">{</span>
+	<span class="n">ClientID</span><span class="o">:</span>     <span class="s">"testclient"</span><span class="p">,</span>
+	<span class="n">ClientSecret</span><span class="o">:</span> <span class="s">"yx7n6di3kXZ4p3Kj2oY1Js9NW7hbOCjh"</span><span class="p">,</span>
+	<span class="n">Scopes</span><span class="o">:</span>       <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">"openid"</span><span class="p">},</span>
+	<span class="n">Endpoint</span><span class="o">:</span> <span class="n">oauth2</span><span class="o">.</span><span class="n">Endpoint</span><span class="p">{</span>
+		<span class="n">TokenURL</span><span class="o">:</span> <span class="n">tokenUrl</span><span class="p">,</span>
+	<span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">ctx</span> <span class="o">:=</span> <span class="n">context</span><span class="o">.</span><span class="n">Background</span><span class="p">()</span>
+
+<span class="n">token</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">config</span><span class="o">.</span><span class="n">PasswordCredentialsToken</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="s">"password"</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+	<span class="n">t</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">client</span> <span class="o">:=</span> <span class="n">oauth2</span><span class="o">.</span><span class="n">NewClient</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">TokenSource</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">token</span><span class="p">))</span>
+
+<span class="n">ecrClient</span> <span class="o">:=</span> <span class="n">ecr</span><span class="o">.</span><span class="n">MakeEcrClient</span><span class="p">(</span><span class="n">serviceUrl</span><span class="p">,</span> <span class="n">asdl</span><span class="o">.</span><span class="n">BuildHttpClient</span><span class="p">(</span><span class="n">client</span><span class="p">)</span><span class="o">.</span><span class="n">Build</span><span class="p">())</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>EcrClient</code> provides a constructor method for each resource client:</p>
+</div>
+<div class="listingblock">
+<div class="title">Creating the type definition resource client</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="go"><span class="n">typeDefinitionClient</span> <span class="o">:=</span> <span class="n">newEcrClient</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s">"ecr-user"</span><span class="p">)</span><span class="o">.</span><span class="n">NewTypeDefinitionResourceHttpClient</span><span class="p">()</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_reading_the_features_of_a_type_definition_5"><a class="anchor" href="#_reading_the_features_of_a_type_definition_5"></a><a class="link" href="#_reading_the_features_of_a_type_definition_5">Reading the features of a type definition</a></h5>
+<div class="paragraph">
+<p>The <code>TypeDefinition</code> returned by the <code>TypeDefinitionResourceHttpClient</code> contains the optional features enabled by
+the type definition annotations, see <a href="#type-definition-features">Determining the features of a type definition</a> for the complete list:</p>
+</div>
+<div class="listingblock">
+<div class="title">Reading the features of a type definition</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="go"><span class="n">typeDefinitionClient</span> <span class="o">:=</span> <span class="n">newTypeDefinitionClient</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="k">var</span> <span class="n">name</span> <span class="n">ecr</span><span class="o">.</span><span class="n">TypeDefinitionName</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ecr</span><span class="o">.</span><span class="n">TypeDefinitionNameImplementation</span><span class="p">{</span><span class="n">Id</span><span class="o">:</span> <span class="s">"named_file"</span><span class="p">}</span>
+
+<span class="n">result</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">typeDefinitionClient</span><span class="o">.</span><span class="n">GetDefinitionByName</span><span class="p">(</span><span class="o">&amp;</span><span class="n">name</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+	<span class="n">t</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">typeDefinition</span> <span class="o">:=</span> <span class="o">*</span><span class="n">result</span>
+
+<span class="n">filingEnabled</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetFilingEnabled</span><span class="p">()</span>         <span class="c">// @FilingEnabled</span>
+<span class="n">optimisticLocking</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetOptimisticLocking</span><span class="p">()</span> <span class="c">// @OptimisticLocking</span>
+<span class="n">recycleBin</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetRecycleBinEnabled</span><span class="p">()</span>        <span class="c">// @RecycleBin</span>
+<span class="n">variables</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetUsingVariables</span><span class="p">()</span>            <span class="c">// @Variables</span>
+<span class="n">variablesVersioned</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetVariablesVersioned</span><span class="p">()</span>
+<span class="n">retentionProtected</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetRetentionProtected</span><span class="p">()</span>  <span class="c">// @RetentionProtected</span>
+<span class="n">overwriteAllowed</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetAllowsOverwrite</span><span class="p">()</span>       <span class="c">// @OverwriteAllowed</span>
+<span class="n">versioned</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetHasVersionTable</span><span class="p">()</span>              <span class="c">// @Versioned</span>
+<span class="n">typeAccessChecks</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetAccessCheck</span><span class="p">()</span>           <span class="c">// @AccessChecks</span>
+<span class="n">attributeBasedAccessChecks</span> <span class="o">:=</span> <span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetAbacEnabled</span><span class="p">()</span> <span class="c">// static method annotated with @Security</span>
+
+<span class="n">thumbnail</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetContentElements</span><span class="p">())[</span><span class="s">"thumbnail"</span><span class="p">]</span> <span class="c">// @Thumbnail</span>
+<span class="n">isThumbnail</span> <span class="o">:=</span> <span class="n">thumbnail</span><span class="o">.</span><span class="n">GetThumbnail</span><span class="p">()</span>
+<span class="n">thumbnailSource</span> <span class="o">:=</span> <span class="n">thumbnail</span><span class="o">.</span><span class="n">GetSourceElement</span><span class="p">()</span>
+
+<span class="c">// @InputProperty</span>
+<span class="n">inputProperty</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="n">typeDefinition</span><span class="o">.</span><span class="n">GetInputProperties</span><span class="p">())[</span><span class="s">"input_update_counter"</span><span class="p">]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The attributes for which the server computes a default value are available as a list of attribute names:</p>
+</div>
+<div class="listingblock">
+<div class="title">Attributes with default values</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="go"><span class="n">withDefaults</span> <span class="o">:=</span> <span class="n">readTypeDefinition</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">typeDefinitionClient</span><span class="p">,</span> <span class="s">"container_with_default_retention"</span><span class="p">)</span>
+
+<span class="c">// @DefaultValue and @DefaultSystemPropertyValue</span>
+<span class="n">attributesWithDefaultValue</span> <span class="o">:=</span> <span class="o">*</span><span class="n">withDefaults</span><span class="o">.</span><span class="n">GetDefaultValueAttributes</span><span class="p">()</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="rest-api"><a class="anchor" href="#rest-api"></a><a class="link" href="#rest-api">RESTful API</a></h4>
 <div class="paragraph">
 <p>The <em>arveo</em> Content Repository Service, like all <em>arveo</em> services, provides a RESTful API. While it
@@ -24626,7 +25255,7 @@ based on the metadata of the service instance in the service registry (manual co
 service will reject requests with incompatible versions.</p>
 </div>
 <div class="paragraph">
-<p>The current API version is 1.2.1.</p>
+<p>The current API version is 1.3.0.</p>
 </div>
 </div>
 <div class="sect4">
@@ -25081,7 +25710,7 @@ Thus, it is considered good practice to define listeners for after events as asy
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-events<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25250,7 +25879,7 @@ deserialize the events. The following dependency is required to access the preco
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>ecr-jms<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25430,7 +26059,7 @@ The <code>ECRTypeDefinition</code> and <code>ECRTypeDefinitionId</code> headers 
     <span class="nt">&lt;artifactId&gt;</span>ecr-integration-service-endpoint<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;type&gt;</span>zip<span class="nt">&lt;/type&gt;</span>
     <span class="nt">&lt;classifier&gt;</span>zip<span class="nt">&lt;/classifier&gt;</span>
-    <span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -25885,7 +26514,7 @@ Each request is authenticated using a Bearer token retrieved from the configured
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
 <span class="nt">&lt;artifactId&gt;</span>ecr-types-archetype<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span></code></pre>
+<span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -25984,7 +26613,7 @@ The maven coordinate of this archetype are:</p>
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;groupId&gt;</span>de.eitco.ecr<span class="nt">&lt;/groupId&gt;</span>
 <span class="nt">&lt;artifactId&gt;</span>ecr-service-archetype<span class="nt">&lt;/artifactId&gt;</span>
-<span class="nt">&lt;version&gt;</span>28.3.1<span class="nt">&lt;/version&gt;</span></code></pre>
+<span class="nt">&lt;version&gt;</span>28.4.0<span class="nt">&lt;/version&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -26544,71 +27173,67 @@ ecr_keys_assoc_&lt;profile&gt; table contains the associations between content e
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Content Repository Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">28.3.1 (API-version: 1.2.1)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">28.4.0 (API-version: 1.3.0)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configuration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Registry Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.5</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.0.5</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Job Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">14.0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14.0.3</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Audit Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">11.0.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">11.0.5</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Document Conversion Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">12.0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12.1.2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integration Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13.0.4</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">TUS Upload Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">8.2.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8.2.2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Download Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">13.1.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13.1.1</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MS365 Import Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">18.0.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18.0.4</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ArchiveLink Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">17.0.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17.0.5</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Universal Import Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10.0.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.0.5</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Litigation Management Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.4</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ILM Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.4</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">WebDav Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.4</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MCP Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.3</p></td>
 </tr>
 </tbody>
 </table>
@@ -26679,6 +27304,120 @@ AWS S3</p></td>
 </div>
 <div class="sect2">
 <h3 id="release-notes"><a class="anchor" href="#release-notes"></a><a class="link" href="#release-notes">Release Notes</a></h3>
+<div class="sect3">
+<h4 id="_release_notes_28_4_0_november_25_2026"><a class="anchor" href="#_release_notes_28_4_0_november_25_2026"></a><a class="link" href="#_release_notes_28_4_0_november_25_2026">Release notes 28.4.0 (November 25, 2026)</a></h4>
+<details>
+<summary class="title">Details</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong class="big">New Features</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1931: The type definition model now exposes all optional features enabled by the type definition annotations in every SDK (Java, TypeScript, C# and Go): <code>filingEnabled</code>, <code>retentionProtected</code>, <code>optimisticLocking</code>, <code>recycleBinEnabled</code>, <code>usingVariables</code> and <code>variablesVersioned</code> are now part of the model (previously they were only computed by the Java SDK), <code>abacEnabled</code> shows attribute based access checks, <code>defaultValueAttributes</code> lists the attributes with default values, <code>inputProperties</code> lists the input properties, and the content element settings show whether an element is a <code>rendition</code> or a <code>thumbnail</code>.</p>
+</li>
+<li>
+<p>ECR-1975: The concurrency of single queue listeners can now be configured with <code>ecr.server.messaging.listeners.&lt;name&gt;.concurrency</code>, e.g. <code>ecr.server.messaging.listeners.create-renditions.concurrency: 1-8</code>. Listeners without an entry use <code>ecr.server.messaging.queue-listener-concurrency</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1948: Entities of retention protected types within their retention period can now only be moved to the recycle bin by users with the <code>ECR_DSGVO_ADMIN</code> or <code>ECR_DSGVO_PRIVILEGED_DELETE</code> authority, other users get a <code>NonRetentionCompliantRecycleException</code> (HTTP 403). Entities under litigation hold can no longer be moved to the recycle bin by anyone. Entities that are already in the recycle bin can still be put under litigation hold or retention; they stay in the recycle bin but can no longer be deleted, and the timed deletion of the recycle bin skips them.</p>
+</li>
+<li>
+<p>ECR-1955: Searches over entities with an EQL filter now return a reliable order, so paging no longer skips or repeats entities. The server appends an ascending order by the system field <code>id</code> to the requested order unless it already contains the <code>id</code>. Searches over all versions (e.g. <code>findVersions</code>) use the <code>version_id</code> instead, since all versions of an entity share the same ID. This applies to all searches with a main entity alias, including searches over several type definitions. Modifications with a filter and a limit (delete, purge, move to and restore from the recycle bin, batch updates) now affect the entities with the lowest IDs. Meta-data types have no ID, so for these the caller still has to provide a reliable order. A single search can switch this off with an <code>IdOrderQueryExtension</code> with <code>appendIdOrder = false</code> in the query extensions of the <code>SearchRequest</code>. <code>ExpressionAndLimit</code> and <code>ExpressionAndTimeout</code> have a new optional property <code>appendIdOrder</code> for the same purpose; <code>null</code> (the default for existing clients) uses the system setting.</p>
+</li>
+<li>
+<p>ECR-1971: Update to Spring Boot 4.1.3</p>
+</li>
+<li>
+<p>ECR-1975: Changed default configuration of concurrency settings for messaging to avoid deadlock situations.</p>
+</li>
+<li>
+<p>ECR-1976: Messaging is now disabled if <code>spring.activemq.broker-url</code> is not configured or empty. In that case arveo starts without a message broker and does not register any message listeners. Features depending on messaging, like renditions, full text extraction, delayed deletion of recycled entities and event forwarding, are not available and operations sending a message fail.</p>
+</li>
+<li>
+<p>ECR-1977: Update base image to mitigate CVE-2026-114938 "java4shell"</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Bug Fixes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1931: <code>TypeDefinition.isVariablesVersioned()</code> no longer returns <code>true</code> for types without variables.</p>
+</li>
+<li>
+<p>ECR-1955: The shell now rejects commands with options that are given more than once, options the command does not know, or unexpected positional arguments (e.g. an unquoted constraint). Previously, only one value of a repeated option such as <code>--constraint</code> or <code>--where</code> was used and unknown options and surplus words were ignored, so a command like <code>delete</code> could affect more entities than intended.</p>
+</li>
+<li>
+<p>ECR-1966: Fixed content remaining in the storage unnoticed: chunked content was reported as deleted although some of its chunks could not be deleted, and content written before a write failed was not removed. A missing storage directory, bucket or container no longer counts as deleted content, and the new setting <code>createStorageDirectory</code> of the file system storage plugin prevents writing to the local file system while a mounted file system is missing.</p>
+</li>
+<li>
+<p>ECR-1975: Fixed queue listeners (e.g. for rendition jobs) that stopped consuming messages after the first round: the setting <code>ecr.server.messaging.concurrency-limit</code> now limits the number of message listener executions running at the same time instead of the listener threads, which could deadlock the listener containers. Renditions rejected by the conversion service as not supported (HTTP 400) are now marked as failed immediately instead of being redelivered. The defaults changed: <code>ecr.server.messaging.queue-listener-concurrency</code> is now <code>1-2</code> (was <code>1-10</code>) and <code>ecr.server.messaging.concurrency-limit</code> is now <code>64</code> (was <code>10</code>).</p>
+</li>
+<li>
+<p>ECR-1980: Fixed documents reverting to an older version: when a background job such as full-text extraction or rendition processing updated a version while a new version of the same document was being created, the document could afterwards point to the older version again, so the latest content and attributes were no longer returned. The new version was still contained in the version history.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Interface breaking changes</strong></p>
+</div>
+<div class="paragraph">
+<p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1955: New property <code>ecr.server.query.append-id-order</code> (default <code>true</code>). It controls whether the server appends the system field <code>id</code> (or <code>version_id</code> for version searches) to the order of searches and orders the entities selected by modifications with a limit by <code>id</code>. If it is <code>false</code>, this is never done, regardless of the options of a request.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong class="big">Manual migration steps</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1948: Retention protected types with recycle bin get a new database trigger that blocks moving entities under litigation hold to the recycle bin. Run a schema update in maintenance mode after the upgrade to create the trigger for existing types. Entities that are already in the recycle bin while under litigation hold are not changed by the schema update.</p>
+</li>
+<li>
+<p>ECR-1955: The API version of the service is now <code>1.3.0</code> (before <code>1.2.1</code>). Clients built with this SDK version send <code>X-Service-Version: 1.3.0</code>, so the load balancer of the Java Spring SDK only selects service instances that advertise API version <code>1.3.0</code> or higher, and older service instances reject their requests. Older clients keep working with the new service.</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>Migration guide</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Kubernetes: update the pod annotation <code>de.eitco/api-version</code> of the Content Repository Service to <code>1.3.0</code>. Without the update, new clients find no matching instance.</p>
+</li>
+<li>
+<p>Manually configured service instances (<code>spring.cloud.discovery.client.simple.instances</code>): set the metadata <code>api-version</code> of each <code>content-repository-service</code> instance to <code>1.3.0</code>.</p>
+</li>
+<li>
+<p>Update the service instances before or together with the clients. During a blue/green deployment, clients with the new SDK only use the new instances.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
 <div class="sect3">
 <h4 id="_release_notes_28_3_1_november_17_2026"><a class="anchor" href="#_release_notes_28_3_1_november_17_2026"></a><a class="link" href="#_release_notes_28_3_1_november_17_2026">Release notes 28.3.1 (November 17, 2026)</a></h4>
 <details>
@@ -29116,7 +29855,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-17 14:13:36 UTC
+Last updated 2026-11-25 21:54:41 UTC
 </div>
 </div>
 <style>
