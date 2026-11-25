@@ -8,6 +8,7 @@ Here you can find documentation for any version of the EITCO Integration Service
  * [13.0.2](archive/13.0.2)
  * [13.0.1](archive/13.0.1)
  * [13.0.0](archive/13.0.0)
+ * [12.0.7](archive/12.0.7)
  * [12.0.6](archive/12.0.6)
  * [12.0.5](archive/12.0.5)
  * [12.0.4](archive/12.0.4)
