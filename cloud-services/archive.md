@@ -9,6 +9,7 @@ Here you can find documentation for any version of the EITCO Spring Cloud Servic
  * [8.0.2](archive/8.0.2)
  * [8.0.1](archive/8.0.1)
  * [8.0.0](archive/8.0.0)
+ * [7.0.8](archive/7.0.8)
  * [7.0.7](archive/7.0.7)
  * [7.0.6](archive/7.0.6)
  * [7.0.5](archive/7.0.5)
