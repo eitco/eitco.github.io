@@ -27364,6 +27364,9 @@ AWS S3</p></td>
 <li>
 <p>ECR-1975: Fixed queue listeners (e.g. for rendition jobs) that stopped consuming messages after the first round: the setting <code>ecr.server.messaging.concurrency-limit</code> now limits the number of message listener executions running at the same time instead of the listener threads, which could deadlock the listener containers. Renditions rejected by the conversion service as not supported (HTTP 400) are now marked as failed immediately instead of being redelivered. The defaults changed: <code>ecr.server.messaging.queue-listener-concurrency</code> is now <code>1-2</code> (was <code>1-10</code>) and <code>ecr.server.messaging.concurrency-limit</code> is now <code>64</code> (was <code>10</code>).</p>
 </li>
+<li>
+<p>ECR-1980: Fixed documents reverting to an older version: when a background job such as full-text extraction or rendition processing updated a version while a new version of the same document was being created, the document could afterwards point to the older version again, so the latest content and attributes were no longer returned. The new version was still contained in the version history.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -29852,7 +29855,7 @@ Then the legitimate user can access the original data.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-25 16:06:58 UTC
+Last updated 2026-11-25 17:05:40 UTC
 </div>
 </div>
 <style>
