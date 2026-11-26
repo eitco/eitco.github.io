@@ -541,7 +541,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#admin-recovery">8.13. Validation and concurrent editing</a>
 <ul class="sectlevel3">
 <li><a href="#_startup_additive_examples_and_recovery">8.13.1. Startup, additive examples and recovery</a></li>
-<li><a href="#_correct_invalid_or_conflicting_edits">8.13.2. Correct invalid or conflicting edits</a></li>
+<li><a href="#_export_saved_configuration_and_drafts">8.13.2. Export saved configuration and drafts</a></li>
+<li><a href="#_correct_invalid_or_conflicting_edits">8.13.3. Correct invalid or conflicting edits</a></li>
 </ul>
 </li>
 <li><a href="#reference">8.14. Import reference</a>
@@ -2921,6 +2922,15 @@ acceptance of a particular customer&#8217;s existing infrastructure or authorize
 <p>Use the administration navigation to switch between <strong>Scenario configuration</strong>, <strong>Permission catalog</strong>, <strong>Categories</strong> and <strong>Localization</strong>. Scenario settings, category hierarchy/assignments and dashboard presentation share one configuration draft. Moving between these workspaces retains unsaved changes; it does not save them. Enter through the Workspace client and use this navigation rather than bookmarking a nested administration URL.</p>
 </div>
 <div class="paragraph">
+<p><strong>Save current scenario</strong> writes only the selected scenario. Other scenario drafts, categories, dashboard presentation and shared CSV/ZIP settings remain unsaved. <strong>Save all configuration changes</strong> explicitly commits the complete configuration draft atomically. An individual save that needs a category not yet stored is blocked with an explanation; it never includes shared changes automatically.</p>
+</div>
+<div class="paragraph">
+<p>Save diagnostics remain visible when moving between administration pages. Inspect each listed scenario, configuration path and reason, then use its scenario link to repair it. A changed draft or type definition marks the earlier diagnostics as stale. A validation rejection before submission made no write; a revision conflict requires comparing and reconciling changes. If a submitted write loses its response, its outcome is unknown and further saves in that editing session are blocked. Export both states, compare them, reload the application and reapply only outstanding changes. A matching backend snapshot cannot identify which actor wrote it.</p>
+</div>
+<div class="paragraph">
+<p>Use <strong>Export all</strong> on the configuration overview (or <strong>Export</strong> in a scenario footer) for the persisted backend configuration. Its filename identifies the collection revision and retrieval time. A failed read does not offer a cached copy. <strong>Export complete draft</strong> on the configuration overview (or <strong>Export draft</strong> in a scenario footer) preserves current authored edits, including invalid values, without validating or saving them. The overview includes the entire draft; a scenario export includes only that scenario and the current shared settings. After a failed attempt, <strong>Download failed-attempt draft</strong> preserves the authoring snapshot at that attempt, separately from later edits. Draft filenames identify capture time and editing-baseline revision; an item attempt is scoped to the selected scenario even though its recovery snapshot retains all open drafts. These downloads never discard edits, accept new editing revisions or replace the baseline. Keep exported configuration in an appropriate protected location.</p>
+</div>
+<div class="paragraph">
 <p>Customer appearance is managed in Workspace, separately from Flex scenario configuration. A Workspace administrator manages the published theme and system/light/dark selection under <strong>Settings → Preferences → Appearance</strong>. Flex administration receives the same published appearance as scenario pages; configuration-administrator rights in Flex do not grant Workspace appearance-administration rights. There is no separate Branding page or theme import in Flex. If Flex displays an appearance-loading warning, <strong>Retry</strong> requests the current Workspace appearance without saving the configuration draft.</p>
 </div>
 <div class="paragraph">
@@ -3107,7 +3117,7 @@ Name, kind, types and relationship structure are immutable after creation. To ch
 <p>Open General → Overview and expand <strong>Record selection</strong>. Enable the record attributes shown in options and order them with the shared ordering control. Configure searchable record attributes separately, with <strong>equals</strong>, <strong>contains</strong> or <strong>starts with</strong> where compatible with the live type. Text predicates are intended to match case-insensitively and be combined with OR. Numeric/scalar attributes support equality only; unsupported types are rejected.</p>
 </div>
 <div class="paragraph">
-<p>At least one display column and one compatible search column are required. The picker settings are independent of authored record-table columns, sorting and personal column preferences. Record-read permission and record table-field visibility rules still restrict its identifying and searchable values. Removed or disabled references remain visible as invalid settings for explicit repair; they are not silently dropped. Save, export and reload to verify the authored order and search rules. Use current version-4 exports for these fields. Supported version-2/3 imports are upgraded; legacy V1/unversioned imports cannot contain m:n or record-selection settings.</p>
+<p>At least one display column and one compatible search column are required. The picker settings are independent of authored record-table columns, sorting and personal column preferences. Record-read permission and record table-field visibility rules still restrict its identifying and searchable values. Known disabled fields retain their authored selector settings but are excluded from effective runtime pickers. Confirmed removed owning fields and their selector references are removed after a successful metadata load; no replacement fields are invented. If required display or search mappings become empty, configure them explicitly before using the picker. Save, export and reload to verify the authored order and search rules. Use current version-4 exports for these fields. Supported version-2/3 imports are upgraded; legacy V1/unversioned imports cannot contain m:n or record-selection settings.</p>
 </div>
 <div class="paragraph">
 <p>Enable document editing for membership additions, and document creation for creation from a selected
@@ -3232,6 +3242,9 @@ Do not test the recorded cascade policy as an available m:n deletion workflow. S
 </div>
 <div class="paragraph">
 <p>After adding an attribute to a repository type definition, restart the client to load the updated definition. Existing configurations discover the field in their matrices while preserving authored settings. If you have unsaved administration edits, save or discard them before schema reconciliation completes. Review the new field&#8217;s availability and view settings, then save the scenario to publish it to runtime views. Discovery alone does not change the published configuration.</p>
+</div>
+<div class="paragraph">
+<p>Disabling a known attribute preserves its label, authored order and supported view settings. Runtime tables, filters, details and summary fields exclude it. Saving and reloading retains those settings for reactivation. A successfully loaded type definition confirms actual removals: the editor removes deleted owning fields, their view rows, field-permission targets and record-selector references. Failed or unauthorized metadata retrieval does not establish a removal. After a failed refresh, cached metadata may remain usable, but it is not evidence for additional cleanup. Invalid external lookup sources remain available for explicit repair.</p>
 </div>
 <div class="paragraph">
 <p>Localized text includes a default value and optional values per language. Use the localization drawer to supply translations. A field/view label override applies only where enabled; otherwise the normal configured label applies. Preview each supported language after saving.</p>
@@ -3415,7 +3428,7 @@ Imports reject the retired <code>selectAllEnabled</code> property even when it i
 <p>Changing a source does not silently rewrite the stored, display or search columns. Removed, inaccessible or incompatible references remain in the draft with validation errors so that you can repair them explicitly. A mapping on a foreign-key field must match the repository&#8217;s declared relationship; an ordinary lookup does not create a relationship.</p>
 </div>
 <div class="paragraph">
-<p>Imported filter/form lookup settings without a shared attribute mapping remain marked for repair. Enabling the shared mapping preserves those authored surface settings; complete the source and column mapping before saving. Scenario, category and localization configuration saves all apply the same lookup and parent-selection validation, so stale settings must be repaired even when the current edit is elsewhere. Saving unrelated settings preserves untouched scenario configuration, including its existing export flags; validation still applies to retained lookup mappings.</p>
+<p>Imported filter/form lookup settings without a shared attribute mapping remain marked for repair. Enabling the shared mapping preserves those authored surface settings; complete the source and column mapping before saving. Save all applies lookup and parent-selection validation to every submitted scenario. Save current scenario validates only the selected scenario against persisted shared settings. Saving unrelated settings preserves untouched scenario configuration, including its existing export flags; validation still applies to retained lookup mappings.</p>
 </div>
 <div class="paragraph">
 <p>For a strict one-to-many foreign-key scenario, the optional <code>recordManagement.parentSelectionEnabled</code> setting is disabled by default. The configuration editor does not offer an Allow choosing another parent record toggle; existing or validated imported settings remain supported. When enabled in the stored configuration, users can choose another parent during document creation or editing. The picker derives its source and stored column from the selected relation; a non-ID referenced key is supported. Existing create/edit grants and relation-field read-only rules still apply. This setting does not alter many-to-many membership workflows or introduce new permissions.</p>
@@ -3627,7 +3640,16 @@ or live-type audit, and ordinary CRUD/draft validation keeps its established beh
 </div>
 </div>
 <div class="sect3">
-<h4 id="_correct_invalid_or_conflicting_edits"><a class="anchor" href="#_correct_invalid_or_conflicting_edits"></a><a class="link" href="#_correct_invalid_or_conflicting_edits">8.13.2. Correct invalid or conflicting edits</a></h4>
+<h4 id="_export_saved_configuration_and_drafts"><a class="anchor" href="#_export_saved_configuration_and_drafts"></a><a class="link" href="#_export_saved_configuration_and_drafts">8.13.2. Export saved configuration and drafts</a></h4>
+<div class="paragraph">
+<p>On the configuration overview, <strong>Export all</strong> retrieves the current saved backend configuration. When any administration changes are unsaved, <strong>Export complete draft</strong> appears beside it in the same style and exports every open scenario and shared setting without validating or saving them.</p>
+</div>
+<div class="paragraph">
+<p>In a scenario footer, <strong>Export</strong> retrieves that saved scenario with its saved shared dependencies. <strong>Export draft</strong> appears beside it only when that scenario has unsaved changes; it exports that scenario with the current shared settings, excluding other scenario drafts. A new scenario has no saved original until its first successful save. Exporting never changes the editing baseline or discards edits. A failed backend read reports an error instead of offering a cached original.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_correct_invalid_or_conflicting_edits"><a class="anchor" href="#_correct_invalid_or_conflicting_edits"></a><a class="link" href="#_correct_invalid_or_conflicting_edits">8.13.3. Correct invalid or conflicting edits</a></h4>
 <div class="paragraph">
 <p>Invalid references, duplicate scenario names or category IDs, blank category defaults, dangling category assignments, unavailable default content, inconsistent annotation switches, missing required fields and unsupported relationships prevent a save. Correct the indicated setting rather than removing validation.</p>
 </div>
@@ -5437,7 +5459,7 @@ is unacceptable. Credentials and access tokens must never appear in either param
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-26 12:17:23 UTC
+Last updated 2026-11-26 18:44:03 UTC
 </div>
 </div>
 </body>
