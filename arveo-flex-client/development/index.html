@@ -1428,6 +1428,9 @@ reported as success; check the refreshed membership before retrying.</p>
 <p>Open <strong>Set up filter criteria</strong> to edit filters in the drawer. Choose a comparison and a value, then select <strong>Apply</strong> to update the chips and search results. <strong>Cancel</strong>, the close button and Escape discard drawer edits. Remove an applied chip to clear that criterion, or use <strong>Clear all</strong> to reset the search. Filter changes restart the result list at its first page and continue to respect the selected record&#8217;s scope.</p>
 </div>
 <div class="paragraph">
+<p>Opening, changing or closing a document in the side panel preserves the current table search and sorting. Switching scenarios, workspaces or parent records still changes the search context.</p>
+</div>
+<div class="paragraph">
 <p>Applied table filters are included in the address. Copy the full address to reopen or share the same search, including comparisons, ranges, lookup selections and the permitted inclusion of trashed items. Record and document tables retain separate searches in the same link. A valid URL search takes precedence over saved search preferences, including when the linked search is empty. Filters are checked against the current configuration and permissions; incompatible criteria are discarded. Base64 is an encoding, so filter values remain readable to anyone with the link.</p>
 </div>
 <div class="paragraph">
@@ -1438,7 +1441,7 @@ or dismiss it. Copy the address after loading has completed. For applications th
 generate links, see <a href="#developer-navigation">Developer integration: links with filters and sorting</a>.</p>
 </div>
 <div class="paragraph">
-<p>Number and date bounds are inclusive: <strong>greater than or equal to</strong> and <strong>on or after</strong> include the selected lower bound; <strong>less than or equal to</strong> and <strong>on or before</strong> include the upper bound. <strong>Between</strong> applies both bounds together. A date equality on a timestamp matches that entire local calendar day. <strong>Is empty</strong> and <strong>is not empty</strong> check whether a stored value is absent or present and need no entered value. Enumeration selections and time ranges are also sent to the repository search. Drawer actions, comparison labels and chips follow the selected language.</p>
+<p>Number and date bounds are inclusive: <strong>greater than or equal to</strong> and <strong>on or after</strong> include the selected lower bound; <strong>less than or equal to</strong> and <strong>on or before</strong> include the upper bound. <strong>Between</strong> combines the populated bounds. You can enter either bound first: both inputs remain available so you can add the other bound later. A single populated bound is an open-ended range. A date equality on a timestamp matches that entire local calendar day. <strong>Is empty</strong> and <strong>is not empty</strong> check whether a stored value is absent or present and need no entered value. Enumeration selections and time ranges are also sent to the repository search. Drawer actions, comparison labels and chips follow the selected language.</p>
 </div>
 <div class="paragraph">
 <p>When a field uses an administrator-configured lookup, select a permitted repository value from its dropdown instead of entering arbitrary text. Labels can combine several columns with ` — `; the filter uses the stored key, never the displayed label. Depending on its settings, the dropdown allows one or several selections and optional case-insensitive search. Multiple stored keys match with OR within that field; other active fields still narrow the query.
@@ -1503,7 +1506,7 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 <p>Choose <strong>Download selected as CSV</strong> to export metadata from a document, record or record-document table. Record exports contain record attributes, not the contents of their documents. Record-document exports stay within the current parent record. CSV activation is independent of ZIP. Your administrator must enable CSV globally for documents or records and for the current scenario table. The document setting also applies to documents inside records.</p>
 </div>
 <div class="paragraph">
-<p>Select individual rows, or select all loaded rows and choose <strong>Loaded rows</strong> or <strong>All matching</strong>. Loaded rows include previously loaded scroll pages. When the complete result set has finished loading, no scope choice is needed. Newly loaded rows remain unchecked until explicitly selected. All matching follows the current authorized search and filters. CSV is unavailable while Include trashed items is active; clear that filter before exporting. The export keeps the visible data columns in their current order and the table&#8217;s row sorting. Checkbox and action columns are excluded. Reference and lookup columns contain stored IDs, which can differ from their displayed labels. Unsupported column, filter, sort or formatting mappings prevent export with an explanation. In this delivery, date-only and decimal-family columns cannot be mapped faithfully for every value and prevent export while included; timestamp formatting is limited to supported locale profiles. Hide unsupported columns before starting a new export if they are not needed.</p>
+<p>Select individual rows, or select all loaded rows and choose <strong>Loaded rows</strong> or <strong>All matching</strong>. Loaded rows include previously loaded scroll pages. When the complete result set has finished loading, no scope choice is needed. Newly loaded rows remain unchecked until explicitly selected. All matching follows the current authorized search and filters. CSV is unavailable while Include trashed items is active; clear that filter before exporting. The export keeps the visible data columns in their current order and the table&#8217;s row sorting. Checkbox and action columns are excluded. Reference and lookup columns contain stored IDs, which can differ from their displayed labels. Unsupported column, filter, sort or scope mappings prevent export with an explanation. A column is not rejected solely because of its data type: where no supported display-format profile is available, the Download-Service uses its native representation. Columns are not silently omitted. Current-version system fields are included when available and permitted, including the latest version identifier. Native output may differ from the table display.</p>
 </div>
 <div class="paragraph">
 <p>Flex checks the row count before starting a transfer. Zero rows show <strong>No data to export</strong>. Counts above the effective maximum are blocked; confirmation cannot override this limit. At the warning threshold, review the scope, count and maximum and confirm using the final save action. Below that threshold, a <strong>Save CSV</strong> action may still be necessary to let the browser open its save picker. Changing the export intent requires a fresh check.</p>
@@ -1515,7 +1518,7 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 <p>An active CSV transfer remains in <strong>DownloadManager</strong> while navigating within Flex. It has no percentage, estimated completion time, expiry, retry or reload recovery. Successful native saves and browser handoffs show <strong>CSV downloaded successfully</strong> and remove the entry. Explicit cancellations remove the entry without a success message. Failed entries remain with an error until dismissed; start a new export from the table to try again. A failed transfer never intentionally hands off a partial CSV.</p>
 </div>
 <div class="paragraph">
-<p>CSV uses UTF-8 with a byte order mark and semicolons. Column headings use the active language; supported date and number formats follow the table and browser time zone. Filenames use the localized scenario name and a timestamp. CSV text is passed through from Download-Service: spreadsheet formula-like strings, including values starting with <code>=</code>, are preserved. Review untrusted text before opening CSV in software that evaluates formulas.</p>
+<p>CSV uses UTF-8 with a byte order mark and semicolons. Column headings use the active language. Supported date-only and timestamp profiles use the active locale and browser time zone; other locales and types, including decimal-family values, use the Download-Service defaults. Exact table-format parity is not guaranteed. Filenames use the localized scenario name and a timestamp. CSV text is passed through from Download-Service: spreadsheet formula-like strings, including values starting with <code>=</code>, are preserved. Review untrusted text before opening CSV in software that evaluates formulas.</p>
 </div>
 <div class="paragraph">
 <p>The export freezes selection, columns, search and sorting, not repository data. Concurrent changes can remove rows or change results between the count check and streaming. A changed count within the hard limit does not require another confirmation. An empty result after a successful check is accepted. CSV exports are direct transfers, with no stored artifact or later re-download.</p>
@@ -1540,7 +1543,13 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 </ol>
 </div>
 <div class="paragraph">
+<p>When the creation form offers a primary file, a new document requires that file even when its draft already contains metadata. Removing a selected primary file makes creation incomplete until you choose another file. Existing documents can retain their stored file during a metadata-only edit.</p>
+</div>
+<div class="paragraph">
 <p>To edit, open the existing item and use its edit action. Change writable fields and save. Metadata-only edits leave unchanged content intact. When replacing original content, check filename and MIME information before saving. A failed save is not proof that nothing was stored: reload the item before retrying.</p>
+</div>
+<div class="paragraph">
+<p>Date-only and local date/time values retain their calendar or wall-clock meaning when opened for editing. Timestamp instants are shown in your browser’s local time. Editing a value uses the precision offered by its control; values are limited to the precision supported by the repository client.</p>
 </div>
 <div class="paragraph">
 <p>Selecting or replacing the primary file can fill the filename and MIME fields chosen by your administrator. Review these copied values and edit them where permitted before saving. Selecting another original file keeps its metadata separate. Saving without selecting a new file does not refill these fields.</p>
@@ -2929,7 +2938,7 @@ acceptance of a particular customer&#8217;s existing infrastructure or authorize
 <p>The separate <strong>Categories</strong> workspace manages the category tree, scenario assignments and dashboard presentation. In scenario General settings, choose an optional semantic icon; it changes presentation only, not repository data or permissions.</p>
 </div>
 <div class="paragraph">
-<p>Deletion dialogs require you to type the displayed item name exactly, or <code>DELETE</code> when instructed, before the destructive Delete action becomes available. Category subtree deletion lists every affected scenario assignment, including hidden scenarios; the scenarios themselves are not deleted. Language removal and category removal change the draft and still require Save. Scenario deletion waits for the server result. If a request fails, its dialog stays open with an error so you can retry or cancel. Duplicate opens a name editor and stays open if saving the new scenario fails.</p>
+<p>Deletion dialogs require you to type the displayed item name exactly, or <code>DELETE</code> when instructed, before the destructive Delete action becomes available. Category subtree deletion lists every affected scenario assignment, including hidden scenarios; the scenarios themselves are not deleted. Language removal and category removal change the draft and still require Save. Scenario deletion waits for the server result. A broken lookup or unavailable type in another scenario does not prevent deleting the intended scenario; current permissions and revision checks still apply. If a request fails, its dialog stays open with an error so you can retry or cancel. Duplicate opens a name editor and stays open if saving the new scenario fails.</p>
 </div>
 </div>
 <div class="sect2">
@@ -4594,6 +4603,9 @@ records within the scenario; the selected record always restricts the document q
 <p>Application-wide CSV settings contain an optional maximum row override and a positive warning threshold, defaulting to 10,000 rows. An empty maximum inherits the operator-configured service ceiling; the effective maximum is the smaller value. New overrides above that ceiling are rejected. If an operator later lowers the ceiling, the lower value applies even to an older saved override. Review any discrepancy shown in the settings. Neither global row settings nor a warning threshold enable a table, and confirmation cannot override a hard limit. CSV limits count rows, independently of ZIP file counts and uncompressed bytes.</p>
 </div>
 <div class="paragraph">
+<p>Available and permitted system columns can be exported alongside custom attributes. CSV uses the Download-Service’s native representation when no supported display-format profile is available; a data type alone does not require hiding its column. Display-format differences are described in <a href="#csv-downloads">CSV downloads</a>.</p>
+</div>
+<div class="paragraph">
 <p>Configuration exports and imports preserve <code>csvDownloads</code> in schema version 4. A missing maximum inherits the service ceiling and an omitted warning threshold uses 10,000. There is no format designer, persisted CSV job or download history. See <a href="#csv-downloads">CSV downloads</a> for native saving, mandatory browser fallback, temporary memory use, stored reference IDs, concurrent-data limitations and spreadsheet formula-like text.</p>
 </div>
 </div>
@@ -5425,7 +5437,7 @@ is unacceptable. Credentials and access tokens must never appear in either param
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-26 05:33:18 UTC
+Last updated 2026-11-26 12:17:23 UTC
 </div>
 </div>
 </body>
