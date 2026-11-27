@@ -487,9 +487,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#viewer-download">5.9.6. Downloads, unavailable content and historical viewing</a></li>
 </ul>
 </li>
-<li><a href="#history">5.10. Versions and comments</a></li>
-<li><a href="#recovery">5.11. Recover from errors and unfinished work</a></li>
-<li><a href="#_document_workspace_settings">5.12. Document workspace settings</a></li>
+<li><a href="#_lists_and_initial_document_values">5.10. Lists and initial document values</a></li>
+<li><a href="#history">5.11. Versions and comments</a></li>
+<li><a href="#recovery">5.12. Recover from errors and unfinished work</a></li>
+<li><a href="#_document_workspace_settings">5.13. Document workspace settings</a></li>
 </ul>
 </li>
 <li><a href="#litigation-holds">6. Litigation holds</a></li>
@@ -572,6 +573,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_released_configuration_compatibility">10.1. Released configuration compatibility</a></li>
 <li><a href="#permission-target-links">10.2. Direct links to permission targets</a></li>
+<li><a href="#_initialize_new_document_values_from_a_record">10.3. Initialize new document values from a record</a></li>
 </ul>
 </li>
 <li><a href="#developer-navigation">11. Developer integration: links with filters and sorting</a>
@@ -1795,7 +1797,30 @@ for the current limitation.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="history"><a class="anchor" href="#history"></a><a class="link" href="#history">5.10. Versions and comments</a></h3>
+<h3 id="_lists_and_initial_document_values"><a class="anchor" href="#_lists_and_initial_document_values"></a><a class="link" href="#_lists_and_initial_document_values">5.10. Lists and initial document values</a></h3>
+<div class="paragraph">
+<p>Supported string and integer list fields show one chip per confirmed value. Enter
+a value and press Enter or choose Add. Remove a chip to remove that entry. Order
+and duplicates are retained. New entries have surrounding whitespace removed.
+Invalid values or unfinished nonblank input prevent saving; confirm or clear the
+input first. Values outside the supported list types remain read-only.</p>
+</div>
+<div class="paragraph">
+<p>When configured, creating a document inside a record copies permitted compatible
+record values into the form once. Review and edit those values before saving.
+Missing or inaccessible source values leave the usual defaults. Later record
+changes are not synchronized. Editing an existing document, restoring your draft
+or retrying a failed shared-document link does not copy values again.</p>
+</div>
+<div class="paragraph">
+<p>If access is revoked, draft values remain in memory for recovery in the same
+scenario and starting record. Unconfirmed list text returns as a visible entry
+that must pass validation. Explicitly discarding the editor removes its recovery
+state. File selections must be supplied again when the browser no longer retains them.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="history"><a class="anchor" href="#history"></a><a class="link" href="#history">5.11. Versions and comments</a></h3>
 <div class="paragraph">
 <p>When history is enabled, open <strong>History</strong>. Select a historical version to inspect that version rather than the current document. Return to the current version before editing. Comments appear only where enabled and permitted; cancel an unfinished comment to discard it, or submit it and reopen history to check the saved result.</p>
 </div>
@@ -1809,7 +1834,7 @@ for the current limitation.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="recovery"><a class="anchor" href="#recovery"></a><a class="link" href="#recovery">5.11. Recover from errors and unfinished work</a></h3>
+<h3 id="recovery"><a class="anchor" href="#recovery"></a><a class="link" href="#recovery">5.12. Recover from errors and unfinished work</a></h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1840,7 +1865,7 @@ catalog and configure access; no permissions are granted automatically.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_document_workspace_settings"><a class="anchor" href="#_document_workspace_settings"></a><a class="link" href="#_document_workspace_settings">5.12. Document workspace settings</a></h3>
+<h3 id="_document_workspace_settings"><a class="anchor" href="#_document_workspace_settings"></a><a class="link" href="#_document_workspace_settings">5.13. Document workspace settings</a></h3>
 <div class="paragraph">
 <p>In Record scenarios, <strong>Documents</strong> lists all scenario documents and a selected record lists only its
 linked documents. Administrators can configure these workspaces independently, so their columns,
@@ -4342,6 +4367,26 @@ or live-type audit, and ordinary CRUD/draft validation keeps its established beh
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordDocumentDetail.fields</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordDocumentDetail.editEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordDocumentDetail.createEnabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>recordDocumentDetail.initialValuesFromRecord</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentView.recordCardZipDownloadEnabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
@@ -4358,7 +4403,7 @@ or live-type audit, and ordinary CRUD/draft validation keeps its established beh
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>documentView.detail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">detail</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recordDocumentDetail</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
 </tr>
 <tr>
@@ -4870,6 +4915,29 @@ trash and deletion even when a retention override is granted.</p>
 <p>Links from permission catalog usages include the scenario and exact permission target in the address path.
 Bookmarking or reloading that address reopens the corresponding Permissions editor and target drawer,
 subject to administrator access. Older query-based links redirect to the same destination.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_initialize_new_document_values_from_a_record"><a class="anchor" href="#_initialize_new_document_values_from_a_record"></a><a class="link" href="#_initialize_new_document_values_from_a_record">10.3. Initialize new document values from a record</a></h3>
+<div class="paragraph">
+<p>In View Configuration / Records / Documents within a record / Details, use
+<strong>Prefill values from record</strong> beneath the creation switch. Select a record field
+and a compatible document field, add the mapping, or suggest exact matching field
+names. Review suggestions and save through the existing scenario Save/Cancel draft.
+Each target can appear once. Disabling creation keeps the mappings inactive.</p>
+</div>
+<div class="paragraph">
+<p>Only compatible scalar business fields are supported. Lists, system fields,
+technical relationship fields and read-only targets are excluded. Lookups must
+refer to the same stored key; enum values must be valid in the target. User field
+rights are checked when the form is opened; your own restricted business-field
+access does not silently delete shared mappings.</p>
+</div>
+<div class="paragraph">
+<p>The setting is optional in payload v4. Existing configurations without it retain
+their behavior. Older product versions cannot import v4 files containing this new
+property. Do not copy customer-only settings into a product configuration or expect
+an older backend to ignore unsupported fields during rollback.</p>
 </div>
 </div>
 </div>
@@ -5459,7 +5527,7 @@ is unacceptable. Credentials and access tokens must never appear in either param
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-27 05:35:40 UTC
+Last updated 2026-11-27 12:32:22 UTC
 </div>
 </div>
 </body>
