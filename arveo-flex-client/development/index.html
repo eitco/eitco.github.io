@@ -1485,22 +1485,22 @@ Press <strong>Escape</strong> to close the dropdown and cancel its search. The s
 <p>Loading another scroll page does not select its new rows automatically. Select those rows, or use the header checkbox again, to include them. The review shows selected documents, included documents and included files separately; several original files can belong to one included document.</p>
 </div>
 <div class="paragraph">
-<p>Record tables export the selected records' direct readable documents. Use <strong>Download entire record as ZIP</strong> from the record-context action menu to export one record independently of table selection and document-table filters. Recursive subrecords, deleted documents, historical versions, renditions and annotations are excluded. Shared documents appear separately in each selected owning record folder.</p>
+<p>Record tables export the selected records' direct readable documents. Use <strong>Download entire record as ZIP</strong> from the record details card to export one record independently of table selection and document-table filters. Recursive subrecords, deleted documents, historical versions, renditions and annotations are excluded. Shared documents appear separately in each selected owning record folder.</p>
 </div>
 <div class="paragraph">
 <p>Preparation resolves original contents and exact sizes before generation. Review the counts and confirm any size warning or disclosed omissions. Hard limits cannot be overridden; unknown sizes, no surviving files or interrupted preparation prevent generation. Changing selection, search or parent context invalidates pending preparation. Generated jobs remain available while navigating between scenarios or returning to the dashboard.</p>
 </div>
 <div class="paragraph">
-<p><strong>DownloadManager</strong> appears at the bottom-left while you have retained preparations, jobs or pending save acknowledgements. It shows actual generation progress, failures and the archive&#8217;s expiry. Its badge counts ready archives that have not been saved or removed. A ready notification never starts downloading; opening the popover does not clear the badge.</p>
+<p><strong>Downloads</strong> is always available at the bottom-right while you are signed in. It opens the DownloadManager dialog, including previous browser handoffs. A bottom-left activity indicator appears while preparations, jobs, CSV exports or pending save acknowledgements need attention. Its badge counts ready ZIP archives that have not been handed to the browser or saved. A ready notification never starts downloading; opening the dialog does not clear the badge. Closing the dialog returns keyboard focus to Downloads.</p>
 </div>
 <div class="paragraph">
 <p>Choose <strong>Download</strong> explicitly to select a destination where verified saving is supported. Flex streams the archive, verifies its size and waits for the file to close successfully before acknowledging the save. Canceling the picker or encountering a transfer/write failure leaves the archive available for retry. A successfully saved archive disappears from the ordinary list; if acknowledgement fails, <strong>Saved — cleanup pending</strong> is retried without forcing another download.</p>
 </div>
 <div class="paragraph">
-<p><strong>Browser download</strong> provides an explicit alternative when verified saving is unavailable or blocked. The browser manages that download, so Flex cannot confirm that it was saved. Keep the entry until you choose <strong>Downloaded / Remove</strong>, or let it expire. Canceling a save picker never silently switches to browser downloading.</p>
+<p><strong>Browser download</strong> provides an explicit alternative when verified saving is unavailable or blocked. The browser manages saving; Flex reports <strong>Handed to browser</strong> and cannot confirm disk saving or browser cancellation. That handoff leaves the activity indicator, while <strong>Downloads</strong> retains <strong>Download again</strong> until the archive expires. Canceling a save picker never silently switches to browser downloading. Handoff history retains up to 128 entries per user for 24 hours in the same browser profile and synchronizes between tabs. It stores job identifiers only. If browser storage is unavailable, a warning explains that history may not survive reload. An unavailable ZIP must be recreated explicitly from your selection; history does not extend its server lifetime. While the list is loading or the service is offline, wait or use Refresh status; a connection failure does not establish that the ZIP has expired.</p>
 </div>
 <div class="paragraph">
-<p>After the first acknowledged verified save, Flex schedules deletion five minutes later. Repeated acknowledgements do not extend that delay, and service retention can expire sooner. The expiry timestamp is not extended by viewing, polling or downloading. Expired or confirmed unavailable archives disappear from the ordinary list; temporary service errors retain retry feedback. After a reload, retained jobs can reappear before every service status has been refreshed. A temporary-unavailability indication keeps the job available for retry; starting a download still checks its current availability and your permission. An already started transfer may finish after expiry, but upstream cleanup can still interrupt it. Source permissions are checked again before generating an archive; starting a generated archive download still requires its current ZIP entitlement.</p>
+<p>After a verified save acknowledgement or complete successful browser delivery, Flex schedules deletion five minutes later, capped by service expiry. Browser delivery does not acknowledge disk saving. Repeated downloads or acknowledgements never extend an existing deadline. Active streams and temporary outages can delay physical deletion after it becomes due. The expiry timestamp is not extended by viewing, polling or downloading. Expired or confirmed unavailable archives disappear from the ordinary list; temporary service errors retain retry feedback. After a reload, retained jobs can reappear before every service status has been refreshed. A temporary-unavailability indication keeps the job available for retry; starting a download still checks its current availability and your permission. An already started transfer may finish after expiry, but upstream cleanup can still interrupt it. Source permissions are checked again before generating an archive; starting a generated archive download still requires its current ZIP entitlement.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2239,6 +2239,13 @@ recovery does not adopt arbitrary existing accounts. After successful verificati
 remove both setup login settings and the setup-password mount, restart and prove
 readiness/discovery again without them. Never resolve a readiness failure by
 bypassing authentication or deleting the database, migration history or key ring.</p>
+</div>
+<div class="paragraph">
+<p>ZIP browser-delivery storage is introduced by forward-only Flyway V8. Do not run
+pre-V8 and current backends concurrently against one database. Prefer a forward
+correction if an upgrade fails. Returning to a pre-V8 application requires the
+matching protected database backup and coordinated handling of active ZIP transfers;
+never rewrite migration checksums or assume that old generated archives remain usable.</p>
 </div>
 <div class="paragraph">
 <p>Test this procedure in an isolated recovery environment before production handover.
@@ -4655,7 +4662,7 @@ records within the scenario; the selected record always restricts the document q
 <p>Configure ZIP export in <strong>General → Overview → ZIP downloads</strong>. This section appears after Naming and Dashboard, before Retention. These settings apply to all scenarios and use the shared Save/Cancel draft. Both global switches default to off. Empty file/byte limits inherit the configured service maximum; the effective maximum uses the stricter value. The file limit counts archive files, which can include multiple files per document. The byte limit counts the total size before compression, not the resulting ZIP size. Confirmation thresholds require explicit user consent at the configured file count or uncompressed size; they do not override hard limits. Numeric limits and thresholds cannot be edited while both global ZIP switches are off; their saved values are retained. Configured and effective maxima use localized thousands separators. The availability status reports whether the compatible service can be reached with your current session; permissions and surface switches still apply.</p>
 </div>
 <div class="paragraph">
-<p>When the corresponding global switch is enabled, configure ZIP independently in each workspace&#8217;s table settings. Entire-record card switches in record details and RecordDocuments are independent of table ZIP settings. Disabling a global switch retains authored surface settings and locks the affected ZIP permission rules. Saving preserves ZIP settings. An enabled switch does not grant users permission to download. CSV has independent table activation and application-wide row settings described below.</p>
+<p>When the corresponding global switch is enabled, configure ZIP independently in each workspace&#8217;s table settings. The entire-record ZIP switch is available only in the record workspace&#8217;s Details settings and controls the record details card, independently of table ZIP settings. Document tables offer selected-document ZIP only. A legacy RecordDocuments card switch remains stored but has no action and is not automatically transferred: explicitly enable the record Details switch when migrating an installation that used only the old setting. Disabling a global switch retains authored surface settings and locks the affected ZIP permission rules. Saving preserves ZIP settings. An enabled switch does not grant users permission to download. CSV has independent table activation and application-wide row settings described below.</p>
 </div>
 </div>
 <div class="sect3">
@@ -5527,7 +5534,7 @@ is unacceptable. Credentials and access tokens must never appear in either param
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-27 12:32:22 UTC
+Last updated 2026-11-27 13:08:23 UTC
 </div>
 </div>
 </body>
