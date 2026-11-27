@@ -34,13 +34,15 @@
 <li><a href="#_itext_plugins">3.4. iText Plugins</a></li>
 <li><a href="#_xrechnung_plugin">3.5. XRechnung plugin</a></li>
 <li><a href="#_document_converter_plugin">3.6. Document Converter Plugin</a></li>
+<li><a href="#_qpdf_plugin_linearized_pdf">3.7. qpdf Plugin (linearized PDF)</a></li>
 </ul>
 </li>
 <li><a href="#_usage">4. <strong>Usage</strong></a>
 <ul class="sectlevel2">
 <li><a href="#_converting_an_image_to_pdf">4.1. Converting an image to PDF</a></li>
-<li><a href="#_extracting_text_from_a_pdf_file">4.2. Extracting text from a PDF file</a></li>
-<li><a href="#_combining_multiple_images_to_one_pdf">4.3. Combining multiple images to one PDF</a></li>
+<li><a href="#_converting_a_document_to_a_linearized_pdf">4.2. Converting a document to a linearized PDF</a></li>
+<li><a href="#_extracting_text_from_a_pdf_file">4.3. Extracting text from a PDF file</a></li>
+<li><a href="#_combining_multiple_images_to_one_pdf">4.4. Combining multiple images to one PDF</a></li>
 </ul>
 </li>
 <li><a href="#_monitoring">5. <strong>Monitoring</strong></a>
@@ -51,7 +53,7 @@
 </li>
 <li><a href="#_release_notes">6. Release Notes</a>
 <ul class="sectlevel2">
-<li><a href="#_release_notes_12_1_3_snapshot_november_26_2026">6.1. Release notes 12.1.3-SNAPSHOT (November 26, 2026)</a></li>
+<li><a href="#_release_notes_12_2_0_snapshot_november_27_2026">6.1. Release notes 12.2.0-SNAPSHOT (November 27, 2026)</a></li>
 <li><a href="#_release_notes_12_1_2_november_25_2026">6.2. Release notes 12.1.2 (November 25, 2026)</a></li>
 <li><a href="#_release_notes_12_1_1_november_23_2026">6.3. Release notes 12.1.1 (November 23, 2026)</a></li>
 <li><a href="#_release_notes_12_1_0_october_20_2026">6.4. Release notes 12.1.0 (October 20, 2026)</a></li>
@@ -245,6 +247,11 @@ document type to another. It defines a list of supported source mimetypes and a 
 A FulltextPlugin can extract text from a document. It defines a list of supported source mimetypes. The target mimetype
 is always <em>text/plain</em>.</p>
 </div>
+<div class="paragraph">
+<p>In addition, a <code>PdfLinearizationPlugin</code> linearizes PDF documents ("fast web view"). It is applied by the service
+after any RenderPlugin creating a PDF, if the target mimetype contains the parameter <code>linearized=true</code> (see
+<a href="#_qpdf_plugin_linearized_pdf">qpdf Plugin (linearized PDF)</a>).</p>
+</div>
 <div class="sect2">
 <h3 id="_open_source_plugins">3.1. Open source plugins</h3>
 <div class="paragraph">
@@ -262,16 +269,16 @@ of the service. The plugins will be registered automatically.</p>
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-oss<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
     <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_oss">3.1.1. Plugins contained in document-conversion-plugins-oss</h4>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
 <div class="paragraph">
-<p>Extracts text by using Apache Tika.</p>
+<p>Renders TIF to Pdf using IText.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -289,169 +296,7 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>application/pdf</p>
-</li>
-<li>
-<p>application/xml</p>
-</li>
-<li>
-<p>text/html</p>
-</li>
-<li>
-<p>application/msword</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
-</li>
-<li>
-<p>application/vnd.ms-excel</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
-</li>
-<li>
-<p>application/vnd.ms-powerpoint</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
-</li>
-<li>
-<p>application/epub+zip</p>
-</li>
-<li>
-<p>application/vnd.ms-outlook</p>
-</li>
-<li>
-<p>application/rtf</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.presentation</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.spreadsheet</p>
-</li>
-<li>
-<p>application/vnd.oasis.opendocument.text</p>
-</li>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>text/plain</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
-<div class="paragraph">
-<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/vnd.ms-outlook</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_imagestopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from JPG,PNG,GIF to PDF by using apache pdfbox.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>image/jpeg</p>
-</li>
-<li>
-<p>image/png</p>
-</li>
-<li>
-<p>image/gif</p>
-</li>
-<li>
-<p>image/bmp</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
-<div class="paragraph">
-<p>Merges pdf files.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
+<p>image/tiff</p>
 </li>
 </ul>
 </div></div></td>
@@ -503,45 +348,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_tifftopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.TiffToPdfRenderPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdfmergingcontainerplugin">de.eitco.commons.conversion.plugins.oss.PdfMergingContainerPlugin</h5>
 <div class="paragraph">
-<p>Renders TIF to Pdf using IText.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>image/tiff</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/pdf</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
-<div class="paragraph">
-<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
+<p>Merges pdf files.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -566,16 +375,7 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>image/jpeg</p>
-</li>
-<li>
-<p>image/png</p>
-</li>
-<li>
-<p>image/gif</p>
-</li>
-<li>
-<p>image/tiff</p>
+<p>application/pdf</p>
 </li>
 </ul>
 </div></div></td>
@@ -612,6 +412,42 @@ of the service. The plugins will be registered automatically.</p>
 <ul>
 <li>
 <p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/xhtml+xml</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
 </li>
 </ul>
 </div></div></td>
@@ -722,9 +558,9 @@ of the service. The plugins will be registered automatically.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_oss_openhtmlrenderplugin">de.eitco.commons.conversion.plugins.oss.OpenHtmlRenderPlugin</h5>
+<h5 id="_de_eitco_commons_conversion_plugins_oss_msgattachmentsextractionplugin">de.eitco.commons.conversion.plugins.oss.MsgAttachmentsExtractionPlugin</h5>
 <div class="paragraph">
-<p>Renders from XHTML to PDF by using com.openhtmltopdf.</p>
+<p>Extracts attachments from Outlook Message files and renders them to a single PDF.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content">
 <colgroup>
@@ -742,7 +578,7 @@ of the service. The plugins will be registered automatically.</p>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p>application/xhtml+xml</p>
+<p>application/vnd.ms-outlook</p>
 </li>
 </ul>
 </div></div></td>
@@ -750,6 +586,177 @@ of the service. The plugins will be registered automatically.</p>
 <ul>
 <li>
 <p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_pdftoimagesrenderplugin">de.eitco.commons.conversion.plugins.oss.PdfToImagesRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from pdf to JPG,PNG.GIF,TIF by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_imagestopdfrenderplugin">de.eitco.commons.conversion.plugins.oss.ImagesToPdfRenderPlugin</h5>
+<div class="paragraph">
+<p>Renders from JPG,PNG,GIF to PDF by using apache pdfbox.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_oss_tikafulltextextractionplugin">de.eitco.commons.conversion.plugins.oss.TikaFulltextExtractionPlugin</h5>
+<div class="paragraph">
+<p>Extracts text by using Apache Tika.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/pdf</p>
+</li>
+<li>
+<p>application/xml</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-powerpoint</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>application/epub+zip</p>
+</li>
+<li>
+<p>application/vnd.ms-outlook</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.presentation</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.spreadsheet</p>
+</li>
+<li>
+<p>application/vnd.oasis.opendocument.text</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>text/plain</p>
 </li>
 </ul>
 </div></div></td>
@@ -987,7 +994,7 @@ If you want to use this plugin you need a Microsoft 365 account which can use sh
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-ms-graph<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
     <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1234,7 +1241,7 @@ of the service. The plugins will be registered automatically.</p>
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-ms-azure<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
     <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1382,7 +1389,7 @@ If you want to use this plugin you need an Amazon AWS account (also named <stron
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-amazon-aws<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
     <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1561,7 +1568,7 @@ of the service. The plugins will be registered automatically.</p>
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-e-iceblue<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
     <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1650,7 +1657,7 @@ of the service. The plugins will be registered automatically.</p>
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-itext<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
     <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1770,7 +1777,7 @@ XRechnung XML data. It is using the <code>x-rechnung-toolkit-service</code> to c
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-x-rechnung<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
     <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1826,7 +1833,7 @@ coordinates:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-documentconverter<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>12.1.3-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1914,7 +1921,9 @@ depends on the target MIME type:</p>
 <ul>
 <li>
 <p>For <code>application/pdf</code> the plugin uses the default conformance level configured via
-<code>documentconverter.pdf.conformance-level</code>.</p>
+  <code>documentconverter.pdf.conformance-level</code>.
+The parameter <code>linearized=true</code> can be added to both target MIME types to get a linearized PDF, if the qpdf plugin is
+installed (see <a href="#_qpdf_plugin_linearized_pdf">qpdf Plugin (linearized PDF)</a>).</p>
 </li>
 <li>
 <p>For <code>application/vnd.eitco.pdf-a</code> the plugin always produces a PDF/A file. If the configured default is <code>NONE</code>, it
@@ -2002,93 +2011,6 @@ The level <code>PDFA_4E</code> (engineering documents) is defined but not suppor
 </div>
 <div class="sect3">
 <h4 id="_plugins_contained_in_document_conversion_plugins_documentconverter">3.6.3. Plugins contained in document-conversion-plugins-documentconverter</h4>
-<div class="sect4">
-<h5 id="_de_eitco_commons_conversion_plugins_documentconverter_toimagedocumentconverterplugn">de.eitco.commons.conversion.plugins.documentconverter.ToImageDocumentConverterPlugn</h5>
-<div class="paragraph">
-<p>Renders Microsoft Office Documents and some other formats to JPEG using the EITCO DocumentConverter service, which wraps the SyncFusion library.</p>
-</div>
-<table class="tableblock frame-all grid-all fit-content">
-<colgroup>
-<col>
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Source media types</th>
-<th class="tableblock halign-left valign-top">Target media types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>application/msword</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.wordprocessingml.template</p>
-</li>
-<li>
-<p>application/vnd.ms-word.document.macroEnabled.12</p>
-</li>
-<li>
-<p>application/vnd.ms-word.template.macroEnabled.12</p>
-</li>
-<li>
-<p>application/rtf</p>
-</li>
-<li>
-<p>text/plain</p>
-</li>
-<li>
-<p>text/markdown</p>
-</li>
-<li>
-<p>text/html</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
-</li>
-<li>
-<p>application/vnd.ms-excel</p>
-</li>
-<li>
-<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
-</li>
-<li>
-<p>image/jpeg</p>
-</li>
-<li>
-<p>image/png</p>
-</li>
-<li>
-<p>image/tiff</p>
-</li>
-<li>
-<p>image/bmp</p>
-</li>
-<li>
-<p>image/gif</p>
-</li>
-<li>
-<p>image/svg+xml</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>image/jpeg</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="sect4">
 <h5 id="_de_eitco_commons_conversion_plugins_documentconverter_topdfdocumentconverterplugin">de.eitco.commons.conversion.plugins.documentconverter.ToPdfDocumentConverterPlugin</h5>
 <div class="paragraph">
@@ -2179,6 +2101,254 @@ The level <code>PDFA_4E</code> (engineering documents) is defined but not suppor
 </tbody>
 </table>
 </div>
+<div class="sect4">
+<h5 id="_de_eitco_commons_conversion_plugins_documentconverter_toimagedocumentconverterplugn">de.eitco.commons.conversion.plugins.documentconverter.ToImageDocumentConverterPlugn</h5>
+<div class="paragraph">
+<p>Renders Microsoft Office Documents and some other formats to JPEG using the EITCO DocumentConverter service, which wraps the SyncFusion library.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Source media types</th>
+<th class="tableblock halign-left valign-top">Target media types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>application/msword</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.wordprocessingml.template</p>
+</li>
+<li>
+<p>application/vnd.ms-word.document.macroEnabled.12</p>
+</li>
+<li>
+<p>application/vnd.ms-word.template.macroEnabled.12</p>
+</li>
+<li>
+<p>application/rtf</p>
+</li>
+<li>
+<p>text/plain</p>
+</li>
+<li>
+<p>text/markdown</p>
+</li>
+<li>
+<p>text/html</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p>
+</li>
+<li>
+<p>application/vnd.ms-excel</p>
+</li>
+<li>
+<p>application/vnd.openxmlformats-officedocument.presentationml.presentation</p>
+</li>
+<li>
+<p>image/jpeg</p>
+</li>
+<li>
+<p>image/png</p>
+</li>
+<li>
+<p>image/tiff</p>
+</li>
+<li>
+<p>image/bmp</p>
+</li>
+<li>
+<p>image/gif</p>
+</li>
+<li>
+<p>image/svg+xml</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>image/jpeg</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_qpdf_plugin_linearized_pdf">3.7. qpdf Plugin (linearized PDF)</h3>
+<div class="paragraph">
+<p>The qpdf plugin linearizes PDF documents using the command line tool <a href="https://qpdf.readthedocs.io">qpdf</a>. A linearized
+PDF ("fast web view") is optimized for incremental download: a viewer can display the first page before the whole
+document has been transferred, provided the server supports HTTP range requests.</p>
+</div>
+<div class="paragraph">
+<p>The plugin can be downloaded from the nexus using the following maven coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>de.eitco.commons<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>document-conversion-plugins-qpdf<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;type&gt;</span>zip<span class="tag">&lt;/type&gt;</span>
+    <span class="tag">&lt;classifier&gt;</span>zip<span class="tag">&lt;/classifier&gt;</span>
+    <span class="tag">&lt;version&gt;</span>12.2.0-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The plugin does not contain qpdf itself. The <code>qpdf</code> executable must be installed on the host running the service, for
+example with <code>apt-get install qpdf</code>. All container images already contain qpdf and the plugin (see
+<a href="#_qpdf_docker_deployment">Docker deployment</a>).</p>
+</div>
+<div class="sect3">
+<h4 id="_requesting_a_linearized_pdf">3.7.1. Requesting a linearized PDF</h4>
+<div class="paragraph">
+<p>Linearization is requested with the parameter <code>linearized=true</code> on the target MIME type. The parameter is supported by
+the target MIME types <code>application/pdf</code> and <code>application/vnd.eitco.pdf-a</code>, and can be combined with the <code>conformance</code>
+parameter for PDF/A:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>application/pdf;linearized=true
+application/vnd.eitco.pdf-a;conformance=PDFA_2B;linearized=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The linearization works with every plugin that creates PDF documents. The service first renders the PDF with the plugin
+selected for the conversion (without the <code>linearized</code> parameter) and then linearizes the result with the qpdf plugin.
+If the source already is a PDF and the target is <code>application/pdf;linearized=true</code>, the source is only linearized.
+Configured PDF to PDF plugins (e.g. OCR plugins) are not applied in this case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_linearized_pdfa_documents">3.7.2. Linearized PDF/A documents</h4>
+<div class="paragraph">
+<p>PDF/A documents can be linearized without losing their PDF/A conformance. The plugin takes care of the two requirements
+of PDF/A that qpdf does not meet by default:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>qpdf is always called with <code>--newline-before-endstream</code>. PDF/A requires an end-of-line marker before every
+<code>endstream</code> keyword (e.g. PDF/A-1 rule 6.1.7, PDF/A-2 rule 6.1.7.1).</p>
+</li>
+<li>
+<p>PDF/A-1 forbids object streams and cross-reference streams. If the target MIME type is a PDF/A type
+(<code>application/vnd.eitco.pdf-a</code> or the parameter <code>conformance</code>), configured <code>--object-streams</code> arguments are ignored
+and qpdf keeps the object streams as created by the render plugin (<code>--object-streams=preserve</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The service returns the MIME type of the result as <code>Content-Type</code> of the http response, e.g.
+<code>application/pdf;linearized=true</code>. Clients using the java http client can read it from the returned stream:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">try</span> (<span class="predefined-type">InputStream</span> rendition = client.render(MediaType.IMAGE_JPEG_VALUE, <span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf;linearized=true</span><span class="delimiter">&quot;</span></span>, inputStream)) {
+
+    <span class="predefined-type">String</span> mediaType = HttpResponseInputStream.of(rendition)
+        .map(HttpResponseInputStream::getContentType)
+        .orElse(<span class="predefined-constant">null</span>);
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A request for a linearized PDF fails with a <code>BadRenderRequestException</code> if no linearization plugin is installed. If
+qpdf is missing or fails, the request fails with a <code>RenderingFailedException</code>. The service never returns a PDF that is
+not linearized for such a request. If several target MIME types are requested, e.g.
+<code>application/pdf;linearized=true,application/pdf</code>, the service falls back to the next target MIME type if
+linearization is not available.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_3">3.7.3. Configuration</h4>
+<div class="paragraph">
+<p>The plugin can be configured using the following properties in your <code>application.yaml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">qpdf</span>:
+  <span class="key">executable</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">qpdf</span><span class="delimiter">&quot;</span></span>
+  <span class="key">timeout</span>: <span class="string"><span class="content">60s</span></span>
+  <span class="key">additional-arguments</span>:
+    - <span class="string"><span class="delimiter">&quot;</span><span class="content">--object-streams=generate</span><span class="delimiter">&quot;</span></span>
+  <span class="key">skip-if-linearized</span>: <span class="string"><span class="content">true</span></span></code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qpdf.executable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The qpdf executable, either an absolute path or a command found via the <code>PATH</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qpdf</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qpdf.timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time a single qpdf call may take. The process is killed and the request fails if it takes longer.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>60s</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qpdf.additional-arguments</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional arguments passed to <code>qpdf --linearize</code>, for example <code>--object-streams=generate</code> to create smaller files.
+  <code>--object-streams</code> arguments are ignored for PDF/A documents (see <a href="#_qpdf_plugin_linearized_pdf">qpdf Plugin (linearized PDF)</a>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qpdf.skip-if-linearized</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether a PDF that is already linearized is returned unchanged instead of being linearized again.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qpdf.temp-directory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The directory for the temporary files qpdf works on.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>document-conversion-service.temp-directory</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rendering.linearization-plugin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the linearization plugin to use, if more than one is installed. The name of the qpdf plugin is
+  <code>qpdf-linearization</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the first one found</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_qpdf_docker_deployment">3.7.4. Docker deployment</h4>
+<div class="paragraph">
+<p>All container images (<code>conversion-base</code> and the images derived from it, e.g. <code>conversion-oss</code> or
+<code>conversion-ms-graph</code>) contain qpdf and the qpdf plugin, so linearization is available in every image without further
+configuration. qpdf is installed in the image <code>conversion-runtime</code>, the base image of <code>conversion-base</code>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -2260,7 +2430,38 @@ utility class containing standard mime type strings.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_extracting_text_from_a_pdf_file">4.2. Extracting text from a PDF file</h3>
+<h3 id="_converting_a_document_to_a_linearized_pdf">4.2. Converting a document to a linearized PDF</h3>
+<div class="paragraph">
+<p>A linearized PDF ("fast web view") is requested with the parameter <code>linearized=true</code> on the target mimetype. It
+requires the qpdf plugin (see <a href="#_qpdf_plugin_linearized_pdf">qpdf Plugin (linearized PDF)</a>). The service returns the mimetype of the result as
+content type of the http response.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">try</span> (<span class="predefined-type">InputStream</span> rendition = client.render(MediaType.IMAGE_JPEG_VALUE, <span class="string"><span class="delimiter">&quot;</span><span class="content">application/pdf;linearized=true</span><span class="delimiter">&quot;</span></span>, inputStream)) { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="predefined-type">String</span> mediaType = HttpResponseInputStream.of(rendition) <i class="conum" data-value="2"></i><b>(2)</b>
+        .map(HttpResponseInputStream::getContentType)
+        .orElse(<span class="predefined-constant">null</span>);
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Requests a linearized PDF. The parameter can be combined with PDF/A, e.g.
+<code>application/vnd.eitco.pdf-a;conformance=PDFA_2B;linearized=true</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Reads the mimetype of the result, here <code>application/pdf;linearized=true</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extracting_text_from_a_pdf_file">4.3. Extracting text from a PDF file</h3>
 <div class="paragraph">
 <p>This example shows how the API can be used to extract text content from a PDF file.</p>
 </div>
@@ -2290,7 +2491,7 @@ utility class containing standard mime type strings.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_combining_multiple_images_to_one_pdf">4.3. Combining multiple images to one PDF</h3>
+<h3 id="_combining_multiple_images_to_one_pdf">4.4. Combining multiple images to one PDF</h3>
 <div class="paragraph">
 <p>This exmaple shows how to combine multiple images to a single PDF file.</p>
 </div>
@@ -2392,15 +2593,29 @@ request.</p>
 <h2 id="_release_notes">6. Release Notes</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_release_notes_12_1_3_snapshot_november_26_2026">6.1. Release notes 12.1.3-SNAPSHOT (November 26, 2026)</h3>
+<h3 id="_release_notes_12_2_0_snapshot_november_27_2026">6.1. Release notes 12.2.0-SNAPSHOT (November 27, 2026)</h3>
 <details>
 <summary class="title">Details</summary>
 <div class="content">
 <div class="paragraph">
 <p><strong class="big">New Features</strong></p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1978: Added linearized PDF output ("fast web view"): the new qpdf plugin (<code>document-conversion-plugins-qpdf</code>, contained in all images) linearizes PDF documents created by any plugin when the target mime type contains the parameter <code>linearized=true</code>, e.g. <code>application/pdf;linearized=true</code> or <code>application/vnd.eitco.pdf-a;conformance=PDFA_2B;linearized=true</code>. Linearized PDF/A documents keep their PDF/A conformance.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong class="big">Changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1978: The <code>render</code> and <code>convert</code> endpoints now return the mime type of the result as <code>Content-Type</code> of the response (before: <code>application/octet-stream</code>), e.g. <code>application/pdf;linearized=true</code>.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Bug Fixes</strong></p>
@@ -2410,6 +2625,13 @@ request.</p>
 </div>
 <div class="paragraph">
 <p><strong class="big">Configuration changes</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ECR-1978: New configuration properties <code>qpdf.executable</code>, <code>qpdf.timeout</code>, <code>qpdf.additional-arguments</code>, <code>qpdf.skip-if-linearized</code>, <code>qpdf.temp-directory</code> and <code>rendering.linearization-plugin</code> for the linearization of PDF documents.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong class="big">Manual migration steps</strong></p>
@@ -2869,7 +3091,7 @@ Currently, this is only supported by the documentconverter plugin.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-26 23:34:58 UTC
+Last updated 2026-11-27 16:49:16 UTC
 </div>
 </div>
 <style>
